@@ -2,7 +2,7 @@
 
 var wss = require('ws').Server;
 var server = new wss({ port:8080 });
-
+// hi
 server.on('connection', function(socket) {
 	console.log('Connection created!');
 	socket.on('message', function(msg) {
