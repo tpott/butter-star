@@ -1,9 +1,15 @@
 
 
-var ws = require('ws').Server;
-var server = new ws({ port:8080 });
+var wss = require('ws').Server;
+var server = new wss({ port:8080 });
 
 server.on('connection', function(socket) {
 	console.log('Connection created!');
-	socket.send('rohans mind is blown');
+	socket.on('message', function(msg) {
+		console.log('received: %s', msg);
+		GLOBAL.obj = JSON.parse(msg);
+		obj['data2'] = obj['data2'] + '1337';
+		socket.send(JSON.stringify(obj));
+	});
+	socket.send(JSON.stringify('rohans mind is blown'));
 });
