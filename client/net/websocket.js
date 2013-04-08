@@ -1,5 +1,6 @@
+var ipAddr = prompt("IP address of server:", "localhost");
 // Create the connection
-var connection = new WebSocket('ws://128.54.45.206:8080');
+var connection = new WebSocket('ws://' + ipAddr + ':8080');
 var testObj = {data1 : 'moo', data2: 10};
 
 /* Once the connection is etablished, this method will be called. Sends our testObj
