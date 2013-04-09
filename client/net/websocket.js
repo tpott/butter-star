@@ -23,7 +23,7 @@ if(localStorage.getItem('butterIPAddr') == null) {
 var connection = new WebSocket('ws://' + ipAddr + ':8080');
 
 /**
- * Executes when a connection to the server is opened.
+ * Handles opening a connection to the server.
  */
 connection.onopen = function () {
   connection.send('wassupppp'); // Test msg sent to server
@@ -31,18 +31,17 @@ connection.onopen = function () {
 
 /**
  * Handles receiving messages from the server.
- * @param {ArrayBuffer} msg the array from the server
+ * @param {ArrayBuffer} msg The array from the server.
  */
 connection.onmessage = function(msg) {
-  var received = JSON.parse(msg.data);
-  console.log('Yo server said: ' + received);
+  console.log('Yo server said: ' + msg.data);
 };
 
-// Log errors
+/**
+ * Handles connection errors.
+ * @param {Error} error The error.
+ */
 connection.onerror = function(error) {
   console.log('WebSocket Error: ' + error);
 };
-
-
-
 
