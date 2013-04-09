@@ -34,15 +34,15 @@ connection.onopen = function () {
   connection.send(floatArr.buffer); // Test msg sent to server
 };
 
+var messages = [];
 /**
  * Handles receiving messages from the server.
  * @param {ArrayBuffer} msg The array from the server.
  */
 connection.onmessage = function(buf) {
   console.log('Yo server said: ' + buf);
-  floatArr[0] = 12345678;
-  console.log("I wrote " + floatArr);
-  console.log("I sent " + floatArr.buffer);
+  messages[messages.length] = buf;
+  floatArr[0]++;
   connection.send(floatArr.buffer);
 };
 
