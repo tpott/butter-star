@@ -32,6 +32,8 @@ var floatArr = new Float32Array(4);
  */
 connection.onopen = function () {
   connection.send(floatArr.buffer); // Test msg sent to server
+  floatArr[0] = 12345678;
+  connection.send(floatArr.buffer);
 };
 
 /**
@@ -39,11 +41,7 @@ connection.onopen = function () {
  * @param {ArrayBuffer} msg The array from the server.
  */
 connection.onmessage = function(buf) {
-  console.log('Yo server said: ' + buf);
-  floatArr[0] = 12345678;
-  console.log("I wrote " + floatArr);
-  console.log("I sent " + floatArr.buffer);
-  connection.send(floatArr.buffer);
+  console.log('Yo server said: ' + buf.data);
 };
 
 /**
