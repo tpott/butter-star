@@ -56,14 +56,16 @@ fs.readFile(jsFile, 'utf8', function(err, data) {
 
 var wsServer = new ws({ port:wsPort});
 sockets = [];
+buffers = [];
 
 // Create the server, once connection is established then execute the function
 wsServer.on('connection', function(socket) {
-	console.log('Connection created!');
+	console.log('New connection created! %d', sockets.length);
 	sockets[sockets.length] = socket; 
 	
-	socket.on('message', function(msg) {
-		socket.send(JSON.stringify(obj));
+	socket.on('message', function(buf) {
+		console.log(buf);
+		buffers[buffers.length] = buf;
 	});
 });
 
