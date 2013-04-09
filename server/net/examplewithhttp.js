@@ -77,13 +77,14 @@ buffers = [];
  * sends a Vector4 object over specified socket
  */
 vecsend = function(socket, vec) {
-	// access the Vector4's array's buffer
-	socket.send(vec.arr.buffer, {binary:true});
+  // Must send the Float32Array, NOT the underlying ArrayBuffer
+	socket.send(vec.arr, {binary: true});
 }
 
 // Create the server, once connection is established then execute the function
 wsServer.on('connection', function(socket) {
 	console.log('New connection created! %d', sockets.length);
+  socket.binaryType = 'arraybuffer';
 	sockets[sockets.length] = socket; 
 	vectors[vectors.length] = new Vector4();
 	

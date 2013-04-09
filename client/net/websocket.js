@@ -1,4 +1,6 @@
 /**
+ * websocket.js
+ * 
  * Sets up connection and communication to and from the server.
  * @author Jennifer Fang
  * @author Trevor Pottinger
@@ -40,8 +42,7 @@ var messages = [];
  * @param {ArrayBuffer} msg The array from the server.
  */
 connection.onmessage = function(buf) {
-  console.log('Yo server said: ' + buf.data);
-  messages[messages.length] = buf;
+  messages[messages.length] = buf.data;
   floatArr[0]++;
   connection.send(floatArr.buffer);
 };
