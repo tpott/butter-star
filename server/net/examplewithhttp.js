@@ -88,7 +88,18 @@ wsServer.on('connection', function(socket) {
 	vectors[vectors.length] = new Vector4();
 	
 	socket.on('message', function(buf) {
-		console.log(buf);
+    var dv = new DataView(buf);
+    /*
+		var tempArray = new Float32Array(
+        dv.byteLength / Float32Array.BYTES_PER_ELEMENT);
+		for (var jj = 0; jj < tempArray.length; jj++) {
+			tempArray[jj] = dv.getFloat32(
+          jj * Float32Array.BYTES_PER_ELEMENT, true);
+		}
+    */
+    //var tempArray = new Float32Array(buf);
+		//socket.send('DAMNED ARRAY INDEX 0: ' + dv.getFloat32(0, true));
+		socket.send('DAMNED ARRAY INDEX 0: ' + buf.readFloatLE(0));
 		buffers[buffers.length] = buf;
 		vectors[vectors.length-1].set(buf);
 	});
