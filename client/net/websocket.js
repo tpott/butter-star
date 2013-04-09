@@ -25,7 +25,7 @@ if(localStorage.getItem('butterIPAddr') == null) {
 var connection = new WebSocket('ws://' + ipAddr + ':8080');
 connection.binaryType = 'arraybuffer';
 
-var floatArr = new Float64Array(4);
+var floatArr = new Float32Array(4);
 
 /**
  * Handles opening a connection to the server.
@@ -40,7 +40,7 @@ connection.onopen = function () {
  */
 connection.onmessage = function(buf) {
   console.log('Yo server said: ' + buf);
-  floatArr[0] = 0x12345678;
+  floatArr[0] = parseInt("0x12345678",16);
   connection.send(floatArr.buffer);
 };
 
