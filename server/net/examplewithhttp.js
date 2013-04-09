@@ -35,7 +35,7 @@ function createServer() {
 		}
 		response.end();
 	}).listen(httpPort, '0.0.0.0'); // allow connections from all IP addresses
-	console.log('Server listening at port=' + httpPort);
+	console.log('HTTP Server port=' + httpPort);
 }
 
 fs.readFile(htmlFile, 'utf8', function(err, data) {
@@ -55,19 +55,16 @@ fs.readFile(jsFile, 'utf8', function(err, data) {
 // WEB-SOCKETS
 
 var wsServer = new ws({ port:wsPort});
+sockets = [];
 
 // Create the server, once connection is established then execute the function
 wsServer.on('connection', function(socket) {
 	console.log('Connection created!');
+	sockets[sockets.length] = socket; 
 	
-	// Once a message is received by the server, execute the function
-	// Assumes that all transmitted data is JSON encoded
 	socket.on('message', function(msg) {
-		console.log('received: %s', msg);
-		GLOBAL.obj = JSON.parse(msg);
-		obj['data2'] = obj['data2'] + '1337';
 		socket.send(JSON.stringify(obj));
 	});
-	
-	socket.send(JSON.stringify('rohans mind is blown'));
 });
+
+console.log('WebSockets port=' + wsPort);
