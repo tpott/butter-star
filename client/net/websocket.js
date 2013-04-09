@@ -40,7 +40,7 @@ connection.onopen = function () {
  */
 connection.onmessage = function(buf) {
   console.log('Yo server said: ' + buf);
-  floatArr[0] = parseInt("0x12345678");
+  floatArr[0] = 12345678;
   console.log("I wrote " + floatArr);
   console.log("I sent " + floatArr.buffer);
   connection.send(floatArr.buffer);
