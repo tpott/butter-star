@@ -1,17 +1,37 @@
-var ipAddr = prompt("IP address of server:", "localhost");
-// Create the connection
-var connection = new WebSocket('ws://' + ipAddr + ':8080');
-var testObj = {data1 : 'moo', data2: 10};
+/**
+ * Sets up connection and communication to and from the server.
+ */
 
-/* Once the connection is etablished, this method will be called. Sends our testObj
- * over the socket
-*/
+/**
+ * IP address of the server we are connecting to.
+ * @type {string}
+ */
+var ipAddr;
+
+// Prompt for server IP address if not already set
+if(localStorage.getItem('butterIPAddr') == null) {
+  ipAddr = prompt("IP address of server:", "localhost");
+  localStorage.setItem('butterIPAddr', ipAddr)
+} else {
+  ipAddr = localStorage['butterIPAddr'];
+}
+
+/**
+ * The WebSocket connection to the server.
+ * @type {WebSocket}
+ */
+var connection = new WebSocket('ws://' + ipAddr + ':8080');
+
+/**
+ * Executes when a connection to the server is opened.
+ */
 connection.onopen = function () {
-  connection.send(JSON.stringify(testObj)); // Test msg sent to server
+  connection.send('wassupppp'); // Test msg sent to server
 };
 
-/* On receive of a message, take the msg's data and parse that (we assume 
- * messages that are transmitted will be encoded in JSON format.
+/**
+ * Handles receiving messages from the server.
+ * @param {ArrayBuffer} msg the array from the server
  */
 connection.onmessage = function(msg) {
   var received = JSON.parse(msg.data);
