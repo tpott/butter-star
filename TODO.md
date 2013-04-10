@@ -1,7 +1,7 @@
 I really wanted to write the things in the parenthesis in bash regular expressions... [--Trevor]
 
 
-*Networking*:
+**Networking**:
 - [x] String messages (send/receive server+client)
 - [x] Floats (send+receive server+client)
 - [ ] Anything (send client, receive server)
@@ -12,7 +12,7 @@ I really wanted to write the things in the parenthesis in bash regular expressio
 		* This would have each game instance running in a browser
 		* Game tracking would still run on our server
 
-*GUI* Client:
+**GUI** Client:
 * [ ] Initial page load --> game begin flow 
 * [ ] Dust bunny models (varying size)
 * [ ] Player models
@@ -21,7 +21,7 @@ I really wanted to write the things in the parenthesis in bash regular expressio
 * [ ] Vacuum models
 * [ ] Radar design
 
-*Game logic* Server:
+**Game logic** Server:
 * [ ] Scene graph
 * [ ] Waves of dust bunnies
 * [ ] Vacuum functionality
@@ -30,29 +30,29 @@ I really wanted to write the things in the parenthesis in bash regular expressio
 * [ ] Extra credit: Advanced dust bunny AI
 * [ ] Extra credit: Advanced vacuum functionality
 
-*Renderer* Client:
+**Renderer** Client:
 * [ ] Basic shader
 * [ ] Dust shader
 * [ ] Wind shader
 
-*Physics* Server: 
+**Physics** Server: 
 * [ ] Motion
 * [ ] Collision detection
 * [ ] Gravity (jumping)
 * [ ] Vacuum
 
-*Controls* Client:
+**Controls** Client:
 * [ ] WASD
 * [ ] Jump
 * [ ] Vacuum in
 * [ ] Vacuum out
 
-*Configurations*:
+**Configurations**:
 * [ ] 
 * [ ] 
 * [ ] 
 
-*Tools*:
+**Tools**:
 * [ ] Debugger
 * [ ] Profiler
 
