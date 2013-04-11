@@ -1,10 +1,15 @@
 <html> 
 <head> 
 	<title> 
-		Sapientia melior auro
+		French Maid
 	</title> 
 	<style> 
-		canvas { width: 100%; height: 100% }
+		body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
 	</style> 
 </head> 
 <body> 
@@ -12,6 +17,7 @@
 	<script src="js/loaders/MTLLoader.js"></script>
 	<script src="js/loaders/OBJMTLLoader.js"></script>
 	<script src="js/libs/stats.min.js"></script>
+	<script src="js/THREEx.FullScreen.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -120,8 +126,14 @@
 		player.position.z -= Math.cos(direction * Math.PI / 180) * speed;
 		}
 		
+		
+		document.addEventListener('keypress', function(e)
+		{
+			
+		}, false);
+		
 		/*
-		check for key input from the player
+		check for key pressed from the player
 		*/
 		var timer;
 		document.addEventListener('keydown', function(e){
@@ -140,24 +152,29 @@
 				audio.pause();
 			}
 			
-			if( !/65|68|83|87/.test(e.keyCode)){ return }
-			if( e.keyCode === 87 ){
-				moveState.front     = true;
-				moveState.Backwards = false;
-			} else if ( e.keyCode === 83 ){
-				moveState.Backwards = true;
-				moveState.front     = false;
-			} else if ( e.keyCode === 65 ){
-				moveState.left  = true;
-				moveState.right = false;
-			} else if ( e.keyCode === 68 ){
-				moveState.right = true;
-				moveState.left  = false;
+			//if( !/65|68|83|87/.test(e.keyCode)){ return }
+			
+			switch(e.keyCode)
+			{
+				case 87:		//W
+					moveState.front     = true;
+					moveState.Backwards = false;
+					break;
+				case 65:		//A
+					moveState.left  = true;
+					moveState.right = false;
+					break;
+				case 83:		//S
+					moveState.Backwards = true;
+					moveState.front     = false;
+					break;
+				case 68:		//D
+					moveState.right = true;
+					moveState.left  = false;
+					break;
+				default:
+					console.log(e.keyCode);
 			}
-			
-			
-			
-			
 			
 			if(!moveState.moving){
 				moveState.moving = true;
@@ -171,24 +188,38 @@
 		document.addEventListener('keyup', function(e){
 			if(e.shiftKey == 1)
 			{
-				console.log("shift was lifted");
 				moveState.sprinting = false;
 			}
 			if(e.shiftKey == 0)
 			{
-				console.log("shift was lifted");
 				moveState.sprinting = false;
 			}
-			if( !/65|68|83|87/.test(e.keyCode)){ return }
-			if( e.keyCode === 87 ){
-				moveState.front = false;
-			} else if ( e.keyCode === 83 ){
-				moveState.Backwards = false;
-			} else if ( e.keyCode === 65 ){
-				moveState.left = false;
-			} else if ( e.keyCode === 68 ){
-				moveState.right = false;
+			
+			
+			//if( !/65|68|83|87/.test(e.keyCode)){ return }
+			
+			switch(e.keyCode)
+			{
+				case 87:		//W
+					moveState.front = false;
+					break;
+				case 65:		//A
+					moveState.left = false;
+					break;
+				case 83:		//S
+					moveState.Backwards = false;
+					break;
+				case 68:		//D
+					moveState.right = false;
+					break;
+				case 70: 		//F
+					toggleFullScreen();
+					break;
+				default:
+					console.log(e.keyCode);
 			}
+			
+			
 			if(!moveState.front && !moveState.Backwards && !moveState.left && !moveState.right){
 				moveState.moving = false;
 				clearInterval(timer);
@@ -347,6 +378,18 @@
 			stats.domElement.style.zIndex = 100;
 		}
 		
+		function toggleFullScreen()
+		{
+			if( THREEx.FullScreen.activated() )
+			{
+			  THREEx.FullScreen.cancel();
+			}
+			else
+			{
+			  THREEx.FullScreen.request();
+			}
+		}
+		
 		function main()
 		{
 			initStats();
@@ -354,6 +397,7 @@
 			initModels();
 			initTextures();
 			initSounds();
+			audio.pause();
 		
 			renderer.setSize(window.innerWidth, window.innerHeight); 
 			document.body.appendChild(renderer.domElement); 
