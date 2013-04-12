@@ -16,6 +16,7 @@
 	<body>
 		<script src="three.js"></script>
 		<script src="stats.min.js"></script>
+		<script src= "Vacuum.js"></script>
 		<script type="x-shader/x-vertex" id="vertexShader">
 		//-----------------------BEGIN VERTEX SHADER -------------------------
 		//values for linear interpolation
@@ -138,8 +139,12 @@
 
 			function init()
 			{
-
-				//create container for canvas 
+				//create container for canvas
+				var testCenter = new THREE.Vector3(0,0,0);
+				var testDirection = new THREE.Vector3(0,1,0);
+				var nParticles = 500;
+				var vacuum = new Vacuum(testCenter,testDirection,nParticles);
+				console.log(vacuum.center);
 				var container = document.createElement('div');
 				document.body.appendChild(container);
 
@@ -216,6 +221,7 @@
 					vertexShader: document.getElementById('vertexShader').textContent,
 					fragmentShader: document.getElementById('fragmentShader').textContent,
 				});
+				//console.log(document.getElementById('vertexShader').textContent);
 
 				var angle = 0.0;
 				var radius = 50;
@@ -320,7 +326,7 @@
 				
 				//uniforms.center.value.x += inc;
 				//console.log(differenceVector.x);
-				//uniforms.offset.value.makeTranslation(frame,0,0);
+				//uniforms.offset.value.makeTranslation(0,frame,0);
 
 
 				uniforms.translation.value.makeTranslation(center.x,center.y,center.z);
