@@ -19,6 +19,7 @@ var BUFFER_SIZE = 1000000000; // 1 billion bytes
 var EventBuffer = function() {
   this.buffer = new Buffer(BUFFER_SIZE);
   this.nextEmptyIndex = 0;
+  this.sizeOfEvent = 0; // this is janky...
 };
 
 /**
@@ -28,6 +29,7 @@ var EventBuffer = function() {
 EventBuffer.prototype.addEvent = function(data) {
   this.buffer.write(data, this.nextEmptyIndex, data.length, 0);
   this.nextEmptyIndex += data.length; // TODO if not strings, want bytes
+  this.sizeOfEvent = data.length; // TODO: change this...
   var retVal = this.buffer.toString(0, 0, this.nextEmptyIndex);
 };
 
