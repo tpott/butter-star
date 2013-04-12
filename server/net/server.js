@@ -70,7 +70,9 @@ Server.prototype.start = function() {
   this.wsServer = new WebSocketServer({port:config.wsPort});
   this.eventBuffer = new EventBuffer();
 
-  var socketList = this.sockets; // to use inside handler
+  // Variables to use in handler
+  var socketList = this.sockets;
+  var serverEventBuffer = this.eventBuffer;
 
   /**
    * Handles the server opening a connection.
@@ -81,10 +83,8 @@ Server.prototype.start = function() {
       var socket = new Socket(wsSocket);
       socketList.push(socket);
 
-      // Tell client its unique ID
-      socket.send("ID:" + socketList.length - 1);
-
-      socket.onmessage(this.eventBuffer);
+      
+      socket.onmessage(serverEventBuffer);
       socket.onclose(socketList);
       
       // Tell the client its unique ID
