@@ -86,6 +86,10 @@ Server.prototype.start = function() {
 
       socket.onmessage(this.eventBuffer);
       socket.onclose(socketList);
+      
+      // Tell the client its unique ID
+      var socketID = socketList.length - 1;
+      socket.send("ID:" + socketID);
   });
 }
 
