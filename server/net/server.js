@@ -80,9 +80,13 @@ Server.prototype.start = function() {
       console.log('New connection created! %d', socketList.length);
       var socket = new Socket(wsSocket);
       socketList.push(socket);
-
+      
       socket.onmessage(this.eventBuffer);
       socket.onclose(socketList);
+      
+      // Tell the client its unique ID
+      var socketID = socketList.length - 1;
+      socket.send("ID:" + socketID);
   });
 }
 

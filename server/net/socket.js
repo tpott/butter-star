@@ -21,6 +21,14 @@ var Socket = function(wsSocket) {
 };
 
 /**
+ * Getter for the socket.
+ * @return {wsWebSocket} The underlying wsWebSocket for our Socket.
+ */
+Socket.prototype.getSocket = function() {
+  return this.socket;
+};
+
+/**
  * Add the input received from the client to the given eventBuffer.
  * Data from client can be either string or ArrayBuffer.
  * @param {InputBuffer} eventBuffer The event buffer.
@@ -48,6 +56,14 @@ Socket.prototype.onclose = function(socketList) {
       }
     }
   });
+};
+
+/**
+ * Send the client a message.
+ * @param {string | ArrayBuffer} msg The message to send to the client.
+ */
+Socket.prototype.send = function(msg) {
+  this.socket.send(msg);
 };
 
 exports.Socket = Socket;
