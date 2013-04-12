@@ -16,6 +16,62 @@
 	<body>
 		<script src="three.js"></script>
 		<script src="stats.min.js"></script>
+		<script src= "Vacuum.js"></script>
+		<script type="x-shader/x-vertex" id="vertexShader">
+		//-----------------------BEGIN VERTEX SHADER -------------------------
+		//values for linear interpolation
+		uniform vec3 base;
+		uniform float weight;
+		uniform float amplitude;
+		attribute float particleWeight;
+		attribute float displacement;
+		attribute vec3 normals;
+
+		//values for rotation
+		uniform mat4 rotation;
+		uniform mat4 translation;
+		uniform mat4 negativeTranslation;
+		uniform mat4 offset;
+		attribute float alpha;
+		varying float vAlpha;
+		varying vec3 vNormal;
+		
+		//linear interpolation
+		vec3 lerp(vec3 start, vec3 end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+
+		//calculate new position using linear interpolation with given weights
+		vec3 calcFinalPos()
+		{
+			vec3 displace = position + normals * vec3(displacement);
+			float newWeight = particleWeight + weight;
+			if(newWeight >=1.0)
+				newWeight -= 1.0;
+			return lerp(displace,base,newWeight);
+		}
+		//set gl_Position to newly calculated position
+		void main()
+		{
+			vAlpha = alpha;
+			gl_PointSize = 1.0;
+			vec4 newPosition = offset * translation * rotation * negativeTranslation * vec4(calcFinalPos() ,1.);
+			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
+		}
+		//-----------------------END VERTEX SHADER -------------------------
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+		//-----------------------BEGIN FRAGMENT SHADER -------------------------
+		uniform vec3 color;
+		varying float vAlpha;
+		void main()
+		{
+			gl_FragColor = vec4(color,vAlpha);
+		}
+		//-----------------------END FRAGMENT SHADER -------------------------
+		</script>
 		<script>
 
 			window.requestAnimFrame = (function(){
@@ -28,90 +84,74 @@
                 window.setTimeout(callback, 1000 / 60);
               };
    			 })();
-   			 var scene, renderer, camera, pMaterial;
+
+   			 //global vars
+   			 var scene, renderer, camera, pMaterial,uniforms,attributes,rotationY,scale,center;
+   			 var frame = 0;
+   			 var weight = 0;
+   			 var amp = 0.0;
+   			 var randomAmp = [];
+   			 var centerAxis;
+   			 var direction,axisRotation,translationMatrix,negTranslationMatrix;
+   			 var offset;
+   			 var differenceVector = new THREE.Vector3();
+   			 var vacuum;
+
    			 init();
-   			 renderFrame();
+   			 render();
+   			 
 
-   			 function init()
-   			 {
-			var container = document.createElement('div');
-			document.body.appendChild(container);
+			function init()
+			{
+				//create container for canvas
+				var testCenter = new THREE.Vector3(0,-75,0);
+				var testDirection = new THREE.Vector3(0,1,0);
+				var nParticles = 5000;
+				vacuum = new Vacuum(testCenter,testDirection,nParticles,document.getElementById('vertexShader').textContent, document.getElementById('fragmentShader').textContent);
+				
+				var container = document.createElement('div');
+				document.body.appendChild(container);
 
+				//create scene, camera and renderer
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+				camera.position.z = 200;
 
-			scene = new THREE.Scene();
-			camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-			camera.position.z = 100;
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight);
 
-			renderer = new THREE.WebGLRenderer();
-			renderer.setSize(window.innerWidth, window.innerHeight);
+				container.appendChild(renderer.domElement);
 
+				//init fps gui
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '5px';
+				stats.domElement.style.left = '5px';
+				container.appendChild( stats.domElement );
 
-			container.appendChild(renderer.domElement);
-
-			stats = new Stats();
-			stats.domElement.style.position = 'absolute';
-			stats.domElement.style.top = '5px';
-			stats.domElement.style.right = '5px';
-			container.appendChild( stats.domElement );
-
-			// create the particle variables
-			var particleCount = 100000,
-			    particles = new THREE.Geometry();
-			    pMaterial =
-			      new THREE.ParticleBasicMaterial({
-			        size: 0.9,
-			      });
-
-			// now create the individual particles
-			for(var p = 0; p < particleCount; p++) {
-
-			  // create a particle with random
-			  // position values, -250 -> 250
-			  var pX = Math.random() * 500 - 250,
-			      pY = Math.random() * 500 - 250,
-			      pZ = Math.random() * 500 - 250,
-			      particle = new THREE.Vector3(pX, pY, pZ);
-
-			  // add it to the geometry
-			  particles.vertices.push(particle);
+				vacuum.addSceneData(scene);
+				console.log(scene.children);
 			}
+			
+		
+   			 
+			//render scene
+			function render() {
 
-			// create the particle system
-			var particleSystem =
-			  new THREE.ParticleSystem(
-			    particles,
-			    pMaterial);
-
-			var particleSystem2 = new THREE.ParticleSystem(particles, pMaterial);
-			// add it to the scene
-			//particleSystem.sortParticles = true;
-			scene.add(particleSystem);
-			//scene.add(particleSystem2);
-
-		}
-			function renderFrame() {
-				//particleSystem.rotation.y += 0.01;
-				//particleSystem.geometry.__dirtyVertices = true;
-				//camera.lookAt( scene.position );
 				update();
 
 				renderer.render(scene, camera);
 
 				stats.update();
-				requestAnimationFrame(renderFrame);
-			}
-
-			function update()
-			{
-				var time = Date.now() * 0.00005;
-				camera.lookAt( scene.position );
-				scene.children[0].rotation.y += 0.01;
-				color = [0.90, 1, 0.5];
-				var h = ( 360 * ( color[0] + time ) % 360 ) / 360;
-					pMaterial.color.setHSL( h, color[1], color[2] );
-
+				requestAnimationFrame(render);
 			}
 			
+			//update values
+			function update()
+			{
+				vacuum.update();
+				
+			}
 		</script>
 	</body>
 </html>
