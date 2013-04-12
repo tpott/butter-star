@@ -333,7 +333,7 @@
 		
 		connection.onmessage = function(buf) {
 		messages[messages.length] = buf.data;
-		//console.log("Client received: " + buf.data);
+		console.log("Client received: " + buf.data);
 		//console.log(moveState);
 		//console.log(buf.data);
 		moveState = JSON.parse(buf.data);
