@@ -81,6 +81,9 @@ Server.prototype.start = function() {
       var socket = new Socket(wsSocket);
       socketList.push(socket);
 
+      // Tell client its unique ID
+      socket.send("ID:" + socketList.length - 1);
+
       socket.onmessage(this.eventBuffer);
       socket.onclose(socketList);
   });
