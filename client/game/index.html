@@ -4,11 +4,55 @@
 		French Maid
 	</title> 
 	<style> 
-		body {
-				font-family: Monospace;
-				background-color: #f0f0f0;
-				margin: 0px;
+		html, body {
+				width: 100%;
+				height: 100%;
+			}
+
+			body {
+				background-color: #ffffff;
+				margin: 0;
 				overflow: hidden;
+				font-family: arial;
+			}
+
+			#blocker {
+
+				position: absolute;
+
+				width: 100%;
+				height: 100%;
+
+				background-color: rgba(0,0,0,0.5);
+
+			}
+
+			#instructions {
+
+				width: 100%;
+				height: 100%;
+
+				display: -webkit-box;
+				display: -moz-box;
+				display: box;
+
+				-webkit-box-orient: horizontal;
+				-moz-box-orient: horizontal;
+				box-orient: horizontal;
+
+				-webkit-box-pack: center;
+				-moz-box-pack: center;
+				box-pack: center;
+
+				-webkit-box-align: center;
+				-moz-box-align: center;
+				box-align: center;
+
+				color: #ffffff;
+				text-align: center;
+
+				cursor: pointer;
+
 			}
 	</style> 
 </head> 
@@ -18,6 +62,9 @@
 	<script src="js/loaders/OBJMTLLoader.js"></script>
 	<script src="js/libs/stats.min.js"></script>
 	<script src="js/THREEx.FullScreen.js"></script>
+	<script src="js/PointerLockControls.js"></script>
+	<script src="js/connection.js"></script>
+	<script src="js/client.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -30,6 +77,8 @@
 		var geometry = new THREE.CubeGeometry(1,3,1); 
 		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player.png")}); 
 		var cube = new THREE.Mesh(geometry, material);
+		var PI_2 = Math.PI / 2;
+		var fullScreenMode = 0;
 		
 		
 		//-------------------------------------------------------
@@ -94,9 +143,28 @@
 			angle     : 0
 		}
 		
+		var moveState2 = {
+			moving    : false,
+			front     : false,
+			Backwards : false,
+			left      : false,
+			right     : false,
+			sprinting : false,
+			speed     : .25,
+			angle     : 0
+		}
+		
 		/*
 			detect movements
 		*/
+			var controls,time = Date.now();
+
+			var objects = [];
+
+
+			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+
+		
 		function move(){
 		
 		var speed = moveState.speed;
@@ -127,11 +195,29 @@
 		}
 		
 		
-		document.addEventListener('keypress', function(e)
-		{
-			
-		}, false);
 		
+			
+		document.addEventListener("fullscreenchange", function () {
+			//console.log(document.fullscreen);
+			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
+			var element = document.body;
+			element.requestPointerLock();
+		}, false);
+		document.addEventListener("mozfullscreenchange", function () {
+			console.log(document.mozFullScreen);
+			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
+			var element = document.body;
+			element.requestPointerLock();
+		}, false);
+		document.addEventListener("webkitfullscreenchange", function () {
+			console.log(document.webkitIsFullScreen);
+			console.log("yo this used webkitfullscreen");
+			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
+			var element = document.body;
+			element.webkitRequestPointerLock();
+		}, false);	
+			
+			
 		/*
 		check for key pressed from the player
 		*/
@@ -139,11 +225,11 @@
 		document.addEventListener('keydown', function(e){
 			if(e.shiftKey == 1)
 			{
-				moveState.sprinting = true;
+				moveState2.sprinting = true;
 			}
 			if(e.shiftKey == 0)
 			{
-				moveState.sprinting = false;
+				moveState2.sprinting = false;
 			}
 			
 			//'m' key
@@ -152,96 +238,128 @@
 				audio.pause();
 			}
 			
-			//if( !/65|68|83|87/.test(e.keyCode)){ return }
+			switch(e.keyCode)
+			{
+				case 77: audio.pause();
+						 break;
+				default:
+			}
+			
+			if( !/65|68|83|87/.test(e.keyCode)){ 
+			
+			send(moveState2);
+			return; }
 			
 			switch(e.keyCode)
 			{
 				case 87:		//W
-					moveState.front     = true;
-					moveState.Backwards = false;
+					moveState2.front     = true;
+					moveState2.Backwards = false;
 					break;
 				case 65:		//A
-					moveState.left  = true;
-					moveState.right = false;
+					moveState2.left  = true;
+					moveState2.right = false;
 					break;
 				case 83:		//S
-					moveState.Backwards = true;
-					moveState.front     = false;
+					moveState2.Backwards = true;
+					moveState2.front     = false;
 					break;
 				case 68:		//D
-					moveState.right = true;
-					moveState.left  = false;
+					moveState2.right = true;
+					moveState2.left  = false;
 					break;
 				default:
-					console.log(e.keyCode);
+					//console.log(e.keyCode);
 			}
 			
-			if(!moveState.moving){
-				moveState.moving = true;
+			if(!moveState2.moving){
+				moveState2.moving = true;
 				move();
 				timer = setInterval( function(){
 					move();
 				}, 1000 / 60);
 			}
+			send(moveState2);
+			
 		}, false);
 		
 		document.addEventListener('keyup', function(e){
 			if(e.shiftKey == 1)
 			{
-				moveState.sprinting = false;
+				moveState2.sprinting = false;
 			}
 			if(e.shiftKey == 0)
 			{
-				moveState.sprinting = false;
+				moveState2.sprinting = false;
+			}
+			switch(e.keyCode)
+			{
+				case 70: 		//F
+					toggleFullScreen();
+					//handleFullscreen();
+					break;
+				default:
+					//console.log(e.keyCode);
 			}
 			
-			
-			//if( !/65|68|83|87/.test(e.keyCode)){ return }
+			if( !/65|68|83|87/.test(e.keyCode)){ send(moveState2);return; }
 			
 			switch(e.keyCode)
 			{
 				case 87:		//W
-					moveState.front = false;
+					moveState2.front = false;
 					break;
 				case 65:		//A
-					moveState.left = false;
+					moveState2.left = false;
 					break;
 				case 83:		//S
-					moveState.Backwards = false;
+					moveState2.Backwards = false;
 					break;
 				case 68:		//D
-					moveState.right = false;
+					moveState2.right = false;
 					break;
-				case 70: 		//F
-					toggleFullScreen();
-					break;
-				default:
-					console.log(e.keyCode);
+				
 			}
 			
 			
-			if(!moveState.front && !moveState.Backwards && !moveState.left && !moveState.right){
-				moveState.moving = false;
+			if(!moveState2.front && !moveState2.Backwards && !moveState2.left && !moveState2.right){
+				moveState2.moving = false;
 				clearInterval(timer);
 			}
+			send(moveState2);
 		}, false);
+		
+		
+		
+		connection.onmessage = function(buf) {
+		messages[messages.length] = buf.data;
+		//console.log("Client received: " + buf.data);
+		//console.log(moveState);
+		//console.log(buf.data);
+		moveState = JSON.parse(buf.data);
+		//console.log(moveState);
+		//var something = JSON.parse(buf.data);
+		
+		
+		};
 		
 	/**
 	 * camera rotation
 	 */
-	var getElementPosition = function(element) 
-	{
-		var top = left = 0;
-		do {
-			top  += element.offsetTop  || 0;
-			left += element.offsetLeft || 0;
-			element =  element.offsetParent;
+		var getElementPosition = function(element) 
+		{
+			var top = left = 0;
+			do {
+				top  += element.offsetTop  || 0;
+				left += element.offsetLeft || 0;
+				element =  element.offsetParent;
+			}
+			while (element);
+			return {top: top, left: left};
 		}
-		while (element);
-		return {top: top, left: left};
-	}
 	
 		var pointer = {x : 0, y : 0};
+		var pointer2 = {x : 0, y : 0};
 		document.addEventListener('mousemove', function(e){
 			var mouseX = e.clientX - getElementPosition(renderer.domElement).left;
 			var mouseY = e.clientY - getElementPosition(renderer.domElement).top;
@@ -249,18 +367,21 @@
 			pointer.y = - (mouseY / renderer.domElement.height) * 2 + 1;
 		}, false);
 		
-		var oldPointerX = oldPointerY = 0;
+		var oldPointerX = oldPointerY = oldPointer2X = oldPointer2Y = 0;
 		document.addEventListener('mousedown', rotateStart, false);
+		
 		function rotateStart() {
 			oldPointerX = pointer.x;
 			oldPointerY = pointer.y;
 			renderer.domElement.addEventListener('mousemove', rotate, false);
 			renderer.domElement.addEventListener('mouseup', rotateStop, false);
 		}
+		
 		function rotateStop() {
 			renderer.domElement.removeEventListener('mousemove', rotate, false);
 			renderer.domElement.removeEventListener('mouseup', rotateStop, false);
 		}
+		
 		function rotate(){
 			player.camera.x += (oldPointerX - pointer.x) * player.camera.speed;
 			player.camera.y += (oldPointerY - pointer.y) * player.camera.speed;
@@ -270,12 +391,47 @@
 			if(player.camera.y < -150){
 				player.camera.y = -150;
 			}
-			
+			//console.log(player.camera.x, player.camera.y);
 			moveState.angle = (player.camera.x / 2) % 360;
 			
 			oldPointerX = pointer.x;
 			oldPointerY = pointer.y;
 		}
+		
+		function rotate2(){
+			player.camera.x -= (pointer2.x) * player.camera.speed;
+			player.camera.y += (pointer2.y) * player.camera.speed;
+			//console.log(player.camera.x, player.camera.y);
+			
+			if(player.camera.y > 150){
+				player.camera.y = 150;
+			}
+			if(player.camera.y < -150){
+				player.camera.y = -150;
+			}
+			moveState.angle = (player.camera.x / 2) % 360;
+		}
+		
+		document.addEventListener( 'mousemove', function(event){
+		//only do the on mouse move stuff if it is in fullscreen mode
+		if(fullScreenMode == 1)
+			{
+				var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+				var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+				pointer2.y = movementY * 0.0004;
+				pointer2.x = movementX * 0.0004;
+
+				//console.log(pointer2.y, pointer2.x);
+				
+				
+				rotate2();
+				
+				oldPointer2X = pointer.x;
+				oldPointer2Y = pointer.y;
+			}
+		}
+		,false );
 		
 		/*
 		update the states of the game
@@ -302,7 +458,6 @@
 			camera.position.y = player.position.y + player.camera.distance * Math.sin( (player.camera.y) * Math.PI / 360 );
 			camera.position.y += 1;
 		
-			
 			//console.log(camera.position.z)
 			
 			var vec3 = new THREE.Vector3( player.position.x,  player.position.y,  player.position.z)
@@ -382,11 +537,19 @@
 		{
 			if( THREEx.FullScreen.activated() )
 			{
-			  THREEx.FullScreen.cancel();
+				THREEx.FullScreen.cancel();
 			}
 			else
 			{
-			  THREEx.FullScreen.request();
+				var element = document.body;
+						// Ask the browser to lock the pointer
+					element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+				
+
+				element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+				element.requestFullscreen();
 			}
 		}
 		
@@ -398,15 +561,27 @@
 			initTextures();
 			initSounds();
 			audio.pause();
-		
+			//controls.disable;
+			
+			//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 			renderer.setSize(window.innerWidth, window.innerHeight); 
 			document.body.appendChild(renderer.domElement); 
 			document.body.appendChild( stats.domElement );
+			window.addEventListener( 'resize', onWindowResize, false );
 			scene.add(cube); 
 
 			
 			render(); 
 		}
+		
+		function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
 		
 
 		main();
