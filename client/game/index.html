@@ -65,6 +65,7 @@
 	<script src="js/PointerLockControls.js"></script>
 	<script src="js/connection.js"></script>
 	<script src="js/client.js"></script>
+    <script src="js/player.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -79,6 +80,7 @@
 		var cube = new THREE.Mesh(geometry, material);
 		var PI_2 = Math.PI / 2;
 		var fullScreenMode = 0;
+        var myPlayer = new Player();
 		
 		
 		//-------------------------------------------------------
@@ -99,34 +101,6 @@
 		//-------------------------------------------------------
 		//FUNCTIONS AND SHIET
 		//-------------------------------------------------------
-		
-		
-		/*
-			container for the player
-		*/
-		var player = {
-		model : 
-			{		
-				objects : new THREE.Object3D(),
-				motion  : 'stand',
-				state   : 'stand'
-			},
-		position: 
-			{
-				x : 0,
-				y : 0,
-				z : 0,
-				direction : 0
-			},
-		camera :
-			{
-				speed : 300,
-				distance : 5,
-				x : 0,
-				y : 0,
-				z : 0
-			}
-		}
 		
 		
 		/**
@@ -168,8 +142,8 @@
 		function move(){
 		
 		var speed = moveState.speed;
-		//if(player.model.state === 'crstand'){speed *= .5;}
-		//if(player.model.state === 'freeze') {speed *= 0;}
+		//if(myPlayer.model.state === 'crstand'){speed *= .5;}
+		//if(myPlayer.model.state === 'freeze') {speed *= 0;}
 		if(moveState.sprinting == true)
 		{
 			moveState.speed = .75;
@@ -189,9 +163,9 @@
 		if(!moveState.front && !moveState.left && !moveState.Backwards &&  moveState.right){direction += 270}
 		if( moveState.front && !moveState.left && !moveState.Backwards &&  moveState.right){direction += 315}
 		
-		player.model.objects.rotation.y = direction * Math.PI / 180;
-		player.position.x -= Math.sin(direction * Math.PI / 180) * speed;
-		player.position.z -= Math.cos(direction * Math.PI / 180) * speed;
+		myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
+		myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
+		myPlayer.position.z -= Math.cos(direction * Math.PI / 180) * speed;
 		}
 		
 		
@@ -333,7 +307,11 @@
 		
 		connection.onmessage = function(buf) {
 		messages[messages.length] = buf.data;
-		console.log("Client received: " + buf.data);
+        if (buf.data.substring(0,3) == "ID:") {
+            myPlayer.id = parseInt(buf.data.substring(3));
+            console.log("Client recieved id: " + myPlayer.id);
+        }
+		//console.log("Client received: " + buf.data);
 		//console.log(moveState);
 		//console.log(buf.data);
 		moveState = JSON.parse(buf.data);
@@ -383,33 +361,33 @@
 		}
 		
 		function rotate(){
-			player.camera.x += (oldPointerX - pointer.x) * player.camera.speed;
-			player.camera.y += (oldPointerY - pointer.y) * player.camera.speed;
-			if(player.camera.y > 150){
-				player.camera.y = 150;
+			myPlayer.camera.x += (oldPointerX - pointer.x) * player.camera.speed;
+			myPlayer.camera.y += (oldPointerY - pointer.y) * player.camera.speed;
+			if(myPlayer.camera.y > 150){
+				myPlayer.camera.y = 150;
 			}
-			if(player.camera.y < -150){
-				player.camera.y = -150;
+			if(myPlayer.camera.y < -150){
+				myPlayer.camera.y = -150;
 			}
-			//console.log(player.camera.x, player.camera.y);
-			moveState.angle = (player.camera.x / 2) % 360;
+			//console.log(myPlayer.camera.x, myPlayer.camera.y);
+			moveState.angle = (myPlayer.camera.x / 2) % 360;
 			
 			oldPointerX = pointer.x;
 			oldPointerY = pointer.y;
 		}
 		
 		function rotate2(){
-			player.camera.x -= (pointer2.x) * player.camera.speed;
-			player.camera.y += (pointer2.y) * player.camera.speed;
-			//console.log(player.camera.x, player.camera.y);
+			myPlayer.camera.x -= (pointer2.x) * myPlayer.camera.speed;
+			myPlayer.camera.y += (pointer2.y) * myPlayer.camera.speed;
+			//console.log(myPlayer.camera.x, myPlayer.camera.y);
 			
-			if(player.camera.y > 150){
-				player.camera.y = 150;
+			if(myPlayer.camera.y > 150){
+				myPlayer.camera.y = 150;
 			}
-			if(player.camera.y < -150){
-				player.camera.y = -150;
+			if(myPlayer.camera.y < -150){
+				myPlayer.camera.y = -150;
 			}
-			moveState.angle = (player.camera.x / 2) % 360;
+			moveState.angle = (myPlayer.camera.x / 2) % 360;
 		}
 		
 		document.addEventListener( 'mousemove', function(event){
@@ -443,24 +421,24 @@
 		function update()
 		{
 
-			cube.position = clone(player.position);
+			cube.position = clone(myPlayer.position);
 			cube.position.y = -2;
 			
-			player.model.objects.position.x = player.position.x;
-			player.model.objects.position.y = player.position.y;
-			player.model.objects.position.z = player.position.z;
+			myPlayer.model.objects.position.x = myPlayer.position.x;
+			myPlayer.model.objects.position.y = myPlayer.position.y;
+			myPlayer.model.objects.position.z = myPlayer.position.z;
 			
 			// camera rotate x
-			camera.position.x = player.position.x + player.camera.distance * Math.sin( (player.camera.x) * Math.PI / 360 );
-			camera.position.z = player.position.z + player.camera.distance * Math.cos( (player.camera.x) * Math.PI / 360 );
+			camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
+			camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
 			
 			//camera rotate y
-			camera.position.y = player.position.y + player.camera.distance * Math.sin( (player.camera.y) * Math.PI / 360 );
+			camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
 			camera.position.y += 1;
 		
 			//console.log(camera.position.z)
 			
-			var vec3 = new THREE.Vector3( player.position.x,  player.position.y,  player.position.z)
+			var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 			camera.lookAt( vec3 );
 		}
 		
