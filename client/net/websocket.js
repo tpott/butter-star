@@ -25,7 +25,7 @@ if(localStorage.getItem('butterIPAddr') == null) {
  * @type {WebSocket}
  * TODO: Use port from config file, not hardcode
  */
-var connection = new WebSocket('ws://' + ipAddr + ':8080');
+var connection = new WebSocket('ws://' + ipAddr + ':8081');
 connection.binaryType = 'arraybuffer';
 
 /**

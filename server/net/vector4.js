@@ -9,7 +9,7 @@
  * Constructs an Vector4 object with zeroed out typed array.
  * @constructor
  */
-exports.Vector4 = function() {
+var Vector4 = function() {
   /**
    * The length of our vector.
    * @type {number}
@@ -39,7 +39,7 @@ exports.Vector4 = function() {
  * The setter that also converts an ArrayBuffer to our typed buffer.
  * @param {ArrayBuffer} buffer The buffer holding our data to convert.
  */
-exports.Vector4.prototype.set = function (buffer) {
+Vector4.prototype.set = function (buffer) {
   // Change representation of our array
 	var intarr = new Uint8Array(this.arrayBuffer);
 
@@ -48,3 +48,5 @@ exports.Vector4.prototype.set = function (buffer) {
 		intarr[i] = buffer[i];
 	}
 };
+
+exports.Vector4 = Vector4;

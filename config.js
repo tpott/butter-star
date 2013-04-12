@@ -11,7 +11,7 @@ var dir = 'jfang';
 
 // Base path for all files
 var basePath = "/var/www/html/cse125/2013/cse125g3/";
-var progPath = basePath + dir;
+var progPath = basePath + dir + '/butter-star';
 
 exports.paths = {
   clientWS: progPath + '/client/net/websocket.js',
