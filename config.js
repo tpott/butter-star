@@ -4,10 +4,12 @@
  * @author Jennifer Fang
  */
 
-// TODO: Set up everyone's own server instances and ports?
-
 // TODO: Get programmer's directory for relative pathname.
 var dir = 'jfang';
+
+// TODO: Set up everyone's own server instances and ports?
+exports.wsPort = 8081;
+exports.httpPort = 8078;
 
 // Base path for all files
 var basePath = "/var/www/html/cse125/2013/cse125g3/";

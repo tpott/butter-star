@@ -5,6 +5,9 @@
  * @author Trevor Pottinger
  */
 
+// Get external modules
+var config = require('./../../config.js');
+
 /**
  * IP address of the server we are connecting to.
  * @type {string}
@@ -23,9 +26,8 @@ if(localStorage.getItem('butterIPAddr') == null) {
 /**
  * The WebSocket connection to the server.
  * @type {WebSocket}
- * TODO: Use port from config file, not hardcode
  */
-var connection = new WebSocket('ws://' + ipAddr + ':8081');
+var connection = new WebSocket('ws://' + ipAddr + ':' + config.wsPort);
 connection.binaryType = 'arraybuffer';
 
 /**

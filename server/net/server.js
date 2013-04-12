@@ -7,14 +7,14 @@
  */
 
 // Get external functions.
+var config = require('./../../config.js');
 var WebSocketServer = require('ws').Server;
 var http = require('http');
 
-// The connection ports. TODO: move to config file
-var wsPort = 8081, httpPort = 8078;
 // TODO: get path from config file
 var EventBuffer =
     require('./eventBuffer.js').EventBuffer;
+var Socket = require('./socket.js').Socket;
 
 /**
  * Creates an instance of a Server. Does not start up a server, only
@@ -26,7 +26,6 @@ var Server = function() {
    * List of the open connections.
    * @type {Array.<wsWebSocket>}
    */
-  // RENAME this.socketList
   this.sockets = [];
 
   /**
@@ -55,6 +54,7 @@ var Server = function() {
 Server.prototype.start = function() {
 	http.createServer(function (request, response) {
 		switch (request.url) {
+      // TODO don't hardcode?
 			case "/websocket.js":
 				response.writeHead(200, {'Content-Type': 'text/javascript'});
 				response.write(simpleJS);
@@ -65,63 +65,32 @@ Server.prototype.start = function() {
 				break;
 		}
 		response.end();
-	}).listen(httpPort, '0.0.0.0'); // allow connections from all IP addresses
+	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
   
-  this.wsServer = new WebSocketServer({port:wsPort});
+  this.wsServer = new WebSocketServer({port:config.wsPort});
   this.eventBuffer = new EventBuffer();
-  
-  /**
-   * Use these local variables in socket callback functions because
-   * can't use "this" to refer to Server from inside those functions.
-   */
-  // REMOVE THESE
-  var socketList = this.sockets;
-  var eventsHandler =  this.eventBuffer;
+
+  var socketList = this.sockets; // to use inside handler
 
   /**
    * Handles the server opening a connection.
    * @param {wsWebSocket} wsSocket WebSocket opening a connection with.
    */
-  this.wsServer.on('connection', function(socket) { // RENAME wsSocket
-	    console.log('New connection created! %d', socketList.length);
-      // var socket = new Socket(wsSocket);
-      // var socketList.push(socket);
-      socket.binaryType = 'arraybuffer';
+  this.wsServer.on('connection', function(wsSocket) {
+      console.log('New connection created! %d', socketList.length);
+      var socket = new Socket(wsSocket);
       socketList.push(socket);
 
-      /**
-       * Handles the socket receiving a message from the client.
-       * @param {string | ArrayBuffer} data The data from the client.
-       */
-      socket.on('message', function(data) {
-          console.log("Message from client: " + data);
-          eventsHandler.addEvent(data);
-      });
-      // socket.onmessage(this.eventBuffer);
-
-      /**
-       * Handles the socket closing or disconnecting. Removes socket
-       * from socketList.
-       */
-      socket.on('close', function () {
-          console.log("socket dc");
-          // TODO: do we want to do this in a way that doesn't leave
-          // holes in our list?
-          for (var i = 0; i < socketList.length; i++) {
-              if (socket === socketList[i]) {
-                  socketList[i] = null;
-              }
-          }
-      });
-      // socket.onclose(this.socketList);
+      socket.onmessage(this.eventBuffer);
+      socket.onclose(socketList);
   });
 }
 
 /**
  * Return the list of sockets connected to the Server.
+ * @return {Array.<wsWebSocket>} The list of sockets.
  */
 Server.prototype.getSockets = function() {
-    // RENAME this.socketList
     return this.sockets;
 }
 
@@ -135,7 +104,6 @@ Server.prototype.updateAllClients = function() {
 	// connection.socket.send(connection.getStateTypedArray(), {binary: true});
   // TODO send typed arrays
   var s = this.eventBuffer.flushAsString();
-  // RENAME this.socketList
   for (var i = 0; i < this.sockets.length; i++) {
       if (s != "") {
           if (this.sockets[i] != null) {
