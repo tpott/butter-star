@@ -15,6 +15,7 @@ function send(data) {
 	if (connection.readyState != 1) {
 		console.log("Connection is not ready yet!");
 	} else {
+        console.log(myPlayer.position);        
 		connection.send(JSON.stringify(data));
 		//moveState = JSON.parse(JSON.stringify(data));
 	}

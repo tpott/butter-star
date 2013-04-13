@@ -35,7 +35,7 @@ Socket.prototype.getSocket = function() {
  */
 Socket.prototype.onmessage = function(eventBuffer) {
   this.socket.on('message', function(data) {
-    console.log("Message from client: " + data);
+      console.log("received: " + data);
     eventBuffer.addEvent(data);
   });
 };

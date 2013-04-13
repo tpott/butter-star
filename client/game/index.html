@@ -66,6 +66,7 @@
 	<script src="js/connection.js"></script>
 	<script src="js/client.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/PlayerEvent.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -106,28 +107,7 @@
 		/**
 		 * struct for movements
 		 */
-		var moveState = {
-			moving    : false,
-			front     : false,
-			Backwards : false,
-			left      : false,
-			right     : false,
-			sprinting : false,
-			speed     : .25,
-			angle     : 0
-		}
-		
-		var moveState2 = {
-			moving    : false,
-			front     : false,
-			Backwards : false,
-			left      : false,
-			right     : false,
-			sprinting : false,
-			speed     : .25,
-			angle     : 0
-		}
-		
+		var playerEvent = new PlayerEvent();
 		/*
 			detect movements
 		*/
@@ -141,27 +121,27 @@
 		
 		function move(){
 		
-		var speed = moveState.speed;
+		var speed = playerEvent.speed;
 		//if(myPlayer.model.state === 'crstand'){speed *= .5;}
 		//if(myPlayer.model.state === 'freeze') {speed *= 0;}
-		if(moveState.sprinting == true)
+		if(playerEvent.sprinting == true)
 		{
-			moveState.speed = .75;
+			playerEvent.speed = .75;
 		}
 		else
 		{
-			moveState.speed = .25;
+			playerEvent.speed = .25;
 		}
 		
-		var direction = moveState.angle;
-		if( moveState.front && !moveState.left && !moveState.Backwards && !moveState.right){direction +=   0}
-		if( moveState.front &&  moveState.left && !moveState.Backwards && !moveState.right){direction +=  45}
-		if(!moveState.front &&  moveState.left && !moveState.Backwards && !moveState.right){direction +=  90}
-		if(!moveState.front &&  moveState.left &&  moveState.Backwards && !moveState.right){direction += 135}
-		if(!moveState.front && !moveState.left &&  moveState.Backwards && !moveState.right){direction += 180}
-		if(!moveState.front && !moveState.left &&  moveState.Backwards &&  moveState.right){direction += 225}
-		if(!moveState.front && !moveState.left && !moveState.Backwards &&  moveState.right){direction += 270}
-		if( moveState.front && !moveState.left && !moveState.Backwards &&  moveState.right){direction += 315}
+		var direction = playerEvent.angle;
+		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=   0}
+		if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
+		if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
+		if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
+		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
+		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
+		if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
+		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
 		
 		myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
 		myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
@@ -199,11 +179,11 @@
 		document.addEventListener('keydown', function(e){
 			if(e.shiftKey == 1)
 			{
-				moveState2.sprinting = true;
+				playerEvent.sprinting = true;
 			}
 			if(e.shiftKey == 0)
 			{
-				moveState2.sprinting = false;
+				playerEvent.sprinting = false;
 			}
 			
 			//'m' key
@@ -221,50 +201,50 @@
 			
 			if( !/65|68|83|87/.test(e.keyCode)){ 
 			
-			send(moveState2);
+			send(playerEvent);
 			return; }
 			
 			switch(e.keyCode)
 			{
 				case 87:		//W
-					moveState2.front     = true;
-					moveState2.Backwards = false;
+					playerEvent.front     = true;
+					playerEvent.Backwards = false;
 					break;
 				case 65:		//A
-					moveState2.left  = true;
-					moveState2.right = false;
+					playerEvent.left  = true;
+					playerEvent.right = false;
 					break;
 				case 83:		//S
-					moveState2.Backwards = true;
-					moveState2.front     = false;
+					playerEvent.Backwards = true;
+					playerEvent.front     = false;
 					break;
 				case 68:		//D
-					moveState2.right = true;
-					moveState2.left  = false;
+					playerEvent.right = true;
+					playerEvent.left  = false;
 					break;
 				default:
 					//console.log(e.keyCode);
 			}
 			
-			if(!moveState2.moving){
-				moveState2.moving = true;
-				move();
-				timer = setInterval( function(){
+			if(!playerEvent.moving){
+				playerEvent.moving = true;
+				//move();
+				/*timer = setInterval( function(){
 					move();
-				}, 1000 / 60);
+				}, 1000 / 60);*/
 			}
-			send(moveState2);
+			send(playerEvent);
 			
 		}, false);
 		
 		document.addEventListener('keyup', function(e){
 			if(e.shiftKey == 1)
 			{
-				moveState2.sprinting = false;
+				playerEvent.sprinting = false;
 			}
 			if(e.shiftKey == 0)
 			{
-				moveState2.sprinting = false;
+				playerEvent.sprinting = false;
 			}
 			switch(e.keyCode)
 			{
@@ -276,31 +256,31 @@
 					//console.log(e.keyCode);
 			}
 			
-			if( !/65|68|83|87/.test(e.keyCode)){ send(moveState2);return; }
+			if( !/65|68|83|87/.test(e.keyCode)){ send(playerEvent);return; }
 			
 			switch(e.keyCode)
 			{
 				case 87:		//W
-					moveState2.front = false;
+					playerEvent.front = false;
 					break;
 				case 65:		//A
-					moveState2.left = false;
+					playerEvent.left = false;
 					break;
 				case 83:		//S
-					moveState2.Backwards = false;
+					playerEvent.Backwards = false;
 					break;
 				case 68:		//D
-					moveState2.right = false;
+					playerEvent.right = false;
 					break;
 				
 			}
 			
 			
-			if(!moveState2.front && !moveState2.Backwards && !moveState2.left && !moveState2.right){
-				moveState2.moving = false;
+			if(!playerEvent.front && !playerEvent.Backwards && !playerEvent.left && !playerEvent.right){
+				playerEvent.moving = false;
 				clearInterval(timer);
 			}
-			send(moveState2);
+			send(playerEvent);
 		}, false);
 		
 		
@@ -309,13 +289,16 @@
 		messages[messages.length] = buf.data;
         if (buf.data.substring(0,3) == "ID:") {
             myPlayer.id = parseInt(buf.data.substring(3));
+            playerEvent.playerID = myPlayer.id;
             console.log("Client recieved id: " + myPlayer.id);
+            return;
         }
 		//console.log("Client received: " + buf.data);
-		//console.log(moveState);
+		//console.log(playerEvent);
 		//console.log(buf.data);
-		moveState = JSON.parse(buf.data);
-		//console.log(moveState);
+		garbage = JSON.parse(buf.data);
+		myPlayer.position = garbage.players[0].position;
+        //console.log(playerEvent);
 		//var something = JSON.parse(buf.data);
 		
 		
@@ -370,7 +353,7 @@
 				myPlayer.camera.y = -150;
 			}
 			//console.log(myPlayer.camera.x, myPlayer.camera.y);
-			moveState.angle = (myPlayer.camera.x / 2) % 360;
+			playerEvent.angle = (myPlayer.camera.x / 2) % 360;
 			
 			oldPointerX = pointer.x;
 			oldPointerY = pointer.y;
@@ -387,7 +370,7 @@
 			if(myPlayer.camera.y < -150){
 				myPlayer.camera.y = -150;
 			}
-			moveState.angle = (myPlayer.camera.x / 2) % 360;
+			playerEvent.angle = (myPlayer.camera.x / 2) % 360;
 		}
 		
 		document.addEventListener( 'mousemove', function(event){

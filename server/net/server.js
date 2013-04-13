@@ -120,15 +120,12 @@ Server.prototype.updateAllClients = function() {
   
   this.worldState.processEvents(this.eventBuffer);
 
-  var s = this.eventBuffer.flushAsString();
-  for (var i = 0; i < this.sockets.length; i++) {
-      if (s != "") {
-          if (this.sockets[i] != null) {
-              console.log("sending " + JSON.stringify(this.worldState));
-              this.sockets[i].send(JSON.stringify(this.worldState));
-          }
-      }
-  }
+    for (var i = 0; i < this.sockets.length; i++) {
+        if (this.sockets[i] != null) {
+            //console.log("sending " + JSON.stringify(this.worldState));
+            this.sockets[i].send(JSON.stringify(this.worldState));
+        }
+    }
 }
 
 exports.Server = Server;
