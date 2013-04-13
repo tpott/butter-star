@@ -17,6 +17,7 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.geometry = new THREE.Geometry();
 	this.angle = 0.0;
 	this.vCenterCircle = new THREE.Vector3();
+	this.length = 150;
 
 	//shader attributes and uniforms
 	this.uniforms = {};
@@ -110,15 +111,78 @@ Vacuum.prototype.addSceneData = function(scene)
 	scene.add(this.particleSystem);
 };
 
+function isNegative(number)
+{
+	if(number < 0.0)
+		return true;
+	return false;
+}
+
+function createOrthoVector(positive,negative)
+{
+	var vector = [1,2,3];
+
+	if(negative.length % 2 != 0)
+	{
+		if(negative.length == 1)
+		{
+			vector[negative[0].type] = -1/negative[0].value;
+			vector[positive[0].type] = 1/positive[0].value;
+			vector[positive[1].type] = 0.0;
+		}
+		else
+		{
+			vector[positive[0].type] = 0.0;
+			vector[negative[0].type] = -1/negative[0].value;
+			vector[negative[1].type] = 1/negative[0].value;
+		}
+	}
+	else
+	{
+		if(negative.length == 2)
+		{
+			vector[positive[0].type] = 1/positive[0].value;
+			vector[negative[0].type] = -1/negative[0].value;
+			vector[negative[1].type] = 0.0;
+		}
+		else
+		{
+			vector[positive[0].type] = -1/positive[0].value;
+			vector[positive[1].type] = 1/positive[1].value;
+			vector[positive[2].type] = 0.0;
+		}
+	}
+
+	return new THREE.Vector3(vector[0],vector[1],vector[2]);
+}
 
 function findOrthoVector(vector)
 {
 	var x,y,z,rand;
 	rand = Math.random();
+	var magnitude = Math.sqrt((vX*vX) + (vY*vY) + (vZ*vZ));
+	var vX = vector.x;var vY = vector.y;var vZ = vector.z;
+
+	var positive = [];
+	var negative = [];
+	var objX = {type: 0, value: vX};
+	var objY = {type: 1, value: vY};
+	var objZ = {type: 2, value: vZ};
+
+	isNegative(vX) ? negative.push(objX) : positive.push(objX);
+	isNegative(vY) ? negative.push(objY) : positive.push(objY);
+	isNegative(vZ) ? negative.push(objZ) : positive.push(objZ);
+
+
+	//if all three values are non zero
+	if(vX != 0.0 && vY != 0.0 && vZ != 0.0)
+ 	{
+ 		return createOrthoVector(positive,negative);
+	}
 
 	vector.x == 0 ? x = rand: x = 0.0;
 	vector.y == 0 ? y = rand: y = 0.0;
-	vector.z == 0 ? z = rand: y = 0.0;
+	vector.z == 0 ? z = rand: z = 0.0;
 	return new THREE.Vector3(x,y,z).normalize();
 }
 
@@ -141,7 +205,7 @@ Vacuum.prototype.generateRandomAttributeValues = function()
 	for(i=0;i<this.numParticles;i++)
 	{
 		this.attributes.particleWeight.value[i] = Math.random();
-		this.attributes.displacement.value[i] = Math.random() * 30 - 30;
+		this.attributes.displacement.value[i] = Math.random() * 15 - 15;
 	}
 };
 /*
@@ -174,14 +238,14 @@ Vacuum.prototype.generateParticleValues = function()
 
 Vacuum.prototype.generateAllParticles = function()
 {
-	var radius = 50;
+	var radius = 40;
 	var counter = 0;
 	var angle = 0.0;
 	for(i=0; i < this.numParticles; i++)
 	{
 		if(counter >= 10)
 		{
-			radius = 50;
+			radius = 40;
 			counter = 0;
 		}
 		radius -= 2;
@@ -199,9 +263,8 @@ Vacuum.prototype.generateAllParticles = function()
 Vacuum.prototype.init = function()
 {
 	//calcualte the position of the center of the circle
-	var projection = this.direction.clone();
-	this.vCenterCircle = this.vCenterCircle.addVectors(this.base, projection.multiplyScalar(100.0));
-
+	var projection = this.direction.clone().normalize();
+	this.vCenterCircle = this.vCenterCircle.addVectors(this.base, projection.multiplyScalar(this.length));
 
 	//initialize values for matricies
 	this.translationMatrix.makeTranslation(this.base.x,this.base.y,this.base.z);
@@ -238,6 +301,7 @@ Vacuum.prototype.init = function()
 
 	//create particle system
 	this.particleSystem = new THREE.ParticleSystem(this.geometry, this.shaderMaterial);
+	this.direction.normalize();
 
 };
 
@@ -245,8 +309,8 @@ Vacuum.prototype.init = function()
 *@this {Vacuum}
 **/
 Vacuum.prototype.update = function()
-{
-	this.uniforms.rotation.value.makeRotationAxis(this.direction.normalize(),this.angle);
+{	
+	this.uniforms.rotation.value.makeRotationAxis(this.direction,this.angle);
 	this.uniforms.weight.value += 0.005;
 
 	if(this.uniforms.weight.value >= 1.0)
@@ -254,5 +318,5 @@ Vacuum.prototype.update = function()
 
 	this.uniforms.weight.needsUpdate = true;
 
-	this.angle += 0.1;
+	this.angle += 0.15;
 };

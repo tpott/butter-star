@@ -45,7 +45,7 @@
 		//calculate new position using linear interpolation with given weights
 		vec3 calcFinalPos()
 		{
-			vec3 displace = position + normals * vec3(displacement);
+			vec3 displace = position;// + normals * vec3(displacement);
 			float newWeight = particleWeight + weight;
 			if(newWeight >=1.0)
 				newWeight -= 1.0;
@@ -105,7 +105,7 @@
 			{
 				//create container for canvas
 				var testCenter = new THREE.Vector3(0,-75,0);
-				var testDirection = new THREE.Vector3(0,1,0);
+				var testDirection = new THREE.Vector3(1,0,0);
 				var nParticles = 5000;
 				vacuum = new Vacuum(testCenter,testDirection,nParticles,document.getElementById('vertexShader').textContent, document.getElementById('fragmentShader').textContent);
 				
