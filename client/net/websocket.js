@@ -5,14 +5,11 @@
  * @author Trevor Pottinger
  */
 
-// Get external modules
-var config = require('./../../config.js');
-
 /**
  * IP address of the server we are connecting to.
  * @type {string}
  */
-var ipAddr;
+var ipAddr, port;
 
 // Prompt for server IP address if not already set
 // TODO: Set to pisa.ucsd.edu when no longer testing
@@ -23,11 +20,20 @@ if(localStorage.getItem('butterIPAddr') == null) {
   ipAddr = localStorage['butterIPAddr'];
 }
 
+if(localStorage.getItem('butterPort') == null) {
+  port = prompt("Port of server:", "8080");
+  localStorage.setItem('butterPort', port)
+} else {
+  port = localStorage['butterPort'];
+}
+console.log('ipaddr %s', ipAddr);
+console.log('port %s', port);
+
 /**
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':' + config.wsPort);
+var connection = new WebSocket('ws://' + ipAddr + ':' + port);
 connection.binaryType = 'arraybuffer';
 
 /**
