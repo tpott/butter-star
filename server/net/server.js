@@ -15,6 +15,7 @@ var http = require('http');
 var EventBuffer =
     require('./eventBuffer.js').EventBuffer;
 var Socket = require('./socket.js').Socket;
+var WorldState = require('../logic/worldstate.js').WorldState;
 
 /**
  * Creates an instance of a Server. Does not start up a server, only
@@ -46,6 +47,8 @@ var Server = function() {
    * @type {EventBuffer}
    */
   this.eventBuffer = null; 
+  
+  this.worldState = null;
 }
 
 /**
@@ -69,10 +72,12 @@ Server.prototype.start = function() {
   
   this.wsServer = new WebSocketServer({port:config.wsPort});
   this.eventBuffer = new EventBuffer();
+  this.worldState = new WorldState();
 
   // Variables to use in handler
   var socketList = this.sockets;
   var serverEventBuffer = this.eventBuffer;
+  var worldstate = this.worldState;
 
   /**
    * Handles the server opening a connection.
@@ -90,6 +95,8 @@ Server.prototype.start = function() {
       // Tell the client its unique ID
       var socketID = socketList.length - 1;
       socket.send("ID:" + socketID);
+
+      worldstate.addNewPlayer(socketID);
   });
 }
 
@@ -110,14 +117,15 @@ Server.prototype.getSockets = function() {
 Server.prototype.updateAllClients = function() {
 	// connection.socket.send(connection.getStateTypedArray(), {binary: true});
   // TODO send typed arrays
-  var s = this.eventBuffer.flushAsString();
-  for (var i = 0; i < this.sockets.length; i++) {
-      if (s != "") {
-          if (this.sockets[i] != null) {
-              this.sockets[i].send(s);
-          }
-      }
-  }
+  
+  this.worldState.processEvents(this.eventBuffer);
+
+    for (var i = 0; i < this.sockets.length; i++) {
+        if (this.sockets[i] != null) {
+            //console.log("sending " + JSON.stringify(this.worldState));
+            this.sockets[i].send(JSON.stringify(this.worldState));
+        }
+    }
 }
 
 exports.Server = Server;

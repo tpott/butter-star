@@ -17,18 +17,60 @@ var BUFFER_SIZE = 1000000000; // 1 billion bytes
  * @constructor
  */
 var EventBuffer = function() {
-  this.buffer = new Buffer(BUFFER_SIZE);
-  this.nextEmptyIndex = 0;
+    this.buffer = new Buffer(BUFFER_SIZE);
+    this.buffPosWrite = 0;
+    this.buffPosRead = 0;
+    this.dataLengths = [];
+    this.dataIndexRead = 0;
 };
+
+/**
+ *  Effectively a dequeue function grabbing the first element in the buffer.
+ *  Expected use must be to pop all of the events off in a loop until no
+ *  events are left, otherwise the EventBuffer will be left in an 
+ *  inconsistent state.
+ */
+EventBuffer.prototype.getNextEvent = function() {
+    if (this.dataIndexRead != 0 && this.dataLengths.length != 0){
+    //console.log(this.dataIndexRead + " " + this.dataLengths.length);
+    //console.log(this.dataIndexRead >= this.dataLengths.length);
+    }
+    if (this.dataIndexRead >= this.dataLengths.length) {
+        // Reset everything because we have read all of the events from the
+        // buffer
+        this.dataIndexRead = 0;
+        this.dataLengths = [];
+        this.buffPosWrite = 0;
+        this.buffPosRead = 0;
+        return "";
+    } else {
+        var retString = this.buffer.toString(0,
+            this.buffPosRead,
+            this.buffPosRead+this.dataLengths[this.dataIndexRead]
+        );
+
+    
+        //console.log(this.buffer.toString(0, 0, this.buffPosWrite));
+
+        //console.log("dataIndexRead: " + this.dataIndexRead);
+        //console.log("dataLengths: " + this.dataLengths + " length: " + this.dataLengths.length);
+        //console.log("buffPosWrite: " + this.buffPosWrite);
+        //console.log("buffPosRead: " + this.buffPosRead);
+        this.buffPosRead += this.dataLengths[this.dataIndexRead];
+        this.dataIndexRead++;
+        return retString;
+    }
+}
+
 
 /**
  * Adds an event to the end of the events buffer.
  * @param {string | ArrayBuffer} data The data from a client.
  */
 EventBuffer.prototype.addEvent = function(data) {
-  this.buffer.write(data, this.nextEmptyIndex, data.length, 0);
-  this.nextEmptyIndex += data.length; // TODO if not strings, want bytes
-  var retVal = this.buffer.toString(0, 0, this.nextEmptyIndex);
+  this.dataLengths.push(data.length);
+  this.buffer.write(data, this.buffPosWrite, data.length, 0);
+  this.buffPosWrite += data.length;
 };
 
 /**
@@ -36,8 +78,13 @@ EventBuffer.prototype.addEvent = function(data) {
  * @return {string} the buffer of events as a string.
  */
 EventBuffer.prototype.flushAsString = function() {
-    var retVal = this.buffer.toString(0, 0, this.nextEmptyIndex);
-    this.nextEmptyIndex = 0; // resets buffer for writing new events
+    var retVal = this.buffer.toString(0, 0, this.buffPosWrite);
+    // Reset everything because we have read all of the events from the
+    // buffer
+    this.dataIndexRead = 0;
+    this.dataLengths = [];
+    this.buffPosWrite = 0;
+    this.buffPosRead = 0;
     return retVal;
 };
 
