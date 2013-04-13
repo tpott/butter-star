@@ -1,5 +1,3 @@
-
-
 var Player = function() {
     this.id = null;
     this.position = 

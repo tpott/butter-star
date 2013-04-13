@@ -16,7 +16,7 @@ var EventBuffer =
     require('./eventBuffer.js').EventBuffer;
 var Socket = require('./socket.js').Socket;
 var WorldState = require('../logic/worldstate.js').WorldState;
-
+var gamelogic = require('../logic/gamelogic.js');
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
@@ -118,7 +118,7 @@ Server.prototype.updateAllClients = function() {
 	// connection.socket.send(connection.getStateTypedArray(), {binary: true});
   // TODO send typed arrays
   
-  this.worldState.processEvents(this.eventBuffer);
+    gamelogic.processEvents(this.eventBuffer, this.worldState);
 
     for (var i = 0; i < this.sockets.length; i++) {
         if (this.sockets[i] != null) {
