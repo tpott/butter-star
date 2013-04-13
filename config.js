@@ -5,14 +5,16 @@
  */
 
 // TODO: Get programmer's directory for relative pathname.
-var dir = 'jfang';
+var dir = '../../..'; // 'jfang'; tpott
 
 // TODO: Set up everyone's own server instances and ports?
 exports.wsPort = 8081;
 exports.httpPort = 8078;
 
 // Base path for all files
-var basePath = "/var/www/html/cse125/2013/cse125g3/";
+// TODO this is the source of issues on changing servers
+//var basePath = "/var/www/html/cse125/2013/cse125g3/";
+var basePath = "./"; // FIX tpott
 var progPath = basePath + dir + '/butter-star';
 
 exports.paths = {
