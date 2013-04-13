@@ -42,13 +42,13 @@ function move(playerEvent, myPlayer){
 		
 	var direction = playerEvent.angle;
 	if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=   0}
-	if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
-	if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
-	if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
-	if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
-	if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
-	if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
-	if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
+	else if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
+	else if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
+	else if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
+	else if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
+	else if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
+	else if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
+	else if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
 		
 	//myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
 	myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
