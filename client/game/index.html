@@ -229,9 +229,10 @@
 			if(!playerEvent.moving){
 				playerEvent.moving = true;
 				//move();
-				/*timer = setInterval( function(){
-					move();
-				}, 1000 / 60);*/
+				timer = setInterval( function(){
+					//move();
+					send(playerEvent);
+				}, 1000 / 60);
 			}
 			send(playerEvent);
 			

@@ -24,6 +24,26 @@ var EventBuffer = function() {
     this.dataIndexRead = 0;
 };
 
+EventBuffer.prototype.getEventsAsArray = function() {
+    var retVal = [];
+    playerEventString = this.getNextEvent();
+    do { 
+        if (playerEventString == "") {
+            return retVal;
+        } else {
+            var playerEvent = JSON.parse(playerEventString);
+            if (playerEvent.playerID == -1) {
+                //console.log("Someone fucked shit up");
+            } else {
+                retVal.push(playerEvent);
+            }
+        }
+        playerEventString = this.getNextEvent();
+    } while (playerEventString != "");
+
+    return retVal;
+}
+
 /**
  *  Effectively a dequeue function grabbing the first element in the buffer.
  *  Expected use must be to pop all of the events off in a loop until no
