@@ -66,6 +66,7 @@ Server.prototype.start = function() {
 		}
 		response.end();
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
+	console.log('HTTP server running at %d.', config.httpPort);
   
   this.wsServer = new WebSocketServer({port:config.wsPort});
   this.eventBuffer = new EventBuffer();

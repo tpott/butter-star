@@ -5,7 +5,7 @@
  */
 
 // TODO: Get programmer's directory for relative pathname.
-var dir = '../../..'; // 'jfang'; tpott
+var dir = '../..'; // 'jfang'; tpott
 
 // TODO: Set up everyone's own server instances and ports?
 exports.wsPort = 8081;
@@ -19,6 +19,7 @@ var progPath = basePath + dir + '/butter-star';
 
 exports.paths = {
   clientWS: progPath + '/client/net/websocket.js',
+  clientJS: progPath + '/client/net/websocket.js',
   html: progPath + '/client/index.html',
   server: progPath + '/server/net/server.js',
   vector4: progPath + '/server/net/vector4.js',
