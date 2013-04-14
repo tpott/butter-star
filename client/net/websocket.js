@@ -6,8 +6,6 @@
  */
 
 // Get external modules
-var config = require('./../../config.js');
-
 /**
  * IP address of the server we are connecting to.
  * @type {string}
@@ -59,3 +57,8 @@ connection.onerror = function(error) {
 connection.onclose = function() {
   console.log("Connection closed!");
 };
+
+connection.onmessage = function(buf) {
+    messageReceive(buf);
+};
+
