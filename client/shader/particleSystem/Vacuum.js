@@ -106,7 +106,7 @@ Vacuum.prototype.setShaderMaterial = function()
 *@this {Vacuum}
 *@param {scene} scene object to bind particle Systems to
 **/
-Vacuum.prototype.addSceneData = function(scene)
+Vacuum.prototype.addToScene = function(scene)
 {
 	scene.add(this.particleSystem);
 };
