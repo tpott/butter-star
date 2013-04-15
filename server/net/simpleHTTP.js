@@ -6,7 +6,9 @@
 // Get external functions.
 var config = require('./../../config.js');
 var http = require('http'),
-	 fs = require('fs');
+	 fs = require('fs'),
+	 util = require('util'),
+	 events = require('events');
 
 // simpleHTML links to the simpleJS file
 var simpleHTML = "", simpleJS = "";
@@ -43,5 +45,7 @@ var Server = function() {
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
 }
+
+util.inherits(Server, events.EventEmitter);
 
 exports.HTTP = Server;
