@@ -3,7 +3,7 @@ var Player = function() {
     this.position = 
     {
         x : 0,
-        y : 0,
+        y : -2,
         z : 0,
         direction : 0
     };

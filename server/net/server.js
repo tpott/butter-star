@@ -90,10 +90,11 @@ Server.prototype.start = function() {
 
       
       socket.onmessage(serverEventBuffer);
-      socket.onclose(socketList);
+      
       
       // Tell the client its unique ID
       var socketID = socketList.length - 1;
+      socket.onclose(socketList, worldstate, socketID);
       socket.send("ID:" + socketID);
 
       worldstate.addNewPlayer(socketID);
@@ -126,6 +127,8 @@ Server.prototype.updateAllClients = function() {
             this.sockets[i].send(JSON.stringify(this.worldState));
         }
     }
+    //after sending the data, flush the delta lists
+    this.worldState.flushDeltas();
 }
 
 exports.Server = Server;
