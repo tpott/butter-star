@@ -48,4 +48,4 @@ var Server = function() {
 
 util.inherits(Server, events.EventEmitter);
 
-exports.HTTP = Server;
+module.exports = Server;

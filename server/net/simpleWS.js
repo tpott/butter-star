@@ -5,10 +5,17 @@
  */
 
 // Get external functions.
-var WebSocketServer = require('ws').Server;
 var config = require('./../../config.js');
+var WebSocketServer = require('ws').Server;
+var util = require('util');
 
 // TODO include game logic
+
+function Server() {
+	this.allConnections = [];
+}
+
+util.inherits(Server, WebSocketServer);
 
 var server = new WebSocketServer({port: config.wsPort}),
 	 allConnections = [];
@@ -46,4 +53,4 @@ server.on('connection', function(socket) {
 	});
 });
 
-exports.wsServer = server;
+module.exports = Server;
