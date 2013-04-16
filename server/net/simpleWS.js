@@ -13,36 +13,42 @@ var util = require('util');
 
 function Server() {
 	this.allConnections = [];
+	Server.super_.call(this, {port: config.wsPort});
+
+	// necessary according to http://tinyurl.com/c4g8hpt
+	/*var javascriptIsStupid = function(obj) {
+		return function(socket) {
+			obj._newSocket(socket);
+		};
+	};*/
+
+	this.on('connection', this._newSocket);
+
+	console.log('WebSockets listening on port %d.', config.wsPort);
 }
 
+// FUCK THIS LINE, it needs to be before method definitions
 util.inherits(Server, WebSocketServer);
-
-var server = new WebSocketServer({port: config.wsPort}),
-	 allConnections = [];
-
-console.log('WebSockets listening on port %d.', config.wsPort);
-
-/**
- * This is meant to handle any of the input from the client
- */
-function isEvent(anything) {
-	return false;
-}
 
 /**
  * Connects a given socket to an existing game
  */
-function gameFor(socket) {
+Server.prototype.gameFor = function(socket) {
 	function defaultGame() {
 	}
 	defaultGame.prototype.processEvent = function(event) {}
 	return new defaultGame();
-}
+};
 
-server.on('connection', function(socket) {
+Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
-	var game = gameFor(socket);
-	allConnections[allConnections.length] = socket;
+
+	var game = this.gameFor(socket);
+
+	// save this socket for all possible connections
+	this.allConnections[this.allConnections.length] = socket;
+
+	// the socket must process client input
 	socket.on('message', function(anything) {
 		if (isEvent(anything)) {
 			game.processEvent(anything);
@@ -51,6 +57,14 @@ server.on('connection', function(socket) {
 			console.log('Received unknown input: %s', anything);
 		}
 	});
-});
+};
+
+/**
+ * This is meant to handle any of the input from the client
+ */
+function isEvent(anything) {
+	return false;
+}
+
 
 module.exports = Server;

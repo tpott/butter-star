@@ -21,6 +21,7 @@ function Game(httpServer) {
 
 	// this line is quite nifty
 	httpServer.emit('newgame', this['game-id']);
+	this.players = [];
 }
 
 
