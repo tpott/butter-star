@@ -89,7 +89,6 @@ WorldState.prototype.updateWorldState = function(worldState){
     {
         if(this.players[i] != null)
         {
-
             this.players[i].cube.position = worldState.players[i].position;
         }
     }

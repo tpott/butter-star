@@ -19,7 +19,7 @@ module.exports = {
 };
 
 function doMove(playerEvent, worldstate) {
-    console.log(playerEvent.moving);
+    //console.log(playerEvent.moving);
     if (playerEvent.moving == true) {
         move(
             playerEvent, 
@@ -54,6 +54,6 @@ function move(playerEvent, myPlayer){
 	myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
 	myPlayer.position.z -= Math.cos(direction * Math.PI / 180) * speed;
 
-    console.log("AFTER MOVE: " + myPlayer);
+    //console.log("AFTER MOVE: " + myPlayer);
 }
 
