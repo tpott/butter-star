@@ -79,20 +79,15 @@
 		var renderer = new THREE.WebGLRenderer(); 
 		var geometry = new THREE.CubeGeometry(1,3,1); 
 		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player.png")});
-		var material2 = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player2.png")});
-		var material3 = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player3.png")}); 
 
-        var cubes = [];
-        var clientPlayers = []; // what client needs of players
 		var cube = new THREE.Mesh(geometry, material);
-		var cube2 = new THREE.Mesh(geometry, material2);
-		var cube3 = new THREE.Mesh(geometry, material3);
 		var PI_2 = Math.PI / 2;
 		var fullScreenMode = 0;
         var myPlayer = new Player();
-        var player2 = new Player();
-		var player3 = new Player();
-		var myWorldState = null;
+		var myWorldState = new WorldState();
+
+		//only init the worldState once at the very beginning;
+		var initWorldState = true;
 		//-------------------------------------------------------
 		//HELPER FUNCTIONS AND SHIET
 		//-------------------------------------------------------
@@ -295,7 +290,7 @@
 		}, false);
 		
 		
-		
+		var serverWorldState;
 		connection.onmessage = function(buf) {
             messages[messages.length] = buf.data;
             if (buf.data.substring(0,3) == "ID:") {
@@ -307,17 +302,21 @@
             //console.log("Client received: " + buf.data);
             //console.log(playerEvent);
             //console.log(buf.data);
-            var myWorldState = new WorldState(JSON.parse(buf.data).players);
-            var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-            myPlayer.position = tempPlayer.position;
+            serverWorldState = JSON.parse(buf.data);
             
-            var otherPlayers = myWorldState.getOtherPlayers(myPlayer.id);
-            if (otherPlayers != null && otherPlayers.length != 0) {
-                player2.position = otherPlayers.pop().position;
+            if(initWorldState)
+            {
+            	console.log("initializing the world state for the first time");
+            	myWorldState.addOtherPlayers(serverWorldState.players);
+            	initWorldState = false;
+            	return;
             }
-            if (otherPlayers != null && otherPlayers.length != 0) {
-                player3.position = otherPlayers.pop().position;
-            } 
+
+            myWorldState.updateWorldState(serverWorldState);
+
+            var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+            myPlayer.position = tempPlayer.cube.position;
+            
             //console.log(playerEvent);
             //var something = JSON.parse(buf.data);
 		};
@@ -444,12 +443,6 @@
 			cube.position = clone(myPlayer.position);
 			cube.position.y = -2;
 
-			cube2.position = clone(player2.position);
-			cube2.position.y = -2;
-			
-			cube3.position = clone(player3.position);
-			cube3.position.y = -2;
-
 			myPlayer.model.objects.position.x = myPlayer.position.x;
 			myPlayer.model.objects.position.y = myPlayer.position.y;
 			myPlayer.model.objects.position.z = myPlayer.position.z;
@@ -571,8 +564,6 @@
 			document.body.appendChild( stats.domElement );
 			window.addEventListener( 'resize', onWindowResize, false );
 			scene.add(cube);
-			scene.add(cube2);
-			scene.add(cube3);
 			
 			render(); 
 		}

@@ -44,17 +44,23 @@ Socket.prototype.onmessage = function(eventBuffer) {
  * Close the connection and remove socket from given socket list.
  * @param {Array.<wsWebSocket>} socketList The list of sockets.
  */
-Socket.prototype.onclose = function(socketList) {
+Socket.prototype.onclose = function(socketList, worldState, socketID) {
   var removalSocket = this;
   this.socket.on('close', function() {
     console.log("Connection to client closed.");
 
+
+    console.log("removed a player: " + socketID + " on the server");
+        worldState.removePlayer(socketID);
     //TODO do this in a way that doesn't leave holes in list
     for (var i = 0; i < socketList.length; i++) {
       if (removalSocket === socketList[i]) {
+        
         socketList[i] = null;
       }
     }
+
+
   });
 };
 
