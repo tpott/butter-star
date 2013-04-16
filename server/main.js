@@ -12,19 +12,13 @@ var http = require('./net/simpleHTTP.js'),
 var fs = require('fs'),
 	 crypto = require('crypto');
 
-var games = [];
-
 var httpServer = new http();
-var wsServer = new ws();
+var wsServer = new ws(httpServer);
 
-httpServer.on('newgame', function(gameid) {
-	console.log('New game: %s', gameid);
-});
 //wsServer.on('connection', wsServer._newSocket);
 
-// TODO where to put this?
-games.push(new Game(httpServer));
+// TODO when user selects 'New Game' 
+console.log('New game: %s', httpServer.newGame());
 
-module.exports.games = games;
 module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;

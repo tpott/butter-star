@@ -5,6 +5,7 @@
 
 // Get external functions.
 var config = require('./../../config.js');
+var Game = require('./../objects/game.js');
 var http = require('http'),
 	 fs = require('fs'),
 	 util = require('util'),
@@ -44,8 +45,18 @@ var Server = function() {
 		response.end();
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
+
+	this.games = {};
 }
 
-util.inherits(Server, events.EventEmitter);
+Server.prototype.newGame = function() {
+	var g = new Game();
+	this.games[g.id] = g;
+	return g.id;
+}
+
+Server.prototype.removeGame = function(id) {
+	return delete this.games[id];
+}
 
 module.exports = Server;
