@@ -11,10 +11,10 @@ var TICKS = 60; // 60 "ticks" per second!
 
 function Game() {
 	// generate a random url
-	var sha = crypto.createHash('sha256');
-	sha.update('' + Date.now(), 'utf8');
-	this.id = sha.digest('base64')
-		.slice(0,10)			// make shorter
+	var sha = crypto.createHash('sha256'); // hash factory
+	sha.update('' + Date.now(), 'utf8'); // feed the factory
+	this.id = sha.digest('base64') // read and lock factory
+		.slice(0,4)			// make shorter
 		.replace(/\+/g, "-")	// replace non-url friendly characters
 		.replace(/\//g, "_")
 		.replace(/=/g, ",");
@@ -32,6 +32,10 @@ Game.prototype.render = function() {}
 Game.prototype.gameTick = function() {
 	this.update();
 	this.render(); // this gets sent to each of the clients
+}
+
+Game.prototype.addPlayer = function(player) {
+	return this.players.push(player);
 }
 
 // TODO this should be run per game

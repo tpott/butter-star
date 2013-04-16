@@ -6,21 +6,17 @@
 
 // Get external functions.
 var config = require('./../../config.js');
+var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
 var util = require('util');
 
 // TODO include game logic
 
-function Server() {
-	this.allConnections = [];
+function Server(httpServer) {
 	Server.super_.call(this, {port: config.wsPort});
 
-	// necessary according to http://tinyurl.com/c4g8hpt
-	/*var javascriptIsStupid = function(obj) {
-		return function(socket) {
-			obj._newSocket(socket);
-		};
-	};*/
+	this.allSockets = [];
+	this.httpServer = httpServer;
 
 	this.on('connection', this._newSocket);
 
@@ -34,19 +30,20 @@ util.inherits(Server, WebSocketServer);
  * Connects a given socket to an existing game
  */
 Server.prototype.gameFor = function(socket) {
-	function defaultGame() {
+	// HACK return first game 
+	for (var key in this.httpServer.games) {
+		return this.httpServer.games[key];
 	}
-	defaultGame.prototype.processEvent = function(event) {}
-	return new defaultGame();
 };
 
 Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
 	var game = this.gameFor(socket);
+	var player = new Player(socket, game);
 
 	// save this socket for all possible connections
-	this.allConnections[this.allConnections.length] = socket;
+	this.allSockets[this.allSockets.length] = socket;
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
