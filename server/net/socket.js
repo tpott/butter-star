@@ -33,11 +33,10 @@ Socket.prototype.getSocket = function() {
  * Data from client can be either string or ArrayBuffer.
  * @param {InputBuffer} eventBuffer The event buffer.
  */
-Socket.prototype.onmessage = function(eventBuffer) {
-  this.socket.on('message', function(data) {
-      //console.log("received: " + data);
-    eventBuffer.addEvent(data);
-  });
+Socket.prototype.onmessage = function(worldstate, gamelogic) {
+    this.socket.on('message', function(anything) {
+        gamelogic.processEvent(worldstate, anything);
+    });
 };
 
 /**
@@ -45,23 +44,18 @@ Socket.prototype.onmessage = function(eventBuffer) {
  * @param {Array.<wsWebSocket>} socketList The list of sockets.
  */
 Socket.prototype.onclose = function(socketList, worldState, socketID) {
-  var removalSocket = this;
-  this.socket.on('close', function() {
-    console.log("Connection to client closed.");
-
-
-    console.log("removed a player: " + socketID + " on the server");
+    var removalSocket = this;
+    this.socket.on('close', function() {
+        console.log("Connection to client closed.");
         worldState.removePlayer(socketID);
-    //TODO do this in a way that doesn't leave holes in list
-    for (var i = 0; i < socketList.length; i++) {
-      if (removalSocket === socketList[i]) {
-        
-        socketList[i] = null;
-      }
-    }
-
-
-  });
+        console.log("removed a player: " + socketID + " on the server");
+        //TODO do this in a way that doesn't leave holes in list
+        for (var i = 0; i < socketList.length; i++) {
+            if (removalSocket === socketList[i]) {
+                socketList[i] = null;
+            }
+        }
+    });
 };
 
 /**
@@ -69,7 +63,7 @@ Socket.prototype.onclose = function(socketList, worldState, socketID) {
  * @param {string | ArrayBuffer} msg The message to send to the client.
  */
 Socket.prototype.send = function(msg) {
-  this.socket.send(msg);
+    this.socket.send(msg);
 };
 
 exports.Socket = Socket;

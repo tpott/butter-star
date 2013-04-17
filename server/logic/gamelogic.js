@@ -1,22 +1,10 @@
 /* A file to contain all of dat dere nasty game logic. */
-
-module.exports = {
-    processEvents: function(eventBuffer, worldstate) {
-        /* process all of the player events from the buffer, and then
-        update the players array based on which event etc */
-        var playerEvents = eventBuffer.getEventsAsArray();    
-    
-        for (var i = 0; i < playerEvents.length; i++) {
-            var playerEvent = playerEvents[i];                
-            //console.log(worldstate.getPlayerObject(playerEvent.playerID));
-            //console.log(worldstate.players);
-            //console.log(playerEvent);
-        
-            // TODO add future actions that will happen on events here
-            doMove(playerEvent, worldstate);
-        }
-    } 
+var processEvent = function(worldstate, message) {
+    var playerEvent = JSON.parse(message);
+    // if playerEvent is of type PlayerEvent && the event is a move event
+    doMove(playerEvent, worldstate);
 };
+module.exports.processEvent = processEvent;
 
 function doMove(playerEvent, worldstate) {
     //console.log(playerEvent.moving);
@@ -53,7 +41,5 @@ function move(playerEvent, myPlayer){
 	//myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
 	myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
 	myPlayer.position.z -= Math.cos(direction * Math.PI / 180) * speed;
-
-    //console.log("AFTER MOVE: " + myPlayer);
 }
 
