@@ -53,8 +53,9 @@ Server.prototype._newSocket = function(socket) {
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
-		if (isEvent(anything)) {
-			player.processEvent(anything);
+		var obj = JSON.parse(anything);
+		if (isEvent(obj)) {
+			player.move(obj);
 		}
 		else {
 			console.log('Received unknown input: %s', anything);
@@ -71,7 +72,7 @@ Server.prototype._newSocket = function(socket) {
  * This is meant to handle any of the input from the client
  */
 function isEvent(anything) {
-	return false;
+	return true;
 }
 
 

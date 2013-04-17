@@ -16,16 +16,18 @@ function Game() {
 	this.world = null;
 	this.players = {};
 	this.critters = [];
+
+	setTimeout(gameTick(this), 1000 / TICKS);
 }
 
-
 // TODO link with game logic
-Game.prototype.update = function() {}
-Game.prototype.render = function() {}
+Game.prototype.update = function() {
+	// TODO ????
+	// i think this is done asyncronously... 
+}
 
-Game.prototype.gameTick = function() {
-	this.update();
-	this.render(); // this gets sent to each of the clients
+Game.prototype.render = function() {
+	// TODO push to clients!
 }
 
 Game.prototype.addPlayer = function(player) {
@@ -37,7 +39,12 @@ Game.prototype.removePlayer = function(player) {
 	return delete this.players[player.id];
 }
 
-// TODO this should be run per game
-//setTimeout(gameTick, 1000 / ticksPerSec);
+// FUCK javascript
+gameTick = function(game) {
+	return function() {
+		game.update();
+		game.render(); // this gets sent to each of the clients
+	}
+}
 
 module.exports = Game;
