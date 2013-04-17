@@ -7,8 +7,7 @@
 
 var config = require('./../config.js');
 var http = require('./net/fullHTTP.js'), 
-	 ws = require('./net/simpleWS.js'), 
-	 Game = require('./objects/game.js');
+	 ws = require('./net/simpleWS.js');
 var fs = require('fs'),
 	 crypto = require('crypto');
 

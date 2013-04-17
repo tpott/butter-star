@@ -5,22 +5,16 @@
  * @author Trevor Pottinger
  */
 
-var crypto = require('crypto');
+var randomID = require('./random.js');
 
 var TICKS = 60; // 60 "ticks" per second!
 
 function Game() {
 	// generate a random url
-	var sha = crypto.createHash('sha256'); // hash factory
-	sha.update('' + Date.now(), 'utf8'); // feed the factory
-	this.id = sha.digest('base64') // read and lock factory
-		.slice(0,4)			// make shorter
-		.replace(/\+/g, "-")	// replace non-url friendly characters
-		.replace(/\//g, "_")
-		.replace(/=/g, ",");
+	this.id = randomID(4);
 
 	this.world = null;
-	this.players = [];
+	this.players = {};
 	this.critters = [];
 }
 
@@ -35,7 +29,12 @@ Game.prototype.gameTick = function() {
 }
 
 Game.prototype.addPlayer = function(player) {
-	return this.players.push(player);
+	this.players[player];
+	return player.id;
+}
+
+Game.prototype.removePlayer = function(player) {
+	return delete this.players[player.id];
 }
 
 // TODO this should be run per game

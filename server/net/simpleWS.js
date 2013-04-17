@@ -18,9 +18,13 @@ function Server(httpServer) {
 	this.allSockets = [];
 	this.httpServer = httpServer;
 
+	this.on('listening', function() {
+		console.log('WebSockets listening on port %d.', config.wsPort);
+	});
 	this.on('connection', this._newSocket);
-
-	console.log('WebSockets listening on port %d.', config.wsPort);
+	this.on('error', function(err) {
+		console.log('ERROR: %s', err);
+	});
 }
 
 // FUCK THIS LINE, it needs to be before method definitions
@@ -41,18 +45,25 @@ Server.prototype._newSocket = function(socket) {
 
 	var game = this.gameFor(socket);
 	var player = new Player(socket, game);
+	game.addPlayer(player);
 
+	// TODO should we remove these once the socket is closed?
 	// save this socket for all possible connections
 	this.allSockets[this.allSockets.length] = socket;
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
 		if (isEvent(anything)) {
-			game.processEvent(anything);
+			player.processEvent(anything);
 		}
 		else {
 			console.log('Received unknown input: %s', anything);
 		}
+	});
+
+	socket.on('close', function() {
+		console.log('Player left the game');
+		game.removePlayer(player);
 	});
 };
 
