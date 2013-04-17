@@ -6,7 +6,7 @@
  */
 
 var config = require('./../config.js');
-var http = require('./net/simpleHTTP.js'), 
+var http = require('./net/fullHTTP.js'), 
 	 ws = require('./net/simpleWS.js'), 
 	 Game = require('./objects/game.js');
 var fs = require('fs'),

@@ -11,7 +11,7 @@ var http = require('http'),
 	 util = require('util'),
 	 events = require('events');
 
-var thinhGame = "../../client/game/";
+var thinhGame = "../client/game/";
 
 // [ Request path, file contents, repository path, content type ]
 var files = [
@@ -27,7 +27,7 @@ var files = [
 	['THREEx.FullScreen.js', "", thinhGame + 'js/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", thinhGame + 'js/player.js', 'text/javascript'],
 	['worldstate.js', "", thinhGame + 'js/worldstate.js', 'text/javascript'],
-	['connection.js', "", '../../client/net/connection.js', 'text/javascript'],
+	['connection.js', "", '../client/net/connection.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
@@ -99,10 +99,20 @@ var files = [
 	['vinew.png', "", thinhGame + 'data/forest/vinew.png', 'image/png'],
 	['wall.png', "", thinhGame + 'data/forest/wall.png', 'image/png'],
 	['walls.png', "", thinhGame + 'data/forest/walls.png', 'image/png'],
-	['water.png', "", thinhGame + 'data/forest/water.png', 'image/png'],
+	['water.png', "", thinhGame + 'data/forest/water.png', 'image/png']
 
 ];
 
+// [ Request path, file contents, repository path, content type ]
+for (var i = 0; i < files.length; i++) {
+	var setFile = function(file) {
+		return function(err, data) {
+			if (err) throw err;
+			file[1] = data;
+		};
+	};
+	fs.readFile(files[i][2], 'utf8', setFile(files[i]));
+}
 
 
 /**
@@ -112,6 +122,18 @@ var files = [
  */
 var Server = function() {
 	http.createServer(function (request, response) {
+		var found = false;
+		for (var i = 0; i < files.length; i++) {
+			if (request.url == '/' + files[i][0]) {
+				response.writeHead(200, {'Content-Type': files[i][3]});
+				response.write(files[i][1]);
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			response.writeHead(404, {});
+		}
 		response.end();
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
@@ -129,4 +151,5 @@ Server.prototype.removeGame = function(id) {
 	return delete this.games[id];
 }
 
+module.exports.files = files;
 module.exports = Server;
