@@ -18,6 +18,57 @@
 		<script src="stats.min.js"></script>
 		<script src= "Vacuum.js"></script>
 		<script src= "Poof.js"></script>
+		<script src= "Border.js"></script>
+		<script type="x-shader/x-vertex" id="bvertexShader">
+		attribute float alpha;
+		attribute float isParticleLit;
+		attribute float weightValue;
+		uniform vec3 normals;
+		varying float vWeight;
+
+		varying float vAlpha;
+
+		vec3 lerp(vec3 start, vec3 end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+
+		vec3 animate(float isLit)
+		{
+			vec3 destination = position + normals * vec3(10.0);
+			return lerp(position,destination,weightValue);
+		}
+
+		void main()
+		{	
+			vAlpha = alpha;
+			vWeight = weightValue;
+			if(isParticleLit == 1.0)
+				gl_PointSize = 2.0;//isParticleLit;
+			//gl_PointSize = 1.0;
+			//vec4 newPosition = vec4(animate(isParticleLit),1.0);
+			vec4 newPosition = vec4(position + vec3(0,isParticleLit,0), 1);
+			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
+		}
+		</script>
+
+		<script type="x-shader/x-fragment" id="bfragmentShader">
+		//-----------------------BEGIN FRAGMENT SHADER -------------------------
+		uniform vec3 color;
+		uniform float weight;
+		varying float vWeight;
+
+		float lerp(float start, float end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+		
+		void main()
+		{
+			gl_FragColor = vec4(color,lerp(1.0,0.0,vWeight));
+		}
+		//-----------------------END FRAGMENT SHADER ------------------
+		</script>
 		<script type="x-shader/x-vertex" id="pvertexShader">
 		//-----------------------BEGIN VERTEX SHADER -------------------------
 		uniform float weight;
@@ -162,10 +213,15 @@
 				poof = new Poof(testCenter,testDirection,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
 				var poof2 = new Poof(testCenter2,testDirection2,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
 				var poof3 = new Poof(testCenter3,testDirection3,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
-				effects.push(vacuum);
+
+				var border = new Border(testCenter,testDirection,document.getElementById('bvertexShader').textContent, document.getElementById('bfragmentShader').textContent);
+
+				//add to effects vector
+				//effects.push(vacuum);
 				effects.push(poof);
 				effects.push(poof2);
 				effects.push(poof3);
+				effects.push(border);
 
 				var container = document.createElement('div');
 				document.body.appendChild(container);
@@ -187,16 +243,13 @@
 				stats.domElement.style.left = '5px';
 				container.appendChild( stats.domElement );
 
-				vacuum.addToScene(scene);
+				//add to scene
+				//vacuum.addToScene(scene);
 				poof.addToScene(scene);
 				poof2.addToScene(scene);
 				poof3.addToScene(scene);
-				//console.log(scene.children);
+				border.addToScene(scene);
 
-				//console.log(scene.children);
-
-
-				//camera.lookAt(scene.position);
 			}
 			
 		
@@ -216,8 +269,10 @@
 			var counter = 0;
 			function update()
 			{
+				
 				for(x=0;x<effects.length;x++)
 					effects[x].update();
+				
 			}
 		</script>
 	</body>
