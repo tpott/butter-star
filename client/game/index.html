@@ -293,24 +293,25 @@
 		connection.onmessage = function(buf) {
             messages[messages.length] = buf.data;
             if (buf.data.substring(0,3) == "ID:") {
-                myPlayer.id = buf.data.substring(3);
+             myPlayer.id = buf.data.substring(3);
                 playerEvent.playerID = myPlayer.id;
                 console.log("Client recieved id: " + myPlayer.id);
                 return;
             }
-            //console.log("Client received: " + buf.data);
-            //console.log(playerEvent);
-            //console.log(buf.data);
-            var pEvent = JSON.parse(buf.data);
+				
+            var state = JSON.parse(buf.data);
 
-            myWorldState.updateWorldState(pEvent);
+				if ('remove' in state) {
+					// state['remove' is the id of the removed player
+					myWorldState.removePlayer(state['remove']);
+				}
+				else {
+					// state is an array of players
+					myWorldState.updateWorldState(state);
+				}
 
-				// redundant
-            //var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-            //myPlayer.position = tempPlayer.cube.position;
-            
-            //console.log(pEvent);
-            //var something = JSON.parse(buf.data);
+            var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+            myPlayer.position = tempPlayer.cube.position;
 		};
 		
 	/**
@@ -441,7 +442,7 @@
 		{ 
 			requestAnimationFrame(render); 
 			
-			//update();
+			update();
 			renderer.render(scene, camera); 
 			stats.update();
 		}

@@ -42,6 +42,7 @@ Player.prototype.toObj = function() {
 }
 
 Player.prototype.move = function (playerEvent) {
+	//console.log('Player moving');
 	var speed = playerEvent.speed;
 	if(playerEvent.sprinting == true) {
 		playerEvent.speed = 0.75;
@@ -65,7 +66,7 @@ Player.prototype.move = function (playerEvent) {
 	this.position.z -= Math.cos(direction * Math.PI / 180) * speed;
 
 	//this.socket.send(JSON.stringify(this.toObj()));
-	this.game.sendUpdateFrom(this);
+	//this.game.sendUpdateFrom(this);
 }
 
 

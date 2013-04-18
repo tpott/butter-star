@@ -22,8 +22,20 @@ function Game() {
 
 // TODO link with game logic
 Game.prototype.update = function() {
-	// TODO ????
-	// i think this is done asyncronously... 
+	//console.log('update');
+	// create "worldstate"
+	var allPlayers = [];
+	for (var id in this.players) {
+		var player = {};
+		player.id = id;
+		player.type = 'player';
+		player.position = this.players[id].position;
+		player.direction = this.players[id].direction;
+		allPlayers.push(player);
+	}
+	for (var id in this.players) {
+		this.players[id].socket.send(JSON.stringify(allPlayers));
+	}
 }
 
 Game.prototype.render = function() {
@@ -47,6 +59,13 @@ Game.prototype.addPlayer = function(player) {
 }
 
 Game.prototype.removePlayer = function(player) {
+	var removedPlayer = {'remove': player.id};
+	for (var id in this.players) {
+		if (id == player.id) {
+			continue;
+		}
+		this.players[id].socket.send(JSON.stringify(removedPlayer));
+	}
 	return delete this.players[player.id];
 }
 
@@ -55,6 +74,7 @@ gameTick = function(game) {
 	return function() {
 		game.update();
 		game.render(); // this gets sent to each of the clients
+		setTimeout(gameTick(game), 1000 / TICKS);
 	}
 }
 
