@@ -128,13 +128,17 @@ var Server = function() {
 				response.writeHead(200, {'Content-Type': files[i][3]});
 				response.write(files[i][1]);
 				found = true;
+
+				if (files[i][3] == 'image/png') response.end('binary');
+				else response.end();
+
 				break;
 			}
 		}
 		if (!found) {
 			response.writeHead(404, {});
+			response.end();
 		}
-		response.end();
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
 

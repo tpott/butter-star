@@ -28,8 +28,17 @@ function Player(socket, game) {
 		z : 0
 	};
 
-	console.log('New player: %d', this.id);
+	console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
+	console.log(JSON.stringify(this.toObj()));
+}
+
+Player.prototype.toObj = function() {
+	var obj = {};
+	obj.id = this.id;
+	obj.position = this.position;
+	obj.camera = this.camera;
+	return obj;
 }
 
 Player.prototype.move = function (playerEvent) {
@@ -55,7 +64,7 @@ Player.prototype.move = function (playerEvent) {
 	this.position.x -= Math.sin(direction * Math.PI / 180) * speed;
 	this.position.z -= Math.cos(direction * Math.PI / 180) * speed;
 
-	this.socket.send(playerEvent);
+	this.socket.send(JSON.stringify(this.toObj()));
 }
 
 

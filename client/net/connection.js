@@ -74,7 +74,6 @@ function send(anything) {
 	if (connection.readyState != 1) {
 		console.log("Connection is not ready yet!");
 	} else {
-        console.log(myPlayer.position);        
 		connection.send(JSON.stringify(anything));
 	}
 }
