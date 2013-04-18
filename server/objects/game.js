@@ -30,8 +30,19 @@ Game.prototype.render = function() {
 	// TODO push to clients!
 }
 
+/**
+ * aPlayer is the player that has been updated
+ */
+Game.prototype.sendUpdateFrom = function(aPlayer) {
+	var str = JSON.stringify(aPlayer.toObj());
+	for (var id in this.players) {
+		this.players[id].socket.send(str);
+		console.log(str);
+	}
+}
+
 Game.prototype.addPlayer = function(player) {
-	this.players[player];
+	this.players[player.id] = player;
 	return player.id;
 }
 

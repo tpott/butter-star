@@ -111,7 +111,12 @@ for (var i = 0; i < files.length; i++) {
 			file[1] = data;
 		};
 	};
-	fs.readFile(files[i][2], 'utf8', setFile(files[i]));
+	if (files[i][3] == 'image/png') {
+		fs.readFile(files[i][2], setFile(files[i]));
+	}
+	else {
+		fs.readFile(files[i][2], 'utf8', setFile(files[i]));
+	}
 }
 
 
@@ -125,7 +130,10 @@ var Server = function() {
 		var found = false;
 		for (var i = 0; i < files.length; i++) {
 			if (request.url == '/' + files[i][0]) {
-				response.writeHead(200, {'Content-Type': files[i][3]});
+				response.writeHead(200, {
+					'Content-Type': files[i][3],
+					'Content-Length': files[i][1].length
+				});
 				response.write(files[i][1]);
 				found = true;
 

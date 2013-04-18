@@ -49,7 +49,7 @@ Server.prototype._newSocket = function(socket) {
 
 	// TODO should we remove these once the socket is closed?
 	// save this socket for all possible connections
-	this.allSockets[this.allSockets.length] = socket;
+	this.allSockets.push(socket);
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
