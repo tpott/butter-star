@@ -12,8 +12,6 @@ var WebSocketServer = require('ws').Server;
 var http = require('http');
 
 // TODO: get path from config file
-var EventBuffer =
-    require('./eventBuffer.js').EventBuffer;
 var Socket = require('./socket.js').Socket;
 var WorldState = require('../logic/worldstate.js').WorldState;
 var gamelogic = require('../logic/gamelogic.js');
@@ -41,13 +39,6 @@ var Server = function() {
    * @type {WebSocketServer}
    */
   this.wsServer = null;
-
-  /**
-   * Buffer to hold all incoming client events.
-   * @type {EventBuffer}
-   */
-  this.eventBuffer = null; 
-  
   this.worldState = null;
 }
 
@@ -70,34 +61,32 @@ Server.prototype.start = function() {
 		response.end();
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
   
-  this.wsServer = new WebSocketServer({port:config.wsPort});
-  this.eventBuffer = new EventBuffer();
-  this.worldState = new WorldState();
+    this.wsServer = new WebSocketServer({port:config.wsPort});
+    this.worldState = new WorldState();
 
-  // Variables to use in handler
-  var socketList = this.sockets;
-  var serverEventBuffer = this.eventBuffer;
-  var worldstate = this.worldState;
-
-  /**
-   * Handles the server opening a connection.
-   * @param {wsWebSocket} wsSocket WebSocket opening a connection with.
-   */
-  this.wsServer.on('connection', function(wsSocket) {
-      console.log('New connection created! %d', socketList.length);
-      var socket = new Socket(wsSocket);
-      socketList.push(socket);
-
+    // Variables to use in handler
+    var socketList = this.sockets;
+    var worldstate = this.worldState;
+ 
+    /**
+    * Handles the server opening a connection.
+    * @param {wsWebSocket} wsSocket WebSocket opening a connection with.
+    */
+    this.wsServer.on('connection', function(wsSocket) {
+        console.log('New connection created! %d', socketList.length);
+        var socket = new Socket(wsSocket);
+        socketList.push(socket);
+    
+        /* Will immediately update the worldstate via gamelogic and the msg */
+        socket.onmessage(worldstate, gamelogic);
       
-      socket.onmessage(serverEventBuffer);
-      socket.onclose(socketList);
-      
-      // Tell the client its unique ID
-      var socketID = socketList.length - 1;
-      socket.send("ID:" + socketID);
+        // Tell the client its unique ID
+        var socketID = socketList.length - 1;
+        socket.onclose(socketList, worldstate, socketID);
+        socket.send("ID:" + socketID);
 
-      worldstate.addNewPlayer(socketID);
-  });
+        worldstate.addNewPlayer(socketID);
+    });
 }
 
 /**
@@ -115,17 +104,16 @@ Server.prototype.getSockets = function() {
  * because of how ws's send works.
  */
 Server.prototype.updateAllClients = function() {
-	// connection.socket.send(connection.getStateTypedArray(), {binary: true});
-  // TODO send typed arrays
-  
-    gamelogic.processEvents(this.eventBuffer, this.worldState);
-
     for (var i = 0; i < this.sockets.length; i++) {
         if (this.sockets[i] != null) {
             //console.log("sending " + JSON.stringify(this.worldState));
             this.sockets[i].send(JSON.stringify(this.worldState));
         }
     }
+    
+    // after sending the data, flush the delta lists. This is currently used
+    // because the client is aware of 
+    this.worldState.flushDeltas();
 }
 
 exports.Server = Server;
