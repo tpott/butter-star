@@ -67,6 +67,7 @@
     <script src="js/PlayerEvent.js"></script>
     <script src="js/worldstate.js"></script>
     <script src="../net/connection.js"></script>
+	<script srv="js/ThreeOctree.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -87,6 +88,8 @@
 
 		//only init the worldState once at the very beginning;
 		var initWorldState = true;
+		///Octree Code, eventually will need to port over to the server
+		
 		//-------------------------------------------------------
 		//HELPER FUNCTIONS AND SHIET
 		//-------------------------------------------------------
@@ -115,46 +118,12 @@
 		/*
 			detect movements
 		*/
-			var controls,time = Date.now();
+		var controls,time = Date.now();
 
-			var objects = [];
+		var objects = [];
 
+		var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-		
-		function move(){
-		
-		var speed = playerEvent.speed;
-		//if(myPlayer.model.state === 'crstand'){speed *= .5;}
-		//if(myPlayer.model.state === 'freeze') {speed *= 0;}
-		if(playerEvent.sprinting == true)
-		{
-			playerEvent.speed = .75;
-		}
-		else
-		{
-			playerEvent.speed = .25;
-		}
-		
-		var direction = playerEvent.angle;
-		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=   0}
-		if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
-		if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
-		if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
-		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
-		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
-		if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
-		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
-		
-		myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
-		myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
-		myPlayer.position.z -= Math.cos(direction * Math.PI / 180) * speed;
-		}
-		
-		
-		
-			
 		document.addEventListener("fullscreenchange", function () {
 			//console.log(document.fullscreen);
 			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
@@ -293,51 +262,26 @@
 		connection.onmessage = function(buf) {
             messages[messages.length] = buf.data;
             if (buf.data.substring(0,3) == "ID:") {
-                myPlayer.id = parseInt(buf.data.substring(3));
+             myPlayer.id = buf.data.substring(3);
                 playerEvent.playerID = myPlayer.id;
                 console.log("Client recieved id: " + myPlayer.id);
                 return;
             }
-            //console.log("Client received: " + buf.data);
-            //console.log(playerEvent);
-            //console.log(buf.data);
-            serverWorldState = JSON.parse(buf.data);
-            
-            if(initWorldState)
-            {
-            	console.log("initializing the world state for the first time");
-            	myWorldState.addOtherPlayers(serverWorldState.players);
-            	initWorldState = false;
-            	return;
-            }
+				
+            var state = JSON.parse(buf.data);
 
-            myWorldState.updateWorldState(serverWorldState);
+				if ('remove' in state) {
+					// state['remove' is the id of the removed player
+					myWorldState.removePlayer(state['remove']);
+				}
+				else {
+					// state is an array of players
+					myWorldState.updateWorldState(state);
+				}
 
             var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
             myPlayer.position = tempPlayer.cube.position;
-            
-            //console.log(playerEvent);
-            //var something = JSON.parse(buf.data);
 		};
-		
-	/**
-	 * camera rotation
-	 */
-		var getElementPosition = function(element) 
-		{
-			var top = left = 0;
-			do {
-				top  += element.offsetTop  || 0;
-				left += element.offsetLeft || 0;
-				element =  element.offsetParent;
-			}
-			while (element);
-			return {top: top, left: left};
-		}
-	
-		var pointer = {x : 0, y : 0};
-            //console.log(playerEvent);
-            //var something = JSON.parse(buf.data);
 		
 	/**
 	 * camera rotation
@@ -468,6 +412,7 @@
 			requestAnimationFrame(render); 
 			
 			update();
+			
 			renderer.render(scene, camera); 
 			stats.update();
 		}
@@ -514,7 +459,7 @@
 		//load sound clips here
 		function initSounds()
 		{
-			source.src = 'data/sounds/Paris2.ogg';
+			source.src = 'Paris2.ogg';
 			audio.appendChild(source);
 			audio.play();
 		}
