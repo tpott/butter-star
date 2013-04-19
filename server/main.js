@@ -1,24 +1,23 @@
 /**
+ * main.js
  * @fileoverview Check that the client HTML and JS files are error-free
  * before creating a server.
  * @author Trevor Pottinger
  */
 
-// External classes
 var config = require('./../config.js');
-var fs = require('fs');
-var http = require('./net/simpleHTTP.js').HTTP;
-
-// TODO link with game logic
-var games = [];
-function update() {}
-
-var ticksPerSec = 60;
-
-function gameTick() {
-	update();
-}
+var http = require('./net/fullHTTP.js'), 
+	 ws = require('./net/simpleWS.js');
+var fs = require('fs'),
+	 crypto = require('crypto');
 
 var httpServer = new http();
-var wsServer = require('./net/simpleWS.js').wsServer;
-setTimeout(gameTick, 1000 / ticksPerSec);
+var wsServer = new ws(httpServer);
+
+//wsServer.on('connection', wsServer._newSocket);
+
+// TODO when user selects 'New Game' 
+console.log('New game: %s', httpServer.newGame());
+
+module.exports.httpServer = httpServer;
+module.exports.wsServer = wsServer;
