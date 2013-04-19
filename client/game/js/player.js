@@ -1,7 +1,7 @@
 var Player = function() {
     this.id = null;
     var geometry = new THREE.CubeGeometry(1,3,1); 
-    var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
+    var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player.png")});
 
     this.cube = new THREE.Mesh(geometry, material);
 

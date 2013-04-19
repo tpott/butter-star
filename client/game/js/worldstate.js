@@ -1,3 +1,5 @@
+var WorldState = function() {
+    this.players = [];
 /**
  * worldstate.js
  *
@@ -7,14 +9,14 @@
  * @author Thinh
  * @author Trevor
  */
+}
 
 var WorldState = function() {
     this.players = {};
-
 }
 
 WorldState.prototype.getPlayerObject = function(id) {
-	return this.players[id];
+    return this.players[id];
 }
 
 WorldState.prototype.addPlayer = function(p) {
