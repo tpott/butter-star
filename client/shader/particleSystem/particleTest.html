@@ -17,6 +17,100 @@
 		<script src="three.js"></script>
 		<script src="stats.min.js"></script>
 		<script src= "Vacuum.js"></script>
+		<script src= "Poof.js"></script>
+		<script src= "Border.js"></script>
+		<script type="x-shader/x-vertex" id="bvertexShader">
+		attribute float alpha;
+		attribute float isParticleLit;
+		attribute float weightValue;
+		uniform vec3 normals;
+		varying float vWeight;
+
+		varying float vAlpha;
+
+		vec3 lerp(vec3 start, vec3 end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+
+		vec3 animate(float isLit)
+		{
+			vec3 destination = position + normals * vec3(10.0);
+			return lerp(position,destination,weightValue);
+		}
+
+		void main()
+		{	
+			vAlpha = alpha;
+			vWeight = weightValue;
+			if(isParticleLit == 1.0)
+				gl_PointSize = 2.0;//isParticleLit;
+			//gl_PointSize = 1.0;
+			//vec4 newPosition = vec4(animate(isParticleLit),1.0);
+			vec4 newPosition = vec4(position + vec3(0,isParticleLit,0), 1);
+			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
+		}
+		</script>
+
+		<script type="x-shader/x-fragment" id="bfragmentShader">
+		//-----------------------BEGIN FRAGMENT SHADER -------------------------
+		uniform vec3 color;
+		uniform float weight;
+		varying float vWeight;
+
+		float lerp(float start, float end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+		
+		void main()
+		{
+			gl_FragColor = vec4(color,lerp(1.0,0.0,vWeight));
+		}
+		//-----------------------END FRAGMENT SHADER ------------------
+		</script>
+		<script type="x-shader/x-vertex" id="pvertexShader">
+		//-----------------------BEGIN VERTEX SHADER -------------------------
+		uniform float weight;
+		attribute float alpha;
+		attribute vec3 endPoint;
+		varying float vAlpha;
+
+		
+		vec3 lerp(vec3 start, vec3 end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+		
+		//set gl_Position to newly calculated position
+		void main()
+		{	
+
+			vAlpha = alpha;
+			gl_PointSize = 1.0;
+			vec4 newPosition = vec4(lerp(position,endPoint,weight),1.);
+			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
+		}
+		//-----------------------END VERTEX SHADER -------------------------
+		</script>
+
+		<script type="x-shader/x-fragment" id="pfragmentShader">
+		//-----------------------BEGIN FRAGMENT SHADER -------------------------
+		uniform vec3 color;
+		uniform float weight;
+
+		float lerp(float start, float end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+
+		void main()
+		{
+			gl_FragColor = vec4(color,lerp(1.0,0.0,weight));
+		}
+		//-----------------------END FRAGMENT SHADER -------------------------
+		</script>
+		
 		<script type="x-shader/x-vertex" id="vertexShader">
 		//-----------------------BEGIN VERTEX SHADER -------------------------
 		//values for linear interpolation
@@ -45,7 +139,7 @@
 		//calculate new position using linear interpolation with given weights
 		vec3 calcFinalPos()
 		{
-			vec3 displace = position;// + normals * vec3(displacement);
+			vec3 displace = position + normals * vec3(displacement);
 			float newWeight = particleWeight + weight;
 			if(newWeight >=1.0)
 				newWeight -= 1.0;
@@ -62,6 +156,7 @@
 		//-----------------------END VERTEX SHADER -------------------------
 		</script>
 
+
 		<script type="x-shader/x-fragment" id="fragmentShader">
 		//-----------------------BEGIN FRAGMENT SHADER -------------------------
 		uniform vec3 color;
@@ -72,6 +167,7 @@
 		}
 		//-----------------------END FRAGMENT SHADER -------------------------
 		</script>
+		
 		<script>
 
 			window.requestAnimFrame = (function(){
@@ -95,7 +191,8 @@
    			 var direction,axisRotation,translationMatrix,negTranslationMatrix;
    			 var offset;
    			 var differenceVector = new THREE.Vector3();
-   			 var vacuum;
+   			 var vacuum,poof;
+   			 var effects = [];
 
    			 init();
    			 render();
@@ -105,10 +202,27 @@
 			{
 				//create container for canvas
 				var testCenter = new THREE.Vector3(0,-75,0);
-				var testDirection = new THREE.Vector3(1,0,0);
+				var testCenter2 = new THREE.Vector3(100,-75,0);
+				var testCenter3 = new THREE.Vector3(50,0,0);
+				var testDirection = new THREE.Vector3(0,1,0);
+				var testDirection2 = new THREE.Vector3(0,0,-1);
+				var testDirection3 = new THREE.Vector3(1,1,-1);
 				var nParticles = 5000;
 				vacuum = new Vacuum(testCenter,testDirection,nParticles,document.getElementById('vertexShader').textContent, document.getElementById('fragmentShader').textContent);
-				
+
+				poof = new Poof(testCenter,testDirection,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
+				var poof2 = new Poof(testCenter2,testDirection2,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
+				var poof3 = new Poof(testCenter3,testDirection3,document.getElementById('pvertexShader').textContent, document.getElementById('pfragmentShader').textContent);
+
+				var border = new Border(testCenter,testDirection,document.getElementById('bvertexShader').textContent, document.getElementById('bfragmentShader').textContent);
+
+				//add to effects vector
+				//effects.push(vacuum);
+				effects.push(poof);
+				effects.push(poof2);
+				effects.push(poof3);
+				effects.push(border);
+
 				var container = document.createElement('div');
 				document.body.appendChild(container);
 
@@ -129,8 +243,13 @@
 				stats.domElement.style.left = '5px';
 				container.appendChild( stats.domElement );
 
-				vacuum.addSceneData(scene);
-				console.log(scene.children);
+				//add to scene
+				//vacuum.addToScene(scene);
+				poof.addToScene(scene);
+				poof2.addToScene(scene);
+				poof3.addToScene(scene);
+				border.addToScene(scene);
+
 			}
 			
 		
@@ -147,9 +266,12 @@
 			}
 			
 			//update values
+			var counter = 0;
 			function update()
 			{
-				vacuum.update();
+				
+				for(x=0;x<effects.length;x++)
+					effects[x].update();
 				
 			}
 		</script>
