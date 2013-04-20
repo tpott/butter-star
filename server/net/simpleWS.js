@@ -5,10 +5,12 @@
  */
 
 // Get external functions.
+var util = require('util');
+
 var config = require('./../../config.js');
+var Collidable = require('./../physics/collide.js');
 var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
-var util = require('util');
 
 // TODO include game logic
 
@@ -44,8 +46,10 @@ Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
 	var game = this.gameFor(socket);
-	var player = new Player(socket, game);
-	game.addPlayer(player);
+	//var player = new Player(socket, game);
+	//game.addPlayer(player);
+  var collidable = new Collidable(socket, game, []);
+  game.addPlayer(collidable);
 
 	// TODO should we remove these once the socket is closed?
 	// save this socket for all possible connections
@@ -56,7 +60,8 @@ Server.prototype._newSocket = function(socket) {
 		//console.log('Recevied input from %s', player.id);
 		var obj = JSON.parse(anything);
 		if (isEvent(obj)) {
-			player.move(obj);
+			//player.move(obj);
+      collidable.move(obj);
 		}
 		else {
 			console.log('Received unknown input: %s', anything);
@@ -65,7 +70,8 @@ Server.prototype._newSocket = function(socket) {
 
 	socket.on('close', function() {
 		console.log('Player left the game');
-		game.removePlayer(player);
+		//game.removePlayer(player);
+    game.removePlayer(collidable)
 	});
 };
 
