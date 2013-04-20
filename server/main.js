@@ -7,18 +7,12 @@
 // External classes
 var config = require('./../config.js');
 var fs = require('fs');
-var http = require('./net/simpleHTTP.js').HTTP;
+var http = require('./net/simpleHTTP.js').HTTP,
+	 debug = require('./net/debugHTTP.js');
 
 // TODO link with game logic
 var games = [];
-function update() {}
-
-var ticksPerSec = 60;
-
-function gameTick() {
-	update();
-}
 
 var httpServer = new http();
 var wsServer = require('./net/simpleWS.js').wsServer;
-setTimeout(gameTick, 1000 / ticksPerSec);
+var serverDebugger = new debug(httpServer, wsServer);
