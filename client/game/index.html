@@ -57,17 +57,17 @@
 	</style> 
 </head> 
 <body> 
-	<script src="js/libs/three.min.js"> </script> 
-	<script src="js/loaders/MTLLoader.js"></script>
-	<script src="js/loaders/OBJMTLLoader.js"></script>
-	<script src="js/libs/stats.min.js"></script>
-	<script src="js/THREEx.FullScreen.js"></script>
-	<script src="js/PointerLockControls.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/PlayerEvent.js"></script>
-    <script src="js/worldstate.js"></script>
-    <script src="../net/connection.js"></script>
-	<script srv="js/ThreeOctree.js"></script>
+	<script src="three.min.js"> </script> 
+	<script src="MTLLoader.js"></script>
+	<script src="OBJMTLLoader.js"></script>
+	<script src="stats.min.js"></script>
+	<script src="THREEx.FullScreen.js"></script>
+	<script src="PointerLockControls.js"></script>
+    <script src="player.js"></script>
+    <script src="PlayerEvent.js"></script>
+    <script src="worldstate.js"></script>
+    <script src="connection.js"></script>
+	<script src="ThreeOctree.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -78,7 +78,7 @@
 		var source = document.createElement('source');
 		var renderer = new THREE.WebGLRenderer(); 
 		var geometry = new THREE.CubeGeometry(1,3,1); 
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player.png")});
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
 		var cube = new THREE.Mesh(geometry, material);
 		var PI_2 = Math.PI / 2;
@@ -437,7 +437,7 @@
 					scene.add( object );
 
 				});
-			loader.load( 'data/forest/KokiriForest.obj', 'data/forest/KokiriForest.mtl' );
+			loader.load( 'KokiriForest.obj', 'KokiriForest.mtl' );
 		}
 		
 		//load them textures here
@@ -452,7 +452,7 @@
 				handleLoadedTexture(neheTexture)
 			}
 
-			neheTexture.image.src = "data/player.png";
+			neheTexture.image.src = "player.png";
 			}
 		}
 		
