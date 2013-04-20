@@ -15,11 +15,11 @@ var ipAddr;
 
 // Prompt for server IP address if not already set
 function initIPaddress() {
-	if(localStorage.getItem('butterIPAddr') == null) {
+	if(sessionStorage.getItem('butterIPAddr') == null) {
 	  ipAddr = prompt("IP address of server:", "localhost");
-	  localStorage.setItem('butterIPAddr', ipAddr)
+	  sessionStorage.setItem('butterIPAddr', ipAddr)
 	} else {
-	  ipAddr = localStorage['butterIPAddr'];
+	  ipAddr = sessionStorage['butterIPAddr'];
 	}
 }
 
@@ -66,3 +66,15 @@ connection.onerror = function(error) {
 connection.onclose = function() {
     console.log("connection closed!");
 };
+
+
+/* Receive is not needed since it will be call-back
+ * */
+function send(anything) {
+	if (connection.readyState != 1) {
+		console.log("Connection is not ready yet!");
+	} else {
+        console.log(myPlayer.position);        
+		connection.send(JSON.stringify(anything));
+	}
+}

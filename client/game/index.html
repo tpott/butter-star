@@ -57,16 +57,17 @@
 	</style> 
 </head> 
 <body> 
-	<script src="https://raw.github.com/mrdoob/three.js/master/build/three.js"> </script> 
-	<script src="js/loaders/MTLLoader.js"></script>
-	<script src="js/loaders/OBJMTLLoader.js"></script>
-	<script src="js/libs/stats.min.js"></script>
-	<script src="js/THREEx.FullScreen.js"></script>
-	<script src="js/PointerLockControls.js"></script>
-	<script src="js/connection.js"></script>
-	<script src="js/client.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/PlayerEvent.js"></script>
+	<script src="three.min.js"> </script> 
+	<script src="MTLLoader.js"></script>
+	<script src="OBJMTLLoader.js"></script>
+	<script src="stats.min.js"></script>
+	<script src="THREEx.FullScreen.js"></script>
+	<script src="PointerLockControls.js"></script>
+    <script src="player.js"></script>
+    <script src="PlayerEvent.js"></script>
+    <script src="worldstate.js"></script>
+    <script src="connection.js"></script>
+	<script src="ThreeOctree.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -77,12 +78,17 @@
 		var source = document.createElement('source');
 		var renderer = new THREE.WebGLRenderer(); 
 		var geometry = new THREE.CubeGeometry(1,3,1); 
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("data/player.png")}); 
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
+
 		var cube = new THREE.Mesh(geometry, material);
 		var PI_2 = Math.PI / 2;
 		var fullScreenMode = 0;
         var myPlayer = new Player();
-		
+		var myWorldState = new WorldState();
+
+		//only init the worldState once at the very beginning;
+		var initWorldState = true;
+		///Octree Code, eventually will need to port over to the server
 		
 		//-------------------------------------------------------
 		//HELPER FUNCTIONS AND SHIET
@@ -108,49 +114,16 @@
 		 * struct for movements
 		 */
 		var playerEvent = new PlayerEvent();
+       
 		/*
 			detect movements
 		*/
-			var controls,time = Date.now();
+		var controls,time = Date.now();
 
-			var objects = [];
+		var objects = [];
 
+		var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-		
-		function move(){
-		
-		var speed = playerEvent.speed;
-		//if(myPlayer.model.state === 'crstand'){speed *= .5;}
-		//if(myPlayer.model.state === 'freeze') {speed *= 0;}
-		if(playerEvent.sprinting == true)
-		{
-			playerEvent.speed = .75;
-		}
-		else
-		{
-			playerEvent.speed = .25;
-		}
-		
-		var direction = playerEvent.angle;
-		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=   0}
-		if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
-		if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
-		if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
-		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
-		if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
-		if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
-		if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
-		
-		myPlayer.model.objects.rotation.y = direction * Math.PI / 180;
-		myPlayer.position.x -= Math.sin(direction * Math.PI / 180) * speed;
-		myPlayer.position.z -= Math.cos(direction * Math.PI / 180) * speed;
-		}
-		
-		
-		
-			
 		document.addEventListener("fullscreenchange", function () {
 			//console.log(document.fullscreen);
 			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
@@ -285,24 +258,29 @@
 		}, false);
 		
 		
-		
+		var serverWorldState;
 		connection.onmessage = function(buf) {
-		messages[messages.length] = buf.data;
-        if (buf.data.substring(0,3) == "ID:") {
-            myPlayer.id = parseInt(buf.data.substring(3));
-            playerEvent.playerID = myPlayer.id;
-            console.log("Client recieved id: " + myPlayer.id);
-            return;
-        }
-		//console.log("Client received: " + buf.data);
-		//console.log(playerEvent);
-		//console.log(buf.data);
-		garbage = JSON.parse(buf.data);
-		myPlayer.position = garbage.players[0].position;
-        //console.log(playerEvent);
-		//var something = JSON.parse(buf.data);
-		
-		
+            messages[messages.length] = buf.data;
+            if (buf.data.substring(0,3) == "ID:") {
+             myPlayer.id = buf.data.substring(3);
+                playerEvent.playerID = myPlayer.id;
+                console.log("Client recieved id: " + myPlayer.id);
+                return;
+            }
+				
+            var state = JSON.parse(buf.data);
+
+				if ('remove' in state) {
+					// state['remove' is the id of the removed player
+					myWorldState.removePlayer(state['remove']);
+				}
+				else {
+					// state is an array of players
+					myWorldState.updateWorldState(state);
+				}
+
+            var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+            myPlayer.position = tempPlayer.cube.position;
 		};
 		
 	/**
@@ -345,8 +323,8 @@
 		}
 		
 		function rotate(){
-			myPlayer.camera.x += (oldPointerX - pointer.x) * player.camera.speed;
-			myPlayer.camera.y += (oldPointerY - pointer.y) * player.camera.speed;
+			myPlayer.camera.x += (oldPointerX - pointer.x) * myPlayer.camera.speed;
+			myPlayer.camera.y += (oldPointerY - pointer.y) * myPlayer.camera.speed;
 			if(myPlayer.camera.y > 150){
 				myPlayer.camera.y = 150;
 			}
@@ -407,7 +385,7 @@
 
 			cube.position = clone(myPlayer.position);
 			cube.position.y = -2;
-			
+
 			myPlayer.model.objects.position.x = myPlayer.position.x;
 			myPlayer.model.objects.position.y = myPlayer.position.y;
 			myPlayer.model.objects.position.z = myPlayer.position.z;
@@ -434,6 +412,7 @@
 			requestAnimationFrame(render); 
 			
 			update();
+			
 			renderer.render(scene, camera); 
 			stats.update();
 		}
@@ -458,7 +437,7 @@
 					scene.add( object );
 
 				});
-			loader.load( 'data/forest/KokiriForest.obj', 'data/forest/KokiriForest.mtl' );
+			loader.load( 'KokiriForest.obj', 'KokiriForest.mtl' );
 		}
 		
 		//load them textures here
@@ -473,16 +452,14 @@
 				handleLoadedTexture(neheTexture)
 			}
 
-			neheTexture.image.src = "data/player.png";
+			neheTexture.image.src = "player.png";
 			}
 		}
 		
 		//load sound clips here
 		function initSounds()
 		{
-		
-			
-			source.src = 'data/sounds/Paris2.ogg';
+			source.src = 'Paris2.ogg';
 			audio.appendChild(source);
 			audio.play();
 		}
@@ -530,8 +507,7 @@
 			document.body.appendChild(renderer.domElement); 
 			document.body.appendChild( stats.domElement );
 			window.addEventListener( 'resize', onWindowResize, false );
-			scene.add(cube); 
-
+			scene.add(cube);
 			
 			render(); 
 		}
