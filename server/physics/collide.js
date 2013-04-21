@@ -18,22 +18,19 @@ var randomID = require('./../objects/random.js');
  * @param {Game} game The game this Collidable belongs to.
  * @param {Array} objList List of things this object can collide with.
  */
-function Collidable(socket, game, objList) {
+function Collidable(socket, game) {
   // Set up which game this Collidable belongs to
   this.socket = socket;
   this.game = game;
   this.id = randomID(16);
 
-  this.collidables = objList;
-
   // from Thinh
   this.position = {
 		x : 0,
-		y : -2,
+		y : 0,
 		z : 0,
 		direction : 0
 	};
-  // TODO remove for bunnies??
 	this.camera = {
 		speed : 300,
 		distance : 5,
@@ -61,6 +58,19 @@ Collidable.prototype.toObj = function() {
   obj.position = this.position;
   obj.camera = this.camera;
   return obj;
+};
+
+// TODO move to debugger
+Collidable.prototype.printPosition = function(obj) {
+  console.log("x: " + obj.position.x);
+  console.log("y: " + obj.position.y);
+  console.log("z: " + obj.position.z);
+};
+
+Collidable.prototype.translate = function(dx, dy, dz) {
+  this.position.x += dx;
+  this.position.y += dy;
+  this.position.z += dz;
 };
 
 /**
@@ -106,23 +116,35 @@ Collidable.prototype.move = function(evt) {
   var deltaY = 0; // TODO gravity?
 	var deltaZ = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
+  // Do collision detection
   var raycaster = new THREE.Raycaster();
-  raycaster.ray.direction.set(deltaX, deltaY, deltaZ);
+  raycaster.ray.direction.set(0,-1,0);
   raycaster.ray.origin.set(
-      this.position.x, this.position.y, this.position.z);
+      // TODO fix magic #2 that puts in center of cube
+      this.position.x, this.position.y+2, this.position.z);
 
-  var intersections = raycaster.intersectObjects(this.collidables);
+  var collidables = [];
+  for (var id in this.game.collidables) {
+    if(id != this.id)
+      collidables.push(this.game.collidables[id]);
+  }
+
+  var intersections = raycaster.intersectObjects(collidables);
   if (intersections.length > 0) {
     // TODO idk what this is for :( why index 0?
     var distance = intersections[0].distance;
-    
-    if(distance > 0) { // TODO is this right?
+
+    if(distance > 0 && distance < 2) {
+      this.translate(-1 * deltaX, -1 * deltaY, -1 * deltaZ);
+    } else {
+      this.translate(deltaX, deltaY, deltaZ);
     }
   } else { // no intersections, can move normally
-    this.position.x += deltaX;
-    this.position.y += deltaY;
-    this.position.z += deltaZ;
+    this.translate(deltaX, deltaY, deltaZ);
   }
+  this.cube.matrixWorld.makeTranslation(
+      this.position.x, this.position.y, this.position.z);
+  this.game.updateCollidable(this.id, this.cube);
 };
 
 module.exports = Collidable;

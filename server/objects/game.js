@@ -15,6 +15,7 @@ function Game() {
 
 	this.world = null;
 	this.players = {};
+  this.collidables = {};
 	this.critters = [];
 
 	setTimeout(gameTick(this), 1000 / TICKS);
@@ -55,6 +56,7 @@ Game.prototype.sendUpdateFrom = function(aPlayer) {
 
 Game.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
+  this.collidables[player.id] = player.cube;
 	return player.id;
 }
 
@@ -66,8 +68,13 @@ Game.prototype.removePlayer = function(player) {
 		}
 		this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
+  delete this.collidables[player.id];
 	return delete this.players[player.id];
 }
+
+Game.prototype.updateCollidable = function(id, newObj) {
+  this.collidables[id] = newObj;
+};
 
 // FUCK javascript
 gameTick = function(game) {

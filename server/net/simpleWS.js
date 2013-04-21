@@ -46,9 +46,7 @@ Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
 	var game = this.gameFor(socket);
-	//var player = new Player(socket, game);
-	//game.addPlayer(player);
-  var collidable = new Collidable(socket, game, []);
+  var collidable = new Collidable(socket, game);
   game.addPlayer(collidable);
 
 	// TODO should we remove these once the socket is closed?
@@ -60,7 +58,6 @@ Server.prototype._newSocket = function(socket) {
 		//console.log('Recevied input from %s', player.id);
 		var obj = JSON.parse(anything);
 		if (isEvent(obj)) {
-			//player.move(obj);
       collidable.move(obj);
 		}
 		else {
@@ -70,7 +67,6 @@ Server.prototype._newSocket = function(socket) {
 
 	socket.on('close', function() {
 		console.log('Player left the game');
-		//game.removePlayer(player);
     game.removePlayer(collidable)
 	});
 };
