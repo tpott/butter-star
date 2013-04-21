@@ -23,7 +23,7 @@ var files = [
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
-	['PlayerEvent.js', "", client + 'controls/PlayerEvent.js', 'text/javascript'],
+	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
