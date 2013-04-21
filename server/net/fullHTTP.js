@@ -30,6 +30,9 @@ var files = [
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
+	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
+	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
+	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
