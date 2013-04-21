@@ -72,7 +72,7 @@ Game.prototype.removePlayer = function(player) {
 	return delete this.players[player.id];
 }
 
-Game.prototype.updateCollidable = function(id, newObj) {
+Game.prototype.addCollidable = function(id, newObj) {
   this.collidables[id] = newObj;
 };
 

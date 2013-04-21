@@ -12,6 +12,7 @@ var http = require('http'),
 	 events = require('events');
 
 var thinhGame = "../client/game/";
+var client = "../client/";
 
 console.log("HERE");
 // [ Request path, file contents, repository path, content type ]
@@ -22,7 +23,8 @@ var files = [
 	['MTLLoader.js', "", thinhGame + 'js/loaders/MTLLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", thinhGame + 'js/loaders/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
-	['', "", thinhGame + 'index.html', 'text/html'],
+	['', "", client + 'index.html', 'text/html'],
+  ['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	['PlayerEvent.js', "", thinhGame + 'js/PlayerEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", thinhGame + 'js/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", thinhGame + 'js/THREEx.FullScreen.js', 'text/javascript'],

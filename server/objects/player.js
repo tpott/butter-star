@@ -4,71 +4,76 @@
  * An abstraction of a serverside player object.
  * @author Trevor Pottinger
  * @author Rohan Halliyal
+ * @author Jennifer Fang
  */
 
-var randomID = require('./random.js');
+// Get external functions
+var THREE = require('three');
+var util = require('util');
+
+var Movable = require('./../physics/movable.js');
 
 function Player(socket, game) {
-	this.socket = socket;
-	this.game = game;
-	this.id = randomID(16);
-	
-	// from Thinh
-	this.position = {
-		x : 0,
-		y : -2,
-		z : 0,
-		direction : 0
-	};
-	this.camera = {
-		speed : 300,
-		distance : 5,
-		x : 0,
-		y : 0, 
-		z : 0
-	};
+  Player.super_.call(this, socket, game);
+
+  // 3D object this represents
+  var geometry = new THREE.CubeGeometry(1,3,1); // TODO change this size
+  var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  this.cube = new THREE.Mesh(geometry, material);
 
 	console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
 	this.game.sendUpdateFrom(this);
 }
+util.inherits(Player, Movable);
 
-Player.prototype.toObj = function() {
-	var obj = {};
-	obj.id = this.id;
-	obj.position = this.position;
-	obj.camera = this.camera;
-	return obj;
-}
-
-Player.prototype.move = function (playerEvent) {
-	//console.log('Player moving');
-	var speed = playerEvent.speed;
-	if(playerEvent.sprinting == true) {
-		playerEvent.speed = 0.75;
+/**
+ * Calculate player movements and let superclass handle collisions and
+ * set actual player movements.
+ * @param {Event} evt The player movement event.
+ */
+Player.prototype.move = function(evt) {
+  var speed = evt.speed;
+	if(evt.sprinting === true) {
+		evt.speed = 0.75;
 	}
 	else {
-		playerEvent.speed = 0.25;
+		evt.speed = 0.25;
 	}
 
-	// TODO UGLY Thinh Rohan
-	var direction = playerEvent.angle;
-	if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=   0}
-	else if( playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  45}
-	else if(!playerEvent.front &&  playerEvent.left && !playerEvent.Backwards && !playerEvent.right){direction +=  90}
-	else if(!playerEvent.front &&  playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 135}
-	else if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards && !playerEvent.right){direction += 180}
-	else if(!playerEvent.front && !playerEvent.left &&  playerEvent.Backwards &&  playerEvent.right){direction += 225}
-	else if(!playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 270}
-	else if( playerEvent.front && !playerEvent.left && !playerEvent.Backwards &&  playerEvent.right){direction += 315}
+	var direction = evt.angle;
+  // TODO can we change these to bitmasks?
+  if(evt.front && !evt.Backwards) {
+    if(evt.left && !evt.right) {
+      direction += 45;
+    } else if(!evt.left && evt.right) {
+      direction += 315;
+    } else { //only forward
+      direction += 0;
+    }
+  } else if(!evt.front && evt.Backwards) {
+    if(evt.left && !evt.right) {
+      direction += 135;
+    } else if(!evt.left && evt.right) {
+      direction += 225;
+    } else { //only back
+      direction += 180;
+    }
+  } else if(evt.left && !evt.right
+      && !evt.front && !evt.Backwards) { // only left
+    direction += 90;
+  } else if(!evt.left && evt.right
+      && !evt.front && !evt.Backwards) { // only right
+    direction += 270;
+  }
 
-	this.position.x -= Math.sin(direction * Math.PI / 180) * speed;
-	this.position.z -= Math.cos(direction * Math.PI / 180) * speed;
+	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
+  var dy = 0; // TODO gravity?
+	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
-	//this.socket.send(JSON.stringify(this.toObj()));
-	//this.game.sendUpdateFrom(this);
-}
-
+  // Handle movement and collisions
+  Player.super_.prototype.move.call(this, dx, dy, dz);
+};
 
 function PlayerEvent() {
     this.playerID  = -1;
