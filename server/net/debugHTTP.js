@@ -7,9 +7,8 @@
  */
 
 var http = require('http');
-var config = require('./../../config.js');
 
-function Debug(httpServer, wsServer) {
+function Debug(config, httpServer, wsServer) {
 	http.createServer(this.serverCallback())
 		.listen(config.debugPort, '0.0.0.0');
 	console.log('Debug server running at %d.', config.debugPort);

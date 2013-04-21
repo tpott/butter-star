@@ -5,7 +5,7 @@
  * @author Trevor Pottinger
  */
 
-var config = require('./../config.js');
+var config = require('./config.js');
 var http = require('./net/fullHTTP.js'), 
 	 debug = require('./net/debugHTTP.js'),
 	 ws = require('./net/simpleWS.js');
@@ -18,11 +18,12 @@ console.log('Server IP: %s', config.ip);
 var games = [];
 
 var httpServer = new http(config);
-var wsServer = new ws(httpServer);
-var serverDebugger = new debug(httpServer, wsServer);
+var wsServer = new ws(config, httpServer);
+var serverDebugger = new debug(config, httpServer, wsServer);
 
 // TODO when user selects 'New Game' 
 console.log('New game: %s', httpServer.newGame());
 
+module.exports.config = config;
 module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;

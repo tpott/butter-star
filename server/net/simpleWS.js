@@ -5,7 +5,6 @@
  */
 
 // Get external functions.
-var config = require('./../../config.js');
 var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
 var util = require('util');
@@ -16,7 +15,7 @@ var util = require('util');
  * @note [Server object].clients is an array that maintains an array of
  * all the currently open sockets
  */
-function Server(httpServer) {
+function Server(config, httpServer) {
 	Server.super_.call(this, {port: config.wsPort});
 
 	this.httpServer = httpServer;
