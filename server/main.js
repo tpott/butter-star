@@ -10,10 +10,14 @@ var http = require('./net/fullHTTP.js'),
 	 debug = require('./net/debugHTTP.js'),
 	 ws = require('./net/simpleWS.js');
 
+// TODO check for args
+config.ip = process.argv[2];
+console.log('Server IP: %s', config.ip);
+
 // TODO link with game logic
 var games = [];
 
-var httpServer = new http();
+var httpServer = new http(config);
 var wsServer = new ws(httpServer);
 var serverDebugger = new debug(httpServer, wsServer);
 

@@ -4,7 +4,6 @@
  */
 
 // Get external functions.
-var config = require('./../../config.js');
 var Game = require('./../objects/game.js');
 var http = require('http'),
 	 fs = require('fs'),
@@ -104,29 +103,13 @@ var files = [
 
 ];
 
-// [ Request path, file contents, repository path, content type ]
-for (var i = 0; i < files.length; i++) {
-	var setFile = function(file) {
-		return function(err, data) {
-			if (err) throw err;
-			file[1] = data;
-		};
-	};
-	if (files[i][3] == 'image/png') {
-		fs.readFile(files[i][2], setFile(files[i]));
-	}
-	else {
-		fs.readFile(files[i][2], 'utf8', setFile(files[i]));
-	}
-}
-
 
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
  * @constructor
  */
-var Server = function() {
+var Server = function(config) {
 	http.createServer(function (request, response) {
 		var found = false;
 		for (var i = 0; i < files.length; i++) {
@@ -153,6 +136,32 @@ var Server = function() {
 
 	this.games = [];
 	this.ngames = 0; // number of games
+
+	this.initFiles(config);
+}
+
+// [ Request path, file contents, repository path, content type ]
+Server.prototype.initFiles = function(config) {
+	for (var i = 0; i < files.length; i++) {
+		var setFile = function(file) {
+			return function(err, data) {
+				if (err) throw err;
+				if (file[3] == 'image/png') {
+					file[1] = data;
+				}
+				else {
+					file[1] = data
+						.replace(/butterServerIp/g, config.ip); // set in main.js
+				}
+			};
+		};
+		if (files[i][3] == 'image/png') {
+			fs.readFile(files[i][2], setFile(files[i]));
+		}
+		else {
+			fs.readFile(files[i][2], 'utf8', setFile(files[i]));
+		}
+	}
 }
 
 Server.prototype.newGame = function() {
