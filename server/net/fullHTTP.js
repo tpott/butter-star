@@ -20,7 +20,7 @@ var files = [
 	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
 	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
-	['OBJMTLLoader.js', "", client+ 'libs/OBJMTLLoader.js', 'text/javascript'],
+	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['PlayerEvent.js', "", thinhGame + 'js/PlayerEvent.js', 'text/javascript'],
@@ -28,7 +28,7 @@ var files = [
 	['THREEx.FullScreen.js', "", thinhGame + 'js/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", thinhGame + 'js/player.js', 'text/javascript'],
 	['worldstate.js', "", thinhGame + 'js/worldstate.js', 'text/javascript'],
-	['connection.js', "", '../client/net/connection.js', 'text/javascript'],
+	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
