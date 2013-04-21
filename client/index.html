@@ -64,11 +64,14 @@
 	<script src="THREEx.FullScreen.js"></script>
 	<script src="PointerLockControls.js"></script>
     <script src="player.js"></script>
-	 <script src="PlayerEvent.js"></script>
+	 <script src="ControlsEvent.js"></script>
     <script src="worldstate.js"></script>
     <script src="connection.js"></script>
 	<script src="ThreeOctree.js"></script>
 	<script src="controls.js"></script>
+	<script src="keyboard.js"></script>
+	<script src="mouse.js"></script>
+	<script src="screen.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -115,7 +118,7 @@
 			messages[messages.length] = buf.data;
 			if (buf.data.substring(0,3) == "ID:") {
 				myPlayer.id = buf.data.substring(3);
-				playerEvent.playerID = myPlayer.id;
+				controlsEvent.playerID = myPlayer.id;
 				console.log("Client recieved id: " + myPlayer.id);
 				return;
 			}
@@ -184,7 +187,7 @@
 				myPlayer.camera.y = -150;
 			}
 			//console.log(myPlayer.camera.x, myPlayer.camera.y);
-			playerEvent.angle = (myPlayer.camera.x / 2) % 360;
+			controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
 			
 			oldPointerX = pointer.x;
 			oldPointerY = pointer.y;
@@ -201,7 +204,7 @@
 			if(myPlayer.camera.y < -150){
 				myPlayer.camera.y = -150;
 			}
-			playerEvent.angle = (myPlayer.camera.x / 2) % 360;
+			controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
 		}
 		
 		document.addEventListener( 'mousemove', function(event){

@@ -23,14 +23,16 @@ var files = [
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
-  ['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
-	['PlayerEvent.js', "", thinhGame + 'js/PlayerEvent.js', 'text/javascript'],
-	['PointerLockControls.js', "", thinhGame + 'js/PointerLockControls.js', 'text/javascript'],
-	['THREEx.FullScreen.js', "", thinhGame + 'js/THREEx.FullScreen.js', 'text/javascript'],
-	['player.js', "", thinhGame + 'js/player.js', 'text/javascript'],
-	['worldstate.js', "", thinhGame + 'js/worldstate.js', 'text/javascript'],
+	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
+	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
+	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
+	['player.js', "", client + 'objects/player.js', 'text/javascript'],
+	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
+	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
+	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
+	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
