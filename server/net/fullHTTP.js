@@ -29,6 +29,7 @@ var files = [
 	['player.js', "", thinhGame + 'js/player.js', 'text/javascript'],
 	['worldstate.js', "", thinhGame + 'js/worldstate.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
+	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],

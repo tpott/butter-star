@@ -68,6 +68,7 @@
     <script src="worldstate.js"></script>
     <script src="connection.js"></script>
 	<script src="ThreeOctree.js"></script>
+	<script src="controls.js"></script>
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -110,177 +111,28 @@
 		//-------------------------------------------------------
 		
 		
-		/**
-		 * struct for movements
-		 */
-		var playerEvent = new PlayerEvent();
-       
-		/*
-			detect movements
-		*/
-		var controls,time = Date.now();
-
-		var objects = [];
-
-		var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-		document.addEventListener("fullscreenchange", function () {
-			//console.log(document.fullscreen);
-			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
-			var element = document.body;
-			element.requestPointerLock();
-		}, false);
-		document.addEventListener("mozfullscreenchange", function () {
-			console.log(document.mozFullScreen);
-			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
-			var element = document.body;
-			element.requestPointerLock();
-		}, false);
-		document.addEventListener("webkitfullscreenchange", function () {
-			console.log(document.webkitIsFullScreen);
-			console.log("yo this used webkitfullscreen");
-			fullScreenMode = (fullScreenMode == 1) ?  0 : 1;
-			var element = document.body;
-			element.webkitRequestPointerLock();
-		}, false);	
-			
-			
-		/*
-		check for key pressed from the player
-		*/
-		var timer;
-		document.addEventListener('keydown', function(e){
-			if(e.shiftKey == 1)
-			{
-				playerEvent.sprinting = true;
-			}
-			if(e.shiftKey == 0)
-			{
-				playerEvent.sprinting = false;
-			}
-			
-			//'m' key
-			if(e.keyCode == 77)
-			{
-				audio.pause();
-			}
-			
-			switch(e.keyCode)
-			{
-				case 77: audio.pause();
-						 break;
-				default:
-			}
-			
-			if( !/65|68|83|87/.test(e.keyCode)){ 
-			
-			send(playerEvent);
-			return; }
-			
-			switch(e.keyCode)
-			{
-				case 87:		//W
-					playerEvent.front     = true;
-					playerEvent.Backwards = false;
-					break;
-				case 65:		//A
-					playerEvent.left  = true;
-					playerEvent.right = false;
-					break;
-				case 83:		//S
-					playerEvent.Backwards = true;
-					playerEvent.front     = false;
-					break;
-				case 68:		//D
-					playerEvent.right = true;
-					playerEvent.left  = false;
-					break;
-				default:
-					//console.log(e.keyCode);
-			}
-			
-			if(!playerEvent.moving){
-				playerEvent.moving = true;
-				//move();
-				timer = setInterval( function(){
-					//move();
-					send(playerEvent);
-				}, 1000 / 60);
-			}
-			send(playerEvent);
-			
-		}, false);
-		
-		document.addEventListener('keyup', function(e){
-			if(e.shiftKey == 1)
-			{
-				playerEvent.sprinting = false;
-			}
-			if(e.shiftKey == 0)
-			{
-				playerEvent.sprinting = false;
-			}
-			switch(e.keyCode)
-			{
-				case 70: 		//F
-					toggleFullScreen();
-					//handleFullscreen();
-					break;
-				default:
-					//console.log(e.keyCode);
-			}
-			
-			if( !/65|68|83|87/.test(e.keyCode)){ send(playerEvent);return; }
-			
-			switch(e.keyCode)
-			{
-				case 87:		//W
-					playerEvent.front = false;
-					break;
-				case 65:		//A
-					playerEvent.left = false;
-					break;
-				case 83:		//S
-					playerEvent.Backwards = false;
-					break;
-				case 68:		//D
-					playerEvent.right = false;
-					break;
-				
-			}
-			
-			
-			if(!playerEvent.front && !playerEvent.Backwards && !playerEvent.left && !playerEvent.right){
-				playerEvent.moving = false;
-				clearInterval(timer);
-			}
-			send(playerEvent);
-		}, false);
-		
-		
-		var serverWorldState;
 		connection.onmessage = function(buf) {
-            messages[messages.length] = buf.data;
-            if (buf.data.substring(0,3) == "ID:") {
-             myPlayer.id = buf.data.substring(3);
-                playerEvent.playerID = myPlayer.id;
-                console.log("Client recieved id: " + myPlayer.id);
-                return;
-            }
-				
-            var state = JSON.parse(buf.data);
+			messages[messages.length] = buf.data;
+			if (buf.data.substring(0,3) == "ID:") {
+				myPlayer.id = buf.data.substring(3);
+				playerEvent.playerID = myPlayer.id;
+				console.log("Client recieved id: " + myPlayer.id);
+				return;
+			}
 
-				if ('remove' in state) {
-					// state['remove' is the id of the removed player
-					myWorldState.removePlayer(state['remove']);
-				}
-				else {
-					// state is an array of players
-					myWorldState.updateWorldState(state);
-				}
+			var state = JSON.parse(buf.data);
 
-            var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-            myPlayer.position = tempPlayer.cube.position;
+			if ('remove' in state) {
+				// state['remove' is the id of the removed player
+				myWorldState.removePlayer(state['remove']);
+			}
+			else {
+				// state is an array of players
+				myWorldState.updateWorldState(state);
+			}
+
+         var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+         myPlayer.position = tempPlayer.cube.position;
 		};
 		
 	/**
@@ -513,13 +365,11 @@
 		}
 		
 		function onWindowResize() {
-
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
+		}
 		
 
 		main();
