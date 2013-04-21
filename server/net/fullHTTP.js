@@ -17,10 +17,10 @@ console.log("HERE");
 // [ Request path, file contents, repository path, content type ]
 var files = [
 	// library files, we were not authors
-	['stats.min.js', "", thinhGame + 'js/libs/stats.min.js', 'text/javascript'],
-	['three.min.js', "", thinhGame + 'js/libs/three.min.js', 'text/javascript'],
-	['MTLLoader.js', "", thinhGame + 'js/loaders/MTLLoader.js', 'text/javascript'],
-	['OBJMTLLoader.js', "", thinhGame + 'js/loaders/OBJMTLLoader.js', 'text/javascript'],
+	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
+	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
+	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
+	['OBJMTLLoader.js', "", client+ 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['PlayerEvent.js', "", thinhGame + 'js/PlayerEvent.js', 'text/javascript'],
