@@ -4,31 +4,32 @@
  */
 
 // Get external functions.
-var config = require('./../../config.js');
 var Game = require('./../objects/game.js');
 var http = require('http'),
 	 fs = require('fs'),
 	 util = require('util'),
 	 events = require('events');
 
-var thinhGame = "../client/game/";
+var client = "../client/",
+	 thinhGame = "../client/game/";
 
 console.log("HERE");
 // [ Request path, file contents, repository path, content type ]
 var files = [
 	// library files, we were not authors
-	['stats.min.js', "", thinhGame + 'js/libs/stats.min.js', 'text/javascript'],
-	['three.min.js', "", thinhGame + 'js/libs/three.min.js', 'text/javascript'],
-	['MTLLoader.js', "", thinhGame + 'js/loaders/MTLLoader.js', 'text/javascript'],
-	['OBJMTLLoader.js', "", thinhGame + 'js/loaders/OBJMTLLoader.js', 'text/javascript'],
+	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
+	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
+	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
+	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
-	['', "", thinhGame + 'index.html', 'text/html'],
+	['', "", client + 'index.html', 'text/html'],
 	['PlayerEvent.js', "", thinhGame + 'js/PlayerEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", thinhGame + 'js/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", thinhGame + 'js/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", thinhGame + 'js/player.js', 'text/javascript'],
 	['worldstate.js', "", thinhGame + 'js/worldstate.js', 'text/javascript'],
-	['connection.js', "", '../client/net/connection.js', 'text/javascript'],
+	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
+	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
@@ -104,29 +105,13 @@ var files = [
 
 ];
 
-// [ Request path, file contents, repository path, content type ]
-for (var i = 0; i < files.length; i++) {
-	var setFile = function(file) {
-		return function(err, data) {
-			if (err) throw err;
-			file[1] = data;
-		};
-	};
-	if (files[i][3] == 'image/png') {
-		fs.readFile(files[i][2], setFile(files[i]));
-	}
-	else {
-		fs.readFile(files[i][2], 'utf8', setFile(files[i]));
-	}
-}
-
 
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
  * @constructor
  */
-var Server = function() {
+var Server = function(config) {
 	http.createServer(function (request, response) {
 		var found = false;
 		for (var i = 0; i < files.length; i++) {
@@ -153,6 +138,32 @@ var Server = function() {
 
 	this.games = [];
 	this.ngames = 0; // number of games
+
+	this.initFiles(config);
+}
+
+// [ Request path, file contents, repository path, content type ]
+Server.prototype.initFiles = function(config) {
+	for (var i = 0; i < files.length; i++) {
+		var setFile = function(file) {
+			return function(err, data) {
+				if (err) throw err;
+				if (file[3] == 'image/png') {
+					file[1] = data;
+				}
+				else {
+					file[1] = data
+						.replace(/butterServerIp/g, config.ip); // set in main.js
+				}
+			};
+		};
+		if (files[i][3] == 'image/png') {
+			fs.readFile(files[i][2], setFile(files[i]));
+		}
+		else {
+			fs.readFile(files[i][2], 'utf8', setFile(files[i]));
+		}
+	}
 }
 
 Server.prototype.newGame = function() {

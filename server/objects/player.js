@@ -28,7 +28,7 @@ function Player(socket, game) {
 		z : 0
 	};
 
-	console.log('New player: %s', this.id);
+	//console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
 	this.game.sendUpdateFrom(this);
 }

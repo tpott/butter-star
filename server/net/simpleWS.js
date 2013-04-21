@@ -5,7 +5,6 @@
  */
 
 // Get external functions.
-var config = require('./../../config.js');
 var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
 var util = require('util');
@@ -16,7 +15,7 @@ var util = require('util');
  * @note [Server object].clients is an array that maintains an array of
  * all the currently open sockets
  */
-function Server(httpServer) {
+function Server(config, httpServer) {
 	Server.super_.call(this, {port: config.wsPort});
 
 	this.httpServer = httpServer;
@@ -51,6 +50,8 @@ Server.prototype._newSocket = function(socket) {
 	socket.player = player;
 	game.addPlayer(player);
 
+	console.log('New player: %s', player.id);
+
 	// the socket must process client input
 	socket.on('message', function(anything) {
 		//console.log('Recevied input from %s', player.id);
@@ -64,7 +65,7 @@ Server.prototype._newSocket = function(socket) {
 	});
 
 	socket.on('close', function() {
-		console.log('Player left the game');
+		console.log('Player leaving: %s', player.id);
 		game.removePlayer(player);
 	});
 };

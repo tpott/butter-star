@@ -7,9 +7,8 @@
  */
 
 var http = require('http');
-var config = require('./../../config.js');
 
-function Debug(httpServer, wsServer) {
+function Debug(config, httpServer, wsServer) {
 	http.createServer(this.serverCallback())
 		.listen(config.debugPort, '0.0.0.0');
 	console.log('Debug server running at %d.', config.debugPort);
@@ -77,11 +76,12 @@ Debug.prototype.body = function() {
 
 	body += '</table>\n<h3><b>' + this.httpServer.ngames + 
 		'</b> Game instances</h3>\n<table>';
-	body += '<tr><th>Game ID</th><th>Number of players</th>' + 
-		'<th>Number of critters</th>';
+	body += '<tr><th>Game ID</th><th>Ticks/Sec</th>' + 
+		'<th>Number of players</th><th>Number of critters</th>';
 	for (var id in this.httpServer.games) {
 		var game = this.httpServer.games[id];
 		body += '<tr><td>' + game.id + '</td>';
+		body += '<td>' + game.ticks + '</td>';
 		body += '<td>' + game.nplayers + '</td>';
 		body += '<td>' + game.ncritters + '</td>';
 		body += '</tr>\n';

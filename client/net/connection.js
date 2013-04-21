@@ -11,23 +11,12 @@
  * IP address of the server we are connecting to.
  * @type {string}
  */
-var ipAddr;
-
-// Prompt for server IP address if not already set
-function initIPaddress() {
-	if(sessionStorage.getItem('butterIPAddr') == null) {
-	  ipAddr = prompt("IP address of server:", "localhost");
-	  sessionStorage.setItem('butterIPAddr', ipAddr)
-	} else {
-	  ipAddr = sessionStorage['butterIPAddr'];
-	}
-}
+var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
 
 /**
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-initIPaddress();
 var connection = new WebSocket('ws://' + ipAddr + ':8081');
 connection.binaryType = 'arraybuffer';
 
@@ -74,7 +63,6 @@ function send(anything) {
 	if (connection.readyState != 1) {
 		console.log("Connection is not ready yet!");
 	} else {
-        console.log(myPlayer.position);        
 		connection.send(JSON.stringify(anything));
 	}
 }
