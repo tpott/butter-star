@@ -7,16 +7,18 @@
 // Get external functions.
 var util = require('util');
 
-var config = require('./../../config.js');
 var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
 
 // TODO include game logic
 
-function Server(httpServer) {
+/**
+ * @note [Server object].clients is an array that maintains an array of
+ * all the currently open sockets
+ */
+function Server(config, httpServer) {
 	Server.super_.call(this, {port: config.wsPort});
 
-	this.allSockets = [];
 	this.httpServer = httpServer;
 
 	this.on('listening', function() {
@@ -45,12 +47,11 @@ Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
 	var game = this.gameFor(socket);
-  var player = new Player(socket, game);
-  game.addPlayer(player);
+	var player = new Player(socket, game);
+	socket.player = player;
+	game.addPlayer(player);
 
-	// TODO should we remove these once the socket is closed?
-	// save this socket for all possible connections
-	this.allSockets.push(socket);
+	console.log('New player: %s', player.id);
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
@@ -68,8 +69,8 @@ Server.prototype._newSocket = function(socket) {
 	});
 
 	socket.on('close', function() {
-		console.log('Player left the game');
-    game.removePlayer(player);
+		console.log('Player leaving: %s', player.id);
+		game.removePlayer(player);
 	});
 };
 

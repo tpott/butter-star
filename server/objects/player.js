@@ -21,7 +21,7 @@ function Player(socket, game) {
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
   this.cube = new THREE.Mesh(geometry, material);
 
-	console.log('New player: %s', this.id);
+	//console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
 	this.game.sendUpdateFrom(this);
 }

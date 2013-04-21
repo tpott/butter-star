@@ -7,18 +7,20 @@
 
 var randomID = require('./random.js');
 
-var TICKS = 60; // 60 "ticks" per second!
-
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
 
 	this.world = null;
-	this.players = {};
-  this.collidables = {};
+	this.players = [];
 	this.critters = [];
+  this.collidables = [];
+	this.nplayers = 0;
+	this.ncritters = 0;
+	this.ticks = 60; // 60 "ticks" per second!
 
-	setTimeout(gameTick(this), 1000 / TICKS);
+
+	setTimeout(gameTick(this), 1000 / this.ticks);
 }
 
 // TODO link with game logic
@@ -35,6 +37,8 @@ Game.prototype.update = function() {
 		allPlayers.push(player);
 	}
 	for (var id in this.players) {
+		// TODO HIGH
+		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
 }
@@ -57,6 +61,7 @@ Game.prototype.sendUpdateFrom = function(aPlayer) {
 Game.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
   this.collidables[player.id] = player.cube;
+	this.nplayers++;
 	return player.id;
 }
 
@@ -69,7 +74,13 @@ Game.prototype.removePlayer = function(player) {
 		this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
   delete this.collidables[player.id];
-	return delete this.players[player.id];
+	if (delete this.players[player.id]) {
+		this.nplayers--;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 Game.prototype.addCollidable = function(id, newObj) {
@@ -81,7 +92,7 @@ gameTick = function(game) {
 	return function() {
 		game.update();
 		game.render(); // this gets sent to each of the clients
-		setTimeout(gameTick(game), 1000 / TICKS);
+		setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
 
