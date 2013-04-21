@@ -36,6 +36,7 @@ Game.prototype.update = function() {
 		allPlayers.push(player);
 	}
 	for (var id in this.players) {
+		// TODO HIGH
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
