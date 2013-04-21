@@ -151,17 +151,25 @@ var Server = function() {
 	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
 
-	this.games = {};
+	this.games = [];
+	this.ngames = 0; // number of games
 }
 
 Server.prototype.newGame = function() {
 	var g = new Game();
 	this.games[g.id] = g;
+	this.ngames++;
 	return g.id;
 }
 
 Server.prototype.removeGame = function(id) {
-	return delete this.games[id];
+	if (delete this.games[id]) {
+		this.ngames--;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 module.exports.files = files;

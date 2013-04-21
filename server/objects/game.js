@@ -14,8 +14,10 @@ function Game() {
 	this.id = randomID(4);
 
 	this.world = null;
-	this.players = {};
+	this.players = [];
 	this.critters = [];
+	this.nplayers = 0;
+	this.ncritters = 0;
 
 	setTimeout(gameTick(this), 1000 / TICKS);
 }
@@ -56,6 +58,7 @@ Game.prototype.sendUpdateFrom = function(aPlayer) {
 
 Game.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
+	this.nplayers++;
 	return player.id;
 }
 
@@ -67,7 +70,13 @@ Game.prototype.removePlayer = function(player) {
 		}
 		this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
-	return delete this.players[player.id];
+	if (delete this.players[player.id]) {
+		this.nplayers--;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 // FUCK javascript

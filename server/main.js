@@ -7,14 +7,15 @@
 
 var config = require('./../config.js');
 var http = require('./net/fullHTTP.js'), 
+	 debug = require('./net/debugHTTP.js'),
 	 ws = require('./net/simpleWS.js');
-var fs = require('fs'),
-	 crypto = require('crypto');
+
+// TODO link with game logic
+var games = [];
 
 var httpServer = new http();
 var wsServer = new ws(httpServer);
-
-//wsServer.on('connection', wsServer._newSocket);
+var serverDebugger = new debug(httpServer, wsServer);
 
 // TODO when user selects 'New Game' 
 console.log('New game: %s', httpServer.newGame());

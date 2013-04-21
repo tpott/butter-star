@@ -12,10 +12,13 @@ var util = require('util');
 
 // TODO include game logic
 
+/**
+ * @note [Server object].clients is an array that maintains an array of
+ * all the currently open sockets
+ */
 function Server(httpServer) {
 	Server.super_.call(this, {port: config.wsPort});
 
-	this.allSockets = [];
 	this.httpServer = httpServer;
 
 	this.on('listening', function() {
@@ -45,11 +48,8 @@ Server.prototype._newSocket = function(socket) {
 
 	var game = this.gameFor(socket);
 	var player = new Player(socket, game);
+	socket.player = player;
 	game.addPlayer(player);
-
-	// TODO should we remove these once the socket is closed?
-	// save this socket for all possible connections
-	this.allSockets.push(socket);
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
