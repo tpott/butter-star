@@ -56,9 +56,13 @@ Server.prototype._newSocket = function(socket) {
 	// the socket must process client input
 	socket.on('message', function(anything) {
 		//console.log('Recevied input from %s', player.id);
-		var obj = JSON.parse(anything);
+		//var obj = JSON.parse(anything);
 		if (isEvent(obj)) {
-      collidable.move(obj);
+			console.log(anything);
+			if(obj.moving)
+			{
+				collidable.move(obj);
+			}
 		}
 		else {
 			console.log('Received unknown input: %s', anything);
