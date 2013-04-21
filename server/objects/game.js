@@ -7,8 +7,6 @@
 
 var randomID = require('./random.js');
 
-var TICKS = 60; // 60 "ticks" per second!
-
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
@@ -18,8 +16,10 @@ function Game() {
 	this.critters = [];
 	this.nplayers = 0;
 	this.ncritters = 0;
+	this.ticks = 60; // 60 "ticks" per second!
 
-	setTimeout(gameTick(this), 1000 / TICKS);
+
+	setTimeout(gameTick(this), 1000 / this.ticks);
 }
 
 // TODO link with game logic
@@ -84,7 +84,7 @@ gameTick = function(game) {
 	return function() {
 		game.update();
 		game.render(); // this gets sent to each of the clients
-		setTimeout(gameTick(game), 1000 / TICKS);
+		setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
 
