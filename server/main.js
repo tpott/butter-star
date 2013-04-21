@@ -14,7 +14,7 @@ var http = require('./net/fullHTTP.js'),
 var games = [];
 
 var httpServer = new http();
-var wsServer = require('./net/simpleWS.js').wsServer;
+var wsServer = new ws(httpServer);
 var serverDebugger = new debug(httpServer, wsServer);
 
 // TODO when user selects 'New Game' 
