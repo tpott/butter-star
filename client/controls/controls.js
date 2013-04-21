@@ -2,7 +2,7 @@
 /**
  * struct for movements
  */
-var playerEvent = new PlayerEvent();
+var controlsEvent = new ControlsEvent();
 
 /*
  * detect movements

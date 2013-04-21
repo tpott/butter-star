@@ -4,10 +4,10 @@
 var timer;
 document.addEventListener('keydown', function(e){
 	if(e.shiftKey == 1) {
-		playerEvent.sprinting = true;
+		controlsEvent.sprinting = true;
 	}
 	if(e.shiftKey == 0) {
-		playerEvent.sprinting = false;
+		controlsEvent.sprinting = false;
 	}
 
 	//'m' key
@@ -23,49 +23,49 @@ document.addEventListener('keydown', function(e){
 
 	if( !/65|68|83|87/.test(e.keyCode)){ 
 
-		send(playerEvent);
+		send(controlsEvent);
 		return; 
 	}
 
 	switch(e.keyCode) {
 		case 87:		//W
-			playerEvent.front     = true;
-			playerEvent.Backwards = false;
+			controlsEvent.front     = true;
+			controlsEvent.Backwards = false;
 			break;
 		case 65:		//A
-			playerEvent.left  = true;
-			playerEvent.right = false;
+			controlsEvent.left  = true;
+			controlsEvent.right = false;
 			break;
 		case 83:		//S
-			playerEvent.Backwards = true;
-			playerEvent.front     = false;
+			controlsEvent.Backwards = true;
+			controlsEvent.front     = false;
 			break;
 		case 68:		//D
-			playerEvent.right = true;
-			playerEvent.left  = false;
+			controlsEvent.right = true;
+			controlsEvent.left  = false;
 			break;
 		default:
 			//console.log(e.keyCode);
 	}
 
-	if(!playerEvent.moving){
-		playerEvent.moving = true;
+	if(!controlsEvent.moving){
+		controlsEvent.moving = true;
 		//move();
 		timer = setInterval( function(){
 			//move();
-			send(playerEvent);
+			send(controlsEvent);
 		}, 1000 / 60);
 	}
-	send(playerEvent);
+	send(controlsEvent);
 
 }, false);
 
 document.addEventListener('keyup', function(e){
 	if(e.shiftKey == 1) {
-		playerEvent.sprinting = false;
+		controlsEvent.sprinting = false;
 	}
 	if(e.shiftKey == 0) {
-		playerEvent.sprinting = false;
+		controlsEvent.sprinting = false;
 	}
 	switch(e.keyCode) {
 		case 70: 		//F
@@ -76,27 +76,27 @@ document.addEventListener('keyup', function(e){
 			//console.log(e.keyCode);
 	}
 
-	if( !/65|68|83|87/.test(e.keyCode)){ send(playerEvent);return; }
+	if( !/65|68|83|87/.test(e.keyCode)){ send(controlsEvent);return; }
 
 	switch(e.keyCode) {
 		case 87:		//W
-			playerEvent.front = false;
+			controlsEvent.front = false;
 			break;
 		case 65:		//A
-			playerEvent.left = false;
+			controlsEvent.left = false;
 			break;
 		case 83:		//S
-			playerEvent.Backwards = false;
+			controlsEvent.Backwards = false;
 			break;
 		case 68:		//D
-			playerEvent.right = false;
+			controlsEvent.right = false;
 			break;
 	}
 
 
-	if(!playerEvent.front && !playerEvent.Backwards && !playerEvent.left && !playerEvent.right){
-		playerEvent.moving = false;
+	if(!controlsEvent.front && !controlsEvent.Backwards && !controlsEvent.left && !controlsEvent.right){
+		controlsEvent.moving = false;
 		clearInterval(timer);
 	}
-	send(playerEvent);
+	send(controlsEvent);
 }, false);

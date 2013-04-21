@@ -1,4 +1,4 @@
-var PlayerEvent = function() {
+var ControlsEvent = function() {
     this.moving    = false;
     this.front     = false;
     this.Backwards = false;
