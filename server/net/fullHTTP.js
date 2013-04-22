@@ -13,7 +13,6 @@ var http = require('http'),
 var thinhGame = "../client/game/";
 var client = "../client/";
 
-console.log("HERE");
 // [ Request path, file contents, repository path, content type ]
 var files = [
 	// library files, we were not authors

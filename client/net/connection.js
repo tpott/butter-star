@@ -56,6 +56,31 @@ connection.onclose = function() {
     console.log("connection closed!");
 };
 
+connection.onmessage = function(buf) {
+	messages[messages.length] = buf.data;
+	if (buf.data.substring(0,3) == "ID:") {
+		myPlayer.id = buf.data.substring(3);
+		controlsEvent.playerID = myPlayer.id;
+		console.log("Client recieved id: " + myPlayer.id);
+		return;
+	}
+
+	var state = JSON.parse(buf.data);
+
+	if ('remove' in state) {
+		// state['remove' is the id of the removed player
+		myWorldState.removePlayer(state['remove']);
+	}
+	else {
+		// state is an array of players
+		myWorldState.updateWorldState(state);
+	}
+
+	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+	myPlayer.position = tempPlayer.cube.position;
+};
+
+/**
 
 /* Receive is not needed since it will be call-back
  * */
