@@ -115,6 +115,7 @@
 		
 		
 		connection.onmessage = function(buf) {
+			console.log(buf);
 			messages[messages.length] = buf.data;
 			if (buf.data.substring(0,3) == "ID:") {
 				myPlayer.id = buf.data.substring(3);
@@ -378,7 +379,7 @@
 			audio.pause();
 			//controls.disable;
 			
-			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+			// camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 			renderer.setSize(window.innerWidth, window.innerHeight); 
 			document.body.appendChild(renderer.domElement); 
 			document.body.appendChild( stats.domElement );

@@ -16,13 +16,20 @@ var Movable = require('./../physics/movable.js');
 function Player(socket, game) {
   Player.super_.call(this, socket, game);
 
+  // Dimensions of player
+  this.width = 1;
+  this.height = 3;
+  this.depth = 1;
+
   // 3D object this represents
-  var geometry = new THREE.CubeGeometry(1,3,1); // TODO change this size
+  var geometry = new THREE.CubeGeometry(
+      this.width, this.height, this.depth);
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
   this.cube = new THREE.Mesh(geometry, material);
 
-	//console.log('New player: %s', this.id);
+	console.log('Player class, New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
+  console.log('After send');
 	this.game.sendUpdateFrom(this);
 }
 util.inherits(Player, Movable);

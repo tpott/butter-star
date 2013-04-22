@@ -21,7 +21,10 @@ var Collidable = require('./collidable.js');
 function Movable(socket, game) {
   Movable.super_.call(this, socket, game);
 
-  // Dummy cube. Will be set by subclasses
+  // Dummy dimensions and cube. Will be set by subclasses.
+  this.width = 0; // x axis
+  this.height = 0; // y axis
+  this.depth = 0; // z axis
   this.cube = null;
 
   // from Thinh
@@ -60,30 +63,49 @@ Movable.prototype.translate = function(dx, dy, dz) {
  * @param {float} dz Change in z direction (forward/back).
  */
 Movable.prototype.move = function(dx, dy, dz) {
-  // Do collision detection
-  var raycaster = new THREE.Raycaster();
-  raycaster.ray.direction.set(0,-1,0);
-  raycaster.ray.origin.set(
-      // TODO fix magic #2 that puts in center of cube
-      this.position.x, this.position.y+2, this.position.z);
+  // Get offsets to the vertical sides of cube
+  var offsetSigns = [
+      {x: 0.5, z: 0.5}, {x: -0.5, z: 0.5}, {x: 0.5, z: -0.5}, {x: -0.5, z: -0.5}
+  ];
 
+  // Make 4 rays for vertical sides of cube
+  var raycasters = [];
+  for (var i = 0; i < 4; i++) {
+    var raycaster = new THREE.Raycaster();
+    raycaster.ray.direction.set(0,-1,0);
+    raycaster.ray.origin.set(
+        this.position.x + (offsetSigns[i].x * this.width),
+        this.position.y + this.height, // set origin to top of cube
+        this.position.z + (offsetSigns[i].z * this.depth)
+    );
+    raycasters.push(raycaster);
+  }
+    console.log("this is here: " + JSON.stringify(raycasters));
+
+  // Get other objects you can collide against
   var collidables = [];
   for (var id in this.game.collidables) {
     if(id != this.id)
       collidables.push(this.game.collidables[id]);
   }
 
-  var intersections = raycaster.intersectObjects(collidables);
-  if (intersections.length > 0) {
-    // TODO idk what this is for :( why index 0?
-    var distance = intersections[0].distance;
+  // Do collision detection
+  var collided = false;
+  for (var j = 0; j < raycasters.length; j++) {
+    var raycaster = raycasters[j];
+    var intersections = raycaster.intersectObjects(collidables);
+    if (intersections.length > 0) {
+      var distance = intersections[0].distance;
 
-    if(distance > 0 && distance < 2) {
-      this.translate(-1 * dx, -1 * dy, -1 * dz);
-    } else { // not within object range, move normally
-      this.translate(dx, dy, dz);
+      if(distance > 0 && distance < 2) {
+        collided = true;
+      }
     }
-  } else { // no intersections, can move normally
+  }
+
+  if(collided === true) {
+    this.translate(-1 * dx, -1 * dy, -1 * dz);
+  } else {
     this.translate(dx, dy, dz);
   }
   this.cube.matrixWorld.makeTranslation(
