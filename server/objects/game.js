@@ -6,12 +6,14 @@
  */
 
 var randomID = require('./random.js');
+var THREE = require('three');
 
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
 
 	this.world = null;
+	this.gravity = new THREE.Vector4(0, 0, -9.8, 0);
 	this.players = [];
 	this.critters = [];
   this.collidables = [];
@@ -28,7 +30,7 @@ function Game() {
  * Send an update of all object locations to all the clients
  */
 // TODO link with game logic
-Game.prototype.update = function() {
+Game.prototype.sendUpdate = function() {
 	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
@@ -36,7 +38,7 @@ Game.prototype.update = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		player.direction = this.players[id].direction;
+		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
 	}
 	
@@ -49,8 +51,15 @@ Game.prototype.update = function() {
 	}
 }
 
-Game.prototype.render = function() {
-	// TODO push to clients!
+Game.prototype.applyForces = function() {
+	for (var id in this.players) {
+		// add gravity
+		//this.players[id].addForce(this.gravity);
+
+		// collision detection should happen in this call
+		// apply forces ==> update velocity + update position
+		this.players[id].applyForces();
+	}
 }
 
 /**
@@ -96,8 +105,8 @@ Game.prototype.addCollidable = function(id, newObj) {
 // FUCK javascript
 gameTick = function(game) {
 	return function() {
-		game.update();
-		game.render(); // this gets sent to each of the clients
+		game.applyForces(); 
+		game.sendUpdate();
 		//setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }

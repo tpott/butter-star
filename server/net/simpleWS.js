@@ -58,8 +58,7 @@ Server.prototype._newSocket = function(socket) {
 		//console.log('Recevied input from %s', player.id);
 		var obj = JSON.parse(anything);
 		if (isEvent(obj)) {
-			if(obj.moving)
-			{
+			if(obj.moving) {
 				player.move(obj);
 			}
 		}

@@ -78,8 +78,16 @@ Player.prototype.move = function(evt) {
   var dy = 0; // TODO gravity?
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
+	var magicAmplifier = 0.01;
+	var force = new THREE.Vector4(dx, dy, dz, 0)
+		.multiplyScalar(magicAmplifier);
+
+	// TODO remove
   // Handle movement and collisions
-  Player.super_.prototype.move.call(this, dx, dy, dz);
+  //Player.super_.prototype.move.call(this, dx, dy, dz);
+
+  // should resolve to super_.addForce
+  this.addForce(force);
 };
 
 function PlayerEvent() {

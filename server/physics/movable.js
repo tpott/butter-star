@@ -86,7 +86,19 @@ Movable.prototype.move = function(dx, dy, dz) {
  * Apply the current force vector4 to the current position.
  * Collision detection should be applied here (not defined).
  */
-Movable.prototype.applyForce = function() {
+Movable.prototype.applyForces = function() {
+	// Force = mass * acceleration 
+	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
+
+	// integration
+	var timeLapse = 1000.0 / this.game.ticks;
+	this.velocity.add(acceleration.multiplyScalar(timeLapse));
+
+	// TODO before or after changing velocity?
+	this.position.add(this.velocity);
+
+	// reset forces, because all of these have been applied
+	this.force.set(0, 0, 0, 0);
 };
 
 /**
