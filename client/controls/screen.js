@@ -31,3 +31,20 @@ function onWindowResize() {
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
+
+function toggleFullScreen() {
+	if( THREEx.FullScreen.activated() ) {
+		THREEx.FullScreen.cancel();
+	}
+	else {
+		var element = document.body;
+		// Ask the browser to lock the pointer
+		element.requestPointerLock = element.requestPointerLock || 
+			element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+		element.requestFullscreen = element.requestFullscreen || 
+			element.mozRequestFullscreen || element.mozRequestFullScreen || 
+			element.webkitRequestFullscreen;
+		element.requestFullscreen();
+	}
+}
