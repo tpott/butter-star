@@ -20,13 +20,16 @@ function Game() {
 	this.ticks = 60; // 60 "ticks" per second!
 
 
-	setTimeout(gameTick(this), 1000 / this.ticks);
+	//setTimeout(gameTick(this), 1000 / this.ticks);
+	setInterval(gameTick(this), 1000 / this.ticks);
 }
 
+/**
+ * Send an update of all object locations to all the clients
+ */
 // TODO link with game logic
 Game.prototype.update = function() {
-	//console.log('update');
-	// create "worldstate"
+	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
 		var player = {};
@@ -36,6 +39,9 @@ Game.prototype.update = function() {
 		player.direction = this.players[id].direction;
 		allPlayers.push(player);
 	}
+	
+	// TODO spectators
+	// send the data to each of the players + spectators
 	for (var id in this.players) {
 		// TODO HIGH
 		// TODO if socket is already closed and not removed yet
@@ -92,7 +98,7 @@ gameTick = function(game) {
 	return function() {
 		game.update();
 		game.render(); // this gets sent to each of the clients
-		setTimeout(gameTick(game), 1000 / game.ticks);
+		//setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
 

@@ -24,23 +24,13 @@ function Movable(socket, game) {
   // Dummy cube. Will be set by subclasses
   this.cube = null;
 
-  // from Thinh
-  this.position = {
-		x : 0,
-		y : 0,
-		z : 0,
-		direction : 0
-	};
-	this.camera = {
-		speed : 300,
-		distance : 5,
-		x : 0,
-		y : 0, 
-		z : 0
-	};
+  this.velocity = new THREE.Vector4(0, 0, 0, 0);
+  this.force = new THREE.Vector4(0, 0, 0, 0);
+  this.mass = 1.0;
 }
 util.inherits(Movable, Collidable);
 
+// TODO remove translate
 /**
  * Move the object by the given deltas.
  * @param {float} dx Change in x direction (left/right).
@@ -53,6 +43,7 @@ Movable.prototype.translate = function(dx, dy, dz) {
   this.position.z += dz;
 };
 
+// TODO remove move
 /**
  * Try to move the object in the given direction.
  * @param {float} dx Change in x direction (left/right).
@@ -89,6 +80,22 @@ Movable.prototype.move = function(dx, dy, dz) {
   this.cube.matrixWorld.makeTranslation(
       this.position.x, this.position.y, this.position.z);
   this.game.addCollidable(this.id, this.cube);
+};
+
+/**
+ * Apply the current force vector4 to the current position.
+ * Collision detection should be applied here (not defined).
+ */
+Movable.prototype.applyForce = function() {
+};
+
+/**
+ * Add a force vector4 that can be applied at the end of this
+ * game tick.
+ * @param {THREE.Vector4} v the force to be added
+ */
+Movable.prototype.addForce = function(v) {
+	this.force.add(v);
 };
 
 module.exports = Movable;
