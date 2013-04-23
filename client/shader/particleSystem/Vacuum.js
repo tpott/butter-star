@@ -35,7 +35,9 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.negativeTranslationMatrix = new THREE.Matrix4();
 	this.offsetMatrix = new THREE.Matrix4();
 	this.offsetMatrix.identity();
-
+	this.offsetRotationY = new THREE.Matrix4();
+	this.offsetRotationY.identity();
+	
 	//uniform values
 	this.weight = 0.0;;
 
@@ -308,7 +310,7 @@ Vacuum.prototype.init = function()
 /**
 *@this {Vacuum}
 **/
-Vacuum.prototype.update = function()
+Vacuum.prototype.update = function(translation,angle)
 {	
 	this.uniforms.rotation.value.makeRotationAxis(this.direction,this.angle);
 	this.uniforms.weight.value += 0.005;

@@ -32,6 +32,7 @@ var files = [
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
+	['vacuum.js', "", client + 'shader/particleSystem/Vacuum.js', 'text/javascript'],
 	// our data files
 	// temp data files, for Thinh's game
 	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],

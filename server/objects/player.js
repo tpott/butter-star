@@ -75,6 +75,14 @@ Player.prototype.move = function(evt) {
   Player.super_.prototype.move.call(this, dx, dy, dz);
 };
 
+Player.prototype.updateVacuum = function(playerEvent)
+{
+	console.log(this.position);
+	if(playerEvent.isVacuum == false)
+	{
+	}	
+};
+
 function PlayerEvent() {
     this.playerID  = -1;
     this.moving    = false;
@@ -85,6 +93,7 @@ function PlayerEvent() {
     this.sprinting = false;
     this.speed     = .25;
     this.angle     = 0;
+	this.isVacuum  = false;
 }
 
 module.exports = Player;
