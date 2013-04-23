@@ -18,9 +18,7 @@ function Gravity(obj) {
 Gravity.prototype.applyGravity = function(target, ground) {
   var raycaster = new THREE.Raycaster();
   raycaster.ray.direction.set(0, -1, 0);
-  raycaster.ray.origin.copy(target.position);
-  raycaster.ray.origin.y -= 10;
-
+  r
   var intersections = raycaster.intersectObject(ground);
   if (intersections.length > 0) {
     this.isOnGround = true;
