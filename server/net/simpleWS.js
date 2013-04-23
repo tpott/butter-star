@@ -60,6 +60,7 @@ Server.prototype._newSocket = function(socket) {
 		if (isEvent(obj)) {
 			if(obj.moving)
 			{
+        game.gravity.applyGravity(player);
 				player.move(obj);
 			}
 		}

@@ -5,7 +5,10 @@
  * @author Trevor Pottinger
  */
 
+// Get external functions
 var randomID = require('./random.js');
+
+var Gravity = require('./../physics/gravity.js');
 
 function Game() {
 	// generate a random url
@@ -19,6 +22,7 @@ function Game() {
 	this.ncritters = 0;
 	this.ticks = 60; // 60 "ticks" per second!
 
+  this.gravity = new Gravity();
 
 	setTimeout(gameTick(this), 1000 / this.ticks);
 }
