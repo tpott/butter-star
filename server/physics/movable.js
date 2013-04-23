@@ -80,7 +80,6 @@ Movable.prototype.move = function(dx, dy, dz) {
     );
     raycasters.push(raycaster);
   }
-    console.log("this is here: " + JSON.stringify(raycasters));
 
   // Get other objects you can collide against
   var collidables = [];
@@ -97,13 +96,13 @@ Movable.prototype.move = function(dx, dy, dz) {
     if (intersections.length > 0) {
       var distance = intersections[0].distance;
 
-      if(distance > 0 && distance < 2) {
+      if(distance > 0 && distance < 2) { // TODO
         collided = true;
       }
     }
   }
 
-  if(collided === true) {
+  if(collided === true) { // TODO
     this.translate(-1 * dx, -1 * dy, -1 * dz);
   } else {
     this.translate(dx, dy, dz);
