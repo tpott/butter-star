@@ -115,7 +115,7 @@
 		
 		
 		connection.onmessage = function(buf) {
-			console.log(buf);
+			//console.log(buf);
 			messages[messages.length] = buf.data;
 			if (buf.data.substring(0,3) == "ID:") {
 				myPlayer.id = buf.data.substring(3);
