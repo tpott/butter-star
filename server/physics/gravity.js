@@ -28,10 +28,10 @@ Gravity.prototype.applyGravity = function(obj) {
   var raycaster = new THREE.Raycaster();
   raycaster.ray.direction.set(0, -1, 0);
   raycaster.ray.origin.copy(obj.position.x, obj.position.y, obj.position.z);
-  // raycaster.ray.origin.y -= 9.8; // TODO move to individual obj for diff grav
+  raycaster.ray.origin.y -= 9.8; // TODO move to individual obj for diff grav
 
   var isOnGround = false;
-  var intersections = raycaster.intersectObject(this.floor);
+  var intersections = raycaster.intersectObjects([this.floor]);
   console.log(JSON.stringify(intersections));
   if (intersections.length > 0) {
     console.log('GRAVITYYYY');
@@ -43,10 +43,11 @@ Gravity.prototype.applyGravity = function(obj) {
   }
 
   if(isOnGround === true) {
-    obj.translate(0, -10, 0); // TODO fix later for objs of diff heights
+   // TODO fix later for objs of diff heights
+   obj.moveTo_(obj.position.x, obj.position.y - 9.8, obj.position.z);
   } else {
     console.log('falling but not really!');
-    obj.translate(0, -1, 0);
+    obj.translate_(0, -1, 0);
   }
   obj.cube.matrixWorld.makeTranslation(
     obj.position.x, obj.position.y, obj.position.z);

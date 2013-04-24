@@ -45,15 +45,27 @@ function Movable(socket, game) {
 util.inherits(Movable, Collidable);
 
 /**
- * Move the object by the given deltas.
+ * Move the object position by the given deltas. Helper method used by move().
  * @param {float} dx Change in x direction (left/right).
  * @param {float} dy Change in y direction (vertical).
  * @param {float} dz Change in z direction (forward/back).
  */
-Movable.prototype.translate = function(dx, dy, dz) {
+Movable.prototype.translate_ = function(dx, dy, dz) {
   this.position.x += dx;
   this.position.y += dy;
   this.position.z += dz;
+};
+
+/**
+ * Change the object position to be the new x, y, z.
+ * @param {float} x The new x position.
+ * @param {float} y The new y position.
+ * @param {float} z The new z position.
+ */
+Movable.prototype.moveTo_ = function(x, y, z) {
+  this.position.x = x;
+  this.position.y = y;
+  this.position.z = z;
 };
 
 /**
@@ -103,9 +115,9 @@ Movable.prototype.move = function(dx, dy, dz) {
   }
 
   if(collided === true) { // TODO
-    this.translate(-1 * dx, -1 * dy, -1 * dz);
+    this.translate_(-1 * dx, -1 * dy, -1 * dz);
   } else {
-    this.translate(dx, dy, dz);
+    this.translate_(dx, dy, dz);
   }
   this.cube.matrixWorld.makeTranslation(
       this.position.x, this.position.y, this.position.z);
