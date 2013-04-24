@@ -70,9 +70,40 @@ Player.prototype.move = function(evt) {
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
   var dy = 0; // TODO gravity?
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
-
-  // Handle movement and collisions
+  
+// Handle movement and collisions
   Player.super_.prototype.move.call(this, dx, dy, dz);
+};
+/**
+* update the position of the vacuum effect
+**/
+Player.prototype.updateVacuum = function(playerEvent)
+{
+	//player done vacuum'in
+	if(playerEvent.isVacuum == false)
+		this.initVacPos = null;
+	//either continuing or began vacuum'in
+	if(playerEvent.isVacuum == true)
+	{
+		//begin vacuum
+		if(this.initVacPos == null)
+		{
+			var x = this.position.x;
+			var y = this.position.y;
+			var z = this.position.z;
+			this.initVacPos = {x:x,y:y,z:z};
+			this.vacTrans.set(0,0,0);
+		}
+		//vacuum while moving
+		if(playerEvent.moving == true)
+		{
+			var dx = this.position.x - this.initVacPos.x;
+			var dy = this.position.y - this.initVacPos.y;
+			var dz = this.position.z - this.initVacPos.z;
+			this.vacTrans = new THREE.Vector3(dx,dy,dz);
+		}
+	}
+			
 };
 
 function PlayerEvent() {
@@ -85,6 +116,7 @@ function PlayerEvent() {
     this.sprinting = false;
     this.speed     = .25;
     this.angle     = 0;
+	this.isVacuum  = false;
 }
 
 module.exports = Player;

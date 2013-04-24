@@ -8,4 +8,5 @@ var ControlsEvent = function() {
     this.speed     = .25;
     this.angle     = 0;
     this.playerID  = -1;
+	this.isVacuum  = false;
 };

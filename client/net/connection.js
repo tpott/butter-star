@@ -17,7 +17,7 @@ var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':8081');
+var connection = new WebSocket('ws://' + ipAddr + ':9081');
 connection.binaryType = 'arraybuffer';
 
 /**
@@ -78,6 +78,7 @@ connection.onmessage = function(buf) {
 
 	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
 	myPlayer.position = tempPlayer.cube.position;
+	myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
 /**

@@ -62,6 +62,7 @@ Server.prototype._newSocket = function(socket) {
 			{
 				player.move(obj);
 			}
+			player.updateVacuum(obj);
 		}
 		else {
 			console.log('Received unknown input: %s', anything);

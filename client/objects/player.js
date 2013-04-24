@@ -4,7 +4,8 @@ var Player = function() {
     var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
     this.cube = new THREE.Mesh(geometry, material);
-
+	this.vacuum = null;
+	this.vacTrans = new THREE.Vector3();
     this.model =
     {		
         objects : new THREE.Object3D(),
