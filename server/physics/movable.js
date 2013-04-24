@@ -23,7 +23,8 @@ function Movable(socket, game) {
 
   // Dummy cube. Will be set by subclasses
   this.cube = null;
-
+  this.vacTrans = new THREE.Vector3();
+  this.initVacPos = null;
   // from Thinh
   this.position = {
 		x : 0,

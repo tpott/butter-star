@@ -43,5 +43,6 @@ WorldState.prototype.updateWorldState = function(players){
 		}
 		this.players[players[i].id].cube.position = players[i].position;
 		//this.players[players[i].id].cube.direction = players[i].position;
+		this.players[players[i].id].vacTrans = players[i].vacTrans;
 	}
 }

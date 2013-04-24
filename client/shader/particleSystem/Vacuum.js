@@ -17,7 +17,8 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.geometry = new THREE.Geometry();
 	this.angle = 0.0;
 	this.vCenterCircle = new THREE.Vector3();
-	this.length = 150;
+	this.length = 10;
+	this.radius = 2;
 
 	//shader attributes and uniforms
 	this.uniforms = {};
@@ -111,6 +112,11 @@ Vacuum.prototype.setShaderMaterial = function()
 Vacuum.prototype.addToScene = function(scene)
 {
 	scene.add(this.particleSystem);
+};
+
+Vacuum.prototype.removeFromScene = function(scene)
+{
+	scene.remove(this.particleSystem);
 };
 
 function isNegative(number)
@@ -207,7 +213,7 @@ Vacuum.prototype.generateRandomAttributeValues = function()
 	for(i=0;i<this.numParticles;i++)
 	{
 		this.attributes.particleWeight.value[i] = Math.random();
-		this.attributes.displacement.value[i] = Math.random() * 15 - 15;
+		this.attributes.displacement.value[i] = Math.random() * 0.5 - 0.5;
 	}
 };
 /*
@@ -240,17 +246,17 @@ Vacuum.prototype.generateParticleValues = function()
 
 Vacuum.prototype.generateAllParticles = function()
 {
-	var radius = 40;
+	var radius = this.radius;
 	var counter = 0;
 	var angle = 0.0;
 	for(i=0; i < this.numParticles; i++)
 	{
 		if(counter >= 10)
 		{
-			radius = 40;
+			radius = this.radius;
 			counter = 0;
 		}
-		radius -= 2;
+		radius -= 0.1;
 		angle += 0.1;
 		counter++;
 		particle = generateCirclePoints(this.direction,this.vCenterCircle,radius,angle);
@@ -281,7 +287,8 @@ Vacuum.prototype.init = function()
 		base: {type: 'v3', value: this.base},
 		translation: {type: 'm4', value: this.translationMatrix},
 		negativeTranslation: {type: 'm4', value: this.negativeTranslationMatrix},
-		offset: {type: 'm4', value: this.offsetMatrix}
+		offset: {type: 'm4', value: this.offsetMatrix},
+		offsetRotationY: {type: 'm4', value: this.offsetRotationY}
 	};
 
 	this.attributes = {
@@ -310,14 +317,16 @@ Vacuum.prototype.init = function()
 /**
 *@this {Vacuum}
 **/
-Vacuum.prototype.update = function(translation,angle)
+Vacuum.prototype.update = function(translation,vAngle)
 {	
+	var angle = vAngle * Math.PI/180.0;
 	this.uniforms.rotation.value.makeRotationAxis(this.direction,this.angle);
-	this.uniforms.weight.value += 0.005;
-
+	this.uniforms.offset.value.makeTranslation(translation.x,translation.y,translation.z);
+	this.uniforms.offsetRotationY.value.makeRotationY(angle);	
 	if(this.uniforms.weight.value >= 1.0)
 		this.uniforms.weight.value = 0.0;
 
+	this.uniforms.weight.value += 0.025;
 	this.uniforms.weight.needsUpdate = true;
 
 	this.angle += 0.15;

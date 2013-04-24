@@ -18,6 +18,14 @@ document.addEventListener('keydown', function(e){
 	switch(e.keyCode) {
 		case 77: audio.pause();
 			 break;
+		case 67: 
+			if(myPlayer.vacuum == null)
+			{
+				myPlayer.vacuum = new Vacuum(new THREE.Vector3(myPlayer.position.x,myPlayer.position.y,myPlayer.position.z), new THREE.Vector3(0,0,-1), 1000, document.getElementById('vertexShader').textContent, document.getElementById('fragmentShader').textContent);
+				myPlayer.vacuum.addToScene(scene);
+			}
+			controlsEvent.isVacuum = true;
+			break;
 		default:
 	}
 
@@ -71,6 +79,11 @@ document.addEventListener('keyup', function(e){
 		case 70: 		//F
 			toggleFullScreen();
 			//handleFullscreen();
+			break;
+		case 67: 		//C
+			myPlayer.vacuum.removeFromScene(scene);
+			myPlayer.vacuum = null;
+			controlsEvent.isVacuum = false;
 			break;
 		default:
 			//console.log(e.keyCode);

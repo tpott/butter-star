@@ -73,6 +73,64 @@
 	<script src="mouse.js"></script>
 	<script src="screen.js"></script>
 	<script src="vacuum.js"></script>
+	<script type="x-shader/x-vertex" id="vertexShader">
+		//-----------------------BEGIN VERTEX SHADER -------------------------
+		//values for linear interpolation
+		uniform vec3 base;
+		uniform float weight;
+		uniform float amplitude;
+		attribute float particleWeight;
+		attribute float displacement;
+		attribute vec3 normals;
+
+		//values for rotation
+		uniform mat4 rotation;
+		uniform mat4 translation;
+		uniform mat4 negativeTranslation;
+		uniform mat4 offset;
+		uniform mat4 offsetNegative;
+		uniform mat4 offsetRotationY;
+		attribute float alpha;
+		varying float vAlpha;
+		varying vec3 vNormal;
+
+		//linear interpolation
+		vec3 lerp(vec3 start, vec3 end, float weight)
+		{
+			return start*(1.0-weight) + end*(weight);
+		}
+
+		//calculate new position using linear interpolation with given weights
+		vec3 calcFinalPos()
+		{
+			vec3 displace = position + normals * vec3(displacement);
+			float newWeight = particleWeight + weight;
+			if(newWeight >=1.0)
+				newWeight -= 1.0;
+			return lerp(displace,base,newWeight);
+		}
+		//set gl_Position to newly calculated position
+		void main()
+		{
+			vAlpha = alpha;
+			gl_PointSize = 1.0;
+			vec4 newPosition = offset * translation * offsetRotationY * rotation * negativeTranslation * vec4(calcFinalPos() ,1.);
+			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
+		}
+		//-----------------------END VERTEX SHADER -------------------------
+	</script>
+
+
+	<script type="x-shader/x-fragment" id="fragmentShader">
+		//-----------------------BEGIN FRAGMENT SHADER -------------------------
+		uniform vec3 color;
+		varying float vAlpha;
+		void main()
+		{
+			gl_FragColor = vec4(color,vAlpha);
+		}
+		//-----------------------END FRAGMENT SHADER -------------------------
+	</script>	
 	<script> 
 	
 		//GLOBALS AND SHIT
@@ -90,7 +148,7 @@
 		var fullScreenMode = 0;
         var myPlayer = new Player();
 		var myWorldState = new WorldState();
-
+		
 		//only init the worldState once at the very beginning;
 		var initWorldState = true;
 		///Octree Code, eventually will need to port over to the server
@@ -130,7 +188,6 @@
 			myPlayer.model.objects.position.x = myPlayer.position.x;
 			myPlayer.model.objects.position.y = myPlayer.position.y;
 			myPlayer.model.objects.position.z = myPlayer.position.z;
-			
 			// camera rotate x
 			camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
 			camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
@@ -143,6 +200,10 @@
 			
 			var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 			camera.lookAt( vec3 );
+			if(myPlayer.vacuum != null)
+			{
+				myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
+			}
 		}
 		
 		/*
@@ -250,7 +311,6 @@
 			document.body.appendChild( stats.domElement );
 			window.addEventListener( 'resize', onWindowResize, false );
 			// scene.add(cube);
-			
 			render(); 
 		}
 

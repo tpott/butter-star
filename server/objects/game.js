@@ -34,6 +34,7 @@ Game.prototype.update = function() {
 		player.type = 'player';
 		player.position = this.players[id].position;
 		player.direction = this.players[id].direction;
+		player.vacTrans = this.players[id].vacTrans;
 		allPlayers.push(player);
 	}
 	for (var id in this.players) {
