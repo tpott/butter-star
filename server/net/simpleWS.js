@@ -55,18 +55,7 @@ Server.prototype._newSocket = function(socket) {
 
 	// the socket must process client input
 	socket.on('message', function(anything) {
-		//console.log('Recevied input from %s', player.id);
-		var obj = JSON.parse(anything);
-		if (isEvent(obj)) {
-			if(obj.moving)
-			{
-				player.move(obj);
-			}
-			player.updateVacuum(obj);
-		}
-		else {
-			console.log('Received unknown input: %s', anything);
-		}
+        game.eventBasedUpdate(anything, player);
 	});
 
 	socket.on('close', function() {
@@ -74,13 +63,5 @@ Server.prototype._newSocket = function(socket) {
 		game.removePlayer(player);
 	});
 };
-
-/**
- * This is meant to handle any of the input from the client
- */
-function isEvent(anything) {
-	return true;
-}
-
 
 module.exports = Server;

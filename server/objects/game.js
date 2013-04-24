@@ -5,23 +5,27 @@
  * @author Trevor Pottinger
  */
 
+// Get external functions
+var THREE = require('three');
+
 var randomID = require('./random.js');
+var World = require('./world.js');
 
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
 
-	this.world = null;
 	this.players = [];
-	this.critters = [];
     this.collidables = [];
+	this.world = new World(this.players, this.collidables);
+    this.critters = [];
 	this.nplayers = 0;
 	this.ncritters = 0;
 	this.ticks = 60; // 60 "ticks" per second!
 
-
 	setTimeout(gameTick(this), 1000 / this.ticks);
 }
+
 
 // TODO link with game logic
 Game.prototype.sendUpdatesToAllClients = function() {
@@ -61,9 +65,11 @@ Game.prototype.sendUpdateFrom = function(aPlayer) {
 
 Game.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
-    this.collidables[player.id] = player.cube;
+    //console.log("here " + something[player.id);
 	this.nplayers++;
 	this.sendUpdateFrom(player);
+
+    // might want a better way to sync players between game and world
 	return player.id;
 }
 
@@ -75,7 +81,7 @@ Game.prototype.removePlayer = function(player) {
 		}
 		this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
-  delete this.collidables[player.id];
+    delete this.collidables[player.id];
 	if (delete this.players[player.id]) {
 		this.nplayers--;
 		return true;
@@ -85,10 +91,35 @@ Game.prototype.removePlayer = function(player) {
 	}
 }
 
+// TODO
+function isEvent(anything) {
+  return true;
+}; 
+
+Game.prototype.eventBasedUpdate = function (anything, player) {
+    //console.log('Recevied input from %s', player.id);
+    var obj = JSON.parse(anything);
+    if (isEvent(obj)) {
+        if(obj.moving)
+        {
+            player.move(obj, this.collidables);
+        }
+        player.updateVacuum(obj);
+    }
+    else {
+        console.log('Received unknown input: %s', anything);
+    }
+}
+
+Game.prototype.gameTickBasedUpdate = function() {
+    this.world.applyGravityToAllObjects();
+}
+
 // FUCK javascript
 gameTick = function(game) {
 	return function() {
-		game.sendUpdateToAllClients();
+        game.gameTickBasedUpdate();
+		game.sendUpdatesToAllClients();
 		game.render(); // this gets sent to each of the clients
 		setTimeout(gameTick(game), 1000 / game.ticks);
 	}

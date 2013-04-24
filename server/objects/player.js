@@ -11,17 +11,23 @@
 var THREE = require('three');
 var util = require('util');
 
-var Movable = require('./../physics/movable.js');
+var Movable = require('./movable.js');
 
 function Player(socket, game) {
   Player.super_.call(this, socket);
 
+  // Dimensions of player
+  this.width = 1;
+  this.height = 3;
+  this.depth = 1;
+
   // 3D object this represents
-  var geometry = new THREE.CubeGeometry(1,3,1); // TODO change this size
+  var geometry = new THREE.CubeGeometry(
+      this.width, this.height, this.depth);
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
   this.cube = new THREE.Mesh(geometry, material);
 
-	//console.log('New player: %s', this.id);
+	console.log('Player class, New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
 }
 util.inherits(Player, Movable);
@@ -31,7 +37,7 @@ util.inherits(Player, Movable);
  * set actual player movements.
  * @param {Event} evt The player movement event.
  */
-Player.prototype.move = function(evt) {
+Player.prototype.move = function(evt, collidables) {
   var speed = evt.speed;
 	if(evt.sprinting === true) {
 		evt.speed = 0.75;
@@ -71,7 +77,7 @@ Player.prototype.move = function(evt) {
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
   
 // Handle movement and collisions
-  Player.super_.prototype.move.call(this, dx, dy, dz);
+  Player.super_.prototype.move.call(this, dx, dy, dz, collidables);
 };
 /**
 * update the position of the vacuum effect
