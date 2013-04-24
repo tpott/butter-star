@@ -16,10 +16,9 @@ var Collidable = require('./collidable.js');
  * Creates a Movable object. Should not instantiate this class.
  * @constructor
  * @param {wsWebSocket} socket The websocket to connect to.
- * @param {Game} game The game this Movable belongs to.
  */
-function Movable(socket, game) {
-  Movable.super_.call(this, socket, game);
+function Movable(socket) {
+  Movable.super_.call(this, socket);
 
   // Dummy cube. Will be set by subclasses
   this.cube = null;
@@ -60,7 +59,7 @@ Movable.prototype.translate = function(dx, dy, dz) {
  * @param {float} dy Change in y direction (vertical).
  * @param {float} dz Change in z direction (forward/back).
  */
-Movable.prototype.move = function(dx, dy, dz) {
+Movable.prototype.move = function(dx, dy, dz, collidables) {
   // Do collision detection
   var raycaster = new THREE.Raycaster();
   raycaster.ray.direction.set(0,-1,0);
@@ -69,9 +68,9 @@ Movable.prototype.move = function(dx, dy, dz) {
       this.position.x, this.position.y+2, this.position.z);
 
   var collidables = [];
-  for (var id in this.game.collidables) {
+  for (var id in collidables) {
     if(id != this.id)
-      collidables.push(this.game.collidables[id]);
+      collidables.push(collidables[id]);
   }
 
   var intersections = raycaster.intersectObjects(collidables);
@@ -89,7 +88,7 @@ Movable.prototype.move = function(dx, dy, dz) {
   }
   this.cube.matrixWorld.makeTranslation(
       this.position.x, this.position.y, this.position.z);
-  this.game.addCollidable(this.id, this.cube);
+  collidables[this.id] = this.cube;
 };
 
 module.exports = Movable;

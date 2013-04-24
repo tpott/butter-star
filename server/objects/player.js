@@ -14,7 +14,7 @@ var util = require('util');
 var Movable = require('./../physics/movable.js');
 
 function Player(socket, game) {
-  Player.super_.call(this, socket, game);
+  Player.super_.call(this, socket);
 
   // 3D object this represents
   var geometry = new THREE.CubeGeometry(1,3,1); // TODO change this size
@@ -23,7 +23,6 @@ function Player(socket, game) {
 
 	//console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
-	this.game.sendUpdateFrom(this);
 }
 util.inherits(Player, Movable);
 

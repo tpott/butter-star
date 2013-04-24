@@ -14,7 +14,7 @@ function Game() {
 	this.world = null;
 	this.players = [];
 	this.critters = [];
-  this.collidables = [];
+    this.collidables = [];
 	this.nplayers = 0;
 	this.ncritters = 0;
 	this.ticks = 60; // 60 "ticks" per second!
@@ -24,7 +24,7 @@ function Game() {
 }
 
 // TODO link with game logic
-Game.prototype.update = function() {
+Game.prototype.sendUpdatesToAllClients = function() {
 	//console.log('update');
 	// create "worldstate"
 	var allPlayers = [];
@@ -61,8 +61,9 @@ Game.prototype.sendUpdateFrom = function(aPlayer) {
 
 Game.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
-  this.collidables[player.id] = player.cube;
+    this.collidables[player.id] = player.cube;
 	this.nplayers++;
+	this.sendUpdateFrom(player);
 	return player.id;
 }
 
@@ -84,14 +85,10 @@ Game.prototype.removePlayer = function(player) {
 	}
 }
 
-Game.prototype.addCollidable = function(id, newObj) {
-  this.collidables[id] = newObj;
-};
-
 // FUCK javascript
 gameTick = function(game) {
 	return function() {
-		game.update();
+		game.sendUpdateToAllClients();
 		game.render(); // this gets sent to each of the clients
 		setTimeout(gameTick(game), 1000 / game.ticks);
 	}
