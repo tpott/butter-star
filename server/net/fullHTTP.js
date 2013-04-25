@@ -22,6 +22,9 @@ var files = [
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
+	['menu.html', "", client + 'menu.html', 'text/html'],
+	['font.css', "", client + 'font/font.css', 'text/css'],
+	['style.css', "", client + 'css/style.css', 'text/css'],
 	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
