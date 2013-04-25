@@ -58,9 +58,6 @@ World.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
 	this.nplayers++;
 
-  // TODO make event emitter to tell game to update the socket
-	player.socket.send(JSON.stringify(player.toObj()));
-
 	return player.id;
 }
 
@@ -75,7 +72,7 @@ World.prototype.removePlayer = function(player) {
 		  if (id == player.id) {
 			  continue;
 		  }
-      // TODO see comment in addPlayer
+      // TODO make event emitter to tell game to update the socket
 		  this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
 

@@ -74,7 +74,7 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
     if (isEvent(obj)) {
         if(obj.moving)
         {
-            player.move(obj, this.collidables);
+            player.move(obj, this.world.collidables);
         }
         player.updateVacuum(obj);
     }
