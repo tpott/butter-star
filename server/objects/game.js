@@ -36,7 +36,7 @@ function Game() {
  * @return {string} The player ID.
  */
 Game.prototype.addSocket = function(socket) {
-  this.sockets[socket.player.id] = socket;
+  this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
 
 	return socket.id;

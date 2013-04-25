@@ -57,6 +57,7 @@ Server.prototype._newSocket = function(socket) {
   // Create a player and connect to socket
 	var player = new Player(socket);
 	socket.player = player;
+  socket.id = player.id;
 	console.log('New player: %s', player.id);
 
   // Add new socket to a game. Also adds player to the game's world.
