@@ -45,7 +45,7 @@ Game.prototype.sendUpdate = function() {
 	// TODO spectators
 	// send the data to each of the players + spectators
 	for (var id in this.players) {
-		// TODO HIGH
+		// TODO HIGH HIGHER
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
