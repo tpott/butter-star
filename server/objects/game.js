@@ -99,19 +99,19 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
   // TODO clean this up... we already have a toObj() method with
   // some info. We could override it in the Player class.
-	for (var id in this.socket) {
+	for (var id in this.sockets) {
 		var player = {};
 		player.id = id;
 		player.type = 'player';
-		player.position = this.players[id].position;
-		player.direction = this.players[id].direction;
-		player.vacTrans = this.players[id].vacTrans;
+		player.position = this.sockets[id].player.position;
+		player.direction = this.sockets[id].player.direction;
+		player.vacTrans = this.sockets[id].player.vacTrans;
 		allPlayers.push(player);
 	}
-	for (var id in this.players) {
+	for (var id in this.sockets) {
 		// TODO HIGH
 		// TODO if socket is already closed and not removed yet
-		this.players[id].socket.send(JSON.stringify(allPlayers));
+		this.sockets[id].send(JSON.stringify(allPlayers));
 	}
 }
 
