@@ -1,5 +1,6 @@
 /**
- * @fileoverview Serves up a simple, hardcoded index page over http,
+ * @fileoverview Handles login, game selection, and game loading flow, and
+ * serving static files.
  * @author Trevor Pottinger
  */
 
@@ -22,7 +23,8 @@ var files = [
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
-	['menu.html', "", client + 'menu.html', 'text/html'],
+	['game.html', "", client + 'game.html', 'text/html'],
+	//['menu.html', "", client + 'menu.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
 	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
@@ -115,6 +117,115 @@ var files = [
 
 ];
 
+var staticGamePage = "",
+	 indexPos = 0,
+	 gamePos = 0;
+
+// TODO use obj for dynamic pages
+
+function dynamic(server, request) {
+	var response = {
+		head : {
+			'Content-Type' : 'text/html',
+		},
+		found : false,
+		body : '',
+		end : ''
+	};
+	if (request.url == '/') {
+		response.body = files[indexPos][1];
+		response.found = true;
+		return response;
+	}
+	else if (request.url == '/gamelist') {
+		var htmlGameList = "\n";
+		for (var id in server.games) {
+			var game = server.games[id];
+			htmlGameList += "<a href=\"" + id + "\">\n";
+			htmlGameList += "\t<div class=\"activeGames\">\n";
+			// game stats
+			htmlGameList += "\t\t<h4>" + game.level + "</h4>\n";
+			htmlGameList += "\t\t<h3>" + game.nplayers + " players</h3>\n";
+			htmlGameList += "\t\t<h5>Join game!</h5>\n";
+			htmlGameList += "\t</div>\n</a>\n\n";
+		}
+		response.body = staticGamePage.replace(/dynamiclist/, htmlGameList);
+		response.found = true;
+		return response;
+	}
+	else if (request.url == '/newgame') {
+		response.head = { 'Location' : server.newGame() };
+		response.found = true;
+		return response;
+	}
+
+	// return game pages
+	for (var id in server.games) {
+		if (request.url == '/' + id) {
+			response.body = files[gamePos][1]; // file contents ;-)
+			response.found = true;
+			return response;
+		}
+	}
+	
+	return response;
+}
+
+/**
+ * Return a response-like object that is filled with the requested
+ * static file.
+ */
+function staticFile(server, files, request) {
+	var response = {
+		head : {},
+		found : false,
+		body : '',
+		end : ''
+	};
+	for (var i = 0; i < files.length; i++) {
+		if (request.url == '/' + files[i][0]) {
+			response.head['Content-Type'] = files[i][3];
+			response.head['Content-Length'] = files[i][1].length;
+			response.body = files[i][1];
+
+			if (files[i][3] == 'image/png' ||
+				 files[i][3] == 'application/octet-stream') {
+				response.end = 'binary';
+			}
+
+			response.found = true;
+			return response; 
+		}
+	}
+	return response;
+}
+
+/**
+ * Send the response-like object if it was filled out and return true, 
+ * otherwise return false and do nothing
+ */
+function sendResponse(responseObj, response) {
+	if ('Location' in responseObj.head) {
+		response.writeHead(302, responseObj.head);
+		response.end();
+		return;
+	}
+	response.writeHead(200, responseObj.head);
+	try {
+		response.write(responseObj.body);
+	}
+	catch (e) {
+		console.log(e);
+		console.log(responseObj.body);
+	}
+	if (responseObj.end !== '') {
+		response.end(responseObj.end);
+	}
+	else {
+		response.end();
+		//console.log(responseObj.body);
+	}
+}
 
 /**
  * Creates an instance of a Server. Does not start up a server, only
@@ -122,33 +233,8 @@ var files = [
  * @constructor
  */
 var Server = function(config) {
-	http.createServer(function (request, response) {
-		var found = false;
-		for (var i = 0; i < files.length; i++) {
-			if (request.url == '/' + files[i][0]) {
-				response.writeHead(200, {
-					'Content-Type': files[i][3],
-					'Content-Length': files[i][1].length
-				});
-				response.write(files[i][1]);
-				found = true;
-
-				if (files[i][3] == 'image/png' ||
-					 files[i][3] == 'application/octet-stream') {
-					response.end('binary');
-				}
-				else {
-					response.end();
-				}
-
-				break;
-			}
-		}
-		if (!found) {
-			response.writeHead(404, {});
-			response.end();
-		}
-	}).listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
+	http.createServer(this.requestHandler(this))
+		.listen(config.httpPort, '0.0.0.0'); // allow connections from all IPs
 	console.log('HTTP server running at %d.', config.httpPort);
 
 	this.games = [];
@@ -156,6 +242,28 @@ var Server = function(config) {
 
 	this.initFiles(config);
 }
+
+Server.prototype.requestHandler = function(server) {
+	return function (request, response) {
+
+		var potentialResponse = dynamic(server, request);
+		if (potentialResponse.found) {
+			sendResponse(potentialResponse, response);
+			return;
+		}
+
+		potentialResponse = staticFile(server, files, request);
+		if (potentialResponse.found) {
+			sendResponse(potentialResponse, response);
+			return;
+		}
+
+		// NOT FOUND
+		response.writeHead(404, {});
+		response.end();
+	};
+}
+
 
 // [ Request path, file contents, repository path, content type ]
 Server.prototype.initFiles = function(config) {
@@ -178,7 +286,20 @@ Server.prototype.initFiles = function(config) {
 		else {
 			fs.readFile(files[i][2], 'utf8', setFile(files[i]));
 		}
+
+		// needed for "dynamically" returning index
+		if (files[i][0] == '') {
+			indexPos = i;
+		}
+		else if (files[i][0] == 'game.html') {
+			gamePos = i;
+		}
 	}
+
+	fs.readFile(client + 'gamelist.html', 'utf8', function(err, data) {
+		if (err) throw err;
+		staticGamePage = data;
+	});
 }
 
 Server.prototype.newGame = function() {

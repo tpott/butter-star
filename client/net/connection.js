@@ -17,7 +17,8 @@ var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':9081');
+var connection = new WebSocket('ws://' + ipAddr + ':9081/' + 
+		document.URL.replace(/.*\//,'')); // this should be the game id
 connection.binaryType = 'arraybuffer';
 
 /**
