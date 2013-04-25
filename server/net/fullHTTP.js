@@ -25,6 +25,10 @@ var files = [
 	['menu.html', "", client + 'menu.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
+	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
+	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
+	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
+	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/octet-stream'],
 	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
@@ -129,8 +133,13 @@ var Server = function(config) {
 				response.write(files[i][1]);
 				found = true;
 
-				if (files[i][3] == 'image/png') response.end('binary');
-				else response.end();
+				if (files[i][3] == 'image/png' ||
+					 files[i][3] == 'application/octet-stream') {
+					response.end('binary');
+				}
+				else {
+					response.end();
+				}
 
 				break;
 			}
