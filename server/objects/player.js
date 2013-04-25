@@ -13,7 +13,13 @@ var util = require('util');
 
 var Movable = require('./movable.js');
 
-function Player(socket, game) {
+/**
+ * Constructor for a player. Makes a mesh that is the same as the
+ * client-side mesh for a player. The player is represented by a cube.
+ * @constructor
+ * @param {wsWebSocket} socket The socket this player is connected through.
+ */
+function Player(socket) {
   Player.super_.call(this, socket);
 
   // Dimensions of player
@@ -25,7 +31,7 @@ function Player(socket, game) {
   var geometry = new THREE.CubeGeometry(
       this.width, this.height, this.depth);
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
-  this.cube = new THREE.Mesh(geometry, material);
+  this.mesh = new THREE.Mesh(geometry, material);
 
 	console.log('Player class, New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
@@ -37,6 +43,7 @@ util.inherits(Player, Movable);
  * set actual player movements.
  * @param {Event} evt The player movement event.
  */
+// TODO see todo in movable's move method
 Player.prototype.move = function(evt, collidables) {
   var speed = evt.speed;
 	if(evt.sprinting === true) {
@@ -73,20 +80,24 @@ Player.prototype.move = function(evt, collidables) {
   }
 
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
-  var dy = 0; // TODO gravity?
+  var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
   
-// Handle movement and collisions
+  // Handle movement and collisions
   Player.super_.prototype.move.call(this, dx, dy, dz, collidables);
 };
+
 /**
-* update the position of the vacuum effect
-**/
+ * Updates the position of the vacuum effect.
+ * @param {Event} playerEvent The player movement event.
+ */
+// TODO make a vacuum obj. players should have a vacuum obj.
 Player.prototype.updateVacuum = function(playerEvent)
 {
 	//player done vacuum'in
 	if(playerEvent.isVacuum == false)
 		this.initVacPos = null;
+
 	//either continuing or began vacuum'in
 	if(playerEvent.isVacuum == true)
 	{
@@ -99,6 +110,7 @@ Player.prototype.updateVacuum = function(playerEvent)
 			this.initVacPos = {x:x,y:y,z:z};
 			this.vacTrans.set(0,0,0);
 		}
+
 		//vacuum while moving
 		if(playerEvent.moving == true)
 		{
@@ -107,8 +119,7 @@ Player.prototype.updateVacuum = function(playerEvent)
 			var dz = this.position.z - this.initVacPos.z;
 			this.vacTrans = new THREE.Vector3(dx,dy,dz);
 		}
-	}
-			
+	}			
 };
 
 function PlayerEvent() {
@@ -126,4 +137,3 @@ function PlayerEvent() {
 
 module.exports = Player;
 module.exports.Event = PlayerEvent;
-

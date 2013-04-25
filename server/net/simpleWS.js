@@ -10,9 +10,11 @@ var util = require('util');
 var Player = require('./../objects/player.js');
 var WebSocketServer = require('ws').Server;
 
-// TODO include game logic
-
 /**
+ * Create a Server instance.
+ * @constructor
+ * @param config The server-side configurations.
+ * @param httpServer The httpServer.
  * @note [Server object].clients is an array that maintains an array of
  * all the currently open sockets
  */
@@ -29,12 +31,11 @@ function Server(config, httpServer) {
 		console.log('ERROR: %s', err);
 	});
 }
-
-// FUCK THIS LINE, it needs to be before method definitions
 util.inherits(Server, WebSocketServer);
 
 /**
- * Connects a given socket to an existing game
+ * Connects a given socket to an existing game.
+ * @param {Socket} socket The socket to find a game for.
  */
 Server.prototype.gameFor = function(socket) {
 	// HACK return first game 
@@ -43,24 +44,32 @@ Server.prototype.gameFor = function(socket) {
 	}
 };
 
+/**
+ * Handle connecting a new socket to a game.
+ * @param {Socket} socket The socket trying to connect.
+ * @private
+ */
 Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
-	var game = this.gameFor(socket);
-	var player = new Player(socket, game);
-	socket.player = player;
-	game.addPlayer(player);
+	var game = this.gameFor(socket); // TODO
 
+  // Create a player and connect to socket
+	var player = new Player(socket);
+	socket.player = player;
 	console.log('New player: %s', player.id);
 
-	// the socket must process client input
+  // Add new socket to a game. Also adds player to the game's world.
+	game.addSocket(socket);
+
+	// Socket event handlers
 	socket.on('message', function(anything) {
-        game.eventBasedUpdate(anything, player);
+        game.eventBasedUpdate(socket, anything);
 	});
 
 	socket.on('close', function() {
 		console.log('Player leaving: %s', player.id);
-		game.removePlayer(player);
+		game.removeSocket(socket);
 	});
 };
 

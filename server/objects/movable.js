@@ -20,13 +20,16 @@ var Collidable = require('./collidable.js');
 function Movable(socket) {
   Movable.super_.call(this, socket);
 
-  // Dummy dimensions and cube. Will be set by subclasses.
+  // Dummy dimensions and mesh. Will be set by subclasses.
   this.width = 0; // x axis
   this.height = 0; // y axis
   this.depth = 0; // z axis
-  this.cube = null;
+  this.mesh = null;
+
+  // TODO move to player... Moveables include bunnies
   this.vacTrans = new THREE.Vector3();
   this.initVacPos = null;
+
   // from Thinh
   this.position = {
 		x : 0,
@@ -49,6 +52,7 @@ util.inherits(Movable, Collidable);
  * @param {float} dx Change in x direction (left/right).
  * @param {float} dy Change in y direction (vertical).
  * @param {float} dz Change in z direction (forward/back).
+ * @private
  */
 Movable.prototype.translate_ = function(dx, dy, dz) {
   this.position.x += dx;
@@ -61,6 +65,7 @@ Movable.prototype.translate_ = function(dx, dy, dz) {
  * @param {float} x The new x position.
  * @param {float} y The new y position.
  * @param {float} z The new z position.
+ * @private
  */
 Movable.prototype.moveTo_ = function(x, y, z) {
   this.position.x = x;
@@ -69,18 +74,24 @@ Movable.prototype.moveTo_ = function(x, y, z) {
 };
 
 /**
- * Try to move the object in the given direction.
+ * Try check if the object will collide with another object
+ * when it moves by the given deltas.
  * @param {float} dx Change in x direction (left/right).
  * @param {float} dy Change in y direction (vertical).
  * @param {float} dz Change in z direction (forward/back).
+ * @return {boolean} True if collision will occur, false otherwise
+ * @private
  */
-Movable.prototype.move = function(dx, dy, dz, collidables) {
-  // Get offsets to the vertical sides of cube
+Movable.prototype.checkCollision_ = function(dx, dy, dz, collidables) {
+  // Get offsets to the vertical sides of cube mesh from center of cube
   var offsetSigns = [
-      {x: 0.5, z: 0.5}, {x: -0.5, z: 0.5}, {x: 0.5, z: -0.5}, {x: -0.5, z: -0.5}
+      {x: 0.5, z: 0.5},
+      {x: -0.5, z: 0.5},
+      {x: 0.5, z: -0.5},
+      {x: -0.5, z: -0.5}
   ];
 
-  // Make 4 rays for vertical sides of cube
+  // Make 4 rays for vertical sides. Will check if rays interset other objects.
   var raycasters = [];
   for (var i = 0; i < 4; i++) {
     var raycaster = new THREE.Raycaster();
@@ -93,18 +104,22 @@ Movable.prototype.move = function(dx, dy, dz, collidables) {
     raycasters.push(raycaster);
   }
 
-  var cubes = [];
+  // Get a list of meshes this object can collide against
+  var meshes = [];
   for (var id in collidables) {
-    if(id != this.id)
-        cubes.push(collidables[id]);
+    if(id != this.id) {
+      meshes.push(collidables[id].getMesh());
+    }
   }
 
-  // Do collision detection
+  // Do collision detection. Interset each ray with each mesh.
   var collided = false;
   for (var j = 0; j < raycasters.length; j++) {
     var raycaster = raycasters[j];
-    var intersections = raycaster.intersectObjects(cubes);
+    var intersections = raycaster.intersectObjects(meshes);
     if (intersections.length > 0) {
+      // get distance overlapped with closest object
+      // TODO overlap with multiple objects?
       var distance = intersections[0].distance;
 
       if(distance > 0 && distance < 2) { // TODO
@@ -113,14 +128,31 @@ Movable.prototype.move = function(dx, dy, dz, collidables) {
     }
   }
 
-  if(collided === true) { // TODO
-    this.translate_(-1 * dx, -1 * dy, -1 * dz);
+  return collided;
+};
+
+/**
+ * Try to move by the given deltas.
+ * @param {float} dx Change in x direction (left/right).
+ * @param {float} dy Change in y direction (vertical).
+ * @param {float} dz Change in z direction (forward/back).
+ */
+// TODO make so move doesn't need to get passed collidables
+// boolean to check for updated collidables list from game?
+Movable.prototype.move = function(dx, dy, dz, collidables) {
+  var collided = this.checkCollision_(dx, dy, dz, collidables);
+
+  // Handle collision movement, otherwise move normally
+  if(collided === true) {
+    this.translate_(-1 * dx, -1 * dy, -1 * dz); // TODO
   } else {
     this.translate_(dx, dy, dz);
   }
-  this.cube.matrixWorld.makeTranslation(
+
+  // Update the mesh's position so other objects can collide with it
+  this.mesh.matrixWorld.makeTranslation(
       this.position.x, this.position.y, this.position.z);
-  collidables[this.id] = this.cube;
+  collidables[this.id] = this.mesh;
 };
 
 module.exports = Movable;

@@ -4,12 +4,12 @@
  */
 
 // Get external functions.
-var Game = require('./../objects/game.js');
 var http = require('http'),
 	 fs = require('fs'),
 	 util = require('util'),
 	 events = require('events');
 
+var Game = require('./../objects/game.js');
 var thinhGame = "../client/game/";
 var client = "../client/";
 

@@ -5,6 +5,7 @@
  * @author Trevor Pottinger
  */
 
+// Get external functions
 var config = require('./config.js');
 var http = require('./net/fullHTTP.js'), 
 	 debug = require('./net/debugHTTP.js'),

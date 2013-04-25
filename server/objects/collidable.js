@@ -17,6 +17,9 @@ var randomID = require('./../objects/random.js');
 function Collidable(socket) {
   this.socket = socket;
   this.id = randomID(16);
+
+  // Client-side object this represents Will be set by subclasses.
+  this.mesh = null;
 };
 
 /**
