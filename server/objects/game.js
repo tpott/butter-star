@@ -24,7 +24,7 @@ function Game() {
 	this.id = randomID(4);
 	this.ticks = 60; // 60 "ticks" per second!
 
-  this.sockets = [];
+  this.sockets = {};
 	this.world = new World();
 
 	setTimeout(gameTick(this), 1000 / this.ticks);
@@ -36,7 +36,7 @@ function Game() {
  * @return {string} The player ID.
  */
 Game.prototype.addSocket = function(socket) {
-  this.sockets[socket.id] = socket;
+  this.sockets[socket.player.id] = socket;
   this.world.addPlayer(socket.player);
 
 	return socket.id;
@@ -99,7 +99,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
   // TODO clean this up... we already have a toObj() method with
   // some info. We could override it in the Player class.
-	for (var id in this.sockets) {
+	console.log(this.sockets);
+  for (var id in this.sockets) {
+   // console.log(id);
 		var player = {};
 		player.id = id;
 		player.type = 'player';
