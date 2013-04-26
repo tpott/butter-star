@@ -19,6 +19,9 @@ function Collidable(socket, game) {
   this.socket = socket;
   this.game = game;
   this.id = randomID(16);
+
+	this.position = new THREE.Vector4(0, 0, 0, 0);
+	this.orientation = new THREE.Vector4(1, 0, 0, 0);
 };
 
 /**

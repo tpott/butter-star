@@ -12,13 +12,14 @@
  * @type {string}
  */
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
+var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 
 /**
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':9081/' + 
-		document.URL.replace(/.*\//,'')); // this should be the game id
+var connection = new WebSocket('ws://' + ipAddr + ':' + port + 
+		'/' + document.URL.replace(/.*\//,'')); // this should be the game id
 connection.binaryType = 'arraybuffer';
 
 /**

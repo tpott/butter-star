@@ -6,12 +6,14 @@
  */
 
 var randomID = require('./random.js');
+var THREE = require('three');
 
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
 
 	this.world = null;
+	this.gravity = new THREE.Vector4(0, 0, -9.8, 0);
 	this.players = [];
 	this.critters = [];
   this.collidables = [];
@@ -20,32 +22,46 @@ function Game() {
 	this.ticks = 60; // 60 "ticks" per second!
 
 
-	setTimeout(gameTick(this), 1000 / this.ticks);
+	//setTimeout(gameTick(this), 1000 / this.ticks);
+	setInterval(gameTick(this), 1000 / this.ticks);
 }
 
+/**
+ * Send an update of all object locations to all the clients
+ */
 // TODO link with game logic
-Game.prototype.update = function() {
-	//console.log('update');
-	// create "worldstate"
+Game.prototype.sendUpdate = function() {
+	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
 		var player = {};
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		player.direction = this.players[id].direction;
-		player.vacTrans = this.players[id].vacTrans;
+		/*player.direction = this.players[id].direction;
+		player.vacTrans = this.players[id].vacTrans;*/
+		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
 	}
+	
+	// TODO spectators
+	// send the data to each of the players + spectators
 	for (var id in this.players) {
-		// TODO HIGH
+		// TODO HIGH HIGHER
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
 }
 
-Game.prototype.render = function() {
-	// TODO push to clients!
+Game.prototype.applyForces = function() {
+	for (var id in this.players) {
+		// add gravity
+		//this.players[id].addForce(this.gravity);
+
+		// collision detection should happen in this call
+		// apply forces ==> update velocity + update position
+		this.players[id].applyForces();
+	}
 }
 
 /**
@@ -91,9 +107,9 @@ Game.prototype.addCollidable = function(id, newObj) {
 // FUCK javascript
 gameTick = function(game) {
 	return function() {
-		game.update();
-		game.render(); // this gets sent to each of the clients
-		setTimeout(gameTick(game), 1000 / game.ticks);
+		game.applyForces(); 
+		game.sendUpdate();
+		//setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
 

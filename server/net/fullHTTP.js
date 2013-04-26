@@ -277,7 +277,8 @@ Server.prototype.initFiles = function(config) {
 				}
 				else {
 					file[1] = data
-						.replace(/butterServerIp/g, config.ip); // set in main.js
+						.replace(/butterServerIp/g, config.server) // set in main.js
+						.replace(/butterServerPort/g, config.wsPort); // ^ ditto
 				}
 			};
 		};

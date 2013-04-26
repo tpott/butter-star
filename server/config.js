@@ -6,11 +6,15 @@
 
 // TODO: Get programmer's directory for relative pathname.
 var dir = '../..'; // 'jfang'; tpott
+var fs = require('fs');
 
-// TODO: Set up everyone's own server instances and ports?
-exports.wsPort = 9081;
-exports.httpPort = 9078;
-exports.debugPort = 9090;
+var configFile = 'personalConfig.json';
+var pConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+
+exports.wsPort = pConfig.wsPort || 8081;
+exports.httpPort = pConfig.httpPort || 8078;
+exports.debugPort = pConfig.debugPort || 8090;
+exports.server = pConfig.server || process.argv[2] || 'localhost';
 
 // Base path for all files
 // TODO this is the source of issues on changing servers

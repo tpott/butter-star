@@ -21,6 +21,13 @@ function Player(socket, game) {
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
   this.cube = new THREE.Mesh(geometry, material);
 
+	this.camera = {
+		distance : 5,
+		x : 0,
+		y : 0,
+		z : 0
+	};
+
 	//console.log('New player: %s', this.id);
 	this.socket.send('ID:' + this.id);
 	this.game.sendUpdateFrom(this);
@@ -70,9 +77,18 @@ Player.prototype.move = function(evt) {
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
   var dy = 0; // TODO gravity?
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
-  
-// Handle movement and collisions
-  Player.super_.prototype.move.call(this, dx, dy, dz);
+  /*Player.super_.prototype.move.call(this, dx, dy, dz);*/
+
+	var magicAmplifier = 0.01;
+	var force = new THREE.Vector4(dx, dy, dz, 0)
+		.multiplyScalar(magicAmplifier);
+
+	// TODO remove
+  // Handle movement and collisions
+  //Player.super_.prototype.move.call(this, dx, dy, dz);
+
+  // should resolve to super_.addForce
+  this.addForce(force);
 };
 /**
 * update the position of the vacuum effect

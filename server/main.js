@@ -11,7 +11,7 @@ var http = require('./net/fullHTTP.js'),
 	 ws = require('./net/simpleWS.js');
 
 // TODO check for args
-config.ip = process.argv[2];
+config.ip = config.server || process.argv[2];
 console.log('Server IP: %s', config.ip);
 
 // TODO link with game logic
