@@ -16,6 +16,7 @@ function loadPersonalConfig(configFile) {
 		exports.wsPort = pConfig.wsPort || 8081;
 		exports.httpPort = pConfig.httpPort || 8078;
 		exports.debugPort = pConfig.debugPort || 8090;
+		exports.server = pConfig.server || process.argv[2] || 'localhost';
 	});
 }
 loadPersonalConfig('personalConfig.json');
