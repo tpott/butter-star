@@ -38,10 +38,9 @@ util.inherits(Server, WebSocketServer);
  * @param {Socket} socket The socket to find a game for.
  */
 Server.prototype.gameFor = function(socket) {
-	// HACK return first game 
-	for (var key in this.httpServer.games) {
-		return this.httpServer.games[key];
-	}
+	// this gets set in client/net/connection using document.URL
+	var url = socket.upgradeReq.url;
+	return this.httpServer.games[url.replace(/\//, '')];
 };
 
 /**
