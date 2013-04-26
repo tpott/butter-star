@@ -222,7 +222,7 @@
 		//place to initialize lights (temporary, may not need)
 		function initLights()
 		{
-				var light = new THREE.PointLight( 0xffffff, 1, 1000); light.position.set( 0, 50, 0 ); scene.add( light );
+				var light = new THREE.PointLight( 0xffffff, 1, 1000); light.position.set( 0, 20, 0 ); scene.add( light );
 		}
 		
 		//place to initialize models (such as characters and maps)
@@ -235,11 +235,11 @@
 					var tempScale = new THREE.Matrix4();
 					object.position.y = -5;
 					object.position.x = -20;
-					object.scale.set(.1,.1,.1);
+					//object.scale.set(.1,.1,.1);
 					scene.add( object );
 
 				});
-			loader.load( 'KokiriForest.obj', 'KokiriForest.mtl' );
+			loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
 		}
 		
 		//load them textures here
@@ -298,10 +298,10 @@
 		{
 			initStats();
 			initLights();
-			// initModels();
+		  initModels();
 			// initTextures();
 			initSounds();
-			initFloor();
+			//initFloor();
 			audio.pause();
 			//controls.disable;
 			
