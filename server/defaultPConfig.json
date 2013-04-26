@@ -1,6 +1,6 @@
 {
-	wsPort : '10041',
-	httpPort : '10080',
-	debugPort : '10081',
+	wsPort : '8081',
+	httpPort : '8078',
+	debugPort : '8090',
 
 }
