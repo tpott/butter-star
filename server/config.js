@@ -6,6 +6,19 @@
 
 // TODO: Get programmer's directory for relative pathname.
 var dir = '../..'; // 'jfang'; tpott
+var fs = require('fs');
+
+function loadPersonalConfig(configFile) {
+	fs.readFile(configFile, 'utf8', function(err, data) {
+		var pConfig = JSON.parse(data); 
+
+		// these are default values
+		exports.wsPort = pConfig.wsPort || 8081;
+		exports.httpPort = pConfig.httpPort || 8078;
+		exports.debugPort = pConfig.debugPort || 8090;
+	});
+}
+loadPersonalConfig('personalConfig.json');
 
 // TODO: Set up everyone's own server instances and ports?
 exports.wsPort = 8081;

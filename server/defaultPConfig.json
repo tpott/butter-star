@@ -1,0 +1,6 @@
+{
+	wsPort : '10041',
+	httpPort : '10080',
+	debugPort : '10081',
+
+}
