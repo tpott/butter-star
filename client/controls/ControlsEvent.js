@@ -1,4 +1,4 @@
-var PlayerEvent = function() {
+var ControlsEvent = function() {
     this.moving    = false;
     this.front     = false;
     this.Backwards = false;
@@ -8,4 +8,5 @@ var PlayerEvent = function() {
     this.speed     = .25;
     this.angle     = 0;
     this.playerID  = -1;
+	this.isVacuum  = false;
 };

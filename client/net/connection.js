@@ -17,7 +17,8 @@ var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':8081');
+var connection = new WebSocket('ws://' + ipAddr + ':9081/' + 
+		document.URL.replace(/.*\//,'')); // this should be the game id
 connection.binaryType = 'arraybuffer';
 
 /**
@@ -56,6 +57,34 @@ connection.onclose = function() {
     console.log("connection closed!");
 };
 
+var d;
+
+connection.onmessage = function(buf) {
+	messages[messages.length] = buf.data;
+	if (buf.data.substring(0,3) == "ID:") {
+		myPlayer.id = buf.data.substring(3);
+		controlsEvent.playerID = myPlayer.id;
+		console.log("Client recieved id: " + myPlayer.id);
+		return;
+	}
+
+	var state = JSON.parse(buf.data);
+  d = state;
+	if ('remove' in state) {
+		// state['remove' is the id of the removed player
+		myWorldState.removePlayer(state['remove']);
+	}
+	else {
+		// state is an array of players
+		myWorldState.updateWorldState(state);
+	}
+
+	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+	myPlayer.position = tempPlayer.mesh.position;
+	myPlayer.vacTrans = tempPlayer.vacTrans;
+};
+
+/**
 
 /* Receive is not needed since it will be call-back
  * */

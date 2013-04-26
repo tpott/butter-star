@@ -5,6 +5,7 @@
  * @author Trevor Pottinger
  */
 
+// Get external functions
 var config = require('./config.js');
 var http = require('./net/fullHTTP.js'), 
 	 debug = require('./net/debugHTTP.js'),
@@ -22,7 +23,7 @@ var wsServer = new ws(config, httpServer);
 var serverDebugger = new debug(config, httpServer, wsServer);
 
 // TODO when user selects 'New Game' 
-console.log('New game: %s', httpServer.newGame());
+//console.log('New game: %s', httpServer.newGame());
 
 module.exports.config = config;
 module.exports.httpServer = httpServer;

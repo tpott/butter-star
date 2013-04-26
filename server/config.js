@@ -8,9 +8,9 @@
 var dir = '../..'; // 'jfang'; tpott
 
 // TODO: Set up everyone's own server instances and ports?
-exports.wsPort = 8081;
-exports.httpPort = 8078;
-exports.debugPort = 8090;
+exports.wsPort = 9081;
+exports.httpPort = 9078;
+exports.debugPort = 9090;
 
 // Base path for all files
 // TODO this is the source of issues on changing servers

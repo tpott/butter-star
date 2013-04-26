@@ -13,12 +13,13 @@ var randomID = require('./../objects/random.js');
  * Creates a Collidable object. Should not instantiate this class.
  * @constructor
  * @param {wsWebSocket} socket The websocket to connect to.
- * @param {Game} game The game this Collidable belongs to.
  */
-function Collidable(socket, game) {
+function Collidable(socket) {
   this.socket = socket;
-  this.game = game;
   this.id = randomID(16);
+
+  // Client-side object this represents Will be set by subclasses.
+  this.mesh = null;
 };
 
 /**

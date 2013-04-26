@@ -23,12 +23,12 @@ WorldState.prototype.addPlayer = function(p) {
 	var player = new Player();
 	player.id = p.id;
 	player.position = p.position;
-	scene.add(player.cube);
+	scene.add(player.mesh);
 	this.players[player.id] = player;
 }
 
 WorldState.prototype.removePlayer = function(id) {
-	scene.remove(this.players[id].cube);
+	scene.remove(this.players[id].mesh);
 	delete this.players[id];
 }
 
@@ -41,7 +41,8 @@ WorldState.prototype.updateWorldState = function(players){
 		if (!(players[i].id in this.players)) {
 			this.addPlayer(players[i]);
 		}
-		this.players[players[i].id].cube.position = players[i].position;
-		//this.players[players[i].id].cube.direction = players[i].position;
+		this.players[players[i].id].mesh.position = players[i].position;
+		//this.players[players[i].id].mesh.direction = players[i].position;
+		this.players[players[i].id].vacTrans = players[i].vacTrans;
 	}
 }
