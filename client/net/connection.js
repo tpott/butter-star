@@ -12,12 +12,13 @@
  * @type {string}
  */
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
+var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 
 /**
  * The WebSocket connection to the server.
  * @type {WebSocket}
  */
-var connection = new WebSocket('ws://' + ipAddr + ':8081');
+var connection = new WebSocket('ws://' + ipAddr + ':' + port);
 connection.binaryType = 'arraybuffer';
 
 /**

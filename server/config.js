@@ -8,23 +8,13 @@
 var dir = '../..'; // 'jfang'; tpott
 var fs = require('fs');
 
-function loadPersonalConfig(configFile) {
-	fs.readFile(configFile, 'utf8', function(err, data) {
-		var pConfig = JSON.parse(data); 
+var configFile = 'personalConfig.json';
+var pConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 
-		// these are default values
-		exports.wsPort = pConfig.wsPort || 8081;
-		exports.httpPort = pConfig.httpPort || 8078;
-		exports.debugPort = pConfig.debugPort || 8090;
-		exports.server = pConfig.server || process.argv[2] || 'localhost';
-	});
-}
-loadPersonalConfig('personalConfig.json');
-
-// TODO: Set up everyone's own server instances and ports?
-exports.wsPort = 8081;
-exports.httpPort = 8078;
-exports.debugPort = 8090;
+exports.wsPort = pConfig.wsPort || 8081;
+exports.httpPort = pConfig.httpPort || 8078;
+exports.debugPort = pConfig.debugPort || 8090;
+exports.server = pConfig.server || process.argv[2] || 'localhost';
 
 // Base path for all files
 // TODO this is the source of issues on changing servers
