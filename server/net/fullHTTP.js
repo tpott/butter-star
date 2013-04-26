@@ -48,7 +48,8 @@ var files = [
 	['KokiriForest.mtl', "", thinhGame + 'data/forest/KokiriForest.mtl', 'text/text'],
 	['player.png', "", thinhGame + 'data/player.png', 'image/png'],
 	['Paris2.ogg', "", thinhGame + 'data/sounds/Paris2.ogg', 'audio/ogg'],
-
+  ['roomWithWindows.obj', "", thinhGame + 'data/roomWithWindows.obj', 'text/plain'],
+  ['roomWithWindows.mtl', "", thinhGame + 'data/roomWithWindows.mtl', 'text/text'],
 	// Fuck you thinh
 	['awninga.png', "", thinhGame + 'data/forest/awninga.png', 'image/png'],
 	['awning.png', "", thinhGame + 'data/forest/awning.png', 'image/png'],
