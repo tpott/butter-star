@@ -139,7 +139,7 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  */
 Game.prototype.gameTickBasedUpdate = function() {
     this.world.applyGravityToAllObjects();
-		game.applyForces(); 
+		this.applyForces(); 
 }
 
 /**
@@ -177,4 +177,4 @@ gameTick = function(game) {
 	}
 }
 
-module.exports = Game;
+//module.exports = Game;
