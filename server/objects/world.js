@@ -92,13 +92,13 @@ World.prototype.removePlayer = function(player) {
  * Apply gravity to all the objects in the world.
  */
 World.prototype.applyGravityToAllObjects = function() {
-    for (var id in this.players) {
+    /*for (var id in this.players) {
         this.applyGravity(this.players[id]);
     }
 
     for (var id in this.critters) {
         this.applyGravity(this.critters[id]);
-    }
+    }*/
 
     // TODO apply to food
 }
