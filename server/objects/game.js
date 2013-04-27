@@ -70,7 +70,8 @@ Game.prototype.sendUpdate = function() {
 	}
 }
 
-Game.prototype.applyForces = function() {
+// MOVED world.js
+/*Game.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
 		//this.players[id].addForce(this.gravity);
@@ -79,7 +80,7 @@ Game.prototype.applyForces = function() {
 		// apply forces ==> update velocity + update position
 		this.players[id].applyForces();
 	}
-}
+}*/
 
 /**
  * Add a socket to this game.
@@ -139,7 +140,7 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  */
 Game.prototype.gameTickBasedUpdate = function() {
 	this.world.applyGravityToAllObjects();
-	this.applyForces(); 
+	this.world.applyForces(); 
 }
 
 /**

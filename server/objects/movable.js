@@ -106,8 +106,9 @@ Movable.prototype.applyForces = function() {
 	// Force = mass * acceleration 
 	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
 
-	// integration
-	var timeLapse = 1000.0 / this.game.ticks;
+	// integration, then change velocity
+	// TODO don't hardcode timelapse
+	var timeLapse = 1000.0 / 60.0;
 	this.velocity.add(acceleration.multiplyScalar(timeLapse));
 
 	// TODO before or after changing velocity?

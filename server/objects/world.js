@@ -1,5 +1,4 @@
-/**
- * @fileoverview Creates the representation of the world and the elements
+/** * @fileoverview Creates the representation of the world and the elements
  * that belong to it. Handles worldwide forces such as gravity.
  * @author Rohan Halliyal
  * @author Jennifer Fang
@@ -138,5 +137,16 @@ World.prototype.applyGravity = function(obj) {
   );
   this.collidables[obj.id] = obj.mesh;
 };
+
+World.prototype.applyForces = function() {
+	for (var id in this.players) {
+		// add gravity
+		//this.players[id].addForce(this.gravity);
+
+		// collision detection should happen in this call
+		// apply forces ==> update velocity + update position
+		this.players[id].applyForces();                                           
+	}
+}
 
 module.exports = World;
