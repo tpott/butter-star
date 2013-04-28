@@ -55,8 +55,8 @@ Game.prototype.sendUpdate = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;
-		player.vacTrans = this.players[id].vacTrans;*/
+		/*player.direction = this.players[id].direction;*/
+		player.vacTrans = this.players[id].vacTrans;
 		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
 	}
