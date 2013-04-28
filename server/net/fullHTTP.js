@@ -31,6 +31,8 @@ var files = [
 	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
 	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
 	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/octet-stream'],
+	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
+	['main.js', "", client + 'main.js', 'text/javascript'],
 	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
 	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],

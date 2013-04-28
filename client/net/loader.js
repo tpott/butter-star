@@ -32,10 +32,12 @@ var scripts = [
 /**
  * appends script elements to the DOM
  * @param scripts - a list/object
+ * @param doc - the document global
  */
-function loadAll(scripts) {
-	var head = document.getElementsByTagName('head')[0];
-	singleLoader(scripts, 0, head);
+function loadAll(scripts, doc) {
+	var head = doc.getElementsByTagName('head')[0];
+	console.log('Loading ' + scripts);
+	singleLoader(scripts, 0, doc, head);
 }
 
 /**
@@ -44,20 +46,24 @@ function loadAll(scripts) {
  * index - the position in list, must be used as key to scripts
  * head - the DOM element to be appended to
  */
-function singleLoader(scripts, index, head) {
+function singleLoader(scripts, index, doc, head) {
 	// stop recurrance
 	if (index >= scripts.length)
 		return;
 
 	// create the new DOM script element from the url
-	var script = document.createElement('script')
-		.setAttribute('src', scripts[index])
-		.setAttribute('type', 'text/javascript'); // TODO determine actual type
+	var script = doc.createElement('script');
+	script.setAttribute('src', scripts[index]);
+	script.setAttribute('type', 'text/javascript'); // TODO determine actual type
 
 	// load next file!
 	script.onload = function() {
-		singleLoader(scripts, index+1, head);
+		singleLoader(scripts, index+1, doc, head);
 	};
 
 	head.appendChild(script);
+}
+
+// TODO
+function onLast(func) {
 }
