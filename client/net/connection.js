@@ -14,6 +14,9 @@ function Connection(ip, port, gameid, player, world) {
 	this.myPlayer = player;
 	this.myWorldState = world;
 
+	// TODO getting an undefined error, line 43
+	this.messages = [];
+
 	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
 		'/' + this.gameid); 
 
@@ -22,9 +25,6 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
 	this.socket.onmessage = this._onmessage;
-
-	this.messages = [];
-
 }
 
 Connection.prototype._onopen = function() {
@@ -40,7 +40,8 @@ Connection.prototype._onclose = function() {
 };
 
 Connection.prototype._onmessage = function(buf) {
-	this.messages.push(buf.data);
+	// TODO undefined error here
+	//this.messages.push(buf.data);
 
 	if (buf.data.substring(0,3) == "ID:") {
 		this.myPlayer.id = buf.data.substring(3);

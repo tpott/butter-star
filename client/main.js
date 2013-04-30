@@ -14,6 +14,9 @@ var renderer = new THREE.WebGLRenderer();
 var geometry = new THREE.CubeGeometry(1,3,1); 
 var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
+// mouseMoved from client/controls/mouse.js
+document.addEventListener( 'mousemove', mouseMove, false );
+
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -24,7 +27,7 @@ var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
 var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 var gameid = document.URL.replace(/.*\//,'');
 
-var connection = new Connection(ipAddr, port, gameid);
+var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
 
 //only init the worldState once at the very beginning;
 var initWorldState = true;
