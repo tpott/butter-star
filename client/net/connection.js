@@ -7,6 +7,7 @@
  * @author Rohan Halliyal
  */
 
+// TODO move to main.js
 /**
  * IP address of the server we are connecting to.
  * @type {string}
@@ -14,85 +15,70 @@
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
 var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 
-/**
- * The WebSocket connection to the server.
- * @type {WebSocket}
- */
-var connection = new WebSocket('ws://' + ipAddr + ':' + port + 
-		'/' + document.URL.replace(/.*\//,'')); // this should be the game id
-connection.binaryType = 'arraybuffer';
+// document.URL.replace(/.*\//,'') // gameid
+function Connection(ip, port, gameid) {
+	this.ip = ip;
+	this.port = port;
+	this.gameid = gameid;
 
-/**
- * Handles opening a connection to the server.
- */
-connection.onopen = function () {
+	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
+		'/' + this.gameid); 
+
+	this.socket.binaryType = 'arraybuffer';
+	this.socket.onopen = this._onopen;
+	this.socket.onerror = this._onerror;
+	this.socket.onclose = this._onclose;
+	this.socket.onmessage = this._onmessage;
+
+	this.messages = [];
+
+}
+
+Connection.prototype._onopen = function() {
 	console.log("Connection is opened!");
 };
 
-var messages = [];
-/**
- * Handles receiving messages from the server.
- *
- * Initially expect this message to be one fat game state update, the func
- * should prompt the client to update the view via an update() func.
- *  
- * @param {ArrayBuffer} msg The array from the server.
- */
-
-/*
-connection.onmessage = function(buf) {
-  messages[messages.length] = buf.data;
-  console.log("Client received: " + buf.data);
-};
-*/
-
-/**
- * Handles connection errors.
- * @param {Error} error The error.
- */
-connection.onerror = function(error) {
-  console.log('WebSocket Error: ' + error);
+Connection.prototype._onerror = function(err) {
+  console.log('WebSocket Error: ' + err);
 };
 
-connection.onclose = function() {
+Connection.prototype._onclose = function() {
     console.log("connection closed!");
 };
 
-var d;
+Connection.prototype._onmessage = function(buf) {
+	this.messages.push(buf.data);
 
-connection.onmessage = function(buf) {
-	messages[messages.length] = buf.data;
 	if (buf.data.substring(0,3) == "ID:") {
-		myPlayer.id = buf.data.substring(3);
-		controlsEvent.playerID = myPlayer.id;
+		this.myPlayer.id = buf.data.substring(3);
+		// TODO ???? 
+		controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 		return;
 	}
 
 	var state = JSON.parse(buf.data);
-  d = state;
 	if ('remove' in state) {
-		// state['remove' is the id of the removed player
-		myWorldState.removePlayer(state['remove']);
+		this.myWorldState.removePlayer(state['remove']);
 	}
 	else {
 		// state is an array of players
-		myWorldState.updateWorldState(state);
+		this.myWorldState.updateWorldState(state);
 	}
 
 	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-	myPlayer.position = tempPlayer.mesh.position;
-	myPlayer.vacTrans = tempPlayer.vacTrans;
+	this.myPlayer.position = tempPlayer.mesh.position;
+	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
-/**
 
-/* Receive is not needed since it will be call-back
- * */
-function send(anything) {
+/** 
+ * Receive is not needed since it will be call-back
+ */
+Connection.prototype.send = function(anything) {
 	if (connection.readyState != 1) {
 		console.log("Connection is not ready yet!");
 	} else {
-		connection.send(JSON.stringify(anything));
+		this.socket.send(JSON.stringify(anything));
 	}
 }

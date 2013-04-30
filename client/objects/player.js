@@ -28,3 +28,6 @@ var Player = function() {
         z : 0
     };
 };
+
+// TODO global = BAD!!! **HACK**
+//var myPlayer = new Player();

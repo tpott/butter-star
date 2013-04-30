@@ -10,21 +10,24 @@ var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
 
-	// controls
-	"controls.js", "keyboard.js", "mouse.js", "screen.js", "THREEx.FullScreen.js", 
-	"PointerLockControls.js", 
+	// objects (+ models?) - TODO trevor, include models in objects
+	"player.js", "worldstate.js",
+	
+	// TODO IDK what this is for...
+	//"ThreeOctree.js",
 
 	// networking 
 	"ControlsEvent.js", "connection.js", 
 
+	// controls
+	"controls.js", "keyboard.js", "mouse.js", "screen.js", "THREEx.FullScreen.js", 
+	"PointerLockControls.js", 
+
 	// effects
 	"vacuum.js",
 
-	// objects (+ models?) - TODO trevor, include models in objects
-	"player.js", "worldstate.js", 
-	
-	// TODO IDK what this is for...
-	"ThreeOctree.js" 
+	// this defines main()
+	"main.js"
 ];
 
 // TODO order!!
@@ -47,9 +50,13 @@ function loadAll(scripts, doc) {
  * head - the DOM element to be appended to
  */
 function singleLoader(scripts, index, doc, head) {
+	console.log('Loading "%s" %d/%d', scripts[index], index, scripts.length);
 	// stop recurrance
-	if (index >= scripts.length)
+	if (index >= scripts.length) {
+		main();
+		//_lastFunc();
 		return;
+	}
 
 	// create the new DOM script element from the url
 	var script = doc.createElement('script');
@@ -62,8 +69,4 @@ function singleLoader(scripts, index, doc, head) {
 	};
 
 	head.appendChild(script);
-}
-
-// TODO
-function onLast(func) {
 }
