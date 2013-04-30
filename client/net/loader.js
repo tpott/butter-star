@@ -50,13 +50,14 @@ function loadAll(scripts, doc) {
  * head - the DOM element to be appended to
  */
 function singleLoader(scripts, index, doc, head) {
-	console.log('Loading "%s" %d/%d', scripts[index], index, scripts.length);
 	// stop recurrance
 	if (index >= scripts.length) {
 		main();
 		//_lastFunc();
 		return;
 	}
+
+	console.log('Loading "%s" %d/%d', scripts[index], index+1, scripts.length);
 
 	// create the new DOM script element from the url
 	var script = doc.createElement('script');

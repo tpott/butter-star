@@ -11,14 +11,16 @@ function Connection(ip, port, gameid, player, world) {
 	this.ip = ip;
 	this.port = port;
 	this.gameid = gameid;
-	this.myPlayer = player;
-	this.myWorldState = world;
 
 	// TODO getting an undefined error, line 43
 	this.messages = [];
 
 	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
 		'/' + this.gameid); 
+
+	// MORE JAVASCRIPT BULLSHIT
+	this.socket.myPlayer = player;
+	this.socket.myWorldState = world;
 
 	this.socket.binaryType = 'arraybuffer';
 	this.socket.onopen = this._onopen;
@@ -46,7 +48,7 @@ Connection.prototype._onmessage = function(buf) {
 	if (buf.data.substring(0,3) == "ID:") {
 		this.myPlayer.id = buf.data.substring(3);
 		// TODO ???? 
-		controlsEvent.playerID = this.myPlayer.id;
+		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 		return;
 	}
@@ -70,7 +72,7 @@ Connection.prototype._onmessage = function(buf) {
  * Receive is not needed since it will be call-back
  */
 Connection.prototype.send = function(anything) {
-	if (connection.readyState != 1) {
+	if (this.socket.readyState != this.socket.OPEN) {
 		console.log("Connection is not ready yet!");
 	} else {
 		this.socket.send(JSON.stringify(anything));

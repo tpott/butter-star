@@ -20,7 +20,7 @@ document.addEventListener( 'mousemove', mouseMove, false );
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
-  var myPlayer = new Player();
+var myPlayer = new Player();
 var myWorldState = new WorldState();
 
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
