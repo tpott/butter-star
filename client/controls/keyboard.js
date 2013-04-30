@@ -9,63 +9,49 @@ document.addEventListener('keydown', function(e){
 	if(e.shiftKey == 0) {
 		controlsEvent.sprinting = false;
 	}
-
-	//'m' key
-	if(e.keyCode == 77) {
-		audio.pause();
-	}
-
 	switch(e.keyCode) {
-		case 77: audio.pause();
+		case 77:        //M
+             audio.pause();
 			 break;
-		case 67: 
+		case 67:        //C 
 			if(myPlayer.vacuum == null)
 			{
-				myPlayer.vacuum = new Vacuum(new THREE.Vector3(myPlayer.position.x,myPlayer.position.y,myPlayer.position.z), new THREE.Vector3(0,0,-1), 1000, document.getElementById('vertexShader').textContent, document.getElementById('fragmentShader').textContent);
+				myPlayer.vacuum = 
+                    new Vacuum(new THREE.Vector3(
+                                    myPlayer.position.x,
+                                    myPlayer.position.y,
+                                    myPlayer.position.z), 
+                               new THREE.Vector3(0,0,-1), 
+                               1000, 
+                               document.getElementById('vertexShader').textContent, 
+                               document.getElementById('fragmentShader').textContent);
 				myPlayer.vacuum.addToScene(scene);
 			}
 			controlsEvent.isVacuum = true;
 			break;
-		default:
-	}
-
-	if( !/65|68|83|87/.test(e.keyCode)){ 
-
-		//send(controlsEvent);
-		return; 
-	}
-
-	switch(e.keyCode) {
-		case 87:		//W
+        case 87:		//W
 			controlsEvent.front     = true;
 			controlsEvent.Backwards = false;
+            controlsEvent.moving = true;
 			break;
 		case 65:		//A
 			controlsEvent.left  = true;
 			controlsEvent.right = false;
+            controlsEvent.moving = true;
 			break;
 		case 83:		//S
 			controlsEvent.Backwards = true;
 			controlsEvent.front     = false;
+            controlsEvent.moving = true;
 			break;
 		case 68:		//D
 			controlsEvent.right = true;
 			controlsEvent.left  = false;
+            controlsEvent.moving = true;
 			break;
 		default:
-			//console.log(e.keyCode);
+            //console.log(e.keyCode);
 	}
-
-	if(!controlsEvent.moving){
-		controlsEvent.moving = true;
-		//move();
-		timer = setInterval( function(){
-			//move();
-			//send(controlsEvent);
-		}, 1000 / 60);
-	}
-	//send(controlsEvent);
-
 }, false);
 
 document.addEventListener('keyup', function(e){
@@ -85,17 +71,7 @@ document.addEventListener('keyup', function(e){
 			myPlayer.vacuum = null;
 			controlsEvent.isVacuum = false;
 			break;
-		default:
-			//console.log(e.keyCode);
-	}
-
-	if( !/65|68|83|87/.test(e.keyCode)){ 
-        //send(controlsEvent);
-        return; 
-    }
-
-	switch(e.keyCode) {
-		case 87:		//W
+        case 87:		//W
 			controlsEvent.front = false;
 			break;
 		case 65:		//A
@@ -107,12 +83,12 @@ document.addEventListener('keyup', function(e){
 		case 68:		//D
 			controlsEvent.right = false;
 			break;
+		default:
+			//console.log(e.keyCode);
 	}
 
-
-	if(!controlsEvent.front && !controlsEvent.Backwards && !controlsEvent.left && !controlsEvent.right){
+	if(!controlsEvent.front && !controlsEvent.Backwards && 
+       !controlsEvent.left && !controlsEvent.right) {
 		controlsEvent.moving = false;
-		clearInterval(timer);
 	}
-	//send(controlsEvent);
 }, false);
