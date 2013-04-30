@@ -129,8 +129,9 @@ Player.prototype.updateVacuum = function(playerEvent)
 		}
 
 		//vacuum while moving
-		if(playerEvent.moving == true)
-		{
+		//if(playerEvent.moving == true)
+		else
+        {
 			var dx = this.position.x - this.initVacPos.x;
 			var dy = this.position.y - this.initVacPos.y;
 			var dz = this.position.z - this.initVacPos.z;
