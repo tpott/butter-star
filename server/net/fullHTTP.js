@@ -43,13 +43,13 @@ var files = [
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
 	['vacuum.js', "", client + 'shader/particleSystem/Vacuum.js', 'text/javascript'],
 	// our data files
+  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
+  ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/text'],
 	// temp data files, for Thinh's game
-	['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
+	['player.png', "", thinhGame + 'data/player.png', 'image/png']
+	/*['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
 	['KokiriForest.mtl', "", thinhGame + 'data/forest/KokiriForest.mtl', 'text/text'],
-	['player.png', "", thinhGame + 'data/player.png', 'image/png'],
 	['Paris2.ogg', "", thinhGame + 'data/sounds/Paris2.ogg', 'audio/ogg'],
-  ['roomWithWindows.obj', "", thinhGame + 'data/roomWithWindows.obj', 'text/plain'],
-  ['roomWithWindows.mtl', "", thinhGame + 'data/roomWithWindows.mtl', 'text/text'],
 	// Fuck you thinh
 	['awninga.png', "", thinhGame + 'data/forest/awninga.png', 'image/png'],
 	['awning.png', "", thinhGame + 'data/forest/awning.png', 'image/png'],
@@ -114,7 +114,7 @@ var files = [
 	['vinew.png', "", thinhGame + 'data/forest/vinew.png', 'image/png'],
 	['wall.png', "", thinhGame + 'data/forest/wall.png', 'image/png'],
 	['walls.png', "", thinhGame + 'data/forest/walls.png', 'image/png'],
-	['water.png', "", thinhGame + 'data/forest/water.png', 'image/png']
+	['water.png', "", thinhGame + 'data/forest/water.png', 'image/png']*/
 
 ];
 
@@ -217,7 +217,7 @@ function sendResponse(responseObj, response) {
 	}
 	catch (e) {
 		console.log(e);
-		console.log(responseObj.body);
+		//console.log(responseObj.body);
 	}
 	if (responseObj.end !== '') {
 		response.end(responseObj.end);
