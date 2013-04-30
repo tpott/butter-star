@@ -9,7 +9,12 @@ var dir = '../..'; // 'jfang'; tpott
 var fs = require('fs');
 
 var configFile = 'personalConfig.json';
-var pConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+try {
+	var pConfig = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+}
+catch (e) {
+	var pConfig = {};
+}
 
 exports.wsPort = pConfig.wsPort || 8081;
 exports.httpPort = pConfig.httpPort || 8078;

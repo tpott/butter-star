@@ -29,14 +29,14 @@ function Game() {
 	this.gravity = new THREE.Vector4(0, 0, -9.8, 0);
 	this.players = [];
 	this.critters = [];
-  this.collidables = [];
+	this.collidables = [];
 	this.nplayers = 0;
 	this.ncritters = 0;
 
 
 	this.ticks = 60; // 60 "ticks" per second!
 
-  this.sockets = {};
+	this.sockets = {};
 	this.world = new World();
 
 	//setTimeout(gameTick(this), 1000 / this.ticks);
@@ -55,8 +55,8 @@ Game.prototype.sendUpdate = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;
-		player.vacTrans = this.players[id].vacTrans;*/
+		/*player.direction = this.players[id].direction;*/
+		player.vacTrans = this.players[id].vacTrans;
 		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
 	}
@@ -70,7 +70,8 @@ Game.prototype.sendUpdate = function() {
 	}
 }
 
-Game.prototype.applyForces = function() {
+// MOVED world.js
+/*Game.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
 		//this.players[id].addForce(this.gravity);
@@ -79,6 +80,7 @@ Game.prototype.applyForces = function() {
 		// apply forces ==> update velocity + update position
 		this.players[id].applyForces();
 	}
+}*/
 
 /**
  * Add a socket to this game.
@@ -122,8 +124,7 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
 
     var obj = JSON.parse(anything);
     if (isEvent(obj)) {
-        if(obj.moving)
-        {
+        if(obj.moving) {
             player.move(obj, this.world.collidables);
         }
         player.updateVacuum(obj);
@@ -138,8 +139,8 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
-    this.world.applyGravityToAllObjects();
-		game.applyForces(); 
+	this.world.applyGravityToAllObjects();
+	this.world.applyForces(); 
 }
 
 /**
@@ -148,10 +149,10 @@ Game.prototype.gameTickBasedUpdate = function() {
 Game.prototype.sendUpdatesToAllClients = function() {
 	var allPlayers = [];
 
-  // TODO clean this up... we already have a toObj() method with
-  // some info. We could override it in the Player class.
-	console.log(this.sockets);
-  for (var id in this.sockets) {
+	// TODO clean this up... we already have a toObj() method with
+	// some info. We could override it in the Player class.
+	//console.log(this.sockets);
+	for (var id in this.sockets) {
    // console.log(id);
 		var player = {};
 		player.id = id;
