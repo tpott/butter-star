@@ -62,10 +62,15 @@ var d;
 
 connection.onmessage = function(buf) {
 	messages[messages.length] = buf.data;
+
+    // connection initialized
 	if (buf.data.substring(0,3) == "ID:") {
 		myPlayer.id = buf.data.substring(3);
 		controlsEvent.playerID = myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
+
+        initClientSend();
+
 		return;
 	}
 
@@ -85,6 +90,16 @@ connection.onmessage = function(buf) {
 	myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
+function initClientSend() {
+    setInterval(
+        function() {
+            clientSendLoop();
+        }, 1000/60); 
+}
+
+function clientSendLoop() {
+    send(controlsEvent);
+}
 /**
 
 /* Receive is not needed since it will be call-back
