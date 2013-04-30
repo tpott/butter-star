@@ -17,8 +17,14 @@ var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUti
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
-  //var myPlayer = new Player();
-//var myWorldState = new WorldState();
+  var myPlayer = new Player();
+var myWorldState = new WorldState();
+
+var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
+var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
+var gameid = document.URL.replace(/.*\//,'');
+
+var connection = new Connection(ipAddr, port, gameid);
 
 //only init the worldState once at the very beginning;
 var initWorldState = true;

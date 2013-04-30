@@ -7,19 +7,12 @@
  * @author Rohan Halliyal
  */
 
-// TODO move to main.js
-/**
- * IP address of the server we are connecting to.
- * @type {string}
- */
-var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
-var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
-
-// document.URL.replace(/.*\//,'') // gameid
-function Connection(ip, port, gameid) {
+function Connection(ip, port, gameid, player, world) {
 	this.ip = ip;
 	this.port = port;
 	this.gameid = gameid;
+	this.myPlayer = player;
+	this.myWorldState = world;
 
 	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
 		'/' + this.gameid); 
