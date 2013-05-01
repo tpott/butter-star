@@ -1,6 +1,6 @@
 var ControlsEvent = function() {
-    this.isMoveEvent    = false;
-	this.isVacuumEvent  = false;
+    this.moving   = false;
+	this.isVacuum  = false;
     this.front     = false;
     this.Backwards = false;
     this.left      = false;
