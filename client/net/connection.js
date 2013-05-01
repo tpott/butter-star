@@ -45,11 +45,16 @@ Connection.prototype._onmessage = function(buf) {
 	// TODO undefined error here
 	//this.messages.push(buf.data);
 
+
+    // connection initialized
 	if (buf.data.substring(0,3) == "ID:") {
 		this.myPlayer.id = buf.data.substring(3);
 		// TODO ???? 
 		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
+
+        initClientSend(this); // Pass the socket to the send loop
+
 		return;
 	}
 
@@ -67,8 +72,21 @@ Connection.prototype._onmessage = function(buf) {
 	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
+initClientSend = function(socket) {
+    setInterval(
+        function() {
+            clientSendLoop(socket);
+        }, 1000/60); 
+}
 
-/** 
+function clientSendLoop(socket) {
+	if (socket.readyState != socket.OPEN) {
+		console.log("Connection is not ready yet!");
+	} else {
+		socket.send(JSON.stringify(controlsEvent));
+	}
+}
+/**
  * Receive is not needed since it will be call-back
  */
 Connection.prototype.send = function(anything) {
