@@ -31,7 +31,7 @@ document.addEventListener('keydown', function(e){
 
 	if( !/65|68|83|87/.test(e.keyCode)){ 
 
-		send(controlsEvent);
+		connection.send(controlsEvent);
 		return; 
 	}
 
@@ -61,10 +61,10 @@ document.addEventListener('keydown', function(e){
 		//move();
 		timer = setInterval( function(){
 			//move();
-			send(controlsEvent);
+			connection.send(controlsEvent);
 		}, 1000 / 60);
 	}
-	send(controlsEvent);
+	connection.send(controlsEvent);
 
 }, false);
 
@@ -89,7 +89,7 @@ document.addEventListener('keyup', function(e){
 			//console.log(e.keyCode);
 	}
 
-	if( !/65|68|83|87/.test(e.keyCode)){ send(controlsEvent);return; }
+	if( !/65|68|83|87/.test(e.keyCode)){ connection.send(controlsEvent);return; }
 
 	switch(e.keyCode) {
 		case 87:		//W
@@ -111,5 +111,5 @@ document.addEventListener('keyup', function(e){
 		controlsEvent.moving = false;
 		clearInterval(timer);
 	}
-	send(controlsEvent);
+	connection.send(controlsEvent);
 }, false);

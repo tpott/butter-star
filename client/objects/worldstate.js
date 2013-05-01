@@ -46,3 +46,6 @@ WorldState.prototype.updateWorldState = function(players){
 		this.players[players[i].id].vacTrans = players[i].vacTrans;
 	}
 }
+
+// TODO GLOBAL HACKS EWWWWWWW
+//var myWorldState = new WorldState();
