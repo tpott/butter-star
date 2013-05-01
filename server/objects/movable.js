@@ -25,6 +25,8 @@ function Movable(socket, game) {
   this.cube = null;
   this.vacTrans = new THREE.Vector3();
   this.initVacPos = null;
+  this.direction = null;
+  this.isVacuum = false;
   // from Thinh
   /*this.position = {
 		x : 0,

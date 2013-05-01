@@ -25,6 +25,7 @@ document.addEventListener('keydown', function(e){
                                1000, 
                                document.getElementById('vertexShader').textContent, 
                                document.getElementById('fragmentShader').textContent);
+				myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
 				myPlayer.vacuum.addToScene(scene);
 			}
 			controlsEvent.isVacuum = true;

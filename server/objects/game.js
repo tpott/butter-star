@@ -124,6 +124,8 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
 
     var obj = JSON.parse(anything);
     if (isEvent(obj)) {
+        player.direction = obj.angle;
+		player.isVacuum = obj.isVacuum;
         if(obj.moving) {
             player.move(obj, this.world.collidables);
         }
@@ -160,6 +162,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		player.position = this.sockets[id].player.position;
 		player.direction = this.sockets[id].player.direction;
 		player.vacTrans = this.sockets[id].player.vacTrans;
+		player.isVacuum = this.sockets[id].player.isVacuum;
 		allPlayers.push(player);
 	}
 	for (var id in this.sockets) {
