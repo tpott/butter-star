@@ -4,10 +4,10 @@
 var timer;
 document.addEventListener('keydown', function(e){
 	if(e.shiftKey == 1) {
-		controlsEvent.sprinting = true;
+		controlsEvent.set("sprinting", true);
 	}
 	if(e.shiftKey == 0) {
-		controlsEvent.sprinting = false;
+		controlsEvent.set("sprinting", false);
 	}
 	switch(e.keyCode) {
 		case 77:        //M
@@ -27,27 +27,27 @@ document.addEventListener('keydown', function(e){
                                document.getElementById('fragmentShader').textContent);
 				myPlayer.vacuum.addToScene(scene);
 			}
-			controlsEvent.isVacuum = true;
+			controlsEvent.set("isVacuum", true);
 			break;
         case 87:		//W
-			controlsEvent.front     = true;
-			controlsEvent.Backwards = false;
-            controlsEvent.moving = true;
+			controlsEvent.set("front", true);
+			controlsEvent.set("Backwards", false);
+            controlsEvent.set("moving", true);
 			break;
 		case 65:		//A
-			controlsEvent.left  = true;
-			controlsEvent.right = false;
-            controlsEvent.moving = true;
+			controlsEvent.set("left", true);
+			controlsEvent.set("right", false);
+            controlsEvent.set("moving", true);
 			break;
 		case 83:		//S
-			controlsEvent.Backwards = true;
-			controlsEvent.front     = false;
-            controlsEvent.moving = true;
+			controlsEvent.set("Backwards", true);
+			controlsEvent.set("front", false);
+            controlsEvent.set("moving", true);
 			break;
 		case 68:		//D
-			controlsEvent.right = true;
-			controlsEvent.left  = false;
-            controlsEvent.moving = true;
+			controlsEvent.set("right", true);
+			controlsEvent.set("left", false);
+            controlsEvent.set("moving", true);
 			break;
 		default:
             //console.log(e.keyCode);
@@ -56,10 +56,10 @@ document.addEventListener('keydown', function(e){
 
 document.addEventListener('keyup', function(e){
 	if(e.shiftKey == 1) {
-		controlsEvent.sprinting = false;
+		controlsEvent.set("sprinting", false);
 	}
 	if(e.shiftKey == 0) {
-		controlsEvent.sprinting = false;
+		controlsEvent.set("sprinting", false);
 	}
 	switch(e.keyCode) {
 		case 70: 		//F
@@ -69,19 +69,19 @@ document.addEventListener('keyup', function(e){
 		case 67: 		//C
 			myPlayer.vacuum.removeFromScene(scene);
 			myPlayer.vacuum = null;
-			controlsEvent.isVacuum = false;
+			controlsEvent.set("isVacuum", false);
 			break;
         case 87:		//W
-			controlsEvent.front = false;
+			controlsEvent.set("front", false);
 			break;
 		case 65:		//A
-			controlsEvent.left = false;
+			controlsEvent.set("left", false);
 			break;
 		case 83:		//S
-			controlsEvent.Backwards = false;
+			controlsEvent.set("Backwards", false);
 			break;
 		case 68:		//D
-			controlsEvent.right = false;
+			controlsEvent.set("right", false);
 			break;
 		default:
 			//console.log(e.keyCode);
@@ -89,6 +89,6 @@ document.addEventListener('keyup', function(e){
 
 	if(!controlsEvent.front && !controlsEvent.Backwards && 
        !controlsEvent.left && !controlsEvent.right) {
-		controlsEvent.moving = false;
+		controlsEvent.set("moving", false);
 	}
 }, false);

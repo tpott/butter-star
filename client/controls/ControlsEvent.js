@@ -1,5 +1,6 @@
 var ControlsEvent = function() {
-    this.moving    = false;
+    this.isMoveEvent    = false;
+	this.isVacuumEvent  = false;
     this.front     = false;
     this.Backwards = false;
     this.left      = false;
@@ -8,5 +9,9 @@ var ControlsEvent = function() {
     this.speed     = .25;
     this.angle     = 0;
     this.playerID  = -1;
-	this.isVacuum  = false;
 };
+
+ControlsEvent.prototype.set = function(field, value) {
+    this[field] = value;
+    hasBeenSent = false;
+}

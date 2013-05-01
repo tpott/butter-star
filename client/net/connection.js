@@ -80,11 +80,18 @@ initClientSend = function(socket) {
 }
 
 function clientSendLoop(socket) {
-	if (socket.readyState != socket.OPEN) {
-		console.log("Connection is not ready yet!");
-	} else {
-		socket.send(JSON.stringify(controlsEvent));
-	}
+    if (hasBeenSent == false) {
+        if (socket.readyState != socket.OPEN) {
+            console.log("Connection is not ready yet!");
+        } else {
+            socket.send(JSON.stringify(controlsEvent));
+            // dont flag event as sent if vacuum is on since client can be
+            // moving without pressing any keys (acceleration)
+            if (controlsEvent.isVacuum == false) {
+               hasBeenSent = true; 
+            }
+        }
+    }
 }
 /**
  * Receive is not needed since it will be call-back
@@ -93,6 +100,6 @@ Connection.prototype.send = function(anything) {
 	if (this.socket.readyState != this.socket.OPEN) {
 		console.log("Connection is not ready yet!");
 	} else {
-		this.socket.send(JSON.stringify(anything));
-	}
+            socket.send(JSON.stringify(anything));
+    }
 }
