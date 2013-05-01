@@ -93,13 +93,3 @@ function clientSendLoop(socket) {
         }
     }
 }
-/**
- * Receive is not needed since it will be call-back
- */
-Connection.prototype.send = function(anything) {
-	if (this.socket.readyState != this.socket.OPEN) {
-		console.log("Connection is not ready yet!");
-	} else {
-            socket.send(JSON.stringify(anything));
-    }
-}
