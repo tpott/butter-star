@@ -95,6 +95,9 @@ function keyUp(e){
 		controlsEvent.set("sprinting", false);
 	}
 	switch(e.keyCode) {
+		case keymap['ESC']:
+			optionMenu.toggle();
+			break;
 		case keymap['f']:
 			toggleFullScreen();
 			//handleFullscreen();

@@ -24,6 +24,7 @@ document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
 var minimap = null;
+var optionMenu = null;
 
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
@@ -233,12 +234,15 @@ function main()
 	
 	minimap = new Minimap();
 	minimap.drawCircle();
+	optionMenu = new OptionMenu();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
+
+	$('canvas').attr('class', 'game');
 	// scene.add(cube);
 	render(); 
 }

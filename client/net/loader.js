@@ -28,7 +28,7 @@ var scripts = [
 	"vacuum.js",
 
 	// gui
-	"minimap.js",
+	"minimap.js", "options.js",
 
 	// this defines main()
 	"main.js"
