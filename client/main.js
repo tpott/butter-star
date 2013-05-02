@@ -84,7 +84,44 @@ function update()
 	{
 		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
 	}
+    updatePlayersAnimation();
+
 }
+    //render all other player animations
+    function updatePlayersAnimation()
+    {
+        for(player in myWorldState.players)
+        {
+            var players = myWorldState.players[player];
+            //only add vacuum for other players
+            if(players.isVacuum == true && players.id != myPlayer.id)
+            {
+                if(players.vacuum == null)
+                {
+                    console.log("generated first vacuum for player");
+                    players.vacuum = new Vacuum(
+                        new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
+                        players.mesh.position.z), 
+                        new THREE.Vector3(0,0,-1),
+                        1000, 
+                        document.getElementById('vertexShader').textContent, 
+                        document.getElementById('fragmentShader').textContent);
+                    players.vacuum.update(players.vacTrans,players.direction);  
+                    players.vacuum.addToScene(scene);   
+                }
+                else
+                {
+                    players.vacuum.update(players.vacTrans,players.direction);
+                }
+            }
+            else if(players.vacuum != null)
+            {
+    
+               players.vacuum.removeFromScene(scene);
+               players.vacuum = null;
+            }
+       }
+   }
 
 /*
 	renderin' shit
