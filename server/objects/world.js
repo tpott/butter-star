@@ -6,7 +6,7 @@
 
 // Get external functions
 var THREE = require('three');
-
+var Critter = require('./critter.js');
 /**
  * Construct the game play world.
  * @constructor
@@ -58,6 +58,20 @@ World.prototype.addPlayer = function(player) {
 	this.nplayers++;
 
 	return player.id;
+}
+
+World.prototype.addCritter = function(numCritters) {
+  for( var i = 0 ; i < numCritters; i++)
+  {
+    var critter = new Critter();
+    critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
+                               y :  Math.floor(Math.random() * 20) * 20 + 10,
+                               z :  Math.floor(Math.random() * 20 - 10) * 20}
+    critter.id = i;
+    this.critters[i] = critter;
+  }
+
+
 }
 
 /**

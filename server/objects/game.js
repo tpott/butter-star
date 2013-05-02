@@ -38,8 +38,9 @@ function Game() {
 
 	this.sockets = {};
 	this.world = new World();
-
+  
 	//setTimeout(gameTick(this), 1000 / this.ticks);
+  this.world.addCritter(10);
 	setInterval(gameTick(this), 1000 / this.ticks);
 }
 
@@ -147,8 +148,8 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-	var allPlayers = [];
-
+  var allPlayers = [];
+  var allCritters = [];
 	// TODO clean this up... we already have a toObj() method with
 	// some info. We could override it in the Player class.
 	//console.log(this.sockets);
@@ -162,11 +163,18 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		player.vacTrans = this.sockets[id].player.vacTrans;
 		allPlayers.push(player);
 	}
+
+ var tempWorld = { players : [], critters : {} };
+ //console.log(this.world.players);
+ tempWorld.players = allPlayers;
+ tempWorld.critters = this.world.critters;
+ 
 	for (var id in this.sockets) {
 		// TODO HIGH
 		// TODO if socket is already closed and not removed yet
-		this.sockets[id].send(JSON.stringify(allPlayers));
+		this.sockets[id].send(JSON.stringify(tempWorld));
 	}
+  
 }
 
 // TODO comment and clean this shit
@@ -177,5 +185,7 @@ gameTick = function(game) {
 		//setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
+
+
 
 module.exports = Game;

@@ -45,7 +45,7 @@ Connection.prototype._onmessage = function(buf) {
 	// TODO undefined error here
 	//this.messages.push(buf.data);
 
-
+  //console.log(buf.data);
     // connection initialized
 	if (buf.data.substring(0,3) == "ID:") {
 		this.myPlayer.id = buf.data.substring(3);

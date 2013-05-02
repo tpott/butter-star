@@ -13,6 +13,7 @@ var WorldState = function() {
 
 var WorldState = function() {
     this.players = {};
+    this.critters = {};
 }
 
 WorldState.prototype.getPlayerObject = function(id) {
@@ -35,8 +36,10 @@ WorldState.prototype.removePlayer = function(id) {
 /**
  * players is an array of player objects
  */
-WorldState.prototype.updateWorldState = function(players){
+WorldState.prototype.updateWorldState = function(world){
 	//console.log('updating world state');
+  var players = world.players;
+  var critters = world.critters;
 	for (var i = 0; i < players.length; i++) {
 		if (!(players[i].id in this.players)) {
 			this.addPlayer(players[i]);
@@ -45,7 +48,25 @@ WorldState.prototype.updateWorldState = function(players){
 		//this.players[players[i].id].mesh.direction = players[i].position;
 		this.players[players[i].id].vacTrans = players[i].vacTrans;
 	}
+  for (var i = 0; i < Object.keys(critters).length; i++)
+  {
+    console.log("current critter : " + i);
+    if(!(critters[i].id in this.critters))
+    {
+      this.addCritter(critters[i]);
+    }
+  }
+
 }
+
+WorldState.prototype.addCritter = function(critter) {
+  var crit = new Critter();
+  crit.position = critter.position;
+  crit.initModel(scene, 'boo', 10, crit.position);
+  this.critters[critter.id] = crit;
+  console.log("making a critter");
+}
+
 
 // TODO GLOBAL HACKS EWWWWWWW
 //var myWorldState = new WorldState();
