@@ -20,7 +20,9 @@ var Movable = require('./movable.js');
  * @param {wsWebSocket} socket The socket this player is connected through.
  */
 function Player(socket) {
-  Player.super_.call(this, socket);
+  Player.super_.call(this);
+
+  this.socket = socket;
 
   // Dimensions of player
   this.width = 1;
@@ -41,7 +43,14 @@ function Player(socket) {
 		z : 0
 	};
 
+  // Vacuum stuff
+  this.vacTrans = new THREE.Vector3();
+  this.initVacPos = null;
+  this.direction = null;
+  this.isVacuum = false;
+
 	console.log('Player class, New player: %s', this.id);
+  // TODO is this the only reason we need socket?
 	this.socket.send('ID:' + this.id);
 }
 util.inherits(Player, Movable);
@@ -51,8 +60,7 @@ util.inherits(Player, Movable);
  * set actual player movements.
  * @param {Event} evt The player movement event.
  */
-// TODO see todo in movable's move method
-Player.prototype.move = function(evt, collidables) {
+Player.prototype.move = function(evt) {
   var speed = evt.speed;
 	if(evt.sprinting === true) {
 		evt.speed = 0.75;
@@ -90,15 +98,10 @@ Player.prototype.move = function(evt, collidables) {
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
   var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
-  /*Player.super_.prototype.move.call(this, dx, dy, dz);*/
 
 	var magicAmplifier = 0.01;
 	var force = new THREE.Vector4(dx, dy, dz, 0)
 		.multiplyScalar(magicAmplifier);
-
-	// TODO remove
-  // Handle movement and collisions
-  //Player.super_.prototype.move.call(this, dx, dy, dz);
 
   // should resolve to super_.addForce
   this.addForce(force);
