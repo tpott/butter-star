@@ -21,7 +21,8 @@ var files = [
 	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
-	// our client files
+
+  // our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
 	//['menu.html', "", client + 'menu.html', 'text/html'],
@@ -38,6 +39,7 @@ var files = [
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
+	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
@@ -48,8 +50,11 @@ var files = [
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/text'],
 	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png']
-	/*['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
+	['player.png', "", thinhGame + 'data/player.png', 'image/png'],
+	['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
+	['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/text'],
+	['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
+  /*['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],
 	['KokiriForest.mtl', "", thinhGame + 'data/forest/KokiriForest.mtl', 'text/text'],
 	['Paris2.ogg', "", thinhGame + 'data/sounds/Paris2.ogg', 'audio/ogg'],
 	// Fuck you thinh

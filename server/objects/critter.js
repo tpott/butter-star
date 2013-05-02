@@ -27,7 +27,7 @@ Critter.prototype.initModel = function(scene, type, size, position) {
     });
     if(type == "boo")
     {
-        loader.load( 'data/ghost/boo.obj', 'data/ghost/boo.mtl' );
+        loader.load( 'boo.obj', 'boo.mtl' );
     }
 }
 

@@ -50,9 +50,9 @@ WorldState.prototype.updateWorldState = function(world){
 	}
   for (var i = 0; i < Object.keys(critters).length; i++)
   {
-    console.log("current critter : " + i);
     if(!(critters[i].id in this.critters))
     {
+      console.log("making a new critter id: " + critters[i].id);
       this.addCritter(critters[i]);
     }
   }
