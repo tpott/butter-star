@@ -23,23 +23,11 @@ var World = require('./world.js');
 function Game() {
 	// generate a random url
 	this.id = randomID(4);
-
-	// TODO necessary? -Trevor
-	this.world = null;
-	this.gravity = new THREE.Vector4(0, 0, -9.8, 0);
-	this.players = [];
-	this.critters = [];
-	this.collidables = [];
-	this.nplayers = 0;
-	this.ncritters = 0;
-
-
 	this.ticks = 60; // 60 "ticks" per second!
 
 	this.sockets = {};
 	this.world = new World();
 
-	//setTimeout(gameTick(this), 1000 / this.ticks);
 	setInterval(gameTick(this), 1000 / this.ticks);
 }
 
@@ -69,18 +57,6 @@ Game.prototype.sendUpdate = function() {
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
 }
-
-// MOVED world.js
-/*Game.prototype.applyForces = function() {
-	for (var id in this.players) {
-		// add gravity
-		//this.players[id].addForce(this.gravity);
-
-		// collision detection should happen in this call
-		// apply forces ==> update velocity + update position
-		this.players[id].applyForces();
-	}
-}*/
 
 /**
  * Add a socket to this game.
@@ -141,7 +117,6 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
-	this.world.applyGravityToAllObjects();
 	this.world.applyForces(); 
 }
 
@@ -177,7 +152,6 @@ gameTick = function(game) {
 	return function() {
     game.gameTickBasedUpdate();
 		game.sendUpdatesToAllClients();
-		//setTimeout(gameTick(game), 1000 / game.ticks);
 	}
 }
 
