@@ -7,107 +7,92 @@
  * @author Rohan Halliyal
  */
 
-/**
- * IP address of the server we are connecting to.
- * @type {string}
- */
-var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
-var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
+function Connection(ip, port, gameid, player, world) {
+	this.ip = ip;
+	this.port = port;
+	this.gameid = gameid;
 
-/**
- * The WebSocket connection to the server.
- * @type {WebSocket}
- */
-var connection = new WebSocket('ws://' + ipAddr + ':' + port + 
-		'/' + document.URL.replace(/.*\//,'')); // this should be the game id
-connection.binaryType = 'arraybuffer';
+	// TODO getting an undefined error, line 43
+	this.messages = [];
 
-/**
- * Handles opening a connection to the server.
- */
-connection.onopen = function () {
+	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
+		'/' + this.gameid); 
+
+	// MORE JAVASCRIPT BULLSHIT
+	this.socket.myPlayer = player;
+	this.socket.myWorldState = world;
+
+	this.socket.binaryType = 'arraybuffer';
+	this.socket.onopen = this._onopen;
+	this.socket.onerror = this._onerror;
+	this.socket.onclose = this._onclose;
+	this.socket.onmessage = this._onmessage;
+}
+
+Connection.prototype._onopen = function() {
 	console.log("Connection is opened!");
 };
 
-var messages = [];
-/**
- * Handles receiving messages from the server.
- *
- * Initially expect this message to be one fat game state update, the func
- * should prompt the client to update the view via an update() func.
- *  
- * @param {ArrayBuffer} msg The array from the server.
- */
-
-/*
-connection.onmessage = function(buf) {
-  messages[messages.length] = buf.data;
-  console.log("Client received: " + buf.data);
-};
-*/
-
-/**
- * Handles connection errors.
- * @param {Error} error The error.
- */
-connection.onerror = function(error) {
-  console.log('WebSocket Error: ' + error);
+Connection.prototype._onerror = function(err) {
+  console.log('WebSocket Error: ' + err);
 };
 
-connection.onclose = function() {
+Connection.prototype._onclose = function() {
     console.log("connection closed!");
 };
 
-var d;
+Connection.prototype._onmessage = function(buf) {
+	// TODO undefined error here
+	//this.messages.push(buf.data);
 
-connection.onmessage = function(buf) {
-	messages[messages.length] = buf.data;
 
     // connection initialized
 	if (buf.data.substring(0,3) == "ID:") {
-		myPlayer.id = buf.data.substring(3);
-		controlsEvent.playerID = myPlayer.id;
+		this.myPlayer.id = buf.data.substring(3);
+		// TODO ???? 
+		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 
-        initClientSend();
+        initClientSend(this); // Pass the socket to the send loop
 
 		return;
 	}
 
 	var state = JSON.parse(buf.data);
-  d = state;
 	if ('remove' in state) {
-		// state['remove' is the id of the removed player
-		myWorldState.removePlayer(state['remove']);
+		this.myWorldState.removePlayer(state['remove']);
 	}
 	else {
 		// state is an array of players
-		myWorldState.updateWorldState(state);
+		this.myWorldState.updateWorldState(state);
 	}
 
 	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-	myPlayer.position = tempPlayer.mesh.position;
-	myPlayer.vacTrans = tempPlayer.vacTrans;
+	this.myPlayer.position = tempPlayer.mesh.position;
+	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
-function initClientSend() {
+initClientSend = function(socket) {
     setInterval(
         function() {
-            clientSendLoop();
+            clientSendLoop(socket);
         }, 1000/60); 
 }
 
-function clientSendLoop() {
-    send(controlsEvent);
-}
-/**
-
-/* Receive is not needed since it will be call-back
- * */
-function send(anything) {
-	if (connection.readyState != 1) {
+function clientSendLoop(socket) {
+	if (socket.readyState != socket.OPEN) {
 		console.log("Connection is not ready yet!");
 	} else {
-		connection.send(JSON.stringify(anything));
+		socket.send(JSON.stringify(controlsEvent));
+	}
+}
+/**
+ * Receive is not needed since it will be call-back
+ */
+Connection.prototype.send = function(anything) {
+	if (this.socket.readyState != this.socket.OPEN) {
+		console.log("Connection is not ready yet!");
+	} else {
+		this.socket.send(JSON.stringify(anything));
 	}
 }

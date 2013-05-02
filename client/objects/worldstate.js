@@ -49,3 +49,6 @@ WorldState.prototype.updateWorldState = function(players){
 		//console.log("Player id: " + players[i].id + " direction: " + players[i].direction);
 	}
 }
+
+// TODO GLOBAL HACKS EWWWWWWW
+//var myWorldState = new WorldState();

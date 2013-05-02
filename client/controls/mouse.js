@@ -13,12 +13,13 @@ var getElementPosition = function(element) {
 
 var pointer = {x : 0, y : 0};
 var pointer2 = {x : 0, y : 0};
-document.addEventListener('mousemove', function(e){
+// TODO delete? @Thinh overwritten later
+/*document.addEventListener('mousemove', function(e){
 	var mouseX = e.clientX - getElementPosition(renderer.domElement).left;
 	var mouseY = e.clientY - getElementPosition(renderer.domElement).top;
 	pointer.x =   (mouseX / renderer.domElement.width) * 2 - 1;
 	pointer.y = - (mouseY / renderer.domElement.height) * 2 + 1;
-}, false);
+}, false);*/
 
 var oldPointerX = oldPointerY = oldPointer2X = oldPointer2Y = 0;
 document.addEventListener('mousedown', rotateStart, false);
@@ -65,7 +66,8 @@ function rotate2(){
 	controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
 }
 
-document.addEventListener( 'mousemove', function(event){
+//document.addEventListener( 'mousemove', function(event){
+function mouseMove(event) {
 	//only do the on mouse move stuff if it is in fullscreen mode
 	if(fullScreenMode == 1) {
 		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -82,4 +84,4 @@ document.addEventListener( 'mousemove', function(event){
 		oldPointer2X = pointer.x;
 		oldPointer2Y = pointer.y;
 	}
-}, false );
+}
