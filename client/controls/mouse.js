@@ -46,7 +46,7 @@ function rotate(){
 		myPlayer.camera.y = -150;
 	}
 	//console.log(myPlayer.camera.x, myPlayer.camera.y);
-	controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
+	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
 
 	oldPointerX = pointer.x;
 	oldPointerY = pointer.y;
@@ -63,7 +63,7 @@ function rotate2(){
 	if(myPlayer.camera.y < -150){
 		myPlayer.camera.y = -150;
 	}
-	controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
+	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
 }
 
 //document.addEventListener( 'mousemove', function(event){
