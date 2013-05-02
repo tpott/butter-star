@@ -33,6 +33,7 @@ var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
 var initWorldState = true;
 ///Octree Code, eventually will need to port over to the server
 
+var hasBeenSent = true; // prevents sending idle events
 //-------------------------------------------------------
 //HELPER FUNCTIONS AND SHIET
 //-------------------------------------------------------
