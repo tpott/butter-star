@@ -23,6 +23,8 @@ document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
+var minimap = null;
+
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -229,6 +231,9 @@ function main()
 	audio.pause();
 	//controls.disable;
 	
+	minimap = new Minimap();
+	minimap.drawCircle();
+
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 

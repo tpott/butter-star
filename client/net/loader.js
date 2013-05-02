@@ -27,6 +27,9 @@ var scripts = [
 	// effects
 	"vacuum.js",
 
+	// gui
+	"minimap.js",
+
 	// this defines main()
 	"main.js"
 ];

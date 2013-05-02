@@ -45,6 +45,7 @@ var files = [
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
 	['vacuum.js', "", client + 'shader/particleSystem/Vacuum.js', 'text/javascript'],
+	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	// our data files
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/text'],
