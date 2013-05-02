@@ -2,7 +2,7 @@
  * check for key pressed from the player
  */
 var timer;
-document.addEventListener('keydown', function(e){
+function keyDown(e){
 	if(e.shiftKey == 1) {
 		controlsEvent.set("sprinting", true);
 	}
@@ -53,9 +53,9 @@ document.addEventListener('keydown', function(e){
 		default:
             //console.log(e.keyCode);
 	}
-}, false);
+}
 
-document.addEventListener('keyup', function(e){
+function keyUp(e){
 	if(e.shiftKey == 1) {
 		controlsEvent.set("sprinting", false);
 	}
@@ -92,4 +92,4 @@ document.addEventListener('keyup', function(e){
        !controlsEvent.left && !controlsEvent.right) {
 		controlsEvent.set("moving", false);
 	}
-}, false);
+}
