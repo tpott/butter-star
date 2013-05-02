@@ -38,6 +38,8 @@ function rotateStop() {
 
 function rotate(){
 	myPlayer.camera.x += (oldPointerX - pointer.x) * myPlayer.camera.speed;
+    //myPlayer.mesh.rotation.setX(myPlayer.camera.x);
+    //console.log("setting player mesh to be : " + myPlayer.mesh.rotation.x);
 	myPlayer.camera.y += (oldPointerY - pointer.y) * myPlayer.camera.speed;
 	if(myPlayer.camera.y > 150){
 		myPlayer.camera.y = 150;
@@ -47,7 +49,7 @@ function rotate(){
 	}
 	//console.log(myPlayer.camera.x, myPlayer.camera.y);
 	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
-
+    controlsEvent.set("vacAngleY", (myPlayer.camera.y /2) % 180);
 	oldPointerX = pointer.x;
 	oldPointerY = pointer.y;
 }
@@ -64,6 +66,7 @@ function rotate2(){
 		myPlayer.camera.y = -150;
 	}
 	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
+    controlsEvent.set("vacAngleY", (myPlayer.camera.y / 2) % 180);
 }
 
 //document.addEventListener( 'mousemove', function(event){

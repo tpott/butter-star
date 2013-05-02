@@ -126,6 +126,7 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
     if (isEvent(obj)) {
         player.direction = obj.angle;
 		player.isVacuum = obj.isVacuum;
+        player.vacAngleY = obj.vacAngleY;
         if(obj.moving) {
             player.move(obj, this.world.collidables);
         }
@@ -163,6 +164,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		player.direction = this.sockets[id].player.direction;
 		player.vacTrans = this.sockets[id].player.vacTrans;
 		player.isVacuum = this.sockets[id].player.isVacuum;
+        player.vacAngleY = this.sockets[id].player.vacAngleY;
 		allPlayers.push(player);
 	}
 	for (var id in this.sockets) {

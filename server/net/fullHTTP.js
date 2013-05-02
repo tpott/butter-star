@@ -47,6 +47,8 @@ var files = [
 	// our data files
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/text'],
+  ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
+  ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
 	// temp data files, for Thinh's game
 	['player.png', "", thinhGame + 'data/player.png', 'image/png']
 	/*['KokiriForest.obj', "", thinhGame + 'data/forest/KokiriForest.obj', 'text/plain'],

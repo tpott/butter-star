@@ -27,6 +27,7 @@ function Movable(socket, game) {
   this.initVacPos = null;
   this.direction = null;
   this.isVacuum = false;
+  this.vacAngleY = 0;
   // from Thinh
   /*this.position = {
 		x : 0,

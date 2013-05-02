@@ -62,10 +62,8 @@ examples:
 */
 function update()
 {
-
-	cube.position = clone(myPlayer.position);
-	cube.position.y = -2;
-
+	//cube.position = clone(myPlayer.position);
+	//cube.position.y = -2;
 	myPlayer.model.objects.position.x = myPlayer.position.x;
 	myPlayer.model.objects.position.y = myPlayer.position.y;
 	myPlayer.model.objects.position.z = myPlayer.position.z;
@@ -81,9 +79,9 @@ function update()
 	
 	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 	camera.lookAt( vec3 );
-	if(myPlayer.vacuum != null)
+    if(myPlayer.vacuum != null)
 	{
-		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
+		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
 	}
     updatePlayersAnimation();
 
@@ -112,7 +110,7 @@ function update()
                 }
                 else
                 {
-                    players.vacuum.update(players.vacTrans,players.direction);
+                    players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
                 }
             }
             else if(players.vacuum != null)
@@ -216,7 +214,7 @@ function main()
 {
 	initStats();
 	initLights();
-  initModels();
+    initModels();
 	// initTextures();
 	initSounds();
 	//initFloor();
