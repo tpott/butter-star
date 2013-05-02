@@ -17,6 +17,10 @@ var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUti
 // mouseMoved from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
 
+// keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'keydown', keyDown, false );
+document.addEventListener( 'keyup', keyUp, false );
+
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
