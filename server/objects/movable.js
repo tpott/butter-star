@@ -19,12 +19,6 @@ var Collidable = require('./collidable.js');
 function Movable() {
   Movable.super_.call(this);
 
-  // Dummy dimensions and mesh. Will be set by subclasses
-  this.width = 0; // x axis
-  this.height = 0; // y axis
-  this.depth = 0; // z axis
-  this.mesh = null;
-
   this.position = new THREE.Vector4(0, 0, 0, 0);
   this.orientation = new THREE.Vector4(1, 0, 0, 0);
 
@@ -77,12 +71,10 @@ Movable.prototype.checkCollision_ = function(collidables) {
   // Get a list of meshes this object can collide against
   var meshes = [];
   for (var id in collidables) {
-  console.log("COLLIDABLE" + JSON.stringify(collidables[id]));
     if(id != this.id) {
       meshes.push(collidables[id].mesh);
     }
   }
-  console.log("MESHES:" + JSON.stringify(meshes));
 
   // Do collision detection. Intersect each ray with each mesh.
   // TODO error: overlap with multiple objects?
@@ -139,7 +131,7 @@ Movable.prototype.applyForces = function(collidables) {
   // Update the mesh's position so other objects can collide with it
   this.mesh.matrixWorld.makeTranslation(
       this.position.x, this.position.y, this.position.z);
-  collidables[this.id] = this.mesh;
+  collidables[this.id].mesh = this.mesh;
 };
 
 /**
