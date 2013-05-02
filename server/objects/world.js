@@ -1,4 +1,5 @@
-/** * @fileoverview Creates the representation of the world and the elements
+/**
+ * @fileoverview Creates the representation of the world and the elements
  * that belong to it. Handles worldwide forces such as gravity.
  * @author Rohan Halliyal
  * @author Jennifer Fang
@@ -6,6 +7,8 @@
 
 // Get external functions
 var THREE = require('three');
+
+var OBJMTLLoader = require('../libs/OBJMTLLoader.js');
 
 /**
  * Construct the game play world.
@@ -16,7 +19,7 @@ function World() {
   this.collidables = {};
 
   // Lists of objects that are in the world
-  this.envrionmentObjs = {};
+  this.enviroObjs = {};
   this.players = {};
   this.critters = {};
 
@@ -25,6 +28,7 @@ function World() {
 	this.ncritters = 0;
 
   // Make world environment
+  //this.createRoom_();
 }
 
 /* ENVIRONMENT CREATION FUNCTIONS */
@@ -40,6 +44,26 @@ World.prototype.createFloor_ = function() {
   geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -10, 0));
   var material = new THREE.MeshBasicMaterial();
   return new THREE.Mesh(geometry, material);
+};
+
+World.prototype.createRoom_ = function() {
+  var loader = new OBJMTLLoader();
+  loader.addEventListener( 'load', function ( event ) {
+    var object = event.content;
+    var tempScale = new THREE.Matrix4();
+    object.position.y = -5;
+    object.position.x = -20;
+    //object.scale.set(.1,.1,.1);
+
+    var objMesh = object.children[0];
+    // Set position to same as object. MUST do otherwise collisions off.
+    objMesh.position.y = -5;
+    objMesh.position.x = -20;
+
+    this.collidables['room'] = obj;
+    this.enviroObjs['room'] = obj;
+  });
+	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
 };
 
 

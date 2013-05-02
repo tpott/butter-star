@@ -77,10 +77,12 @@ Movable.prototype.checkCollision_ = function(collidables) {
   // Get a list of meshes this object can collide against
   var meshes = [];
   for (var id in collidables) {
+  console.log("COLLIDABLE" + JSON.stringify(collidables[id]));
     if(id != this.id) {
       meshes.push(collidables[id].mesh);
     }
   }
+  console.log("MESHES:" + JSON.stringify(meshes));
 
   // Do collision detection. Intersect each ray with each mesh.
   // TODO error: overlap with multiple objects?
