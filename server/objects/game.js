@@ -10,11 +10,11 @@
  */
 
 // Get external functions
-var THREE = require('three');
+var THREE = require('three'); 
 
 var randomID = require('./random.js');
-var THREE = require('three');
 var World = require('./world.js');
+var Handler = require('../logic/gameEventsHandler.js');
 
 /**
  * Construct a game instance.
@@ -33,6 +33,7 @@ function Game() {
 	this.nplayers = 0;
 	this.ncritters = 0;
 
+	this.handler = new Handler();
 
 	this.ticks = 60; // 60 "ticks" per second!
 
@@ -41,6 +42,8 @@ function Game() {
 
 	//setTimeout(gameTick(this), 1000 / this.ticks);
 	setInterval(gameTick(this), 1000 / this.ticks);
+
+	this.handler.emit('newgame');
 }
 
 /**
@@ -70,18 +73,6 @@ Game.prototype.sendUpdate = function() {
 	}
 }
 
-// MOVED world.js
-/*Game.prototype.applyForces = function() {
-	for (var id in this.players) {
-		// add gravity
-		//this.players[id].addForce(this.gravity);
-
-		// collision detection should happen in this call
-		// apply forces ==> update velocity + update position
-		this.players[id].applyForces();
-	}
-}*/
-
 /**
  * Add a socket to this game.
  * @param {Socket} socket The new socket connecting to this game.
@@ -90,6 +81,7 @@ Game.prototype.sendUpdate = function() {
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
+  this.handler.emit('newplayer', socket.player.id);
 
 	return socket.id;
 }
@@ -101,6 +93,7 @@ Game.prototype.addSocket = function(socket) {
  */
 Game.prototype.removeSocket = function(socket) {
   this.world.removePlayer(socket.player);
+  this.handler.emit('delplayer', socket.player.id);
 
 	if (delete this.sockets[socket.id]) {
 		return true;
