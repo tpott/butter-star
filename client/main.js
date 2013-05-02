@@ -5,6 +5,8 @@
  */
 
 //GLOBALS AND SHIT
+var timer; // TODO not being used
+
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
