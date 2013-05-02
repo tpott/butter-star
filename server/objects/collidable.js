@@ -23,6 +23,8 @@ function Collidable(socket) {
 	this.orientation = new THREE.Vector4(1, 0, 0, 0);
   // Client-side object this represents Will be set by subclasses.
   this.mesh = null;
+
+  this.friction = 1.0; // in physics, this is usually "mu"
 };
 
 /**

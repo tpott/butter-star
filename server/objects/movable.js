@@ -113,11 +113,24 @@ Movable.prototype.applyForces = function() {
 	var timeLapse = 1000.0 / 60.0;
 	this.velocity.add(acceleration.multiplyScalar(timeLapse));
 
-	// TODO before or after changing velocity?
-	this.position.add(this.velocity);
+	// TODO collisions!
+	var collision = null;
+	// collision = a collidable that "this" collided with
 
-	// reset forces, because all of these have been applied
-	this.force.set(0, 0, 0, 0);
+	if (collision != null) {
+		var mu = collision.friction;
+		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
+
+		// TODO vector := the vector you CAN move... 
+		this.position.add(collision.vector);
+	}
+	else {
+		// TODO before or after changing velocity?
+		this.position.add(this.velocity);
+
+		// reset forces, because all of these have been applied
+		this.force.set(0, 0, 0, 0);
+	}
 };
 
 /**
