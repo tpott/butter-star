@@ -1,6 +1,6 @@
 {
-	"wsPort" : "4081",
-	"httpPort" : "4078",
-	"debugPort" : "4090",
+	"wsPort" : "8081",
+	"httpPort" : "8078",
+	"debugPort" : "8090",
 	"server" : "pisa.ucsd.edu"
 }
