@@ -5,6 +5,8 @@
  */
 
 //GLOBALS AND SHIT
+var timer; // TODO not being used
+
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
@@ -16,6 +18,13 @@ var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUti
 
 // mouseMoved from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
+
+// keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'keydown', keyDown, false );
+document.addEventListener( 'keyup', keyUp, false );
+
+var minimap = null;
+var optionMenu = null;
 
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
@@ -223,11 +232,17 @@ function main()
 	audio.pause();
 	//controls.disable;
 	
+	minimap = new Minimap();
+	minimap.drawCircle();
+	optionMenu = new OptionMenu();
+
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
+
+	$('canvas').addClass('game');
 	// scene.add(cube);
 	render(); 
 }
