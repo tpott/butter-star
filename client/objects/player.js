@@ -5,8 +5,10 @@ var Player = function() {
 
     this.mesh = new THREE.Mesh(geometry, material);
 	this.vacuum = null;
-	this.vacTrans = new THREE.Vector3();
-    this.model =
+	this.vacTrans = new THREE.Vector3(0,0,0);
+    this.direction = null;
+    this.isVacuum = false;
+	this.model =
     {		
         objects : new THREE.Object3D(),
         motion  : 'stand',
