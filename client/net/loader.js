@@ -9,6 +9,7 @@
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
+	"jquery.js",
 
 	// objects (+ models?) - TODO trevor, include models in objects
 	"player.js", "worldstate.js", "critter.js",
@@ -25,6 +26,9 @@ var scripts = [
 
 	// effects
 	"vacuum.js",
+
+	// gui
+	"minimap.js", "options.js",
 
 	// this defines main()
 	"main.js"

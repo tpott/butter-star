@@ -47,6 +47,9 @@ WorldState.prototype.updateWorldState = function(world){
 		this.players[players[i].id].mesh.position = players[i].position;
 		//this.players[players[i].id].mesh.direction = players[i].position;
 		this.players[players[i].id].vacTrans = players[i].vacTrans;
+        this.players[players[i].id].direction = players[i].direction;
+        this.players[players[i].id].isVacuum = players[i].isVacuum;
+		//console.log("Player id: " + players[i].id + " direction: " + players[i].direction);
 	}
   for (var i = 0; i < Object.keys(critters).length; i++)
   {

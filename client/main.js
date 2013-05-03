@@ -5,6 +5,8 @@
  */
 
 //GLOBALS AND SHIT
+var timer; // TODO not being used
+
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
@@ -16,6 +18,13 @@ var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUti
 
 // mouseMoved from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
+
+// keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'keydown', keyDown, false );
+document.addEventListener( 'keyup', keyUp, false );
+
+var minimap = null;
+var optionMenu = null;
 
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
@@ -33,6 +42,7 @@ var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
 var initWorldState = true;
 ///Octree Code, eventually will need to port over to the server
 
+var hasBeenSent = true; // prevents sending idle events
 //-------------------------------------------------------
 //HELPER FUNCTIONS AND SHIET
 //-------------------------------------------------------
@@ -84,7 +94,44 @@ function update()
 	{
 		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
 	}
+    updatePlayersAnimation();
+
 }
+    //render all other player animations
+    function updatePlayersAnimation()
+    {
+        for(player in myWorldState.players)
+        {
+            var players = myWorldState.players[player];
+            //only add vacuum for other players
+            if(players.isVacuum == true && players.id != myPlayer.id)
+            {
+                if(players.vacuum == null)
+                {
+                    console.log("generated first vacuum for player");
+                    players.vacuum = new Vacuum(
+                        new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
+                        players.mesh.position.z), 
+                        new THREE.Vector3(0,0,-1),
+                        1000, 
+                        document.getElementById('vertexShader').textContent, 
+                        document.getElementById('fragmentShader').textContent);
+                    players.vacuum.update(players.vacTrans,players.direction);  
+                    players.vacuum.addToScene(scene);   
+                }
+                else
+                {
+                    players.vacuum.update(players.vacTrans,players.direction);
+                }
+            }
+            else if(players.vacuum != null)
+            {
+    
+               players.vacuum.removeFromScene(scene);
+               players.vacuum = null;
+            }
+       }
+   }
 
 /*
 	renderin' shit
@@ -185,11 +232,17 @@ function main()
 	audio.pause();
 	//controls.disable;
 	
+	minimap = new Minimap();
+	minimap.drawCircle();
+	optionMenu = new OptionMenu();
+
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
+
+	$('canvas').addClass('game');
 	// scene.add(cube);
 	render(); 
 }

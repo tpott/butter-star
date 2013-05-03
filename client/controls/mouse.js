@@ -14,12 +14,12 @@ var getElementPosition = function(element) {
 var pointer = {x : 0, y : 0};
 var pointer2 = {x : 0, y : 0};
 // TODO delete? @Thinh overwritten later
-/*document.addEventListener('mousemove', function(e){
+document.addEventListener('mousemove', function(e){
 	var mouseX = e.clientX - getElementPosition(renderer.domElement).left;
 	var mouseY = e.clientY - getElementPosition(renderer.domElement).top;
 	pointer.x =   (mouseX / renderer.domElement.width) * 2 - 1;
 	pointer.y = - (mouseY / renderer.domElement.height) * 2 + 1;
-}, false);*/
+}, false);
 
 var oldPointerX = oldPointerY = oldPointer2X = oldPointer2Y = 0;
 document.addEventListener('mousedown', rotateStart, false);
@@ -46,7 +46,7 @@ function rotate(){
 		myPlayer.camera.y = -150;
 	}
 	//console.log(myPlayer.camera.x, myPlayer.camera.y);
-	controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
+	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
 
 	oldPointerX = pointer.x;
 	oldPointerY = pointer.y;
@@ -63,7 +63,7 @@ function rotate2(){
 	if(myPlayer.camera.y < -150){
 		myPlayer.camera.y = -150;
 	}
-	controlsEvent.angle = (myPlayer.camera.x / 2) % 360;
+	controlsEvent.set("angle", (myPlayer.camera.x / 2) % 360);
 }
 
 //document.addEventListener( 'mousemove', function(event){
