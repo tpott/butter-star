@@ -242,7 +242,7 @@ function main()
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	$('canvas').attr('class', 'game');
+	$('canvas').addClass('game');
 	// scene.add(cube);
 	render(); 
 }

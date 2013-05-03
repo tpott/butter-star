@@ -8,7 +8,7 @@
 
 function Minimap() {
 	this.map = $('<canvas id="minimap" width="100" height="100" />')
-		.attr('class', 'game');
+		.addClass('gui');
 	$('body').append(this.map);
 
 	// [0] necessary cause this.map is a jquery obj

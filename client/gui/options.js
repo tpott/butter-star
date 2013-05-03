@@ -8,6 +8,7 @@
 
 function OptionMenu() {
 	this.menu = $('<div id="options" />')
+		.addClass('gui')
 		.attr('height', '200')
 		.attr('width', '200')
 		.css({ 
@@ -18,9 +19,22 @@ function OptionMenu() {
 		});
 
 	this.title = $('<div id="optionsTitle" />')
-		.append('<strong>Menu</title>');
+		.append($('<strong>Menu</title>'));
+	this.list = $('<ul />')
+		.css({
+			'list-style-type': 'none'
+		})
+		.append($('<li />')
+			.append('Show hints')
+			.append($('<input type="checkbox" />'))
+		)
+		.append($('<li />')
+			.append($('<button>Example</button>'))
+		);
 
 	this.menu.append(this.title);
+	this.menu.append(this.list);
+
 	$('body').append(this.menu);
 	this.menu.hide();
 
