@@ -36,4 +36,13 @@ Collidable.prototype.toObj = function() {
   return obj;
 };
 
+/**
+ * Returns whether or not collidable has a bounding sphere. Default false.
+ * @return {boolean} True if this collidable has a bounding sphere, false
+ *     otherwise.
+ */
+Collidable.prototype.hasBoundingSphere = function () {
+  return false;
+}
+
 module.exports = Collidable;

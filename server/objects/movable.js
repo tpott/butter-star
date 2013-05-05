@@ -19,8 +19,16 @@ var Collidable = require('./collidable.js');
 function Movable() {
   Movable.super_.call(this);
 
+  // Dummy dimensions and mesh. Will be created in subclasses.
+  this.width = 0; // x axis
+  this.height = 0; // y axis
+  this.depth = 0; // z axis
+  this.mesh = null;
+  this.radius = 0;
+
   this.position = new THREE.Vector4(0, 0, 0, 0);
   this.orientation = new THREE.Vector4(1, 0, 0, 0);
+  this.center = new THREE.Vector4(0, 0, 0, 0);
 
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
@@ -29,68 +37,114 @@ function Movable() {
 util.inherits(Movable, Collidable);
 
 /**
- * Move the object by the given deltas.
- * @param {float} dx Change in x direction (left/right).
- * @param {float} dy Change in y direction (vertical).
- * @param {float} dz Change in z direction (forward/back).
+ * Returns true that the movable has a bounding sphere.
+ * @return {boolean} True if this collidable has a bounding sphere,
+ *     false otherwise.
+ * @override
  */
-Movable.prototype.translate = function(dx, dy, dz) {
-  this.position.x += dx;
-  this.position.y += dy;
-  this.position.z += dz;
+Movable.prototype.hasBoundingSphere = function() {
+  return true;
 };
 
 /**
- * Try check if the object will collide with another object
- * when it moves by the given deltas.
- * @return {Collidable} Object collided with. Null if no object.
+ * Calculate the center of your object. The position is at the base of the object.
+ * @return {THREE.Vector4} The point where the center of the object is.
  * @private
  */
-Movable.prototype.checkCollision_ = function(collidables) {
-  // Get offsets to the vertical sides of cube mesh from center of cube
-  var offsetSigns = [
-    {x: 0.5, z: 0.5},
-    {x: -0.5, z: 0.5},
-    {x: 0.5, z: -0.5},
-    {x: -0.5, z: -0.5}
-  ];
+Movable.prototype.getCenter_ = function() {
+  this.center.set(
+      this.position.x + (this.width / 2),
+      this.position.y + (this.height / 2),
+      this.position.z + (this.depth / 2),
+      1 // a point rather than a vector
+  );
+  return this.center;
+};
 
-  // make 4 rays for vertical sides. Will check if rays intersect other objects
-  var raycasters = [];
-  for (var i = 0; i < 4; i++) {
-    var raycaster = new THREE.Raycaster();
-    raycaster.ray.direction.set(0, -1, 0); // TODO something with this.velocity
-    raycaster.ray.origin.set(
-        this.position.x + (offsetSigns[i].x * this.width),
-        this.position.y + this.height, // set origin to top of cube
-        this.position.z + (offsetSigns[i].z * this.depth)
-    );
-    raycasters.push(raycaster);
-  }
+/**
+ * Check if the object will collide with another object.
+ * @param {Array.<Collidable>} collidables List of collidables.
+ * @return {Collidable} The closest object that was collided with. TODO all objs later?
+ * @private
+ */
+Movable.prototype.detectCollision_ = function(collidables) {
+  var intersectedObjs = [];
 
-  // Get a list of meshes this object can collide against
-  var meshes = [];
+  // TODO don't want to say new every collision?
+  var projectedCenter = new THREE.Vector4(0,0,0,1);
+  projectedCenter.copy(this.getCenter_());
+  projectedCenter.add(this.velocity);
+  
+  var dp = new THREE.Vector4(0, 0, 0, 1); // change in position set below
+
   for (var id in collidables) {
-    if(id != this.id) {
-      meshes.push(collidables[id].mesh);
+    // Don't try to collide against self
+    if (id == this.id) {
+      continue;
+    }
+
+    var intersecting = false;
+    var targetObj = collidables[id]; // Object checking collision against
+    // Case for everything except walls/floors/ceilings
+    if (targetObj.hasBoundingSphere() === true) {
+      dp.copy(targetObj.getCenter_())
+      dp.sub(projectedCenter);
+
+      var minDist = this.radius + targetObj.radius;
+      var overlapDistSq = dp.x * dp.x + dp.y * dp.y + dp.z * dp.z;
+
+      var t1t2 = overlapDistSq - minDist * minDist;
+      // Intersecting already
+      if (t1t2 < 0) {
+        intersecting = true;
+      } else { // not already intersecting
+        var pv = dp.x * this.velocity.x * -1
+            + dp.y * this.velocity.y * -1
+            + dp.z * this.velocity.z * -1;
+        if (pv < 0) { // spheres not moving away from each other
+          var vSquared = this.velocity.x * this.velocity.x
+              + this.velocity.y * this.velocity.y
+              + this.velocity.z * this.velocity.z;
+
+          // Spheres will intersect
+          if (!(((pv + vSquared) <= 0) && ((vSquared + 2 * pv + t1t2) >= 0))) {
+            var t1 = -1 * pv / vSquared;
+            if (t1t2 + pv * t1 >= 0) {
+              intersecting = true;
+            }
+          }
+        }
+      }
+
+      if (intersecting === true) {
+        intersectedObjs.push(targetObj);
+
+        // Back out of object
+        // TODO momentum? both objects bounce back?
+        var overlapDist = Math.sqrt(overlapDistSq);
+        var backDist = minDist - overlapDist;
+        var backMagnitudeRatio = backDist / overlapDist;
+        var targetCenter = targetObj.getCenter_();
+        var backVector = new THREE.Vector4(
+            (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
+            (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
+            (projectedCenter.z - targetCenter.z) * backMagnitudeRatio
+        );
+
+        // Update projectedCenter for next iteration
+        this.velocity.add(backVector);
+        projectedCenter.add(backVector);
+      }
+    } else { // Case for walls/floors/ceilings
     }
   }
 
-  // Do collision detection. Intersect each ray with each mesh.
-  // TODO error: overlap with multiple objects?
-  var collidable = null; // The object it collided with
-  for (var j = 0; j < raycasters.length; j++) {
-    var raycaster = raycasters[j];
-    var intersections = raycaster.intersectObjects(meshes);
-    if (intersections.length > 0) {
-      // get distance overlapped with closest object
-      var distance = intersections[0].distance;
-
-      if(distance > 0 && distance < 2) { //TODO
-        collidable = intersections[0].object;
-        collidable.vector = new THREE.Vector4(0, 0, 0, 0); // TODO
-      }
-    }
+  var collidable = null;
+  if (intersectedObjs.length > 0) { // at least one intersection
+    collidable = {
+        obj: intersectedObjs[0], // TODO
+        vector: this.velocity
+    };
   }
 
   return collidable;
@@ -110,15 +164,16 @@ Movable.prototype.applyForces = function(collidables) {
 	var timeLapse = 1000.0 / 60.0;
 	this.velocity.add(acceleration.multiplyScalar(timeLapse));
 
-	// TODO collisions!
-	var collision = this.checkCollision_(collidables);
+	var collision = this.detectCollision_(collidables);
 
 	if (collision != null) {
-		var mu = collision.friction;
+    /*
+		var mu = collision.obj.friction;
 		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
+    */
 
-		// TODO vector := the vector you CAN move... 
 		this.position.add(collision.vector);
+		this.force.set(0, 0, 0, 0);
 	}
 	else {
 		// TODO before or after changing velocity?
@@ -127,11 +182,6 @@ Movable.prototype.applyForces = function(collidables) {
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
-
-  // Update the mesh's position so other objects can collide with it
-  this.mesh.matrixWorld.makeTranslation(
-      this.position.x, this.position.y, this.position.z);
-  collidables[this.id].mesh = this.mesh;
 };
 
 /**

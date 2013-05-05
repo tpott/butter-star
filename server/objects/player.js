@@ -34,6 +34,7 @@ function Player(socket) {
       this.width, this.height, this.depth);
   var material = new THREE.MeshBasicMaterial({color: 0xffffff});
   this.mesh = new THREE.Mesh(geometry, material);
+  this.radius = this.mesh.geometry.boundingSphere.radius;
 
   // TODO necessary? -Trevor
 	this.camera = {

@@ -60,7 +60,7 @@ World.prototype.createRoom_ = function() {
     objMesh.position.y = -5;
     objMesh.position.x = -20;
 
-    this.collidables['room'] = obj;
+    this.collidables['room'] = obj; // TODO WRONG. Need to extend collidable and make that obj
     this.enviroObjs['room'] = obj;
   });
 	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
