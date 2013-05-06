@@ -18,16 +18,56 @@
  * DARK GRAY: #3b3b3b;
  */
 
+
+
 html, table, div {
     border:0;
     font-size:100%;
     font:inherit;
     margin:0;
-    padding:0
+    padding:0;
+    width: 100%;
+    height: 100%;
 }
 
 body {
     background-color:#5fcffe;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Dustimo Bold", Helvetica, Arial, sans-serif;
+}
+
+#blocker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+#instructions {
+    width: 100%;
+    height: 100%;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+
+    color: #ffffff;
+    text-align: center;
+
+    cursor: pointer;
 }
 
 /* DUST BUSTERS TEXT */
