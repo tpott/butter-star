@@ -47,6 +47,7 @@ World.prototype.createFloor_ = function() {
 };
 
 World.prototype.createRoom_ = function() {
+  /*
   var loader = new OBJMTLLoader();
   loader.addEventListener( 'load', function ( event ) {
     var object = event.content;
@@ -64,6 +65,30 @@ World.prototype.createRoom_ = function() {
     this.enviroObjs['room'] = obj;
   });
 	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
+  */
+
+      var geometry = new THREE.Geometry();
+      geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
+      geometry.vertices.push( new THREE.Vector3( 100, 100, -100 ) );
+      geometry.vertices.push( new THREE.Vector3( 100, -100, 100 ) );
+      geometry.vertices.push( new THREE.Vector3( 100, -100, -100 ) );
+      geometry.vertices.push( new THREE.Vector3( -100,  100, 100 ) );
+      geometry.vertices.push( new THREE.Vector3( -100,  100, -100 ) );
+      geometry.vertices.push( new THREE.Vector3( -100,  -100, 100 ) );
+      geometry.vertices.push( new THREE.Vector3( -100,  -100, -100 ) );
+
+    geometry.faces.push( new THREE.Face4( 0, 1, 3, 2) );
+   geometry.faces.push( new THREE.Face4( 5, 4, 6, 7) );
+   geometry.faces.push( new THREE.Face4( 1, 5, 7, 3) );
+   geometry.faces.push( new THREE.Face4( 4, 0, 2, 6) );
+   geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
+   geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
+ 
+     var material = new THREE.MeshBasicMaterial();
+   var mesh = new THREE.Mesh( geometry, material );
+
+   this.collidables['room'] = mesh;
+   this.enviroObjs['room'] = mesh;
 };
 
 

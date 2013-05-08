@@ -211,6 +211,44 @@ function initFloor()
 		mesh = new THREE.Mesh( geometry, material );
 		scene.add( mesh );
 }
+var de;
+function initRoom()
+{
+  var geometry = new THREE.Geometry();
+
+  geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
+  geometry.vertices.push( new THREE.Vector3( 100, 100, -100 ) );
+  geometry.vertices.push( new THREE.Vector3( 100, -100, 100 ) );
+  geometry.vertices.push( new THREE.Vector3( 100, -100, -100 ) );
+  geometry.vertices.push( new THREE.Vector3( -100,  100, 100 ) );
+  geometry.vertices.push( new THREE.Vector3( -100,  100, -100 ) );
+  geometry.vertices.push( new THREE.Vector3( -100,  -100, 100 ) );
+  geometry.vertices.push( new THREE.Vector3( -100,  -100, -100 ) );
+
+  geometry.faces.push( new THREE.Face4( 0, 1, 3, 2) );
+  geometry.faces.push( new THREE.Face4( 5, 4, 6, 7) );
+  geometry.faces.push( new THREE.Face4( 1, 5, 7, 3) );
+  geometry.faces.push( new THREE.Face4( 4, 0, 2, 6) );
+  geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
+  geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
+
+		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
+
+			var face = geometry.faces[ i ];
+			face.vertexColors[ 0 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
+			face.vertexColors[ 1 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
+			face.vertexColors[ 2 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
+			face.vertexColors[ 3 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
+		}
+
+		var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
+		var mesh = new THREE.Mesh( geometry, material );
+    mesh.material.color.setRGB(1,0,0);
+    de = mesh;  		
+scene.add( mesh );
+    
+}
+
 
 function main()
 {
@@ -220,7 +258,8 @@ function main()
 	// initTextures();
 	initSounds();
 	//initFloor();
-	audio.pause();
+	initRoom();
+  audio.pause();
 	//controls.disable;
 	
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
