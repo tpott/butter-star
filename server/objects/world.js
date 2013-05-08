@@ -7,8 +7,11 @@
 
 // Get external functions
 var THREE = require('three');
+
+var ButterOBJLoader = require('./OBJLoader.js');
+var Environment = require('./environment.js');
 var Critter = require('./critter.js');
-var OBJMTLLoader = require('../libs/OBJMTLLoader.js');
+
 /**
  * Construct the game play world.
  * @constructor
@@ -27,27 +30,17 @@ function World() {
 	this.ncritters = 0;
 
   // Make world environment
-  //this.createRoom_();
+  this.createRoom_();
 }
 
 /* ENVIRONMENT CREATION FUNCTIONS */
 
-/**
- * Create the floor of the world.
- * @return {THREE.Mesh} The mesh representing the floor of the world.
- * @private
- */
-World.prototype.createFloor_ = function() {
-  var geometry = new THREE.PlaneGeometry(2000,2000,1,1);
-  geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-  geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -10, 0));
-  var material = new THREE.MeshBasicMaterial();
-  return new THREE.Mesh(geometry, material);
-};
-
 World.prototype.createRoom_ = function() {
-  var loader = new OBJMTLLoader();
-  loader.addEventListener( 'load', function ( event ) {
+  /*
+	var env = null;
+	var self = this;
+  var loader = new ButterOBJLoader();
+  loader.on( 'load', function ( event ) {
     var object = event.content;
     var tempScale = new THREE.Matrix4();
     object.position.y = -5;
@@ -59,10 +52,17 @@ World.prototype.createRoom_ = function() {
     objMesh.position.y = -5;
     objMesh.position.x = -20;
 
-    this.collidables['room'] = obj;
-    this.enviroObjs['room'] = obj;
+		// TODO WRONG. Need to extend collidable and make that obj
+		self.collidables['room'] = obj; 
+		self.enviroObjs['room'] = obj;
   });
-	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
+	loader.load( 'blankRoom.obj' );
+  */
+
+	var env = new Environment();
+
+   this.collidables[env.id] = env;
+   this.enviroObjs[env.id] = env;
 };
 
 
@@ -128,11 +128,11 @@ World.prototype.removePlayer = function(player) {
 World.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
-		// this.players[id].addGravity(); // each player has individual gravity
+		this.players[id].addGravity(); // each player has individual gravity
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position
-		this.players[id].applyForces(this.collidables);                                           
+		this.players[id].applyForces(this.collidables);
 	}
 }
 
