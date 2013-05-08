@@ -28,6 +28,7 @@ function Environment() {
    geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
    geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
   geometry.computeFaceNormals();
+  geometry.computeCentroids();
   
   
      var material = new THREE.MeshBasicMaterial();

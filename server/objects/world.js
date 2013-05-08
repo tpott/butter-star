@@ -113,7 +113,7 @@ World.prototype.removePlayer = function(player) {
 World.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
-		// this.players[id].addGravity(); // each player has individual gravity
+		this.players[id].addGravity(); // each player has individual gravity
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position

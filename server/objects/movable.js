@@ -157,7 +157,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
       }
     } 
 	 else { // Case for walls/floors/ceilings
-		 // collidable is collidable.mesh
 		 for (var i = 0; i < collidable.mesh.geometry.faces.length; i++) {
 			 var face = collidable.mesh.geometry.faces[i];
 			 var normal = new THREE.Vector4(
@@ -166,14 +165,23 @@ Movable.prototype.detectCollision_ = function(collidables) {
 					 face.normal.z,
 					 0.0
 				);
-			 // TODO position or center
-			 var oldFacingFront = normal.dot(this.position) ;
-			 var newFacingFront = normal.dot(newPos) ;
 
-			 console.log("THIS STUFF IS : " + oldFacingFront + " " + newFacingFront);
-			 //console.log(oldFacingFront + " " + newFacingFront);
+			 var faceCenter = new THREE.Vector4(
+					 face.centroid.x,
+					 face.centroid.y,
+					 face.centroid.z,
+					 1.0
+				);
+
+			 var oldVec = this.position.clone().sub(faceCenter);
+			 var newVec = newPos.clone().sub(faceCenter);
+
+			 // TODO position or center
+			 var oldFacingFront = normal.dot(oldVec) > 0;
+			 var newFacingFront = normal.dot(newVec) > 0;
+
 			 if (oldFacingFront !== newFacingFront) {
-				 console.log("Collision?");
+				 //console.log("Collision?");
 				intersectedObjs.push(collidable);
 				break; // should break collidable for loop as well
 			 }
