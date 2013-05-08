@@ -183,6 +183,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
 			 if (oldFacingFront !== newFacingFront) {
 				 //console.log("Collision?");
 				intersectedObjs.push(collidable);
+				this.velocity.set(0,0,0,0);
 				break; // should break collidable for loop as well
 			 }
 
