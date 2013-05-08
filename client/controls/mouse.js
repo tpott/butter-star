@@ -38,7 +38,7 @@ function rotateStop() {
 
 function rotate(){
 	myPlayer.camera.x += (oldPointerX - pointer.x) * myPlayer.camera.speed;
-    //myPlayer.mesh.rotation.setX(myPlayer.camera.x);
+    //myPlayer.mesh.rotation.x = myPlayer.camera.x / 2 % 360;
     //console.log("setting player mesh to be : " + myPlayer.mesh.rotation.x);
 	myPlayer.camera.y += (oldPointerY - pointer.y) * myPlayer.camera.speed;
 	if(myPlayer.camera.y > 150){
