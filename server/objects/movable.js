@@ -170,7 +170,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
 			 var oldFacingFront = normal.dot(this.position) ;
 			 var newFacingFront = normal.dot(newPos) ;
 
-			 console.log(normal);
+			 console.log("THIS STUFF IS : " + oldFacingFront + " " + newFacingFront);
 			 //console.log(oldFacingFront + " " + newFacingFront);
 			 if (oldFacingFront !== newFacingFront) {
 				 console.log("Collision?");
