@@ -50,7 +50,10 @@ var files = [
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	// our data files
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
-  ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/text'],
+  ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
+  ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
+  ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
+  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, for Thinh's game
 	['player.png', "", thinhGame + 'data/player.png', 'image/png']
 
