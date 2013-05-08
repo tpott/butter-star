@@ -75,16 +75,13 @@ Movable.prototype.detectCollision_ = function(collidables) {
   // TODO position or center?
   // TODO velocity or displacement
   var newPos = this.position.clone().add(this.velocity);
-  /*
   // TODO don't want to say new every collision?
   var projectedCenter = new THREE.Vector4(0,0,0,1);
   projectedCenter.copy(this.getCenter_());
   projectedCenter.add(this.velocity);
   
   var dp = new THREE.Vector4(0, 0, 0, 1); // change in position set below
-  */
 
-  var i = 0;
   for (var id in collidables) {
 	  i++;
     // Don't try to collide against self
@@ -93,10 +90,11 @@ Movable.prototype.detectCollision_ = function(collidables) {
     }
 
     var collidable = collidables[id]; // Object checking collision against
-    //var intersecting = false;
+    var intersecting = false;
     // Case for everything except walls/floors/ceilings
 	 //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
+		 /*
 		 // TODO new call
 		 var distance = new THREE.Vector4()
 			 .subVectors(this.getCenter_(), collidable.getCenter_())
@@ -107,8 +105,8 @@ Movable.prototype.detectCollision_ = function(collidables) {
 			 intersectedObjs.push(collidable);
 			 continue;
 		 }
+		 */
 		 
-		 /*
       dp.copy(collidable.getCenter_())
       dp.sub(projectedCenter);
 
@@ -157,7 +155,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
         this.velocity.add(backVector);
         projectedCenter.add(backVector);
       }
-		*/
     } 
 	 else { // Case for walls/floors/ceilings
 		 for (var i = 0; i < collidable.mesh.geometry.faces.length; i++) {
@@ -170,12 +167,13 @@ Movable.prototype.detectCollision_ = function(collidables) {
 				intersectedObjs.push(collidable);
 				break; // should break collidable for loop as well
 			 }
-		 }
-    }
-  }
-  console.log("collidables.length= %d", i);
 
-  /*
+			 // check for distance
+			 // TODO
+		 }
+    } // end else for walls/floors/ceilings
+  }
+
   var collidable = null;
   if (intersectedObjs.length > 0) { // at least one intersection
     collidable = {
@@ -183,9 +181,8 @@ Movable.prototype.detectCollision_ = function(collidables) {
         vector: this.velocity
     };
   }
-  */
 
-  return intersectedObjs;
+  return collidable;
 };
 
 /**
@@ -204,10 +201,12 @@ Movable.prototype.applyForces = function(collidables) {
 
 	var collisions = this.detectCollision_(collidables);
 
-	if (collisions.length != 0) {
+	if (collisions != null) {
+		/*
 		// TODO not use 0th index
 		var mu = collisions[0].friction;
 		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
+		*/
 
 		//this.position.add(collisions.vector);
 		this.force.set(0, 0, 0, 0);
