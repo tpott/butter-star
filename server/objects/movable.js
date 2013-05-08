@@ -3,6 +3,7 @@
  * other objects.
  *
  * @author Jennifer Fang
+ * @author Trevor Pottinger
  * @author Thinh Nguyen
  */
 
@@ -218,17 +219,15 @@ Movable.prototype.applyForces = function(collidables) {
 	var timeLapse = 1000.0 / 60.0;
 	this.velocity.add(acceleration.multiplyScalar(timeLapse));
 
-	var collisions = this.detectCollision_(collidables);
+	var collision = this.detectCollision_(collidables);
 
-	if (collisions != null) {
-		/*
+	if (collision != null) {
 		// TODO not use 0th index
-		var mu = collisions[0].friction;
+		var mu = collision.object; // a collidable
 		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
-		*/
 
-		//this.position.add(collisions.vector);
-		this.force.set(0, 0, 0, 0);
+		// collision.vector is the corrected vector
+		this.position.add(collision.vector);
 	}
 	else {
 		// TODO before or after changing velocity?
