@@ -84,7 +84,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
   var dp = new THREE.Vector4(0, 0, 0, 1); // change in position set below
   */
 
-  var i = 0;
   for (var id in collidables) {
 	  i++;
     // Don't try to collide against self
@@ -173,7 +172,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
 		 }
     }
   }
-  console.log("collidables.length= %d", i);
 
   /*
   var collidable = null;
@@ -205,6 +203,7 @@ Movable.prototype.applyForces = function(collidables) {
 	var collisions = this.detectCollision_(collidables);
 
 	if (collisions.length != 0) {
+		console.log("Collision: %d", collisions.length);
 		// TODO not use 0th index
 		var mu = collisions[0].friction;
 		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
