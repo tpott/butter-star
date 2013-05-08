@@ -52,6 +52,7 @@ Movable.prototype.hasBoundingSphere = function() {
  * @private
  */
 Movable.prototype.getCenter_ = function() {
+	// TODO this seems hacky
   this.center.set(
       this.position.x + (this.width / 2),
       this.position.y + (this.height / 2),
@@ -64,33 +65,54 @@ Movable.prototype.getCenter_ = function() {
 /**
  * Check if the object will collide with another object.
  * @param {Array.<Collidable>} collidables List of collidables.
- * @return {Collidable} The closest object that was collided with. TODO all objs later?
+ * @return {Collidable} The closest object that was collided with. 
+ * TODO all objs later?
  * @private
  */
 Movable.prototype.detectCollision_ = function(collidables) {
   var intersectedObjs = [];
 
+  // TODO position or center?
+  // TODO velocity or displacement
+  var newPos = this.position.clone().add(this.velocity);
+  /*
   // TODO don't want to say new every collision?
   var projectedCenter = new THREE.Vector4(0,0,0,1);
   projectedCenter.copy(this.getCenter_());
   projectedCenter.add(this.velocity);
   
   var dp = new THREE.Vector4(0, 0, 0, 1); // change in position set below
+  */
 
+  var i = 0;
   for (var id in collidables) {
+	  i++;
     // Don't try to collide against self
     if (id == this.id) {
       continue;
     }
 
-    var intersecting = false;
-    var targetObj = collidables[id]; // Object checking collision against
+    var collidable = collidables[id]; // Object checking collision against
+    //var intersecting = false;
     // Case for everything except walls/floors/ceilings
-    if (targetObj.hasBoundingSphere() === true) {
-      dp.copy(targetObj.getCenter_())
+	 //  this implies getCenter is defined
+    if (collidable.hasBoundingSphere() === true) {
+		 // TODO new call
+		 var distance = new THREE.Vector4()
+			 .subVectors(this.getCenter_(), collidable.getCenter_())
+			 .length();
+
+		 // TODO this is really simple
+		 if (distance < this.radius + collidable.radius) {
+			 intersectedObjs.push(collidable);
+			 continue;
+		 }
+		 
+		 /*
+      dp.copy(collidable.getCenter_())
       dp.sub(projectedCenter);
 
-      var minDist = this.radius + targetObj.radius;
+      var minDist = this.radius + collidable.radius;
       var overlapDistSq = dp.x * dp.x + dp.y * dp.y + dp.z * dp.z;
 
       var t1t2 = overlapDistSq - minDist * minDist;
@@ -117,14 +139,14 @@ Movable.prototype.detectCollision_ = function(collidables) {
       }
 
       if (intersecting === true) {
-        intersectedObjs.push(targetObj);
+        intersectedObjs.push(collidable);
 
         // Back out of object
         // TODO momentum? both objects bounce back?
         var overlapDist = Math.sqrt(overlapDistSq);
         var backDist = minDist - overlapDist;
         var backMagnitudeRatio = backDist / overlapDist;
-        var targetCenter = targetObj.getCenter_();
+        var targetCenter = collidable.getCenter_();
         var backVector = new THREE.Vector4(
             (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
             (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
@@ -135,10 +157,25 @@ Movable.prototype.detectCollision_ = function(collidables) {
         this.velocity.add(backVector);
         projectedCenter.add(backVector);
       }
-    } else { // Case for walls/floors/ceilings
+		*/
+    } 
+	 else { // Case for walls/floors/ceilings
+		 for (var i = 0; i < collidable.mesh.geometry.faces.length; i++) {
+			 var face = collidable.mesh.geometry.faces[i];
+			 // TODO position or center
+			 var oldFacingFront = face.normal().dot(this.position) > 0;
+			 var newFacingFront = face.normal().dot(newPos) > 0;
+
+			 if (oldFacingFront !== newFacingFront) {
+				intersectedObjs.push(collidable);
+				break; // should break collidable for loop as well
+			 }
+		 }
     }
   }
+  console.log("collidables.length= %d", i);
 
+  /*
   var collidable = null;
   if (intersectedObjs.length > 0) { // at least one intersection
     collidable = {
@@ -146,8 +183,9 @@ Movable.prototype.detectCollision_ = function(collidables) {
         vector: this.velocity
     };
   }
+  */
 
-  return collidable;
+  return intersectedObjs;
 };
 
 /**
@@ -164,15 +202,14 @@ Movable.prototype.applyForces = function(collidables) {
 	var timeLapse = 1000.0 / 60.0;
 	this.velocity.add(acceleration.multiplyScalar(timeLapse));
 
-	var collision = this.detectCollision_(collidables);
+	var collisions = this.detectCollision_(collidables);
 
-	if (collision != null) {
-    /*
-		var mu = collision.obj.friction;
+	if (collisions.length != 0) {
+		// TODO not use 0th index
+		var mu = collisions[0].friction;
 		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
-    */
 
-		this.position.add(collision.vector);
+		//this.position.add(collisions.vector);
 		this.force.set(0, 0, 0, 0);
 	}
 	else {
