@@ -9,6 +9,7 @@
 var THREE = require('three');
 
 var ButterOBJLoader = require('./OBJLoader.js');
+var Environment = require('./environment.js');
 
 /**
  * Construct the game play world.
@@ -28,7 +29,7 @@ function World() {
 	this.ncritters = 0;
 
   // Make world environment
-  //this.createRoom_();
+  this.createRoom_();
 }
 
 /* ENVIRONMENT CREATION FUNCTIONS */
@@ -57,28 +58,10 @@ World.prototype.createRoom_ = function() {
 	loader.load( 'blankRoom.obj' );
   */
 
-      var geometry = new THREE.Geometry();
-      geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, 100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, -100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, -100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  -100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  -100, -100 ) );
+	var env = new Environment();
 
-    geometry.faces.push( new THREE.Face4( 0, 1, 3, 2) );
-   geometry.faces.push( new THREE.Face4( 5, 4, 6, 7) );
-   geometry.faces.push( new THREE.Face4( 1, 5, 7, 3) );
-   geometry.faces.push( new THREE.Face4( 4, 0, 2, 6) );
-   geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
-   geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
- 
-     var material = new THREE.MeshBasicMaterial();
-   var mesh = new THREE.Mesh( geometry, material );
-
-   this.collidables['room'] = mesh;
-   this.enviroObjs['room'] = mesh;
+   this.collidables[env.id] = env;
+   this.enviroObjs[env.id] = env;
 };
 
 
