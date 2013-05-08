@@ -224,10 +224,11 @@ Movable.prototype.applyForces = function(collidables) {
 	if (collision != null) {
 		// TODO not use 0th index
 		var mu = collision.object; // a collidable
-		this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
+		//this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
 
 		// collision.vector is the corrected vector
-		this.position.add(collision.vector);
+		//this.position.add(collision.vector);
+		this.force.set(0, 0, 0, 0);
 	}
 	else {
 		// TODO before or after changing velocity?
