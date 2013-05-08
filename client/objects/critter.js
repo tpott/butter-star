@@ -1,6 +1,12 @@
 
-var Critter = function(){
+var Critter = function() {
     this.id = null;
+    this.model =
+    {		
+        objects : new THREE.Object3D(),
+        motion  : 'stand',
+        state   : 'stand'
+    };
     this.position = 
     {
         x : 0,
@@ -24,6 +30,8 @@ Critter.prototype.initModel = function(scene, type, size, position) {
                     
 
                     object.scale.set(size * .08 ,size * .08,size * .08);
+                    scene.add( object );
+
     });
     if(type == "boo")
     {
@@ -34,5 +42,3 @@ Critter.prototype.initModel = function(scene, type, size, position) {
 Critter.prototype.update = function() {
 
 };
-
-module.exports = Critter;

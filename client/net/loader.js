@@ -3,15 +3,16 @@
  *
  * Handle ordered client loading of libraries
  *
- * @author Trevor
+ * @author Trevossdwwwwsss
  */
 
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
+	"jquery.js",
 
 	// objects (+ models?) - TODO trevor, include models in objects
-	"player.js", "worldstate.js",
+	"player.js", "worldstate.js", "critter.js",
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
@@ -25,6 +26,9 @@ var scripts = [
 
 	// effects
 	"vacuum.js",
+
+	// gui
+	"minimap.js", "options.js",
 
 	// this defines main()
 	"main.js"
