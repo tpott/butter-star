@@ -39,6 +39,7 @@ var files = [
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
+	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],

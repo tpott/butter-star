@@ -3,7 +3,7 @@
  *
  * Handle ordered client loading of libraries
  *
- * @author Trevor
+ * @author Trevossdwwwwsss
  */
 
 var scripts = [
@@ -12,7 +12,7 @@ var scripts = [
 	"jquery.js",
 
 	// objects (+ models?) - TODO trevor, include models in objects
-	"player.js", "worldstate.js",
+	"player.js", "worldstate.js", "critter.js",
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
