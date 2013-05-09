@@ -1,19 +1,23 @@
 
-var Critter = function(){
-    this.id = null;
-    this.position = 
-    {
-        x : 0,
-        y : 0,
-        z : 0,
-        direction : 0
-    };
-};
+// Get external functions
+var THREE = require('three');
+var util = require('util');
+
+var Movable = require('./movable.js');
+
+function Critter(){
+    Critter.super_.call(this);
+
+    // TODO need radius, center (default 0,0,0 from Movable)
+    //this.initModel();
+}
+util.inherits(Critter, Movable);
 
 Critter.prototype.init = function() {
 }
 
 Critter.prototype.initModel = function(scene, type, size, position) {
+    /*
     var loader = new THREE.OBJMTLLoader();
                 loader.addEventListener( 'load', function ( event ) {
                     var object = event.content;
@@ -29,6 +33,7 @@ Critter.prototype.initModel = function(scene, type, size, position) {
     {
         loader.load( 'boo.obj', 'boo.mtl' );
     }
+    */
 }
 
 Critter.prototype.update = function() {
