@@ -49,6 +49,7 @@ function Player(socket) {
   this.initVacPos = null;
   this.direction = null;
   this.isVacuum = false;
+  this.vacAngleY = 0;
 
 	console.log('Player class, New player: %s', this.id);
   // TODO is this the only reason we need socket?

@@ -71,31 +71,37 @@ examples:
 */
 function update()
 {
+	if (myPlayer.id != null) {
+        myPlayer.mesh = myWorldState.getPlayerObject(myPlayer.id).mesh;
+        //cube.position = clone(myPlayer.position);
+        //cube.position.y = -2;
+        myPlayer.model.objects.position.x = myPlayer.position.x;
+        myPlayer.model.objects.position.y = myPlayer.position.y;
+        myPlayer.model.objects.position.z = myPlayer.position.z;
+        // camera rotate x
+        camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
+        camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
+        
+        //camera rotate y
+        camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
+        camera.position.y += 1;
 
-	cube.position = clone(myPlayer.position);
-	cube.position.y = -2;
-
-	myPlayer.model.objects.position.x = myPlayer.position.x;
-	myPlayer.model.objects.position.y = myPlayer.position.y;
-	myPlayer.model.objects.position.z = myPlayer.position.z;
-	// camera rotate x
-	camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
-	camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
-	
-	//camera rotate y
-	camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
-	camera.position.y += 1;
-
-	//console.log(camera.position.z)
-	
-	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
-	camera.lookAt( vec3 );
-	if(myPlayer.vacuum != null)
-	{
-		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
-	}
-    updatePlayersAnimation();
-
+        //console.log(camera.position.z)
+        
+        var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
+        camera.lookAt( vec3 );
+        if(myPlayer.vacuum != null)
+        {
+            myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
+        }
+        
+        //myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
+        var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
+        
+        //myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
+        myPlayer.mesh.rotation.y = ang + 1.65;
+        updatePlayersAnimation();
+    }
 }
     //render all other player animations
     function updatePlayersAnimation()
@@ -121,7 +127,7 @@ function update()
                 }
                 else
                 {
-                    players.vacuum.update(players.vacTrans,players.direction);
+                    players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
                 }
             }
             else if(players.vacuum != null)
@@ -130,6 +136,8 @@ function update()
                players.vacuum.removeFromScene(scene);
                players.vacuum = null;
             }
+            //update player angles
+            players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
        }
    }
 
@@ -263,7 +271,7 @@ function main()
 {
 	initStats();
 	initLights();
-  initModels();
+    initModels();
 	// initTextures();
 	initSounds();
 	//initFloor();

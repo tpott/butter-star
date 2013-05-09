@@ -50,6 +50,8 @@ var files = [
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	// our data files
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
+  ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
+  ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],

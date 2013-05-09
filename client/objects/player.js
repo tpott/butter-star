@@ -8,6 +8,7 @@ var Player = function() {
 	this.vacTrans = new THREE.Vector3(0,0,0);
     this.direction = null;
     this.isVacuum = false;
+    this.vacAngleY = 0;
 	this.model =
     {		
         objects : new THREE.Object3D(),
@@ -29,4 +30,16 @@ var Player = function() {
         y : 0,
         z : 0
     };
+};
+
+Player.prototype.setMesh = function(scene) {
+    var playerLoader = new THREE.OBJMTLLoader();
+    var me = this;
+    playerLoader.addEventListener( 'load', function (event) {
+        var object = event.content;
+        object.scale.set(.02, .02, .02);
+        me.mesh = object;
+        scene.add(me.mesh);
+    });
+    playerLoader.load('boy.obj', 'boy.mtl');
 };

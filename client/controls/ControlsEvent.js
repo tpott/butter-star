@@ -8,6 +8,7 @@ var ControlsEvent = function() {
     this.sprinting = false;
     this.speed     = .25;
     this.angle     = 0;
+    this.vacAngleY = 0;
     this.playerID  = -1;
 };
 

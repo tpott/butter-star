@@ -24,7 +24,8 @@ WorldState.prototype.addPlayer = function(p) {
 	var player = new Player();
 	player.id = p.id;
 	player.position = p.position;
-	scene.add(player.mesh);
+    player.setMesh(scene);
+	//scene.add(player.mesh);
 	this.players[player.id] = player;
 }
 
@@ -48,6 +49,8 @@ WorldState.prototype.updateWorldState = function(world){
 		//this.players[players[i].id].mesh.direction = players[i].position;
 		this.players[players[i].id].vacTrans = players[i].vacTrans;
         this.players[players[i].id].direction = players[i].direction;
+        this.players[players[i].id].vacAngleY = players[i].vacAngleY;
+        //console.log(this.players[players[i].id].id);
         this.players[players[i].id].isVacuum = players[i].isVacuum;
 		//console.log("Player id: " + players[i].id + " direction: " + players[i].direction);
 	}
