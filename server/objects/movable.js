@@ -112,13 +112,11 @@ Movable.prototype.detectCollision_ = function(collidables) {
       if (t1t2 < 0) {
         intersecting = true;
       } else { // not already intersecting
-        var pv = dp.x * this.velocity.x * -1
-            + dp.y * this.velocity.y * -1
-            + dp.z * this.velocity.z * -1;
+        var pv = dp.x * correctedVec.x * -1
+            + dp.y * correctedVec.y * -1
+            + dp.z * correctedVec.z * -1;
         if (pv < 0) { // spheres not moving away from each other
-          var vSquared = this.velocity.x * this.velocity.x
-              + this.velocity.y * this.velocity.y
-              + this.velocity.z * this.velocity.z;
+          var vSquared = correctedVec.dot(correctedVec);
 
           // Spheres will intersect
           if (!(((pv + vSquared) <= 0) && ((vSquared + 2 * pv + t1t2) >= 0))) {
@@ -132,7 +130,23 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
       if (intersecting === true) {
         intersectedObjs.push(collidable);
-			correctedVec.multiplyScalar(-1);
+
+        // Back out of object
+        // TODO momentum? both objects bounce back?
+        var overlapDist = Math.sqrt(overlapDistSq);
+        var backDist = minDist - overlapDist;
+        var backMagnitudeRatio = backDist / overlapDist;
+        var targetCenter = collidable.getCenter_();
+        var backVector = new THREE.Vector4(
+            (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
+            (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
+            (projectedCenter.z - targetCenter.z) * backMagnitudeRatio
+        );
+
+        // Update projectedCenter for next iteration
+        //this.velocity.add(backVector);
+        projectedCenter.add(backVector);
+		  correctedVec.add(backVector);
       }
     } 
 	  else { // Case for walls/floors/ceilings
