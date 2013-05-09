@@ -67,7 +67,7 @@ Player.prototype.move = function(evt) {
 		evt.speed = 0.75;
 	}
 	else {
-		evt.speed = 0.75;
+		evt.speed = 0.125;
 	}
 
 	var direction = evt.angle;

@@ -21,7 +21,7 @@ function Collidable() {
 
   this.gravity = new THREE.Vector4(0, -0.00098, 0, 0);
 
-  this.friction = 0.05; // in physics, this is usually "mu"
+  this.friction = 0.09; // in physics, this is usually "mu"
 };
 
 /**
