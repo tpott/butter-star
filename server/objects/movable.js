@@ -72,6 +72,7 @@ Movable.prototype.getCenter_ = function() {
  */
 Movable.prototype.detectCollision_ = function(collidables) {
   var intersectedObjs = [];
+  var correctedVec = this.velocity.clone();
 
   // TODO position or center?
   // TODO velocity or displacement
@@ -95,18 +96,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
     // Case for everything except walls/floors/ceilings
 	 //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
-		 /*
-		 // TODO new call
-		 var distance = new THREE.Vector4()
-			 .subVectors(this.getCenter_(), collidable.getCenter_())
-			 .length();
-
-		 // TODO this is really simple
-		 if (distance < this.radius + collidable.radius) {
-			 intersectedObjs.push(collidable);
-			 continue;
-		 }
-		 */
 		 
       dp.copy(collidable.getCenter_())
       dp.sub(projectedCenter);
@@ -139,22 +128,9 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
       if (intersecting === true) {
         intersectedObjs.push(collidable);
-
-        // Back out of object
-        // TODO momentum? both objects bounce back?
-        var overlapDist = Math.sqrt(overlapDistSq);
-        var backDist = minDist - overlapDist;
-        var backMagnitudeRatio = backDist / overlapDist;
-        var targetCenter = collidable.getCenter_();
-        var backVector = new THREE.Vector4(
-            (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
-            (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
-            (projectedCenter.z - targetCenter.z) * backMagnitudeRatio
-        );
-
-        // Update projectedCenter for next iteration
-        this.velocity.add(backVector);
-        projectedCenter.add(backVector);
+			var projected = normal.multiplyScalar(normal.dot(newVec) / 
+					normal.length());
+			correctedVec.sub(projected);
       }
     } 
 	 else { // Case for walls/floors/ceilings
@@ -166,6 +142,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
 					 face.normal.z,
 					 0.0
 				);
+			 normal.multiplyScalar(-1);
 
 			 var faceCenter = new THREE.Vector4(
 					 face.centroid.x,
@@ -182,10 +159,10 @@ Movable.prototype.detectCollision_ = function(collidables) {
 			 var newFacingFront = normal.dot(newVec) > 0;
 
 			 if (oldFacingFront !== newFacingFront) {
-				 //console.log("Collision?");
+				 var projected = normal.multiplyScalar(normal.dot(newVec) /
+						 normal.length());
 				intersectedObjs.push(collidable);
-				this.velocity.set(0,0,0,0);
-				break; // should break collidable for loop as well
+				correctedVec.sub(projected);
 			 }
 
 			 // check for distance
@@ -198,7 +175,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
   if (intersectedObjs.length > 0) { // at least one intersection
     collidable = {
         obj: intersectedObjs[0], // TODO
-        vector: this.velocity
+        vector: correctedVec
     };
   }
 
@@ -223,12 +200,13 @@ Movable.prototype.applyForces = function(collidables) {
 
 	if (collision != null) {
 		// TODO not use 0th index
-		var mu = collision.object; // a collidable
-		//this.force.copy(mu * this.velocity.clone().multiplyScalar(-1.0));
+		var mu = collision.obj.friction; // collison.obj is a collidable
+		this.force.copy(collision.vector).multiplyScalar(-1 * mu);
 
 		// collision.vector is the corrected vector
-		//this.position.add(collision.vector);
-		this.force.set(0, 0, 0, 0);
+		this.position.add(collision.vector);
+		this.velocity.copy(collision.vector); // TODO unecessary copy?
+		//this.force.set(0, 0, 0, 0);
 	}
 	else {
 		// TODO before or after changing velocity?

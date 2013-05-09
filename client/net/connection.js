@@ -80,7 +80,7 @@ initClientSend = function(socket) {
 }
 
 function clientSendLoop(socket) {
-    if (hasBeenSent == false) {
+    //if (hasBeenSent == false) {
         if (socket.readyState != socket.OPEN) {
             console.log("Connection is not ready yet!");
         } else {
@@ -91,5 +91,5 @@ function clientSendLoop(socket) {
                hasBeenSent = true; 
             }
         }
-    }
+    //}
 }

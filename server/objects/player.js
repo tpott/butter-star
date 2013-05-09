@@ -68,7 +68,7 @@ Player.prototype.move = function(evt) {
 		evt.speed = 0.75;
 	}
 	else {
-		evt.speed = 0.25;
+		evt.speed = 0.125;
 	}
 
 	var direction = evt.angle;
@@ -101,9 +101,8 @@ Player.prototype.move = function(evt) {
   var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
-	var magicAmplifier = 0.01;
-	var force = new THREE.Vector4(dx, dy, dz, 0)
-		.multiplyScalar(magicAmplifier);
+	//var magicAmplifier = 0.8;
+	var force = new THREE.Vector4(dx, dy, dz, 0);
 
   // should resolve to super_.addForce
   this.addForce(force);
