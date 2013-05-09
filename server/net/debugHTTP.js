@@ -62,7 +62,7 @@ Debug.prototype.body = function() {
 		// TODO user agent: main.wsServer.clients[0].upgradeReq.headers
 		var socket = this.wsServer.clients[i];
 		body += '<tr><td>' + socket.player.id + '</td>';
-		body += '<td>' + socket.player.game.id + '</td>';
+		body += '<td>' + this.wsServer.gameFor(socket).id + '</td>';
 		body += '<td>' + socket._socket.remoteAddress + '</td>';
 		body += '<td>' + socket._socket.remotePort + '</td>';
 		body += '<td>' + socket._socket.bytesRead + '</td>';
