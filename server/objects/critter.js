@@ -8,6 +8,7 @@ function Critter(){
     Critter.super_.call(this);
 
     // TODO need radius, change center to rand loc
+	 this.radius = 0.0;
 }
 util.inherits(Critter, Movable);
 

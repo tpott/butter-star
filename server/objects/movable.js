@@ -93,6 +93,10 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
     var collidable = collidables[id]; // Object checking collision against
     var intersecting = false;
+	 // skip enemies for now, cause they were covering the floor...
+	 if (collidable.radius == 0) {
+		 continue;
+	 }
     // Case for everything except walls/floors/ceilings
 	 //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
@@ -128,9 +132,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
       if (intersecting === true) {
         intersectedObjs.push(collidable);
-			var projected = normal.multiplyScalar(normal.dot(newVec) / 
-					normal.length());
-			correctedVec.sub(projected);
+			correctedVec.multiplyScalar(-1);
       }
     } 
 	  else { // Case for walls/floors/ceilings

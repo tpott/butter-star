@@ -90,6 +90,7 @@ World.prototype.addCritter = function(numCritters) {
         Math.floor(Math.random() * 20) * 20 + 10,
         Math.floor(Math.random() * 20 - 10) * 20,
         1);
+	 critter.id = i;
     this.collidables[critter.id] = critter;
     this.critters[critter.id] = critter;
     this.ncritters++;
