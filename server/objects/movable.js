@@ -151,7 +151,6 @@ Movable.prototype.detectCollision_ = function(collidables) {
 					 1.0
 				);
 
-        /*
 			  var oldVec = this.position.clone().sub(faceCenter);
 			  var newVec = newPos.clone().sub(faceCenter);
 
@@ -168,8 +167,8 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
 			  // check for distance
 			  // TODO
-        */
 
+        /*
         var plane = normal.dot(faceCenter);
         var startDistToWall = normal.dot(this.getCenter_()).sub(plane);
         var endDistToWall = normal.dot(projectedCenter).sub(plane);
@@ -187,6 +186,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
         }
 
         // TODO correcting for intersection
+        */
 		  } // end loop over faces
     } // end else for walls/floors/ceilings
   }

@@ -88,10 +88,8 @@ World.prototype.addCritter = function(numCritters) {
     critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
                                y :  Math.floor(Math.random() * 20) * 20 + 10,
                                z :  Math.floor(Math.random() * 20 - 10) * 20}
-    critter.id = i;
-
-    this.collidables[i] = critter;
-    this.critters[i] = critter;
+    this.collidables[critter.id] = critter;
+    this.critters[critter.id] = critter;
     this.ncritters++;
   }
 }
