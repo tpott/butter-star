@@ -15,6 +15,7 @@ var THREE = require('three');
 var randomID = require('./random.js');
 var THREE = require('three');
 var World = require('./world.js');
+var Keyboard = require('./controls/handler.js');
 
 /**
  * Construct a game instance.
@@ -31,14 +32,21 @@ function Game() {
 	//setTimeout(gameTick(this), 1000 / this.ticks);
 	this.world.addCritter(100);
 
-	setInterval(gameTick(this), 1000 / this.ticks);
+	this.keyboardHandler = new Keyboard.Handler();
+
+	var self = this;
+	function serverTick () {
+		self.gameTickBasedUpdate();
+		self.sendUpdatesToAllClients();
+	}
+	setInterval(serverTick, 1000 / this.ticks);
 }
 
 /**
  * Send an update of all object locations to all the clients
  */
 // TODO link with game logic
-Game.prototype.sendUpdate = function() {
+/*Game.prototype.sendUpdate = function() {
 	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
@@ -46,7 +54,7 @@ Game.prototype.sendUpdate = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;*/
+		//player.direction = this.players[id].direction;
 		player.vacTrans = this.players[id].vacTrans;
 		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
@@ -59,7 +67,7 @@ Game.prototype.sendUpdate = function() {
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
-}
+}*/
 
 /**
  * Add a socket to this game.
@@ -88,32 +96,28 @@ Game.prototype.removeSocket = function(socket) {
 	}
 }
 
-// TODO
-function isEvent(anything) {
-  return true;
-}; 
+/**
+ * Parses the keypresses using the keyboard handler. If unable to 
+ * parse the keypress, then it returns null.
+ */
+Game.prototype.parseInput = function(player, anything) {
+}
 
 /**
  * Handles updating a given player for a given event.
  * @param {Socket} socket The socket we are receiving the event from.
  * @param {Event} anything The event we are using to update the player.
  */
-Game.prototype.eventBasedUpdate = function(socket, anything) {
-    var player = socket.player;
+Game.prototype.eventBasedUpdate = function(socket, clientData) {
+	var player = socket.player;
 
-    var obj = JSON.parse(anything);
-    if (isEvent(obj)) {
-        player.direction = obj.angle;
-		player.isVacuum = obj.isVacuum;
-        player.vacAngleY = obj.vacAngleY;
-        if(obj.moving) {
-            player.move(obj, this.world.collidables);
-        }
-        player.updateVacuum(obj);
-    }
-    else {
-        console.log('Received unknown input: %s', anything);
-    }
+	player.direction = clientData.angle;
+	player.isVacuum = clientData.isVacuum;
+	player.vacAngleY = clientData.vacAngleY;
+	if(clientData.moving) {
+		player.move(clientData, this.world.collidables);
+	}
+	player.updateVacuum(clientData);
 }
 
 /**
@@ -157,14 +161,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		this.sockets[id].send(JSON.stringify(tempWorld));
 	}
   
-}
-
-// TODO comment and clean this shit
-gameTick = function(game) {
-	return function() {
-    game.gameTickBasedUpdate();
-		game.sendUpdatesToAllClients();
-	}
 }
 
 

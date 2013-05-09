@@ -38,6 +38,11 @@ var gameid = document.URL.replace(/.*\//,'');
 
 var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
 
+// each key press will append something here,
+// on each client tick the keypresses will be sent and 
+// this will get emptied
+var keyPresses = [];
+
 //only init the worldState once at the very beginning;
 var initWorldState = true;
 ///Octree Code, eventually will need to port over to the server
