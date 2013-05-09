@@ -6,33 +6,16 @@ var THREE = require('three');
 var util = require('util');
 
 var Collidable = require('./collidable.js');
+var Loader = require('./OBJLoader.js');
 
 function Environment() {
   Environment.super_.call(this);
 
-	var geometry = new THREE.Geometry();
-      geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, 100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, -100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( 100, -100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  100, -100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  -100, 100 ) );
-      geometry.vertices.push( new THREE.Vector3( -100,  -100, -100 ) );
+  // load geometry obj
+  this.mesh = Loader.parse('../client/objects/blankRoom.obj');
 
-
-    geometry.faces.push( new THREE.Face4( 0, 1, 3, 2) );
-   geometry.faces.push( new THREE.Face4( 5, 4, 6, 7) );
-   geometry.faces.push( new THREE.Face4( 1, 5, 7, 3) );
-   geometry.faces.push( new THREE.Face4( 4, 0, 2, 6) );
-   geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
-   geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
-  geometry.computeFaceNormals();
-  geometry.computeCentroids();
-  
-  
-     var material = new THREE.MeshBasicMaterial();
-  this.mesh = new THREE.Mesh( geometry, material );
+  this.mesh.geometry.computeFaceNormals();
+  this.mesh.geometry.computeCentroids();
 
 }
 

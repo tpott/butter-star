@@ -36,30 +36,12 @@ function World() {
 /* ENVIRONMENT CREATION FUNCTIONS */
 
 World.prototype.createRoom_ = function() {
-  /*
-	var env = null;
-	var self = this;
-  var loader = new ButterOBJLoader();
-  loader.on( 'load', function ( event ) {
-    var object = event.content;
-    var tempScale = new THREE.Matrix4();
-    object.position.y = -5;
-    object.position.x = -20;
-    //object.scale.set(.1,.1,.1);
-
-    var objMesh = object.children[0];
-    // Set position to same as object. MUST do otherwise collisions off.
-    objMesh.position.y = -5;
-    objMesh.position.x = -20;
-
-		// TODO WRONG. Need to extend collidable and make that obj
-		self.collidables['room'] = obj; 
-		self.enviroObjs['room'] = obj;
-  });
-	loader.load( 'blankRoom.obj' );
-  */
 
 	var env = new Environment();
+
+	// fuck you thinh
+	env.mesh.position.y = -5;
+	env.mesh.position.x = -20;
 
    this.collidables[env.id] = env;
    this.enviroObjs[env.id] = env;
