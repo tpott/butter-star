@@ -85,14 +85,16 @@ World.prototype.addCritter = function(numCritters) {
   for( var i = 0 ; i < numCritters; i++)
   {
     var critter = new Critter();
-    critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
-                               y :  Math.floor(Math.random() * 20) * 20 + 10,
-                               z :  Math.floor(Math.random() * 20 - 10) * 20}
-    critter.id = i;
-    this.critters[i] = critter;
+    critter.position.set(
+        Math.floor(Math.random() * 20 - 10) * 20,
+        Math.floor(Math.random() * 20) * 20 + 10,
+        Math.floor(Math.random() * 20 - 10) * 20,
+        1);
+	 critter.id = i;
+    this.collidables[critter.id] = critter;
+    this.critters[critter.id] = critter;
+    this.ncritters++;
   }
-
-
 }
 
 /**
@@ -118,6 +120,17 @@ World.prototype.removePlayer = function(player) {
 		return false;
 	}
 }
+
+World.prototype.removeCritter = function(critter) {
+  if (delete this.collidables[critter.id] &&
+      delete this.critters[critter.id]) {
+    this.ncritters--;
+    return true;
+  } else {
+    return false;
+  }
+  // TODO update all clients that this was deleted
+};
 
 
 /* WORLD MUTATOR FUNCTIONS */
