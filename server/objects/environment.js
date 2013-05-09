@@ -11,10 +11,11 @@ var Loader = require('./OBJLoader.js');
 function Environment() {
   Environment.super_.call(this);
 
-  this.geometry = Loader('../client/objects/blankRoom.obj');
+  // load geometry obj
+  this.mesh = Loader.parse('../client/objects/blankRoom.obj');
 
-  geometry.computeFaceNormals();
-  geometry.computeCentroids();
+  this.mesh.geometry.computeFaceNormals();
+  this.mesh.geometry.computeCentroids();
 
 }
 

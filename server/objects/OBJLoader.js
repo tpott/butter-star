@@ -7,13 +7,11 @@
 var fs = require('fs');
 var THREE = require('three');
 
-function Loader(filename) {
-	this._parse(fs.readFileSync(filename), 'utf8');
-}
-
 // taken from
 // https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/OBJLoader.js
-Loader.prototype._parse = function ( data ) {
+function parse ( filename ) {
+
+	var data = fs.readFileSync(filename, 'utf8');
 
 	// fixes
 
@@ -390,8 +388,8 @@ Loader.prototype._parse = function ( data ) {
 	// add the last group
 	meshN( undefined, undefined );
 
-	return group;
+	return group.children[0]; 
 
 }
 
-module.exports = Loader;
+module.exports.parse = parse;
