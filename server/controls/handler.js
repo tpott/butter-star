@@ -7,29 +7,29 @@
 
 // these get exported
 var EVENTS = {
-	NONE : 0,
-	MOVE_FORWARD : 1,
-	MOVE_LEFT : 2,
-	MOVE_BACKWARD : 3,
-	MOVE_RIGHT : 4,
-	TOGGLE_VACCUM : 5
+	'NONE' : 0,
+	'MOVE_FORWARD' : 1,
+	'MOVE_LEFT' : 2,
+	'MOVE_BACKWARD' : 3,
+	'MOVE_RIGHT' : 4,
+	'TOGGLE_VACCUM' : 5
 };
 
 // TODO use client settings
 var keymap = {
-	'w' : MOVE_FORWARD, 
-	'a' : MOVE_LEFT, 
-	's' : MOVE_BACKWARD, 
-	'd' : MOVE_RIGHT,
-	'c' : TOGGLE_VACCUM 
+	'w' : 'MOVE_FORWARD', 
+	'a' : 'MOVE_LEFT', 
+	's' : 'MOVE_BACKWARD', 
+	'd' : 'MOVE_RIGHT',
+	'c' : 'TOGGLE_VACCUM' 
 };
 
 // these keys don't need to be processed by the server, but
 // will handle events that only need to take place on the client
 var clientOnly = {
-	'ESC' : TOGGLE_OPTIONMENU,
-	'm' : TOGGLE_MUSIC, 
-	'f' : TOGGLE_FULLSCREEN 
+	'ESC' : 'TOGGLE_OPTIONMENU',
+	'm' : 'TOGGLE_MUSIC', 
+	'f' : 'TOGGLE_FULLSCREEN'
 };
 
 var unusedKeys = {
@@ -58,12 +58,32 @@ var unusedKeys = {
 function Handler() {
 }
 
+/**
+ * Takes in a single keyPress and should return the movement event
+ */
+Handler.prototype.parse = function(keyPress) {
+	if (keyPress in keymap) {
+		return keymap[keyPress];
+	}
+	else if (keyPress in clientOnly) {
+		console.log("%s only used in client");
+		return null;
+	}
+	else if (keyPress in unusedKeys) {
+		console.log("'%s' is an unused key", keyPress);
+		return null;
+	}
+	else {
+		console.log("'%s' is an UNKNOWN key", keyPress);
+		return null;
+	}
+}
+
 /*
  * check for key pressed from the player
  */
 function keyDown(e){
 	// client loop back functionality
-	switch(e.keyCode) {
 		/*case keymap['c']:
 			if(myPlayer.vacuum == null) {
 				myPlayer.vacuum = 
@@ -84,7 +104,6 @@ function keyDown(e){
 
 function keyUp(e){
 	// client loop back functionality
-	switch(e.keyCode) {
 		/*case keymap['c']:
 			myPlayer.vacuum.removeFromScene(scene);
 			myPlayer.vacuum = null;

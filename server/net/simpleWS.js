@@ -68,7 +68,9 @@ Server.prototype._newSocket = function(socket) {
 
 		// null in case of error
 		if (clientData != null) {
-			game.eventBasedUpdate(socket, clientData);
+			for (var i = 0; i < clientData.length; i++) {
+				game.eventBasedUpdate(player, clientData[i]);
+			}
 		}
 	});
 

@@ -15,7 +15,7 @@ var THREE = require('three');
 var randomID = require('./random.js');
 var THREE = require('three');
 var World = require('./world.js');
-var Keyboard = require('./controls/handler.js');
+var Keyboard = require('../controls/handler.js');
 
 /**
  * Construct a game instance.
@@ -101,23 +101,35 @@ Game.prototype.removeSocket = function(socket) {
  * parse the keypress, then it returns null.
  */
 Game.prototype.parseInput = function(player, anything) {
+	// obj should be a non-empty array
+	var obj = JSON.parse(anything);
+	if (obj instanceof Array) {
+		return obj;
+	}
+	else {
+		console.log("Bad input");
+		return null;
+	}
 }
 
 /**
  * Handles updating a given player for a given event.
- * @param {Socket} socket The socket we are receiving the event from.
- * @param {Event} anything The event we are using to update the player.
+ * @param {Array} clientData represents a key press
  */
-Game.prototype.eventBasedUpdate = function(socket, clientData) {
-	var player = socket.player;
+Game.prototype.eventBasedUpdate = function(player, clientData) {
+	var evt = this.keyboardHandler.parse(clientData);
 
-	player.direction = clientData.angle;
+	if (evt == null) {
+		return;
+	}
+	
+	/*player.direction = clientData.angle;
 	player.isVacuum = clientData.isVacuum;
 	player.vacAngleY = clientData.vacAngleY;
 	if(clientData.moving) {
 		player.move(clientData, this.world.collidables);
 	}
-	player.updateVacuum(clientData);
+	player.updateVacuum(clientData);*/
 }
 
 /**

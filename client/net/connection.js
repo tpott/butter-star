@@ -34,10 +34,12 @@ function Connection(ip, port, gameid, player, world) {
 			  if (socket.readyState != socket.OPEN) {
 					console.log("Connection is not ready yet!");
 			  } 
+			  else if (keyPresses.length == 0) {
+				  //console.log("keyPresses is empty");
+			  }
 			  else {
 					socket.send(JSON.stringify(keyPresses));
-					//keyPresses = [];
-					console.log(keyPresses);
+					keyPresses = [];
 					/*
 					// dont flag event as sent if vacuum is on since client can be
 					// moving without pressing any keys (acceleration)
