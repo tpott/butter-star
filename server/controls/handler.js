@@ -79,6 +79,13 @@ Handler.prototype.parse = function(keyPress) {
 	}
 }
 
+function isMoveEvent(evtName) {
+	var evtEnum = EVENTS[evtName];
+	return evtEnum == EVENTS['MOVE_FORWARD'] ||
+		evtEnum == EVENTS['MOVE_BACKWARD'] || evtEnum == EVENTS['MOVE_LEFT'] ||
+		evtEnum == EVENTS['MOVE_RIGHT'];
+}
+
 /*
  * check for key pressed from the player
  */
@@ -112,4 +119,5 @@ function keyUp(e){
 }
 
 module.exports = EVENTS;
+module.exports.isMoveEvent = isMoveEvent;
 module.exports.Handler = Handler;

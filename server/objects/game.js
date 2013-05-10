@@ -122,14 +122,16 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 	if (evt == null) {
 		return;
 	}
-	
-	/*player.direction = clientData.angle;
-	player.isVacuum = clientData.isVacuum;
-	player.vacAngleY = clientData.vacAngleY;
-	if(clientData.moving) {
-		player.move(clientData, this.world.collidables);
+	else if (Keyboard.isMoveEvent(evt)) {
+		player.move(evt);
 	}
-	player.updateVacuum(clientData);*/
+	else if (Keyboard['TOGGLE_VACCUM'] == Keyboard[evt]) {
+		player.toggleVacuum();
+	}
+	else {
+		console.log("Game '%s' unable to process event '%s'", this.id, evt);
+	}
+	
 }
 
 /**

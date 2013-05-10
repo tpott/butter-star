@@ -61,72 +61,67 @@ var codemap = {
  * check for key pressed from the player
  */
 function keyDown(e){
-	/*if(e.shiftKey == 1) {
-		controlsEvent.set("sprinting", true);
-	}
-	if(e.shiftKey == 0) {
-		controlsEvent.set("sprinting", false);
-	}*/
-	
-	// client loop back functionality
-	switch(e.keyCode) {
-		/*case keymap['c']:
-			if(myPlayer.vacuum == null) {
-				myPlayer.vacuum = 
-                    new Vacuum(new THREE.Vector3(
-                                    myPlayer.position.x,
-                                    myPlayer.position.y,
-                                    myPlayer.position.z), 
-                               new THREE.Vector3(0,0,-1), 
-                               1000, 
-										 $('#vertexShader').text(),
-										 $('#fragmentShader').text());
-				myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
-				myPlayer.vacuum.addToScene(scene);
-			}
-			controlsEvent.set("isVacuum", true);
-			break;*/
-		case keymap['w']:
-			controlsEvent.set("front", true);
-			controlsEvent.set("Backwards", false);
-            controlsEvent.set("moving", true);
-			break;
-		case keymap['a']:
-			controlsEvent.set("left", true);
-			controlsEvent.set("right", false);
-            controlsEvent.set("moving", true);
-			break;
-		case keymap['s']:
-			controlsEvent.set("Backwards", true);
-			controlsEvent.set("front", false);
-            controlsEvent.set("moving", true);
-			break;
-		case keymap['d']:
-			controlsEvent.set("right", true);
-			controlsEvent.set("left", false);
-            controlsEvent.set("moving", true);
-			break;
+	// TODO is this a bad idea?
+	switch (e.keyCode) {
+		case 13: 
+		case 16: 
+		case 17: 
+		case 18: 
+		case 27: 
+		case 32:
+		case 37:
+		case 38:
+		case 39:
+		case 40:
+		case 48:
+		case 49:
+		case 50:
+		case 51:
+		case 52:
+		case 53:
+		case 54:
+		case 55:
+		case 56:
+		case 57:
+		case 65:
+		case 66:
+		//case 67: // c should only be sent on keyUp
+		case 68:
+		case 69:
+		case 70:
+		case 71:
+		case 72:
+		case 73:
+		case 74:
+		case 75:
+		case 76:
+		case 77:
+		case 78:
+		case 79:
+		case 80:
+		case 81:
+		case 82:
+		case 83:
+		case 84:
+		case 85:
+		case 86:
+		case 87:
+		case 88:
+		case 89:
+		case 90:
+		case 187:
+		case 189:
+		case 219:
+		case 221:
+			keyPresses.push(codemap[e.keyCode]);
 		default:
-            //console.log(e.keyCode);
-				break;
+			console.log("Key code '%d' not recognized", e.keyCode);
 	}
-
-	// append these to keyPresses
-	keyPresses.push(codemap[e.keyCode]);
-	//console.log("Key down: %s", codemap[e.keyCode]);
 }
 
 function keyUp(e){
-	//console.log("Key UP! keyPresses=" + keyPresses);
-	/*if(e.shiftKey == 1) {
-		controlsEvent.set("sprinting", false);
-	}
-	if(e.shiftKey == 0) {
-		controlsEvent.set("sprinting", false);
-	}*/
-
-	// client loop back functionality
 	switch(e.keyCode) {
+		// client loop back functionality
 		case keymap['m']:
 			 audio.pause();
 			 break;
@@ -135,35 +130,14 @@ function keyUp(e){
 			break;
 		case keymap['f']:
 			toggleFullScreen();
-			//handleFullscreen();
 			break;
-		/*case keymap['c']:
-			myPlayer.vacuum.removeFromScene(scene);
+		// client send only once
+		case keymap['c']:
+			keyPresses.push(codemap[e.keyCode]);
+			/*myPlayer.vacuum.removeFromScene(scene);
 			myPlayer.vacuum = null;
-			controlsEvent.set("isVacuum", false);
-			break;*/
-		/*case keymap['w']:
-			controlsEvent.set("front", false);
-			break;
-		case keymap['a']:
-			controlsEvent.set("left", false);
-			break;
-		case keymap['s']:
-			controlsEvent.set("Backwards", false);
-			break;
-		case keymap['d']:
-			controlsEvent.set("right", false);
-			break;*/
+			controlsEvent.set("isVacuum", false);*/
 		//default:
 			//console.log(e.keyCode);
 	}
-
-	// remove keys from keyPresses?
-	/*if (!(delete keyPresses[codemap[e.keyCode]])) {
-		console.log("Key up event without a key down event");
-	}*/
-	/*if(!controlsEvent.front && !controlsEvent.Backwards && 
-       !controlsEvent.left && !controlsEvent.right) {
-		controlsEvent.set("moving", false);
-	}*/
 }
