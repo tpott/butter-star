@@ -38,8 +38,8 @@ function Connection(ip, port, gameid, player, world) {
 				  //console.log("keyPresses is empty");
 			  }
 			  else {
+				  console.log(keyPresses);
 					socket.send(JSON.stringify(keyPresses));
-					keyPresses = [];
 					/*
 					// dont flag event as sent if vacuum is on since client can be
 					// moving without pressing any keys (acceleration)

@@ -64,9 +64,9 @@ function keyDown(e){
 	// TODO is this a bad idea?
 	switch (e.keyCode) {
 		case 13: 
-		case 16: 
+		/*case 16: 
 		case 17: 
-		case 18: 
+		case 18: */
 		case 27: 
 		case 32:
 		case 37:
@@ -85,7 +85,7 @@ function keyDown(e){
 		case 57:
 		case 65:
 		case 66:
-		//case 67: // c should only be sent on keyUp
+		case 67: // c should only be sent on keyUp
 		case 68:
 		case 69:
 		case 70:
@@ -113,13 +113,25 @@ function keyDown(e){
 		case 189:
 		case 219:
 		case 221:
-			keyPresses.push(codemap[e.keyCode]);
+			// if the key is not already pressed
+			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
+				console.log("'%s' down.", codemap[e.keyCode]);
+				keyPresses.push(codemap[e.keyCode]);
+			}
+			break;
 		default:
 			console.log("Key code '%d' not recognized", e.keyCode);
+			break;
 	}
 }
 
 function keyUp(e){
+	console.log("'%s' up.", codemap[e.keyCode]);
+	// TODO is this right?
+	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
+		keyPresses.pop(codemap[e.keyCode]);
+	}
+
 	switch(e.keyCode) {
 		// client loop back functionality
 		case keymap['m']:
@@ -132,8 +144,8 @@ function keyUp(e){
 			toggleFullScreen();
 			break;
 		// client send only once
-		case keymap['c']:
-			keyPresses.push(codemap[e.keyCode]);
+		/*case keymap['c']:
+			keyPresses.push(codemap[e.keyCode]);*/
 			/*myPlayer.vacuum.removeFromScene(scene);
 			myPlayer.vacuum = null;
 			controlsEvent.set("isVacuum", false);*/

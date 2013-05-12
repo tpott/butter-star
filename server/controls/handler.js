@@ -62,17 +62,24 @@ function Handler() {
  * Takes in a single keyPress and should return the movement event
  */
 Handler.prototype.parse = function(keyPress) {
+	// keys that the server needs to handle
 	if (keyPress in keymap) {
 		return keymap[keyPress];
 	}
+
+	// keys that only the client needs
 	else if (keyPress in clientOnly) {
 		console.log("%s only used in client");
 		return null;
 	}
+
+	// keys the client recognizes but doesnt use
 	else if (keyPress in unusedKeys) {
 		console.log("'%s' is an unused key", keyPress);
 		return null;
 	}
+
+	// a completely unrecognized key...
 	else {
 		console.log("'%s' is an UNKNOWN key", keyPress);
 		return null;
@@ -82,7 +89,8 @@ Handler.prototype.parse = function(keyPress) {
 function isMoveEvent(evtName) {
 	var evtEnum = EVENTS[evtName];
 	return evtEnum == EVENTS['MOVE_FORWARD'] ||
-		evtEnum == EVENTS['MOVE_BACKWARD'] || evtEnum == EVENTS['MOVE_LEFT'] ||
+		evtEnum == EVENTS['MOVE_BACKWARD'] || 
+		evtEnum == EVENTS['MOVE_LEFT'] ||
 		evtEnum == EVENTS['MOVE_RIGHT'];
 }
 
