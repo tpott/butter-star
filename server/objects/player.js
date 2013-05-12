@@ -107,7 +107,13 @@ Player.prototype.toggleVacuum = function() {
 	this.state ^= VACUUMING;
 	console.log("Player %s %s vacuuming", this.id, 
 			this.state & VACUUMING ? "is" : "is not");
-}
+};
+
+/**
+ * rotates the player based off the mouse movement
+ */
+Player.prototype.rotate = function(mouseX, mouseY) {
+};
 
 /**
  * Updates the position of the vacuum effect.

@@ -60,7 +60,7 @@ var codemap = {
 /*
  * check for key pressed from the player
  */
-function keyDown(e){
+function keyDown(e) {
 	// TODO is this a bad idea?
 	switch (e.keyCode) {
 		case 13: 
@@ -125,7 +125,7 @@ function keyDown(e){
 	}
 }
 
-function keyUp(e){
+function keyUp(e) {
 	console.log("'%s' up.", codemap[e.keyCode]);
 	// TODO is this right?
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {

@@ -69,7 +69,7 @@ Handler.prototype.parse = function(keyPress) {
 
 	// keys that only the client needs
 	else if (keyPress in clientOnly) {
-		console.log("%s only used in client");
+		console.log("'%s' only used in client", keyPress);
 		return null;
 	}
 
