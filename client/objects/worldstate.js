@@ -36,6 +36,7 @@ WorldState.prototype.removePlayer = function(id) {
 
 /**
  * players is an array of player objects
+ * world is the JSON parsed message from the server
  */
 WorldState.prototype.updateWorldState = function(world){
 	//console.log('updating world state');
@@ -48,7 +49,7 @@ WorldState.prototype.updateWorldState = function(world){
 		this.players[players[i].id].mesh.position = players[i].position;
 		//this.players[players[i].id].mesh.direction = players[i].position;
 		this.players[players[i].id].vacTrans = players[i].vacTrans;
-        this.players[players[i].id].direction = players[i].direction;
+        this.players[players[i].id].orientation = players[i].orientation;
         this.players[players[i].id].vacAngleY = players[i].vacAngleY;
         //console.log(this.players[players[i].id].id);
         this.players[players[i].id].isVacuum = players[i].isVacuum;

@@ -43,6 +43,7 @@ function Player(socket) {
 
   // TODO necessary? -Trevor
 	this.camera = {
+		speed : 1,
 		distance : 5,
 		x : 0,
 		y : 0,
@@ -113,6 +114,12 @@ Player.prototype.toggleVacuum = function() {
  * rotates the player based off the mouse movement
  */
 Player.prototype.rotate = function(mouseX, mouseY) {
+	var rotationX = new THREE.Matrix4().makeRotationX(mouseX);
+	var rotationY = new THREE.Matrix4().makeRotationY(mouseY);
+	var rot = rotationX.multiply(rotationY);
+
+	//this.orientation = rot.multiply(this.orientation);
+	this.orientation.applyMatrix4(rot);
 };
 
 /**

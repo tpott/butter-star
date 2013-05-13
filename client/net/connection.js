@@ -35,18 +35,17 @@ function Connection(ip, port, gameid, player, world) {
 					console.log("Connection is not ready yet!");
 			  } 
 			  else if (keyPresses.length == 0 && mouseMovement[0] == 0 &&
-					  mouseMovement[1] == 0) {
+				  mouseMovement[1] == 0) {
 				  //console.log("keyPresses is empty");
 			  }
 			  else {
 				  var allData = keyPresses.slice(0); // aka clone
 				  if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
 					  allData.push(mouseMovement);
-					  mouseMovement[0] = 0;
-					  mouseMovement[1] = 0;
 				  }
-				  console.log(allData);
 					socket.send(JSON.stringify(allData));
+					mouseMovement[0] = 0;
+					mouseMovement[1] = 0;
 					/*
 					// dont flag event as sent if vacuum is on since client can be
 					// moving without pressing any keys (acceleration)
@@ -85,7 +84,7 @@ Connection.prototype._onmessage = function(buf) {
 		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 
-        initClientSend(this); // Pass the socket to the send loop
+        //initClientSend(this); // Pass the socket to the send loop
 
 		return;
 	}

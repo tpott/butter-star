@@ -79,6 +79,12 @@ Handler.prototype.parse = function(keyPress) {
 		return null;
 	}
 
+	// mouse rotate
+	else if (keyPress instanceof Array) {
+		//console.log("Rotate by %s.", keyPress);
+		return keyPress;
+	}
+
 	// a completely unrecognized key...
 	else {
 		console.log("'%s' is an UNKNOWN key", keyPress);
@@ -92,38 +98,6 @@ function isMoveEvent(evtName) {
 		evtEnum == EVENTS['MOVE_BACKWARD'] || 
 		evtEnum == EVENTS['MOVE_LEFT'] ||
 		evtEnum == EVENTS['MOVE_RIGHT'];
-}
-
-/*
- * check for key pressed from the player
- */
-function keyDown(e){
-	// client loop back functionality
-		/*case keymap['c']:
-			if(myPlayer.vacuum == null) {
-				myPlayer.vacuum = 
-                    new Vacuum(new THREE.Vector3(
-                                    myPlayer.position.x,
-                                    myPlayer.position.y,
-                                    myPlayer.position.z), 
-                               new THREE.Vector3(0,0,-1), 
-                               1000, 
-										 $('#vertexShader').text(),
-										 $('#fragmentShader').text());
-				myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle);
-				myPlayer.vacuum.addToScene(scene);
-			}
-			controlsEvent.set("isVacuum", true);
-			break;*/
-}
-
-function keyUp(e){
-	// client loop back functionality
-		/*case keymap['c']:
-			myPlayer.vacuum.removeFromScene(scene);
-			myPlayer.vacuum = null;
-			controlsEvent.set("isVacuum", false);
-			break;*/
 }
 
 module.exports = EVENTS;

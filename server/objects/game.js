@@ -128,6 +128,9 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 	else if (Keyboard['TOGGLE_VACCUM'] == Keyboard[evt]) {
 		player.toggleVacuum();
 	}
+	else if (evt instanceof Array) { // mouse movement
+		player.rotate(evt);
+	}
 	else {
 		console.log("Game '%s' unable to process event '%s'", this.id, evt);
 	}
@@ -157,7 +160,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.sockets[id].player.position;
-		player.direction = this.sockets[id].player.direction;
+		player.orientation = this.sockets[id].player.orientation;
 		player.vacTrans = this.sockets[id].player.vacTrans;
 		player.isVacuum = this.sockets[id].player.isVacuum;
         player.vacAngleY = this.sockets[id].player.vacAngleY;
