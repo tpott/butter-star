@@ -25,6 +25,10 @@ var serverDebugger = new debug(config, httpServer, wsServer);
 // TODO when user selects 'New Game' 
 //console.log('New game: %s', httpServer.newGame());
 
+/*
 module.exports.config = config;
 module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;
+*/
+
+require('./shell.js');
