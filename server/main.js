@@ -31,4 +31,10 @@ module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;
 */
 
-require('./shell.js');
+// needed for the shell
+global.games = httpServer.games;
+var startShell = require('./shell.js');
+
+if (config.spawnShell) {
+	startShell();
+}

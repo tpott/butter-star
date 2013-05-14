@@ -21,10 +21,10 @@ exports.httpPort = pConfig.httpPort || 8078;
 exports.debugPort = pConfig.debugPort || 8090;
 exports.server = pConfig.server || process.argv[2] || 'localhost';
 
+exports.spawnShell = pConfig.spawnShell || false;
+
 // Base path for all files
-// TODO this is the source of issues on changing servers
-//var basePath = "/var/www/html/cse125/2013/cse125g3/";
-var basePath = "./"; // FIX tpott
+var basePath = "./"; 
 var progPath = basePath + dir + '/butter-star';
 
 exports.paths = {
