@@ -31,7 +31,13 @@ function Game() {
 	//setTimeout(gameTick(this), 1000 / this.ticks);
 	this.world.addCritter(100);
 
-	setInterval(gameTick(this), 1000 / this.ticks);
+	var self = this;
+	function serverTick() {
+		setTimeout(serverTick, 1000 / self.ticks);
+		self.gameTickBasedUpdate();
+		self.sendUpdatesToAllClients();
+	}
+	setTimeout(serverTick, 1000 / self.ticks);
 }
 
 /**
@@ -157,14 +163,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		this.sockets[id].send(JSON.stringify(tempWorld));
 	}
   
-}
-
-// TODO comment and clean this shit
-gameTick = function(game) {
-	return function() {
-    game.gameTickBasedUpdate();
-		game.sendUpdatesToAllClients();
-	}
 }
 
 
