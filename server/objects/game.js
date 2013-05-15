@@ -29,7 +29,7 @@ function Game() {
 	this.world = new World();
 	
 	//setTimeout(gameTick(this), 1000 / this.ticks);
-	// this.world.addCritter(100);
+	// this.world.addCritter(10);
 
 	setInterval(gameTick(this), 1000 / this.ticks);
 }
