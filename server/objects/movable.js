@@ -128,9 +128,25 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
       if (intersecting === true) {
         intersectedObjs.push(collidable);
-			var projected = normal.multiplyScalar(normal.dot(newVec) / 
-					normal.length());
-			correctedVec.sub(projected);
+
+        // Back out of object
+        // TODO below calculation wrong, but what Trevor put here
+        // didn't work because those variables don't exist... ARGH.
+        /*
+        var overlapDist = Math.sqrt(overlapDistSq);
+        var backDist = minDist - overlapDist;
+        var backMagnitudeRatio = backDist / overlapDist;
+        var targetCenter = collidable.getCenter_();
+        // TODO don't say new every time? :(
+        var backVector = new THREE.Vector4(
+            (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
+            (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
+            (projectedCenter.z - targetCenter.z) * backMagnitudeRatio
+        );
+
+        projectedCenter.add(backVector);
+			  correctedVec.add(backVector);
+        */
       }
     } 
 	  else { // Case for walls/floors/ceilings
@@ -185,8 +201,9 @@ Movable.prototype.detectCollision_ = function(collidables) {
           }
         }
 
-        // TODO correcting for intersection
         */
+
+        // TODO correcting for intersection
 		  } // end loop over faces
     } // end else for walls/floors/ceilings
   }

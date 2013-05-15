@@ -29,7 +29,7 @@ function Game() {
 	this.world = new World();
 	
 	//setTimeout(gameTick(this), 1000 / this.ticks);
-	this.world.addCritter(100);
+	// this.world.addCritter(100);
 
 	setInterval(gameTick(this), 1000 / this.ticks);
 }
@@ -149,6 +149,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
  var tempWorld = { players : [], critters : {} };
  //console.log(this.world.players);
  tempWorld.players = allPlayers;
+ // TODO what the heck is this mess
  tempWorld.critters = this.world.critters;
  
 	for (var id in this.sockets) {

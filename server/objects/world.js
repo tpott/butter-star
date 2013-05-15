@@ -85,6 +85,7 @@ World.prototype.addCritter = function(numCritters) {
   for( var i = 0 ; i < numCritters; i++)
   {
     var critter = new Critter();
+    // TODO position needs to be somewhere that isnt occupied
     critter.position.set(
         Math.floor(Math.random() * 20 - 10) * 20,
         Math.floor(Math.random() * 20) * 20 + 10,
