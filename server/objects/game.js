@@ -29,7 +29,12 @@ function Game() {
 	this.world = new World();
 	
 	//setTimeout(gameTick(this), 1000 / this.ticks);
-	this.world.addCritter(100);
+	this.world.addCritter(10);
+
+	this.newCollidables = [];
+	this.setCollidables = [];
+	this.delCollidables = [];
+	this.miscellaneous = [];
 
 	var self = this;
 	function serverTick() {
@@ -44,7 +49,7 @@ function Game() {
  * Send an update of all object locations to all the clients
  */
 // TODO link with game logic
-Game.prototype.sendUpdate = function() {
+/*Game.prototype.sendUpdate = function() {
 	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
@@ -52,7 +57,7 @@ Game.prototype.sendUpdate = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;*/
+		player.direction = this.players[id].direction;
 		player.vacTrans = this.players[id].vacTrans;
 		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
@@ -65,7 +70,7 @@ Game.prototype.sendUpdate = function() {
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
-}
+}*/
 
 /**
  * Add a socket to this game.
@@ -75,6 +80,10 @@ Game.prototype.sendUpdate = function() {
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
+
+  // TODO send init message to socket
+
+  this.newCollidables.push(socket.id);
 
 	return socket.id;
 }
@@ -86,6 +95,8 @@ Game.prototype.addSocket = function(socket) {
  */
 Game.prototype.removeSocket = function(socket) {
   this.world.removePlayer(socket.player);
+
+  this.delCollidables.push(socket.id);
 
 	if (delete this.sockets[socket.id]) {
 		return true;
@@ -109,6 +120,8 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
 
     var obj = JSON.parse(anything);
     if (isEvent(obj)) {
+		 // TODO don't push if the id is already in the list
+		 this.setCollidables.push(socket.id);
         player.direction = obj.angle;
 		player.isVacuum = obj.isVacuum;
         player.vacAngleY = obj.vacAngleY;
@@ -134,12 +147,18 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-  var allPlayers = [];
-  var allCritters = [];
+	var world = {
+		new : [],
+		set : [],
+		del : [],
+		misc : []
+	};
 	// TODO clean this up... we already have a toObj() method with
 	// some info. We could override it in the Player class.
-	//console.log(this.sockets);
-	for (var id in this.sockets) {
+	for (var id in this.newCollidables) {
+		var colObj = {
+			id : id
+		};
    // console.log(id);
 		var player = {};
 		player.id = id;
