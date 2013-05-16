@@ -79,7 +79,8 @@ Connection.prototype._onmessage = function(buf) {
 
 	var message = JSON.parse(buf.data);
 	if (! this.initialized) {
-		this.myPlayer.id = message.id;
+		this.myWorldState.initWorld(message.world);
+		this.myPlayer = this.myWorldState.getPlayerObject(message.id);
 		// TODO ???? 
 		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);

@@ -1,13 +1,28 @@
-var Player = function() {
-    this.id = null;
+var Player = function(playerObj) {
+    this.id = playerObj.id;
+	 /*
     var geometry = new THREE.CubeGeometry(1,3,1); 
     var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
+	 */
 
-    this.mesh = new THREE.Mesh(geometry, material);
+	 // models is a global from main
+	 // first index is the default model, second index is the mesh or scale
+    this.mesh = new THREE.Mesh(models.player[playerObj.model][0].geometry,
+			 models.players[playerObj.model][0].material);
 
-    this.position = new THREE.Vector4(0,0,0,0);
-	 this.orientation = new THREE.Vector4(1,0,0,0);
-	 this.state = 0;
+    this.position = new THREE.Vector4(
+			 playerObj.position.x,
+			 playerObj.position.y,
+			 playerObj.position.z,
+			 playerObj.position.w
+		);
+    this.orientation = new THREE.Vector4(
+			 playerObj.orientation.x,
+			 playerObj.orientation.y,
+			 playerObj.orientation.z,
+			 playerObj.orientation.w
+		);
+	 this.state = playerObj.state;
 
 	 // TODO remove 
 	this.vacuum = null;
@@ -22,16 +37,6 @@ var Player = function() {
         objects : new THREE.Object3D(),
         motion  : 'stand',
         state   : 'stand'
-    };
-
-	// TODO probably remove
-    this.camera =
-    {
-        speed : 300,
-        distance : 5,
-        x : 0,
-        y : 0,
-        z : 0
     };
 };
 

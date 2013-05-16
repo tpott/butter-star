@@ -16,6 +16,13 @@ var renderer = new THREE.WebGLRenderer();
 var geometry = new THREE.CubeGeometry(1,3,1); 
 var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
+var models = {
+	player : [],
+	critters : [], 
+	environment : [],
+	food : []
+};
+
 // mouseMoved and rotateStart from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
 //document.addEventListener('mousedown', rotateStart, false);
@@ -30,7 +37,7 @@ var optionMenu = null;
 var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
-var myPlayer = new Player();
+var myPlayer = null;
 var myWorldState = new WorldState();
 
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
@@ -79,7 +86,7 @@ examples:
 */
 function update() {
 	// skip if myPlayer is not initd
-	if (myPlayer.id == null) return; 
+	if (myPlayer == null || myPlayer.id == null) return; 
 
 	var updatedMyPlayer = myWorldState.getPlayerObject(myPlayer.id);
 
@@ -194,12 +201,25 @@ function initModels() {
 		loader.addEventListener( 'load', function ( event ) {
 
 			var object = event.content;
-			var tempScale = new THREE.Matrix4();
 			//object.scale.set(.1,.1,.1);
 			scene.add( object );
+			// object and scale
+			models.environment.push([object,1.]);
 
 		});
 	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
+
+var playerLoader = new THREE.OBJMTLLoader();
+		playerLoader.addEventListener( 'load', function ( event ) {
+
+			var object = event.content;
+			//object.scale.set(.1,.1,.1);
+			// object and scale
+			models.player.push([object,1.]);
+
+		});
+	playerLoader.load( 'boy.obj', 'boy.mtl' );
+
 }
 
 //load them textures here
@@ -232,6 +252,7 @@ function initStats() {
 	stats.domElement.style.zIndex = 100;
 }
 
+/*
 function initFloor() {
 		var geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
@@ -287,6 +308,7 @@ function initRoom() {
 scene.add( mesh );
     
 }
+*/
 
 
 function main() {
@@ -296,7 +318,7 @@ function main() {
 	// initTextures();
 	initSounds();
 	//initFloor();
-	initRoom();
+	//initRoom();
   audio.pause();
 	//controls.disable;
 	
