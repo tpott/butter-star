@@ -3,6 +3,17 @@ Butter\*
 
 An HTML5, 3D, multiplayer, networked video game production.
 
+Controls
+--------
+
+Movement			WASD
+Sprint			Shift
+Rotate camera	Left mouse
+Mute music		M
+
+Repository
+----------
+
 None of the static assets will be included with this repository,
 due to git's way of handling blob files.
 
