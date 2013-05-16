@@ -93,6 +93,10 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
     var collidable = collidables[id]; // Object checking collision against
     var intersecting = false;
+	 // skip enemies for now, cause they were covering the floor...
+	 if (collidable.radius == 0) {
+		 continue;
+	 }
     // Case for everything except walls/floors/ceilings
 	 //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
@@ -108,13 +112,11 @@ Movable.prototype.detectCollision_ = function(collidables) {
       if (t1t2 < 0) {
         intersecting = true;
       } else { // not already intersecting
-        var pv = dp.x * this.velocity.x * -1
-            + dp.y * this.velocity.y * -1
-            + dp.z * this.velocity.z * -1;
+        var pv = dp.x * correctedVec.x * -1
+            + dp.y * correctedVec.y * -1
+            + dp.z * correctedVec.z * -1;
         if (pv < 0) { // spheres not moving away from each other
-          var vSquared = this.velocity.x * this.velocity.x
-              + this.velocity.y * this.velocity.y
-              + this.velocity.z * this.velocity.z;
+          var vSquared = correctedVec.dot(correctedVec);
 
           // Spheres will intersect
           if (!(((pv + vSquared) <= 0) && ((vSquared + 2 * pv + t1t2) >= 0))) {
@@ -128,46 +130,84 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
       if (intersecting === true) {
         intersectedObjs.push(collidable);
-			var projected = normal.multiplyScalar(normal.dot(newVec) / 
-					normal.length());
-			correctedVec.sub(projected);
+
+        // Back out of object
+        // TODO below calculation wrong, but what Trevor put here
+        // didn't work because those variables don't exist... ARGH.
+        /*
+        var overlapDist = Math.sqrt(overlapDistSq);
+        var backDist = minDist - overlapDist;
+        var backMagnitudeRatio = backDist / overlapDist;
+        var targetCenter = collidable.getCenter_();
+        // TODO don't say new every time? :(
+        var backVector = new THREE.Vector4(
+            (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
+            (projectedCenter.y - targetCenter.y) * backMagnitudeRatio,
+            (projectedCenter.z - targetCenter.z) * backMagnitudeRatio
+        );
+
+        // Update projectedCenter for next iteration
+        projectedCenter.add(backVector);
+			  correctedVec.add(backVector);
+        */
       }
     } 
-	 else { // Case for walls/floors/ceilings
-		 for (var i = 0; i < collidable.mesh.geometry.faces.length; i++) {
-			 var face = collidable.mesh.geometry.faces[i];
-			 var normal = new THREE.Vector4(
+	  else { // Case for walls/floors/ceilings
+		  for (var i = 0; i < collidable.mesh.geometry.faces.length; i++) {
+			  var face = collidable.mesh.geometry.faces[i];
+			  var normal = new THREE.Vector4(
 					 face.normal.x,
 					 face.normal.y,
 					 face.normal.z,
 					 0.0
 				);
-			 normal.multiplyScalar(-1);
+			  normal.multiplyScalar(-1);
 
-			 var faceCenter = new THREE.Vector4(
+			  var faceCenter = new THREE.Vector4(
 					 face.centroid.x,
 					 face.centroid.y,
 					 face.centroid.z,
 					 1.0
 				);
 
-			 var oldVec = this.position.clone().sub(faceCenter);
-			 var newVec = newPos.clone().sub(faceCenter);
+			  var oldVec = this.position.clone().sub(faceCenter);
+			  var newVec = newPos.clone().sub(faceCenter);
 
-			 // TODO position or center
-			 var oldFacingFront = normal.dot(oldVec) > 0;
-			 var newFacingFront = normal.dot(newVec) > 0;
+			  // TODO position or center
+			  var oldFacingFront = normal.dot(oldVec) > 0;
+			  var newFacingFront = normal.dot(newVec) > 0;
 
-			 if (oldFacingFront !== newFacingFront) {
-				 var projected = normal.multiplyScalar(normal.dot(newVec) /
-						 normal.length());
-				intersectedObjs.push(collidable);
-				correctedVec.sub(projected);
-			 }
+			  if (oldFacingFront !== newFacingFront) {
+				  var projected = normal.multiplyScalar(normal.dot(newVec) /
+					  	 normal.length());
+				  intersectedObjs.push(collidable);
+				  correctedVec.sub(projected);
+			  }
 
-			 // check for distance
-			 // TODO
-		 }
+			  // check for distance
+			  // TODO
+
+        /*
+        var plane = normal.dot(faceCenter);
+        var startDistToWall = normal.dot(this.getCenter_()).sub(plane);
+        var endDistToWall = normal.dot(projectedCenter).sub(plane);
+
+        // Check if already intersecting wall
+        if (Math.abs(startDistToWall) <= this.radius) {
+          intersecting = true;
+        } else {
+          var negRadius = -1 * this.radius;
+          // Check if movement will cross the wall
+          if ((startDistToWall > this.radius && endDistToWall < negRadius)
+              || (startDistToWall < negRadius && endDistToWall > this.radius)) {
+            intersecting = true;
+          }
+        }
+
+        */
+
+        // TODO correcting for intersection
+		  } // end loop over faces
     } // end else for walls/floors/ceilings
   }
 
