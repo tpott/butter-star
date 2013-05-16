@@ -78,17 +78,6 @@ examples:
 	calculation heavy stuff go here
 */
 function update() {
-<<<<<<< HEAD
-	if (myPlayer.id == null || myWorldState.getPlayerObject(myPlayer.id) === undefined) {
-		return;
-	}
-
-	//console.log("myPlayer.mesh='%s', from worldstate='%s'", myPlayer, 
-	//		myWorldState.getPlayerObject(myPlayer.id));
-	myPlayer.mesh = myWorldState.getPlayerObject(myPlayer.id).mesh;
-	myPlayer.orientation = myWorldState.getPlayerObject(myPlayer.id).orientation;
-	
-=======
 	// skip if myPlayer is not initd
 	if (myPlayer.id == null) return; 
 
@@ -98,22 +87,18 @@ function update() {
 	if (!updatedMyPlayer) return;
 
 	myPlayer.mesh = updatedMyPlayer.mesh;
-
->>>>>>> feature/ser2CliNet
+	myPlayer.orientation = updatedMyPlayer.orientation;
 	//cube.position = clone(myPlayer.position);
 	//cube.position.y = -2;
 	myPlayer.model.objects.position.x = myPlayer.position.x;
 	myPlayer.model.objects.position.y = myPlayer.position.y;
 	myPlayer.model.objects.position.z = myPlayer.position.z;
-<<<<<<< HEAD
 
 	// begin camera update
 	//   update camera position
 	camera.position = myPlayer.position;
 
 	/*
-=======
->>>>>>> feature/ser2CliNet
 	// camera rotate x
 	camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
 	camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
@@ -121,7 +106,6 @@ function update() {
 	//camera rotate y
 	camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
 	camera.position.y += 1;
-<<<<<<< HEAD
 	*/
 
 	//   update camera orientation
@@ -131,16 +115,12 @@ function update() {
 	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 	camera.lookAt( vec3 );
 	*/
-	if(myPlayer.vacuum != null)
-	{
-=======
 
 	//console.log(camera.position.z)
-
+/*
 	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
-	camera.lookAt( vec3 );
+	camera.lookAt( vec3 );*/
 	if(myPlayer.vacuum != null) {
->>>>>>> feature/ser2CliNet
 		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
 	}
 
@@ -149,8 +129,7 @@ function update() {
 
 	//myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
 	myPlayer.mesh.rotation.y = ang + 1.65;
-	updatePlayersAnimation();
-<<<<<<< HEAD
+	//updatePlayersAnimation();
 }
 
 //render all other player animations
@@ -188,8 +167,6 @@ function updatePlayersAnimation() {
 		//update player angles
 		players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
  }
-=======
->>>>>>> feature/ser2CliNet
 }
 
 /*
