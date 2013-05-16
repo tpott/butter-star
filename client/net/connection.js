@@ -11,6 +11,7 @@ function Connection(ip, port, gameid, player, world) {
 	this.ip = ip;
 	this.port = port;
 	this.gameid = gameid;
+	this.initialized = false;
 
 	// TODO getting an undefined error, line 43
 	this.messages = [];
@@ -79,6 +80,7 @@ Connection.prototype._onmessage = function(buf) {
   //console.log(buf.data);
     // connection initialized
 	if (buf.data.substring(0,3) == "ID:") {
+	if (! this.initialized) {
 		this.myPlayer.id = buf.data.substring(3);
 		// TODO ???? 
 		//controlsEvent.playerID = this.myPlayer.id;
