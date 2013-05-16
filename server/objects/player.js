@@ -12,6 +12,7 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Collidable = require('./collidable.js');
 var Events = require('../controls/handler.js');
 
 var STANDING_STILL = 0,
@@ -58,6 +59,8 @@ function Player(socket) {
   this.direction = null;
   this.isVacuum = false;
   this.vacAngleY = 0;
+
+  this.type = Collidable.types.PLAYER;
 
 	console.log('Player class, New player: %s', this.id);
   // TODO is this the only reason we need socket?

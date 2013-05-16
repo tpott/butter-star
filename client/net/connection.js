@@ -89,17 +89,26 @@ Connection.prototype._onmessage = function(buf) {
 		return;
 	}
 
-	var state = JSON.parse(buf.data);
-	if ('remove' in state) {
+	var world = JSON.parse(buf.data);
+	if ('del' in world) {
+		var deleteIds = world.del;
+		for (var i = 0; i < deleteIds.length; i++) {
+			// TODO define generic remove
+			//this.myWorldState.remove(deleteIds[i]);
+		}
+	}
+	if ('new' in world) {
+	}
+	if ('set' in world) {
+		// passes in an array of updated info
+		this.myWorldState.updateWorldState(world.set);
+	}
+	/*if ('remove' in state) {
 		this.myWorldState.removePlayer(state['remove']);
-	}
-	else {
-		// state is an array of players
-		this.myWorldState.updateWorldState(state);
-	}
+	}*/
 
-	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-	this.myPlayer.position = tempPlayer.mesh.position;
-	this.myPlayer.vacTrans = tempPlayer.vacTrans;
+//	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
+//	this.myPlayer.position = tempPlayer.mesh.position;
+//	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 

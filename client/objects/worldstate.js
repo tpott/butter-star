@@ -35,14 +35,28 @@ WorldState.prototype.removePlayer = function(id) {
 }
 
 /**
+<<<<<<< HEAD
  * players is an array of player objects
  * world is the JSON parsed message from the server
+=======
+ * newStates is an array of objects, each object represents a collidable
+ *   object on the server and contains: id, position, orientation, state
+>>>>>>> feature/ser2CliNet
  */
-WorldState.prototype.updateWorldState = function(world){
-	//console.log('updating world state');
-  // TODO stuff will change cuz 'world' (what's received from the server
-  // isn't consistent
-  var players = world.players;
+WorldState.prototype.updateWorldState = function(newStates){
+	for (var i = 0; i < newStates.length; i++) {
+		var update = newStates[i],
+			id = update.id;
+		if (update.id in this.players) {
+			this.players[id].position = update.position;
+			this.players[id].orientation = update.orientation;
+			this.players[id].state = update.state;
+
+			// TODO ugly
+			this.players[id].mesh.position = update.position;
+		}
+	}
+  /*var players = world.players;
   var critters = world.critters;
 	for (var i = 0; i < players.length; i++) {
 		if (!(players[i].id in this.players)) {
@@ -64,7 +78,7 @@ WorldState.prototype.updateWorldState = function(world){
       console.log("making a new critter id: " + critters[i].id);
       this.addCritter(critters[i]);
     }
-  }
+  }*/
 
 }
 
@@ -76,6 +90,3 @@ WorldState.prototype.addCritter = function(critter) {
   console.log("making a critter");
 }
 
-
-// TODO GLOBAL HACKS EWWWWWWW
-//var myWorldState = new WorldState();

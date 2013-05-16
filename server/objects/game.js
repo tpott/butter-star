@@ -30,7 +30,12 @@ function Game() {
 	this.world = new World();
 	
 	//setTimeout(gameTick(this), 1000 / this.ticks);
-	// this.world.addCritter(10);
+	//this.world.addCritter(10);
+
+	this.newCollidables = [];
+	this.setCollidables = [];
+	this.delCollidables = [];
+	this.miscellaneous = [];
 
 	this.keyboardHandler = new Keyboard.Handler();
 
@@ -42,6 +47,7 @@ function Game() {
 	}
 	setTimeout(serverTick, 1000 / self.ticks);
 }
+
 
 /**
  * Send an update of all object locations to all the clients
@@ -79,6 +85,25 @@ Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
 
+  var world = [];
+
+  // TODO send init message to socket
+	for (var id in this.world.collidables) {
+		var colObj = {
+			id : id,
+			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.push(colObj);
+	}
+	//this.sockets[socket.id].send(JSON.stringify(world);
+
+
+  this.newCollidables.push(socket.id);
+
 	return socket.id;
 }
 
@@ -89,6 +114,8 @@ Game.prototype.addSocket = function(socket) {
  */
 Game.prototype.removeSocket = function(socket) {
   this.world.removePlayer(socket.player);
+
+  this.delCollidables.push(socket.id);
 
 	if (delete this.sockets[socket.id]) {
 		return true;
@@ -136,6 +163,24 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 		console.log("Game '%s' unable to process event '%s'", this.id, evt);
 	}
 	
+/*Game.prototype.eventBasedUpdate = function(socket, anything) {
+    var player = socket.player;
+
+    var obj = JSON.parse(anything);
+    if (isEvent(obj)) {
+		 // TODO don't push if the id is already in the list
+		 this.setCollidables.push(socket.id);
+        player.direction = obj.angle;
+		player.isVacuum = obj.isVacuum;
+        player.vacAngleY = obj.vacAngleY;
+        if(obj.moving) {
+            player.move(obj, this.world.collidables);
+        }
+        player.updateVacuum(obj);
+    }
+    else {
+        console.log('Received unknown input: %s', anything);
+    }*/
 }
 
 /**
@@ -150,36 +195,96 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-  var allPlayers = [];
-  var allCritters = [];
+	var updates = 4; // new, set, del, misc
+	var world = {
+		new : [],
+		set : [],
+		del : [],
+		misc : []
+	};
+
 	// TODO clean this up... we already have a toObj() method with
 	// some info. We could override it in the Player class.
-	//console.log(this.sockets);
-	for (var id in this.sockets) {
-   // console.log(id);
-		var player = {};
-		player.id = id;
-		player.type = 'player';
-		player.position = this.sockets[id].player.position;
-		player.orientation = this.sockets[id].player.orientation;
-		player.vacTrans = this.sockets[id].player.vacTrans;
-		player.isVacuum = this.sockets[id].player.isVacuum;
-        player.vacAngleY = this.sockets[id].player.vacAngleY;
-		allPlayers.push(player);
+	for (var i = 0; i < this.newCollidables.length; i++) {
+		var id = this.newCollidables[i];
+		var colObj = {
+			id : id,
+			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.new.push(colObj);
 	}
 
- var tempWorld = { players : [], critters : {} };
- //console.log(this.world.players);
- tempWorld.players = allPlayers;
- // TODO what the heck is this mess
- tempWorld.critters = this.world.critters;
- 
-	for (var id in this.sockets) {
-		// TODO HIGH
-		// TODO if socket is already closed and not removed yet
-		this.sockets[id].send(JSON.stringify(tempWorld));
+	// nothing new, so no point in sending it
+	if (world.new.length == 0) {
+		delete world.new;
+		updates--;
 	}
-  
+
+	for (var i = 0; i < this.setCollidables.length; i++) {
+		var id = this.setCollidables[i];
+		var colObj = {
+			id : id,
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.set.push(colObj);
+	}
+
+	// nothing moved, so no point in sending moves
+	if (world.set.length == 0) {
+		delete world.set;
+		updates--;
+	}
+
+	for (var i = 0; i < this.delCollidables.length; i++) {
+		var id = this.delCollidables[i];
+		var colObj = {
+			id : id,
+		};
+		world.set.push(colObj);
+	}
+
+	// nothing deleted, so no point in sending deletions
+	if (world.del.length == 0) {
+		delete world.del;
+		updates--;
+	}
+
+	world.misc = this.miscellaneous;
+	
+	// nothing deleted, so no point in sending deletions
+	if (world.misc.length == 0) {
+		delete world.misc;
+		updates--;
+	}
+
+	if (updates == 0) {
+		// there is nothing new, moved, deleted, or miscellaneous
+		return;
+	}
+
+	var updateMessage = JSON.stringify(world);
+ 
+	// SEND THE WORLD INFO
+	for (var id in this.sockets) {
+		// new players dont need their first game tick
+		if (this.newCollidables.indexOf(id) >= 0) 
+			continue;
+
+		// TODO if socket is already closed and not removed yet
+		this.sockets[id].send(updateMessage);
+	}
+
+	// reset since this is the end of a tick
+	this.newCollidables = [];
+	this.setCollidables = [];
+	this.delCollidables = [];
+	this.miscellaneous = [];
 }
 
 

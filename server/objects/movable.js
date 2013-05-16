@@ -31,6 +31,8 @@ function Movable() {
   this.orientation = new THREE.Vector4(1, 0, 0, 0);
   this.center = new THREE.Vector4(0, 0, 0, 0);
 
+  this.type = Collidable.types.MOVABLE
+
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
   this.mass = 1.0;
