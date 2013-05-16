@@ -246,7 +246,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var colObj = {
 			id : id,
 		};
-		world.set.push(colObj);
+		world.del.push(colObj);
 	}
 
 	// nothing deleted, so no point in sending deletions
