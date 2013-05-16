@@ -12,6 +12,7 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Collidable = require('./collidable.js');
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the

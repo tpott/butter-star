@@ -73,7 +73,13 @@ function update() {
 	// skip if myPlayer is not initd
 	if (myPlayer.id == null) return; 
 
-	myPlayer.mesh = myWorldState.getPlayerObject(myPlayer.id).mesh;
+	var updatedMyPlayer = myWorldState.getPlayerObject(myPlayer.id);
+
+	// skip if undefined
+	if (!updatedMyPlayer) return;
+
+	myPlayer.mesh = updatedMyPlayer.mesh;
+
 	//cube.position = clone(myPlayer.position);
 	//cube.position.y = -2;
 	myPlayer.model.objects.position.x = myPlayer.position.x;

@@ -7,6 +7,7 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Collidable = require('./collidable.js');
 
 function Critter(){
     Critter.super_.call(this);

@@ -147,7 +147,7 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-	var world = {
+/*	var world = {
 		new : [],
 		set : [],
 		del : [],
@@ -183,7 +183,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		// TODO if socket is already closed and not removed yet
 		this.sockets[id].send(JSON.stringify(tempWorld));
 	}
-  
+*/  
 }
 
 
