@@ -190,8 +190,6 @@ function initModels() {
 
 			var object = event.content;
 			var tempScale = new THREE.Matrix4();
-			object.position.y = -5;
-			object.position.x = -20;
 			//object.scale.set(.1,.1,.1);
 			scene.add( object );
 

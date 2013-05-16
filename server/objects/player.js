@@ -30,14 +30,16 @@ function Player(socket) {
   this.socket = socket;
 
   // Dimensions of player
+  // TODO get from model
   this.width = 1;
   this.height = 3;
   this.depth = 1;
 
   // 3D object this represents
+  // TODO make this load the player model. Trevor: keep the radius line!
   var geometry = new THREE.CubeGeometry(
       this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  var material = new THREE.MeshBasicMaterial();
   this.mesh = new THREE.Mesh(geometry, material);
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
