@@ -82,7 +82,22 @@ Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
 
+  var world = [];
+
   // TODO send init message to socket
+	for (var id in this.world.collidables) {
+		var colObj = {
+			id : id,
+			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.push(colObj);
+	}
+	//this.sockets[socket.id].send(JSON.stringify(world);
+
 
   this.newCollidables.push(socket.id);
 

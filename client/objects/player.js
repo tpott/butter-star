@@ -4,24 +4,27 @@ var Player = function() {
     var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
     this.mesh = new THREE.Mesh(geometry, material);
+
+    this.position = new THREE.Vector4(0,0,0,0);
+	 this.orientation = new THREE.Vector4(1,0,0,0);
+	 this.state = 0;
+
+	 // TODO remove 
 	this.vacuum = null;
 	this.vacTrans = new THREE.Vector3(0,0,0);
     this.direction = null;
     this.isVacuum = false;
     this.vacAngleY = 0;
+
+	 // TODO maybe remove
 	this.model =
     {		
         objects : new THREE.Object3D(),
         motion  : 'stand',
         state   : 'stand'
     };
-    this.position = 
-    {
-        x : 0,
-        y : 0,
-        z : 0,
-        direction : 0
-    };
+
+	// TODO probably remove
     this.camera =
     {
         speed : 300,
