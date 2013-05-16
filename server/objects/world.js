@@ -74,7 +74,7 @@ World.prototype.createRoom_ = function() {
  * @return {string} The player ID.
  */
 World.prototype.addPlayer = function(player) {
-  this.collidables[player.id] = player;
+    this.collidables[player.id] = player;
 	this.players[player.id] = player;
 	this.nplayers++;
 
@@ -82,17 +82,15 @@ World.prototype.addPlayer = function(player) {
 }
 
 World.prototype.addCritter = function(numCritters) {
-  for( var i = 0 ; i < numCritters; i++)
-  {
-    var critter = new Critter();
-    critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
-                               y :  Math.floor(Math.random() * 20) * 20 + 10,
-                               z :  Math.floor(Math.random() * 20 - 10) * 20}
-    critter.id = i;
-    this.critters[i] = critter;
-  }
-
-
+    for( var i = 0 ; i < numCritters; i++)
+    {
+        var critter = new Critter();
+        critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
+                             y :  Math.floor(Math.random() * 20) * 20 + 10,
+                             z :  Math.floor(Math.random() * 20 - 10) * 20}
+        critter.id = i;
+        this.critters[i] = critter;
+    }
 }
 
 /**
@@ -110,7 +108,7 @@ World.prototype.removePlayer = function(player) {
 		  this.players[id].socket.send(JSON.stringify(removedPlayer));
 	}
 
-  delete this.collidables[player.id];
+    delete this.collidables[player.id];
 	if (delete this.players[player.id]) {
 		this.nplayers--;
 		return true;
@@ -136,4 +134,15 @@ World.prototype.applyForces = function() {
 	}
 }
 
+/**
+ * Checks all players to see if there is a vacuum intersection between a player
+ * and some collidable object
+ */
+World.prototype.checkVacIntersections = function() {
+    for (var id in this.players) {
+        if(this.players[id].isVacuum) {
+            this.players[id].checkVacIntersection(this.players);
+        }
+    }
+}
 module.exports = World;

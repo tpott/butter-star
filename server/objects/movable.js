@@ -233,6 +233,9 @@ Movable.prototype.applyForces = function(collidables) {
 	else {
 		// TODO before or after changing velocity?
 		this.position.add(this.velocity);
+        this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
+        //console.log("position: " + this.position);
+        //console.log("position " + this.position.x + " " + this.position.y + " " + this.position.z);
 
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);

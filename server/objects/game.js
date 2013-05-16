@@ -67,10 +67,10 @@ Game.prototype.sendUpdate = function() {
  * @return {string} The player ID.
  */
 Game.prototype.addSocket = function(socket) {
-  this.sockets[socket.id] = socket;
-  this.world.addPlayer(socket.player);
+    this.sockets[socket.id] = socket;
+    this.world.addPlayer(socket.player);
 
-	return socket.id;
+    return socket.id;
 }
 
 /**
@@ -79,7 +79,7 @@ Game.prototype.addSocket = function(socket) {
  * @return {boolean} True if successfully removes, false otherwise.
  */
 Game.prototype.removeSocket = function(socket) {
-  this.world.removePlayer(socket.player);
+    this.world.removePlayer(socket.player);
 
 	if (delete this.sockets[socket.id]) {
 		return true;
@@ -90,7 +90,7 @@ Game.prototype.removeSocket = function(socket) {
 
 // TODO
 function isEvent(anything) {
-  return true;
+    return true;
 }; 
 
 /**
@@ -121,20 +121,21 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
-	this.world.applyForces(); 
+    this.world.applyForces();
+    this.world.checkVacIntersections();
 }
 
 /**
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-  var allPlayers = [];
-  var allCritters = [];
+    var allPlayers = [];
+    var allCritters = [];
 	// TODO clean this up... we already have a toObj() method with
 	// some info. We could override it in the Player class.
 	//console.log(this.sockets);
-	for (var id in this.sockets) {
-   // console.log(id);
+    for (var id in this.sockets) {
+    // console.log(id);
 		var player = {};
 		player.id = id;
 		player.type = 'player';
@@ -147,9 +148,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	}
 
  var tempWorld = { players : [], critters : {} };
- //console.log(this.world.players);
- tempWorld.players = allPlayers;
- tempWorld.critters = this.world.critters;
+    //console.log(this.world.players);
+    tempWorld.players = allPlayers;
+    tempWorld.critters = this.world.critters;
  
 	for (var id in this.sockets) {
 		// TODO HIGH
@@ -162,11 +163,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 // TODO comment and clean this shit
 gameTick = function(game) {
 	return function() {
-    game.gameTickBasedUpdate();
+        game.gameTickBasedUpdate();
 		game.sendUpdatesToAllClients();
 	}
 }
-
-
 
 module.exports = Game;
