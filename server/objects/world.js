@@ -36,12 +36,7 @@ function World() {
 /* ENVIRONMENT CREATION FUNCTIONS */
 
 World.prototype.createRoom_ = function() {
-
 	var env = new Environment();
-
-	// fuck you thinh
-	env.mesh.position.y = -5;
-	env.mesh.position.x = -20;
 
    this.collidables[env.id] = env;
    this.enviroObjs[env.id] = env;

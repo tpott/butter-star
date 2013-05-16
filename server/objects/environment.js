@@ -16,7 +16,6 @@ function Environment() {
 
   this.mesh.geometry.computeFaceNormals();
   this.mesh.geometry.computeCentroids();
-
 }
 
 util.inherits(Environment, Collidable);
