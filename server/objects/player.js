@@ -12,6 +12,11 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Events = require('../controls/handler.js');
+
+var STANDING_STILL = 0,
+	 MOVING = 1,
+	 VACUUMING = 2;
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
@@ -38,6 +43,7 @@ function Player(socket) {
 
   // TODO necessary? -Trevor
 	this.camera = {
+		speed : 1,
 		distance : 5,
 		x : 0,
 		y : 0,
@@ -54,48 +60,37 @@ function Player(socket) {
 	console.log('Player class, New player: %s', this.id);
   // TODO is this the only reason we need socket?
 	this.socket.send('ID:' + this.id);
+
+	this.state = STANDING_STILL;
 }
 util.inherits(Player, Movable);
 
 /**
  * Calculate player movements and let superclass handle collisions and
  * set actual player movements.
- * @param {Event} evt The player movement event.
+ * @param {Event} evt The player movement event (string).
  */
 Player.prototype.move = function(evt) {
-  var speed = evt.speed;
-	if(evt.sprinting === true) {
-		evt.speed = 0.75;
+	// MAGIC NUMBER
+	var speed = 0.125;
+
+	var direction = 0;
+	
+	if (Events[evt] == Events['MOVE_FORWARD']) {
+		direction = 0;
+	}
+	else if (Events[evt] == Events['MOVE_BACKWARD']) {
+		direction = 180;
+	}
+	else if (Events[evt] == Events['MOVE_LEFT']) {
+		direction = 90;
+	}
+	else if (Events[evt] == Events['MOVE_RIGHT']) {
+		direction = 270;
 	}
 	else {
-		evt.speed = 0.125;
+		console.log("Event '%s' is not a player move event", evt);
 	}
-
-	var direction = evt.angle;
-  // TODO can we change these to bitmasks?
-  if(evt.front && !evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 45;
-    } else if(!evt.left && evt.right) {
-      direction += 315;
-    } else { //only forward
-      direction += 0;
-    }
-  } else if(!evt.front && evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 135;
-    } else if(!evt.left && evt.right) {
-      direction += 225;
-    } else { //only back
-      direction += 180;
-    }
-  } else if(evt.left && !evt.right
-      && !evt.front && !evt.Backwards) { // only left
-    direction += 90;
-  } else if(!evt.left && evt.right
-      && !evt.front && !evt.Backwards) { // only right
-    direction += 270;
-  }
 
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
   var dy = 0;
@@ -108,13 +103,31 @@ Player.prototype.move = function(evt) {
   this.addForce(force);
 };
 
+Player.prototype.toggleVacuum = function() {
+	// XOR
+	this.state ^= VACUUMING;
+	console.log("Player %s %s vacuuming", this.id, 
+			this.state & VACUUMING ? "is" : "is not");
+};
+
+/**
+ * rotates the player based off the mouse movement
+ */
+Player.prototype.rotate = function(mouseX, mouseY) {
+	var rotationX = new THREE.Matrix4().makeRotationX(mouseX);
+	var rotationY = new THREE.Matrix4().makeRotationY(mouseY);
+	var rot = rotationX.multiply(rotationY);
+
+	//this.orientation = rot.multiply(this.orientation);
+	this.orientation.applyMatrix4(rot);
+};
+
 /**
  * Updates the position of the vacuum effect.
  * @param {Event} playerEvent The player movement event.
  */
 // TODO make a vacuum obj. players should have a vacuum obj.
-Player.prototype.updateVacuum = function(playerEvent)
-{
+Player.prototype.updateVacuum = function(playerEvent) {
 	//player done vacuum'in
 	if(playerEvent.isVacuum == false)
 		this.initVacPos = null;

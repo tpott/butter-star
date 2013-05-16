@@ -16,8 +16,9 @@ var renderer = new THREE.WebGLRenderer();
 var geometry = new THREE.CubeGeometry(1,3,1); 
 var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
-// mouseMoved from client/controls/mouse.js
+// mouseMoved and rotateStart from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
+//document.addEventListener('mousedown', rotateStart, false);
 
 // keyDown and keyUp from client/controls/keyboard.js
 document.addEventListener( 'keydown', keyDown, false );
@@ -37,6 +38,13 @@ var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 var gameid = document.URL.replace(/.*\//,'');
 
 var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
+
+// each key press will append something here,
+// on each client tick the keypresses will be sent and 
+// this will get emptied
+var keyPresses = [];
+var mouseMovement = [0, 0], // [x, y]
+	 mouseClicks = [];
 
 //only init the worldState once at the very beginning;
 var initWorldState = true;
@@ -69,83 +77,97 @@ examples:
 	monster positions
 	calculation heavy stuff go here
 */
-function update()
-{
-	if (myPlayer.id != null) {
-        myPlayer.mesh = myWorldState.getPlayerObject(myPlayer.id).mesh;
-        //cube.position = clone(myPlayer.position);
-        //cube.position.y = -2;
-        myPlayer.model.objects.position.x = myPlayer.position.x;
-        myPlayer.model.objects.position.y = myPlayer.position.y;
-        myPlayer.model.objects.position.z = myPlayer.position.z;
-        // camera rotate x
-        camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
-        camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
-        
-        //camera rotate y
-        camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
-        camera.position.y += 1;
+function update() {
+	if (myPlayer.id == null || myWorldState.getPlayerObject(myPlayer.id) === undefined) {
+		return;
+	}
 
-        //console.log(camera.position.z)
-        
-        var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
-        camera.lookAt( vec3 );
-        if(myPlayer.vacuum != null)
-        {
-            myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
-        }
-        
-        //myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
-        var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
-        
-        //myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
-        myPlayer.mesh.rotation.y = ang + 1.65;
-        updatePlayersAnimation();
-    }
+	//console.log("myPlayer.mesh='%s', from worldstate='%s'", myPlayer, 
+	//		myWorldState.getPlayerObject(myPlayer.id));
+	myPlayer.mesh = myWorldState.getPlayerObject(myPlayer.id).mesh;
+	myPlayer.orientation = myWorldState.getPlayerObject(myPlayer.id).orientation;
+	
+	//cube.position = clone(myPlayer.position);
+	//cube.position.y = -2;
+	myPlayer.model.objects.position.x = myPlayer.position.x;
+	myPlayer.model.objects.position.y = myPlayer.position.y;
+	myPlayer.model.objects.position.z = myPlayer.position.z;
+
+	// begin camera update
+	//   update camera position
+	camera.position = myPlayer.position;
+
+	/*
+	// camera rotate x
+	camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
+	camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
+
+	//camera rotate y
+	camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
+	camera.position.y += 1;
+	*/
+
+	//   update camera orientation
+	//console.log( "add=%s", myPlayer.position + myPlayer.orientation );
+	camera.lookAt( myPlayer.position + myPlayer.orientation );
+	/*
+	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
+	camera.lookAt( vec3 );
+	*/
+	if(myPlayer.vacuum != null)
+	{
+		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
+	}
+
+	//myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
+	var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
+
+	//myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
+	myPlayer.mesh.rotation.y = ang + 1.65;
+	updatePlayersAnimation();
 }
-    //render all other player animations
-    function updatePlayersAnimation()
-    {
-        for(player in myWorldState.players)
-        {
-            var players = myWorldState.players[player];
-            //only add vacuum for other players
-            if(players.isVacuum == true && players.id != myPlayer.id)
-            {
-                if(players.vacuum == null)
-                {
-                    console.log("generated first vacuum for player");
-                    players.vacuum = new Vacuum(
-                        new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
-                        players.mesh.position.z), 
-                        new THREE.Vector3(0,0,-1),
-                        1000, 
-                        document.getElementById('vertexShader').textContent, 
-                        document.getElementById('fragmentShader').textContent);
-                    players.vacuum.update(players.vacTrans,players.direction);  
-                    players.vacuum.addToScene(scene);   
-                }
-                else
-                {
-                    players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
-                }
-            }
-            else if(players.vacuum != null)
-            {
-    
-               players.vacuum.removeFromScene(scene);
-               players.vacuum = null;
-            }
-            //update player angles
-            players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
-       }
-   }
+
+//render all other player animations
+function updatePlayersAnimation() {
+  for(player in myWorldState.players)
+  {
+		var players = myWorldState.players[player];
+		//only add vacuum for other players
+		if(players.isVacuum == true && players.id != myPlayer.id)
+		{
+			 if(players.vacuum == null)
+			 {
+				  console.log("generated first vacuum for player");
+				  players.vacuum = new Vacuum(
+						new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
+						players.mesh.position.z), 
+						new THREE.Vector3(0,0,-1),
+						1000, 
+						document.getElementById('vertexShader').textContent, 
+						document.getElementById('fragmentShader').textContent);
+				  players.vacuum.update(players.vacTrans,players.direction);  
+				  players.vacuum.addToScene(scene);   
+			 }
+			 else
+			 {
+				  players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
+			 }
+		}
+		else if(players.vacuum != null)
+		{
+
+			players.vacuum.removeFromScene(scene);
+			players.vacuum = null;
+		}
+		//update player angles
+		players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
+ }
+}
 
 /*
 	renderin' shit
 */
-function render()
-{ 
+function render() { 
 	requestAnimationFrame(render); 
 	
 	update();
@@ -155,14 +177,14 @@ function render()
 }
 
 //place to initialize lights (temporary, may not need)
-function initLights()
-{
-		var light = new THREE.PointLight( 0xffffff, 1, 1000); light.position.set( 0, 20, 0 ); scene.add( light );
+function initLights() {
+		var light = new THREE.PointLight( 0xffffff, 1, 1000); 
+		light.position.set( 0, 20, 0 ); 
+		scene.add( light );
 }
 
 //place to initialize models (such as characters and maps)
-function initModels()
-{
+function initModels() {
 	var loader = new THREE.OBJMTLLoader();
 		loader.addEventListener( 'load', function ( event ) {
 
@@ -178,8 +200,7 @@ function initModels()
 }
 
 //load them textures here
-function initTextures()
-{
+function initTextures() {
 	var neheTexture;
 	function initTexture() {
 	neheTexture = gl.createTexture();
@@ -202,15 +223,13 @@ function initSounds()
 }
 
 //initialize the fps counter
-function initStats()
-{
+function initStats() {
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.top = '0px';
 	stats.domElement.style.zIndex = 100;
 }
 
-function initFloor()
-{
+function initFloor() {
 		var geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
 		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 		geometry.applyMatrix( new THREE.Matrix4().makeTranslation(0,-10,0));
@@ -228,9 +247,9 @@ function initFloor()
 		mesh = new THREE.Mesh( geometry, material );
 		scene.add( mesh );
 }
+
 var de;
-function initRoom()
-{
+function initRoom() {
   var geometry = new THREE.Geometry();
 
   geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
@@ -267,8 +286,7 @@ scene.add( mesh );
 }
 
 
-function main()
-{
+function main() {
 	initStats();
 	initLights();
     initModels();

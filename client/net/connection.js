@@ -27,6 +27,37 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
 	this.socket.onmessage = this._onmessage;
+
+	var socket = this.socket;
+	function clientTick() {
+		 //if (hasBeenSent == false) {
+			  if (socket.readyState != socket.OPEN) {
+					console.log("Connection is not ready yet!");
+			  } 
+			  else if (keyPresses.length == 0 && mouseMovement[0] == 0 &&
+				  mouseMovement[1] == 0) {
+				  //console.log("keyPresses is empty");
+			  }
+			  else {
+				  var allData = keyPresses.slice(0); // aka clone
+				  if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
+					  allData.push(mouseMovement);
+				  }
+					socket.send(JSON.stringify(allData));
+					mouseMovement[0] = 0;
+					mouseMovement[1] = 0;
+					/*
+					// dont flag event as sent if vacuum is on since client can be
+					// moving without pressing any keys (acceleration)
+					if (controlsEvent.isVacuum == false) {
+						hasBeenSent = true; 
+					}
+					*/
+			  }
+		 //}
+	}
+
+	setInterval(clientTick, 1000/60);
 }
 
 Connection.prototype._onopen = function() {
@@ -53,7 +84,7 @@ Connection.prototype._onmessage = function(buf) {
 		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 
-        initClientSend(this); // Pass the socket to the send loop
+        //initClientSend(this); // Pass the socket to the send loop
 
 		return;
 	}
@@ -72,24 +103,3 @@ Connection.prototype._onmessage = function(buf) {
 	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
-initClientSend = function(socket) {
-    setInterval(
-        function() {
-            clientSendLoop(socket);
-        }, 1000/60); 
-}
-
-function clientSendLoop(socket) {
-    //if (hasBeenSent == false) {
-        if (socket.readyState != socket.OPEN) {
-            console.log("Connection is not ready yet!");
-        } else {
-            socket.send(JSON.stringify(controlsEvent));
-            // dont flag event as sent if vacuum is on since client can be
-            // moving without pressing any keys (acceleration)
-            if (controlsEvent.isVacuum == false) {
-               hasBeenSent = true; 
-            }
-        }
-    //}
-}

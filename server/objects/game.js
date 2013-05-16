@@ -15,6 +15,7 @@ var THREE = require('three');
 var randomID = require('./random.js');
 var THREE = require('three');
 var World = require('./world.js');
+var Keyboard = require('../controls/handler.js');
 
 /**
  * Construct a game instance.
@@ -31,6 +32,8 @@ function Game() {
 	//setTimeout(gameTick(this), 1000 / this.ticks);
 	// this.world.addCritter(10);
 
+	this.keyboardHandler = new Keyboard.Handler();
+
 	var self = this;
 	function serverTick() {
 		setTimeout(serverTick, 1000 / self.ticks);
@@ -44,7 +47,7 @@ function Game() {
  * Send an update of all object locations to all the clients
  */
 // TODO link with game logic
-Game.prototype.sendUpdate = function() {
+/*Game.prototype.sendUpdate = function() {
 	// create info about every players location and orientation
 	var allPlayers = [];
 	for (var id in this.players) {
@@ -52,7 +55,7 @@ Game.prototype.sendUpdate = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;*/
+		//player.direction = this.players[id].direction;
 		player.vacTrans = this.players[id].vacTrans;
 		player.orientation = this.players[id].orientation;
 		allPlayers.push(player);
@@ -65,7 +68,7 @@ Game.prototype.sendUpdate = function() {
 		// TODO if socket is already closed and not removed yet
 		this.players[id].socket.send(JSON.stringify(allPlayers));
 	}
-}
+}*/
 
 /**
  * Add a socket to this game.
@@ -94,32 +97,45 @@ Game.prototype.removeSocket = function(socket) {
 	}
 }
 
-// TODO
-function isEvent(anything) {
-  return true;
-}; 
+/**
+ * Parses the keypresses using the keyboard handler. If unable to 
+ * parse the keypress, then it returns null.
+ */
+Game.prototype.parseInput = function(player, anything) {
+	// obj should be a non-empty array
+	var obj = JSON.parse(anything);
+	if (obj instanceof Array) {
+		return obj;
+	}
+	else {
+		console.log("Bad input");
+		return null;
+	}
+}
 
 /**
  * Handles updating a given player for a given event.
- * @param {Socket} socket The socket we are receiving the event from.
- * @param {Event} anything The event we are using to update the player.
+ * @param {Array} clientData represents a key press
  */
-Game.prototype.eventBasedUpdate = function(socket, anything) {
-    var player = socket.player;
+Game.prototype.eventBasedUpdate = function(player, clientData) {
+	var evt = this.keyboardHandler.parse(clientData);
 
-    var obj = JSON.parse(anything);
-    if (isEvent(obj)) {
-        player.direction = obj.angle;
-		player.isVacuum = obj.isVacuum;
-        player.vacAngleY = obj.vacAngleY;
-        if(obj.moving) {
-            player.move(obj, this.world.collidables);
-        }
-        player.updateVacuum(obj);
-    }
-    else {
-        console.log('Received unknown input: %s', anything);
-    }
+	if (evt == null) {
+		return;
+	}
+	else if (Keyboard.isMoveEvent(evt)) {
+		player.move(evt);
+	}
+	else if (Keyboard['TOGGLE_VACCUM'] == Keyboard[evt]) {
+		player.toggleVacuum();
+	}
+	else if (evt instanceof Array) { // mouse movement
+		player.rotate(evt);
+	}
+	else {
+		console.log("Game '%s' unable to process event '%s'", this.id, evt);
+	}
+	
 }
 
 /**
@@ -145,7 +161,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		player.id = id;
 		player.type = 'player';
 		player.position = this.sockets[id].player.position;
-		player.direction = this.sockets[id].player.direction;
+		player.orientation = this.sockets[id].player.orientation;
 		player.vacTrans = this.sockets[id].player.vacTrans;
 		player.isVacuum = this.sockets[id].player.isVacuum;
         player.vacAngleY = this.sockets[id].player.vacAngleY;
