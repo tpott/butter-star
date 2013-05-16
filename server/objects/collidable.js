@@ -33,7 +33,6 @@ Collidable.types = {
 	CRITTER : 3,
 	ENVIRONMENT : 4
 };
-console.log(Collidable.types);
 
 /**
  * Wrap the Collidable as an object.

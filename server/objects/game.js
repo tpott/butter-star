@@ -45,6 +45,7 @@ function Game() {
 	setTimeout(serverTick, 1000 / self.ticks);
 }
 
+
 /**
  * Send an update of all object locations to all the clients
  */
@@ -147,43 +148,96 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-/*	var world = {
+	var updates = 4; // new, set, del, misc
+	var world = {
 		new : [],
 		set : [],
 		del : [],
 		misc : []
 	};
+
 	// TODO clean this up... we already have a toObj() method with
 	// some info. We could override it in the Player class.
-	for (var id in this.newCollidables) {
+	for (var i = 0; i < this.newCollidables.length; i++) {
+		var id = this.newCollidables[i];
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
 		};
-   // console.log(id);
-		var player = {};
-		player.id = id;
-		player.type = 'player';
-		player.position = this.sockets[id].player.position;
-		player.direction = this.sockets[id].player.direction;
-		player.vacTrans = this.sockets[id].player.vacTrans;
-		player.isVacuum = this.sockets[id].player.isVacuum;
-        player.vacAngleY = this.sockets[id].player.vacAngleY;
-		allPlayers.push(player);
+		world.new.push(colObj);
 	}
 
- var tempWorld = { players : [], critters : {} };
- //console.log(this.world.players);
- tempWorld.players = allPlayers;
- // TODO what the heck is this mess
- tempWorld.critters = this.world.critters;
- 
-	for (var id in this.sockets) {
-		// TODO HIGH
-		// TODO if socket is already closed and not removed yet
-		this.sockets[id].send(JSON.stringify(tempWorld));
+	// nothing new, so no point in sending it
+	if (world.new.length == 0) {
+		delete world.new;
+		updates--;
 	}
-*/  
+
+	for (var i = 0; i < this.setCollidables.length; i++) {
+		var id = this.setCollidables[i];
+		var colObj = {
+			id : id,
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.set.push(colObj);
+	}
+
+	// nothing moved, so no point in sending moves
+	if (world.set.length == 0) {
+		delete world.set;
+		updates--;
+	}
+
+	for (var i = 0; i < this.delCollidables.length; i++) {
+		var id = this.delCollidables[i];
+		var colObj = {
+			id : id,
+		};
+		world.set.push(colObj);
+	}
+
+	// nothing deleted, so no point in sending deletions
+	if (world.del.length == 0) {
+		delete world.del;
+		updates--;
+	}
+
+	world.misc = this.miscellaneous;
+	
+	// nothing deleted, so no point in sending deletions
+	if (world.misc.length == 0) {
+		delete world.misc;
+		updates--;
+	}
+
+	if (updates == 0) {
+		// there is nothing new, moved, deleted, or miscellaneous
+		return;
+	}
+
+	var updateMessage = JSON.stringify(world);
+ 
+	// SEND THE WORLD INFO
+	for (var id in this.sockets) {
+		// new players dont need their first game tick
+		if (this.newCollidables.indexOf(id) >= 0) 
+			continue;
+
+		// TODO if socket is already closed and not removed yet
+		this.sockets[id].send(updateMessage);
+	}
+
+	// reset since this is the end of a tick
+	this.newCollidables = [];
+	this.setCollidables = [];
+	this.delCollidables = [];
+	this.miscellaneous = [];
 }
 
 

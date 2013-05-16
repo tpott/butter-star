@@ -75,6 +75,3 @@ WorldState.prototype.addCritter = function(critter) {
   console.log("making a critter");
 }
 
-
-// TODO GLOBAL HACKS EWWWWWWW
-//var myWorldState = new WorldState();
