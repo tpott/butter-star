@@ -85,7 +85,10 @@ Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player);
 
-  var world = [];
+  var initObj = {
+	  id : socket.id,
+	  world : []
+  };
 
   // TODO send init message to socket
 	for (var id in this.world.collidables) {
@@ -97,9 +100,13 @@ Game.prototype.addSocket = function(socket) {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		world.push(colObj);
+		initObj.world.push(colObj);
 	}
-	//this.sockets[socket.id].send(JSON.stringify(world);
+
+	// the client receives this and inits stuff in client/object/worldstate.js
+
+	var initMessage = JSON.stringify(initObj);
+	this.sockets[socket.id].send(initMessage);
 
 
   this.newCollidables.push(socket.id);
@@ -224,6 +231,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		updates--;
 	}
 
+	// things that have been moved
 	for (var i = 0; i < this.setCollidables.length; i++) {
 		var id = this.setCollidables[i];
 		var colObj = {

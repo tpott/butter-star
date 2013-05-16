@@ -77,21 +77,20 @@ Connection.prototype._onmessage = function(buf) {
 	// TODO undefined error here
 	//this.messages.push(buf.data);
 
-  //console.log(buf.data);
-    // connection initialized
-	if (buf.data.substring(0,3) == "ID:") {
+	var message = JSON.parse(buf.data);
 	if (! this.initialized) {
-		this.myPlayer.id = buf.data.substring(3);
+		this.myPlayer.id = message.id;
 		// TODO ???? 
 		//controlsEvent.playerID = this.myPlayer.id;
 		console.log("Client recieved id: " + myPlayer.id);
 
         //initClientSend(this); // Pass the socket to the send loop
 
+		this.initialized = true;
 		return;
 	}
 
-	var world = JSON.parse(buf.data);
+	var world = message;
 	if ('del' in world) {
 		var deleteIds = world.del;
 		for (var i = 0; i < deleteIds.length; i++) {

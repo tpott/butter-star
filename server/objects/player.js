@@ -28,6 +28,7 @@ var STANDING_STILL = 0,
 function Player(socket) {
   Player.super_.call(this);
 
+  // TODO socket not needed?
   this.socket = socket;
 
   // Dimensions of player
@@ -63,8 +64,6 @@ function Player(socket) {
   this.type = Collidable.types.PLAYER;
 
 	console.log('Player class, New player: %s', this.id);
-  // TODO is this the only reason we need socket?
-	this.socket.send('ID:' + this.id);
 
 	this.state = STANDING_STILL;
 }

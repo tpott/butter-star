@@ -1,5 +1,3 @@
-var WorldState = function() {
-    this.players = [];
 /**
  * worldstate.js
  *
@@ -9,11 +7,32 @@ var WorldState = function() {
  * @author Thinh
  * @author Trevor
  */
-}
+
+// also set in server/objects/collidable.js
+var types = {
+	COLLIDABLE : 0,
+	MOVABLE : 1,
+	PLAYER : 2,
+	CRITTER : 3,
+	ENVIRONMENT : 4,
+	FOOD : 5
+};
 
 var WorldState = function() {
     this.players = {};
     this.critters = {};
+	 this.environments = {};
+	 this.food = {};
+}
+
+/**
+ * initialize this world state based off of the recevied initial server
+ * data, including players, environments, critters, and food
+ */
+WorldState.prototype.initWorld = function(initWorldArr) {
+	for (var i = 0; i < initWorldArr.length; i++) {
+		var obj = initWorldArr[i];
+	}
 }
 
 WorldState.prototype.getPlayerObject = function(id) {
@@ -35,13 +54,8 @@ WorldState.prototype.removePlayer = function(id) {
 }
 
 /**
-<<<<<<< HEAD
- * players is an array of player objects
- * world is the JSON parsed message from the server
-=======
  * newStates is an array of objects, each object represents a collidable
  *   object on the server and contains: id, position, orientation, state
->>>>>>> feature/ser2CliNet
  */
 WorldState.prototype.updateWorldState = function(newStates){
 	for (var i = 0; i < newStates.length; i++) {
@@ -56,29 +70,6 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].mesh.position = update.position;
 		}
 	}
-  /*var players = world.players;
-  var critters = world.critters;
-	for (var i = 0; i < players.length; i++) {
-		if (!(players[i].id in this.players)) {
-			this.addPlayer(players[i]);
-		}
-		this.players[players[i].id].mesh.position = players[i].position;
-		//this.players[players[i].id].mesh.direction = players[i].position;
-		this.players[players[i].id].vacTrans = players[i].vacTrans;
-        this.players[players[i].id].orientation = players[i].orientation;
-        this.players[players[i].id].vacAngleY = players[i].vacAngleY;
-        //console.log(this.players[players[i].id].id);
-        this.players[players[i].id].isVacuum = players[i].isVacuum;
-		//console.log("Player id: " + players[i].id + " direction: " + players[i].direction);
-	}
-  for (var i = 0; i < Object.keys(critters).length; i++)
-  {
-    if(!(critters[i].id in this.critters))
-    {
-      console.log("making a new critter id: " + critters[i].id);
-      this.addCritter(critters[i]);
-    }
-  }*/
 
 }
 

@@ -27,8 +27,6 @@ function Movable() {
   this.mesh = null;
   this.radius = 0;
 
-  this.position = new THREE.Vector4(0, 0, 0, 0);
-  this.orientation = new THREE.Vector4(1, 0, 0, 0);
   this.center = new THREE.Vector4(0, 0, 0, 0);
 
   this.type = Collidable.types.MOVABLE
