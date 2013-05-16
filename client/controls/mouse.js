@@ -53,7 +53,7 @@ function mouseMove(evt) {
 
 	mouseMovement[0] += movementX;
 	mouseMovement[1] += movementY;
-	console.log(mouseMovement);
+	//console.log(mouseMovement);
 	/*pointer2.y = movementY * 0.0004;
 	pointer2.x = movementX * 0.0004;
 

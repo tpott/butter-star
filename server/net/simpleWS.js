@@ -65,7 +65,7 @@ Server.prototype._newSocket = function(socket) {
 	// Socket event handlers
 	socket.on('message', function(anything) {
 		var clientData = game.parseInput(player, anything);
-		console.log(clientData);
+		//console.log(clientData);
 
 		// null in case of error
 		if (clientData != null) {
