@@ -21,8 +21,19 @@ function Collidable() {
 
   this.gravity = new THREE.Vector4(0, -0.00098, 0, 0);
 
+  this.type = Collidable.types.COLLIDABLE;
+
   this.friction = 0.09; // in physics, this is usually "mu"
 };
+
+Collidable.types = {
+	COLLIDABLE : 0,
+	MOVABLE : 1,
+	PLAYER : 2,
+	CRITTER : 3,
+	ENVIRONMENT : 4
+};
+console.log(Collidable.types);
 
 /**
  * Wrap the Collidable as an object.

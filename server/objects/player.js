@@ -51,6 +51,8 @@ function Player(socket) {
   this.isVacuum = false;
   this.vacAngleY = 0;
 
+  this.type = Collidable.types.PLAYER;
+
 	console.log('Player class, New player: %s', this.id);
   // TODO is this the only reason we need socket?
 	this.socket.send('ID:' + this.id);

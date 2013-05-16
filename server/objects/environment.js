@@ -34,6 +34,8 @@ function Environment() {
      var material = new THREE.MeshBasicMaterial();
   this.mesh = new THREE.Mesh( geometry, material );
 
+  this.type = Collidable.types.ENVIRONMENT;
+
 }
 
 util.inherits(Environment, Collidable);

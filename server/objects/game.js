@@ -157,7 +157,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	// some info. We could override it in the Player class.
 	for (var id in this.newCollidables) {
 		var colObj = {
-			id : id
+			id : id,
+			type : this.world.collidables[id].type, 
 		};
    // console.log(id);
 		var player = {};

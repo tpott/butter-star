@@ -8,6 +8,8 @@ var Critter = function(){
         z : 0,
         direction : 0
     };
+
+	 this.type = Collidable.types.CRITTER;
 };
 
 Critter.prototype.init = function() {
