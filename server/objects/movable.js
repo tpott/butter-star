@@ -226,8 +226,14 @@ Movable.prototype.detectCollision_ = function(collidables) {
  * Apply the current force vector4 to the current position.
  * Collision detection should be applied here (not defined).
  * @param {Array.<Collidable>} collidables List of collidables.
+ * @return {boolean} True if moved, false otherwise.
  */
 Movable.prototype.applyForces = function(collidables) {
+  var originalPosition = {x: this.position.x,
+      y: this.position.y,
+      x: this.position.zi
+  };
+
 	// Force = mass * acceleration 
 	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
 
@@ -255,6 +261,16 @@ Movable.prototype.applyForces = function(collidables) {
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
+
+  // Check if movable changed positions
+  // TODO check if just using .equals() would mess up
+  if (originalPosition.x == this.position.x &&
+      originalPosition.y == this.position.y &&
+      originalPosition.z == this.position.z) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 /**

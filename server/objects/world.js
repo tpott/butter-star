@@ -151,8 +151,15 @@ World.prototype.applyForces = function() {
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position
-		this.players[id].applyForces(this.collidables);
+		var moved = this.players[id].applyForces(this.collidables);
+
+    if (moved === true) {
+      this.setCollidables.push(id);
+    }
 	}
+
+  // TODO critters
+  // TODO food
 }
 
 module.exports = World;
