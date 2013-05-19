@@ -58,7 +58,7 @@ Player.prototype.setMesh = function(scene) {
         scene.add(me.mesh);
     });
     playerLoader.load('boy.obj', 'boy.mtl');*/
-    this.mesh = new THREE.Mesh(models.player[this.model][0].geometry,
-			 models.players[this.model][0].material);
+    this.mesh = new THREE.Mesh(models.player[this.model].geometry,
+			 models.players[this.model].material);
 	  scene.add(this.mesh);
 };

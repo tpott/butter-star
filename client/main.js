@@ -102,7 +102,8 @@ function update() {
 
 	// begin camera update
 	//   update camera position
-	camera.position = myPlayer.position;
+	camera.position = myPlayer.position.clone().sub(myPlayer.orientation);
+	camera.position.add(new THREE.Vector3(0, 1, 0));
 
 	/*
 	// camera rotate x
@@ -116,7 +117,7 @@ function update() {
 
 	//   update camera orientation
 	//console.log( "add=%s", myPlayer.position + myPlayer.orientation );
-	camera.lookAt( myPlayer.position + myPlayer.orientation );
+	camera.lookAt( myPlayer.position );
 	/*
 	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 	camera.lookAt( vec3 );
@@ -126,15 +127,15 @@ function update() {
 /*
 	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
 	camera.lookAt( vec3 );*/
-	if(myPlayer.vacuum != null) {
+	/*if(myPlayer.vacuum != null) {
 		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
-	}
+	}*/
 
 	//myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
-	var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
+	//var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
 
 	//myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
-	myPlayer.mesh.rotation.y = ang + 1.65;
+	//myPlayer.mesh.rotation.y = ang + 1.65;
 	//updatePlayersAnimation();
 }
 
@@ -224,7 +225,7 @@ function initLights() {
 }*/
 
 //load them textures here
-function initTextures() {
+/*function initTextures() {
 	var neheTexture;
 	function initTexture() {
 	neheTexture = gl.createTexture();
@@ -236,7 +237,7 @@ function initTextures() {
 
 	neheTexture.image.src = "player.png";
 	}
-}
+}*/
 
 //load sound clips here
 function initSounds()
@@ -337,6 +338,5 @@ function main() {
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	$('canvas').addClass('game');
-	// scene.add(cube);
 	render(); 
 }
