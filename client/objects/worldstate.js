@@ -43,7 +43,7 @@ WorldState.prototype.addPlayer = function(p) {
 	var player = new Player();
 	player.id = p.id;
 	player.position = p.position;
-    player.setMesh(scene);
+  player.setMesh(scene);
 	//scene.add(player.mesh);
 	this.players[player.id] = player;
 }

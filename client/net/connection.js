@@ -78,6 +78,7 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+  console.log('we just got a letter');
 	if (! this.initialized) {
 		this.myPlayer.id = message.id;
 		// TODO ???? 
@@ -99,6 +100,13 @@ Connection.prototype._onmessage = function(buf) {
 		}
 	}
 	if ('new' in world) {
+    console.log('NEW PLAYA');
+    for(var i = 0; i < world.new.length; i++) {
+      var newObj = world.new[i];
+      if(newObj.type == types.PLAYER) {
+        this.socket.myWorldState.addPlayer(newObj);
+      }
+    }
 	}
 	if ('set' in world) {
 		// passes in an array of updated info
