@@ -29,6 +29,12 @@ function World() {
 	this.nplayers = 0;
 	this.ncritters = 0;
 
+  // Lists of IDs of objects that had state changes
+  this.newCollidables = [];
+  this.setCollidables = [];
+  this.delCollidables = [];
+  this.miscellaneous = [];
+
   // Make world environment
   this.createRoom_();
 }
@@ -55,12 +61,30 @@ World.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
 	this.nplayers++;
 
+  this.newCollidables.push(player.id);
 	return player.id;
 }
 
-World.prototype.addCritter = function(numCritters) {
-  for( var i = 0 ; i < numCritters; i++)
-  {
+/**
+ * Add a critter to the world.
+ * @param {Critter} critter The new critter to add to the world.
+ * @return {string} The critter ID.
+ */
+World.prototype.addCritter = function(critter) {
+  this.collidables[critter.id] = critter;
+  this.critters[critter.id] = critter;
+  this.ncritters++;
+
+  this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
+  return critter.id
+}
+
+/**
+ * Spawns a given number of critters at random, unoccupied locations.
+ * @param {int} numCritters The number of critters to spawn.
+ */
+World.prototype.spawnCritters = function(numCritters) {
+  for (var i = 0; i < numCritters; i++) {
     var critter = new Critter();
     // TODO position needs to be somewhere that isnt occupied
     critter.position.set(
@@ -68,12 +92,9 @@ World.prototype.addCritter = function(numCritters) {
         Math.floor(Math.random() * 20) * 20 + 10,
         Math.floor(Math.random() * 20 - 10) * 20,
         1);
-	 critter.id = i;
-    this.collidables[critter.id] = critter;
-    this.critters[critter.id] = critter;
-    this.ncritters++;
+    this.addCritter(critter);
   }
-}
+};
 
 /**
  * Remove a player from the world.
@@ -81,17 +102,9 @@ World.prototype.addCritter = function(numCritters) {
  * @return {boolean} True if successfully removes, false otherwise.
  */
 World.prototype.removePlayer = function(player) {
-	var removedPlayer = {'remove': player.id};
-	for (var id in this.players) {
-		  if (id == player.id) {
-			  continue;
-		  }
-      // TODO make event emitter to tell game to update the socket
-		  this.players[id].socket.send(JSON.stringify(removedPlayer));
-	}
-
-  delete this.collidables[player.id];
-	if (delete this.players[player.id]) {
+  this.delCollidables.push(player.id);
+  if (delete this.collidables[player.id] &&
+	    delete this.players[player.id]) {
 		this.nplayers--;
 		return true;
 	} else {
@@ -99,7 +112,13 @@ World.prototype.removePlayer = function(player) {
 	}
 }
 
+/**
+ * Remove a critter from the world.
+ * @param {Critter} critter The critter to remove from the world.
+ * @return {boolean} True if successfully removes, false otherwise.
+ */
 World.prototype.removeCritter = function(critter) {
+  this.delCollidables.push(critter.id);
   if (delete this.collidables[critter.id] &&
       delete this.critters[critter.id]) {
     this.ncritters--;
@@ -107,7 +126,16 @@ World.prototype.removeCritter = function(critter) {
   } else {
     return false;
   }
-  // TODO update all clients that this was deleted
+};
+
+/**
+ * Reset the update state lists.
+ */
+World.prototype.resetUpdateStateLists = function() {
+  this.newCollidables = [];
+  this.setCollidables = [];
+  this.delCollidables = [];
+  this.miscellaneous = [];
 };
 
 
