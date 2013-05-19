@@ -16,12 +16,13 @@ var renderer = new THREE.WebGLRenderer();
 var geometry = new THREE.CubeGeometry(1,3,1); 
 var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
-var models = {
+// needed in client/net/loader.js, so before this file is loaded
+/*var models = {
 	player : [],
 	critters : [], 
 	environment : [],
 	food : []
-};
+};*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
 document.addEventListener( 'mousemove', mouseMove, false );
@@ -196,7 +197,7 @@ function initLights() {
 }
 
 //place to initialize models (such as characters and maps)
-function initModels() {
+/*function initModels() {
 	var loader = new THREE.OBJMTLLoader();
 		loader.addEventListener( 'load', function ( event ) {
 
@@ -222,7 +223,7 @@ function initModels() {
 		});
 	playerLoader.load( 'boy.obj', 'boy.mtl' );
 
-}
+}*/
 
 //load them textures here
 function initTextures() {
@@ -316,7 +317,7 @@ scene.add( mesh );
 function main() {
 	initStats();
 	initLights();
-    initModels();
+    //initModels();
 	// initTextures();
 	initSounds();
 	//initFloor();

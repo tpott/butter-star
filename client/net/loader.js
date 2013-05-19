@@ -6,6 +6,8 @@
  * @author Trevossdwwwwsss
  */
 
+// TODO order!!
+
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
@@ -34,7 +36,22 @@ var scripts = [
 	"main.js"
 ];
 
-// TODO order!!
+var models = {
+	player : [],
+	critters : [],
+	environment : [],
+	food : []
+};
+
+// entries are structured: [our name, obj, mtl, scale]
+var modelFiles = {
+	player : [
+		'Yixin Cube', 
+		],
+	critters : [],
+	environment : [],
+	food : []
+};
 
 /**
  * appends script elements to the DOM
@@ -74,4 +91,35 @@ function singleLoader(scripts, index, doc, head) {
 	};
 
 	head.appendChild(script);
+}
+
+/**
+ * loads all the .obj and .mtl files for players, critter, environments, etc.
+ */
+function initModels() {
+   var loader = new THREE.OBJMTLLoader();
+      loader.addEventListener( 'load', function ( event ) {
+
+         var object = event.content;
+         //object.scale.set(.1,.1,.1);
+         scene.add( object );
+         // object and scale
+         models.environment.push([object,1.]);
+         console.log("environment loaded");
+
+      });
+   loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
+
+   var playerLoader = new THREE.OBJMTLLoader();
+      playerLoader.addEventListener( 'load', function ( event ) {
+
+         var object = event.content;
+         //object.scale.set(.1,.1,.1);
+         // object and scale
+         models.player.push([object,0.2]);
+         console.log("player loaded");
+
+      });
+   playerLoader.load( 'boy.obj', 'boy.mtl' );
+
 }
