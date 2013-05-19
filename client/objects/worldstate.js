@@ -32,25 +32,77 @@ var WorldState = function() {
 WorldState.prototype.initWorld = function(initWorldArr) {
 	for (var i = 0; i < initWorldArr.length; i++) {
 		var obj = initWorldArr[i];
+		this.add(obj);
 	}
 }
 
-WorldState.prototype.getPlayerObject = function(id) {
-    return this.players[id];
+/**
+ * generic ADD function, determines type and then calls specific add
+ */
+WorldState.prototype.add = function(object) {
+	switch (object.type) {
+		case types.PLAYER:
+			this.addPlayer(object);
+			break;
+		case types.CRITTER:
+			this.addCritter(object);
+			break;
+		case types.ENVIRONMENT:
+			this.addEnvironment(object);
+			break;
+		case types.FOOD:
+			this.addFood(object);
+			break;
+		default:
+			console.log("Client unrecognized type: %s", object);
+	}
 }
 
 WorldState.prototype.addPlayer = function(p) {
-	var player = new Player();
-	player.id = p.id;
-	player.position = p.position;
-  player.setMesh(scene);
-	//scene.add(player.mesh);
+	var player = new Player(p);
 	this.players[player.id] = player;
+
+	scene.add(player.mesh);
+	console.log("Adding a player to the scene");
 }
 
-WorldState.prototype.removePlayer = function(id) {
+WorldState.prototype.addCritter = function(critter) {
+  var crit = new Critter();
+  crit.position = critter.position;
+  crit.initModel(scene, 'boo', 10, crit.position);
+  this.critters[critter.id] = crit;
+  console.log("making a critter");
+}
+
+WorldState.prototype.addEnvironment = function(env) {
+}
+
+WorldState.prototype.addFood = function(food) {
+}
+
+/**
+ * generic REMOVE function, determines type and then calls specific remove
+ */
+WorldState.prototype.remove = function(object) {
+}
+
+WorldState.prototype.removePlayer = function(p) {
 	scene.remove(this.players[id].mesh);
 	delete this.players[id];
+}
+
+WorldState.prototype.removeCritter = function(critter) {
+}
+
+WorldState.prototype.removeEnvironment = function(env) {
+}
+
+WorldState.prototype.removeFood = function(food) {
+}
+
+// TODO remove this function? 
+WorldState.prototype.getPlayerObject = function(id) {
+    return this.players[id];
 }
 
 /**
@@ -71,13 +123,5 @@ WorldState.prototype.updateWorldState = function(newStates){
 		}
 	}
 
-}
-
-WorldState.prototype.addCritter = function(critter) {
-  var crit = new Critter();
-  crit.position = critter.position;
-  crit.initModel(scene, 'boo', 10, crit.position);
-  this.critters[critter.id] = crit;
-  console.log("making a critter");
 }
 
