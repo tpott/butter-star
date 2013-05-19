@@ -87,13 +87,13 @@ function update() {
 	// skip if myPlayer is not initd
 	if (myPlayer == null || myPlayer.id == null) return; 
 
-	var updatedMyPlayer = myWorldState.getPlayerObject(myPlayer.id);
+	/*var updatedMyPlayer = myWorldState.getPlayerObject(myPlayer.id);
 
 	// skip if undefined
 	if (!updatedMyPlayer) return;
 
 	myPlayer.mesh = updatedMyPlayer.mesh;
-	myPlayer.orientation = updatedMyPlayer.orientation;
+	myPlayer.orientation = updatedMyPlayer.orientation;*/
 	//cube.position = clone(myPlayer.position);
 	//cube.position.y = -2;
 	/*myPlayer.model.objects.position.x = myPlayer.position.x;
@@ -103,7 +103,7 @@ function update() {
 	// begin camera update
 	//   update camera position
 	camera.position = myPlayer.position.clone().sub(myPlayer.orientation);
-	camera.position.add(new THREE.Vector4(0, 1, 0, 0));
+	camera.position.add(new THREE.Vector4(0, 10, 0, 0));
 	
 	//   update camera orientation
 	camera.lookAt( myPlayer.position );
