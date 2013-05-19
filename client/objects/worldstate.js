@@ -29,9 +29,9 @@ var WorldState = function() {
  * initialize this world state based off of the recevied initial server
  * data, including players, environments, critters, and food
  */
-WorldState.prototype.initWorld = function(initWorldArr) {
-	for (var i = 0; i < initWorldArr.length; i++) {
-		var obj = initWorldArr[i];
+WorldState.prototype.addObjects = function(objArr) {
+	for (var i = 0; i < objArr.length; i++) {
+		var obj = objArr[i];
 		this.add(obj);
 	}
 }
@@ -63,15 +63,17 @@ WorldState.prototype.addPlayer = function(p) {
 	this.players[player.id] = player;
 
 	scene.add(player.mesh);
-	console.log("Adding a player to the scene");
 }
 
 WorldState.prototype.addCritter = function(critter) {
   var crit = new Critter();
-  crit.position = critter.position;
+  this.critters[crit.id] = crit;
+
+  scene.add(crit.mesh);
+  /*crit.position = critter.position;
   crit.initModel(scene, 'boo', 10, crit.position);
   this.critters[critter.id] = crit;
-  console.log("making a critter");
+  console.log("making a critter");*/
 }
 
 WorldState.prototype.addEnvironment = function(env) {

@@ -19,10 +19,6 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
 		'/' + this.gameid); 
 
-	// MORE JAVASCRIPT BULLSHIT
-	this.socket.myPlayer = player;
-	this.socket.myWorldState = world;
-
 	this.socket.binaryType = 'arraybuffer';
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
@@ -79,13 +75,11 @@ Connection.prototype._onmessage = function(buf) {
 
 	var message = JSON.parse(buf.data);
 	if (! this.initialized) {
-		this.myWorldState.initWorld(message.world);
-		this.myPlayer = this.myWorldState.getPlayerObject(message.id);
-		// TODO ???? 
-		//controlsEvent.playerID = this.myPlayer.id;
-		console.log("Client recieved id: " + message.id);
+		// this does the same thing as adding new objects
+		myWorldState.addObjects(message.world);
+		myPlayer = myWorldState.players[message.id];
 
-        //initClientSend(this); // Pass the socket to the send loop
+		console.log("Client recieved id: " + message.id);
 
 		this.initialized = true;
 		return;
@@ -100,19 +94,22 @@ Connection.prototype._onmessage = function(buf) {
 		}
 	}
 	if ('new' in world) {
-    for(var i = 0; i < world.new.length; i++) {
+		// world.new should be the same as what is received in the initial
+		//  message.world
+		myWorldState.addObjects(world.new);
+    /*for(var i = 0; i < world.new.length; i++) {
       var newObj = world.new[i];
       if(newObj.type == types.PLAYER) {
-        this.myWorldState.addPlayer(newObj);
+        myWorldState.addPlayer(newObj);
       }
-    }
+    }*/
 	}
 	if ('set' in world) {
 		// passes in an array of updated info
-		this.myWorldState.updateWorldState(world.set);
+		myWorldState.updateWorldState(world.set);
 	}
 	/*if ('remove' in state) {
-		this.myWorldState.removePlayer(state['remove']);
+		myWorldState.removePlayer(state['remove']);
 	}*/
 
 //	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);

@@ -9,7 +9,6 @@ var timer; // TODO not being used
 
 var scene = new THREE.Scene(); 
 var stats = new Stats();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
 var audio = document.createElement('audio');
 var source = document.createElement('source');
 var renderer = new THREE.WebGLRenderer(); 
@@ -43,6 +42,7 @@ var gameid = document.URL.replace(/.*\//,'');
 
 // dont iniailize until main()
 var myWorldState = null,
+	 camera = null;
 	 connection = null;
 
 // each key press will append something here,
@@ -103,33 +103,10 @@ function update() {
 	// begin camera update
 	//   update camera position
 	camera.position = myPlayer.position.clone().sub(myPlayer.orientation);
-	camera.position.add(new THREE.Vector3(0, 1, 0));
-
-	/*
-	// camera rotate x
-	camera.position.x = myPlayer.position.x + myPlayer.camera.distance * Math.sin( (myPlayer.camera.x) * Math.PI / 360 );
-	camera.position.z = myPlayer.position.z + myPlayer.camera.distance * Math.cos( (myPlayer.camera.x) * Math.PI / 360 );
-
-	//camera rotate y
-	camera.position.y = myPlayer.position.y + myPlayer.camera.distance * Math.sin( (myPlayer.camera.y) * Math.PI / 360 );
-	camera.position.y += 1;
-	*/
-
+	camera.position.add(new THREE.Vector4(0, 1, 0, 0));
+	
 	//   update camera orientation
-	//console.log( "add=%s", myPlayer.position + myPlayer.orientation );
 	camera.lookAt( myPlayer.position );
-	/*
-	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
-	camera.lookAt( vec3 );
-	*/
-
-	//console.log(camera.position.z)
-/*
-	var vec3 = new THREE.Vector3( myPlayer.position.x,  myPlayer.position.y,  myPlayer.position.z)
-	camera.lookAt( vec3 );*/
-	/*if(myPlayer.vacuum != null) {
-		myPlayer.vacuum.update(myPlayer.vacTrans,controlsEvent.angle,controlsEvent.vacAngleY);
-	}*/
 
 	//myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
 	//var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
@@ -194,35 +171,6 @@ function initLights() {
 		light.position.set( 0, 20, 0 ); 
 		scene.add( light );
 }
-
-//place to initialize models (such as characters and maps)
-/*function initModels() {
-	var loader = new THREE.OBJMTLLoader();
-		loader.addEventListener( 'load', function ( event ) {
-
-			var object = event.content;
-			//object.scale.set(.1,.1,.1);
-			scene.add( object );
-			// object and scale
-			models.environment.push([object,1.]);
-			console.log("environment loaded");
-
-		});
-	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
-
-	var playerLoader = new THREE.OBJMTLLoader();
-		playerLoader.addEventListener( 'load', function ( event ) {
-
-			var object = event.content;
-			//object.scale.set(.1,.1,.1);
-			// object and scale
-			models.player.push([object,0.2]);
-			console.log("player loaded");
-
-		});
-	playerLoader.load( 'boy.obj', 'boy.mtl' );
-
-}*/
 
 //load them textures here
 /*function initTextures() {
@@ -325,13 +273,17 @@ function main() {
 	//controls.disable;
 
 	myWorldState = new WorldState();
-	connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
+
+	// sets myPlayer to the correct player object in myWorldState
+	connection = new Connection(ipAddr, port, gameid, myWorldState);
 	
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.up = new THREE.Vector3(0,0,1);
+
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );

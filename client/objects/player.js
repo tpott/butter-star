@@ -1,21 +1,17 @@
-var Player = function(playerObj) {
-	//console.log("playerObj=%s", playerObj);
-	//if (playerObj) {
-		this.id = playerObj.id;
-	//}
-	//else {
-	//	this.id = null;
-	//}
-	 /*
-    var geometry = new THREE.CubeGeometry(1,3,1); 
-    var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
-	 */
+/**
+ * client/object/player.js 
+ *
+ * NOT SERVERSIDE
+ * @author Trevor
+ */
 
-	 // models is a global from main
-	 // first index is the default model, second index is the mesh or scale
-	this.mesh = null;
-   // this.mesh = new THREE.Mesh(models.player[playerObj.model][0].geometry,
-	//		 models.players[playerObj.model][0].material);
+/**
+ * Player constructor, uses a player "skeleton" object from the server
+ * that specifies which model to be used, initial position, orientation,
+ * and state
+ */
+var Player = function(playerObj) {
+	this.id = playerObj.id;
 
     this.position = new THREE.Vector4(
 			 playerObj.position.x,
@@ -38,7 +34,6 @@ var Player = function(playerObj) {
 	 this.mesh = models.player[this.model];
     //this.mesh = new THREE.Mesh(models.player[this.model].geometry,
 	//		 models.players[this.model].material);
-	  scene.add(this.mesh);
 
 	 // TODO remove 
 	this.vacuum = null;
@@ -57,15 +52,6 @@ var Player = function(playerObj) {
 };
 
 Player.prototype.setMesh = function(scene) {
-    /*var playerLoader = new THREE.OBJMTLLoader();
-    var me = this;
-    playerLoader.addEventListener( 'load', function (event) {
-        var object = event.content;
-        object.scale.set(.04, .04, .04);
-        me.mesh = object;
-        scene.add(me.mesh);
-    });
-    playerLoader.load('boy.obj', 'boy.mtl');*/
     this.mesh = new THREE.Mesh(models.player[this.model].geometry,
 			 models.players[this.model].material);
 	  scene.add(this.mesh);
