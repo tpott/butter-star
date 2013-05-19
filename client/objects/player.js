@@ -1,5 +1,11 @@
 var Player = function(playerObj) {
-    this.id = playerObj.id;
+	//console.log("playerObj=%s", playerObj);
+	//if (playerObj) {
+		this.id = playerObj.id;
+	//}
+	//else {
+	//	this.id = null;
+	//}
 	 /*
     var geometry = new THREE.CubeGeometry(1,3,1); 
     var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
@@ -7,8 +13,9 @@ var Player = function(playerObj) {
 
 	 // models is a global from main
 	 // first index is the default model, second index is the mesh or scale
-    this.mesh = new THREE.Mesh(models.player[playerObj.model][0].geometry,
-			 models.players[playerObj.model][0].material);
+	this.mesh = null;
+   // this.mesh = new THREE.Mesh(models.player[playerObj.model][0].geometry,
+	//		 models.players[playerObj.model][0].material);
 
     this.position = new THREE.Vector4(
 			 playerObj.position.x,
@@ -23,6 +30,7 @@ var Player = function(playerObj) {
 			 playerObj.orientation.w
 		);
 	 this.state = playerObj.state;
+	 this.model = playerObj.model;
 
 	 // TODO remove 
 	this.vacuum = null;
@@ -32,16 +40,16 @@ var Player = function(playerObj) {
     this.vacAngleY = 0;
 
 	 // TODO maybe remove
-	this.model =
+	/*this.model =
     {		
         objects : new THREE.Object3D(),
         motion  : 'stand',
         state   : 'stand'
-    };
+    };*/
 };
 
 Player.prototype.setMesh = function(scene) {
-    var playerLoader = new THREE.OBJMTLLoader();
+    /*var playerLoader = new THREE.OBJMTLLoader();
     var me = this;
     playerLoader.addEventListener( 'load', function (event) {
         var object = event.content;
@@ -49,5 +57,8 @@ Player.prototype.setMesh = function(scene) {
         me.mesh = object;
         scene.add(me.mesh);
     });
-    playerLoader.load('boy.obj', 'boy.mtl');
+    playerLoader.load('boy.obj', 'boy.mtl');*/
+    this.mesh = new THREE.Mesh(models.player[this.model][0].geometry,
+			 models.players[this.model][0].material);
+	  scene.add(this.mesh);
 };

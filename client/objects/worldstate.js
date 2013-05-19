@@ -59,9 +59,12 @@ WorldState.prototype.add = function(object) {
 }
 
 WorldState.prototype.addPlayer = function(p) {
-	var player = new Player();
+	var player = new Player(p);
 	//scene.add(player.mesh);
 	this.players[player.id] = player;
+
+	scene.add(player.mesh);
+	console.log("Adding a player to the scene");
 }
 
 WorldState.prototype.addCritter = function(critter) {

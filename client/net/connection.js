@@ -83,7 +83,7 @@ Connection.prototype._onmessage = function(buf) {
 		this.myPlayer = this.myWorldState.getPlayerObject(message.id);
 		// TODO ???? 
 		//controlsEvent.playerID = this.myPlayer.id;
-		console.log("Client recieved id: " + myPlayer.id);
+		console.log("Client recieved id: " + message.id);
 
         //initClientSend(this); // Pass the socket to the send loop
 

@@ -97,9 +97,9 @@ function update() {
 	myPlayer.orientation = updatedMyPlayer.orientation;
 	//cube.position = clone(myPlayer.position);
 	//cube.position.y = -2;
-	myPlayer.model.objects.position.x = myPlayer.position.x;
+	/*myPlayer.model.objects.position.x = myPlayer.position.x;
 	myPlayer.model.objects.position.y = myPlayer.position.y;
-	myPlayer.model.objects.position.z = myPlayer.position.z;
+	myPlayer.model.objects.position.z = myPlayer.position.z;*/
 
 	// begin camera update
 	//   update camera position
@@ -205,17 +205,19 @@ function initModels() {
 			scene.add( object );
 			// object and scale
 			models.environment.push([object,1.]);
+			console.log("environment loaded");
 
 		});
 	loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
 
-var playerLoader = new THREE.OBJMTLLoader();
+	var playerLoader = new THREE.OBJMTLLoader();
 		playerLoader.addEventListener( 'load', function ( event ) {
 
 			var object = event.content;
 			//object.scale.set(.1,.1,.1);
 			// object and scale
-			models.player.push([object,1.]);
+			models.player.push([object,0.2]);
+			console.log("player loaded");
 
 		});
 	playerLoader.load( 'boy.obj', 'boy.mtl' );
