@@ -13,8 +13,6 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeigh
 var audio = document.createElement('audio');
 var source = document.createElement('source');
 var renderer = new THREE.WebGLRenderer(); 
-var geometry = new THREE.CubeGeometry(1,3,1); 
-var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {
@@ -35,17 +33,17 @@ document.addEventListener( 'keyup', keyUp, false );
 var minimap = null;
 var optionMenu = null;
 
-var cube = new THREE.Mesh(geometry, material);
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
 var myPlayer = null;
-var myWorldState = new WorldState();
 
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
 var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 var gameid = document.URL.replace(/.*\//,'');
 
-var connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
+// dont iniailize until main()
+var myWorldState = null,
+	 connection = null;
 
 // each key press will append something here,
 // on each client tick the keypresses will be sent and 
@@ -324,6 +322,9 @@ function main() {
 	//initRoom();
   audio.pause();
 	//controls.disable;
+
+	myWorldState = new WorldState();
+	connection = new Connection(ipAddr, port, gameid, myPlayer, myWorldState);
 	
 	minimap = new Minimap();
 	minimap.drawCircle();

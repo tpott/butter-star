@@ -37,19 +37,23 @@ var scripts = [
 ];
 
 var models = {
-	player : [],
+	player : [null, null],
 	critters : [],
-	environment : [],
+	environment : [null, null],
 	food : []
 };
 
 // entries are structured: [our name, obj, mtl, scale]
 var modelFiles = {
 	player : [
-		'Yixin Cube', 
-		],
+		['Default player', 'boy.obj', 'boy.mtl', 0.04]
+		//['Yixin Cube', '', '', 1.]
+	],
 	critters : [],
-	environment : [],
+	environment : [
+		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
+		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
+	],
 	food : []
 };
 
@@ -58,7 +62,7 @@ var modelFiles = {
  * @param scripts - a list/object
  * @param doc - the document global
  */
-function loadAll(scripts, doc) {
+function loadScripts(scripts, doc) {
 	var head = doc.getElementsByTagName('head')[0];
 	console.log('Loading ' + scripts);
 	singleLoader(scripts, 0, doc, head);
@@ -73,7 +77,8 @@ function loadAll(scripts, doc) {
 function singleLoader(scripts, index, doc, head) {
 	// stop recurrance
 	if (index >= scripts.length) {
-		main();
+		loadModels();
+		//attemptStart();
 		//_lastFunc();
 		return;
 	}
@@ -96,30 +101,36 @@ function singleLoader(scripts, index, doc, head) {
 /**
  * loads all the .obj and .mtl files for players, critter, environments, etc.
  */
-function initModels() {
-   var loader = new THREE.OBJMTLLoader();
-      loader.addEventListener( 'load', function ( event ) {
+function loadModels() {
+	// stupid javascript
+	function loadFunc(type, index) {
+		return function(evt) {
+			var object = evt.content;
+			var scale = modelFiles[type][index][3];
+			object.scale.set(scale, scale, scale);
+			models[type][index] = object;
+			console.log("%s loaded %d/%d.", type, index+1, modelFiles[type].length);
+			attemptStart();
+		};
+	}
+	console.log("Loading models");
+	for (var type in modelFiles) {
+		for (var i = 0; i < modelFiles[type].length; i++) {
+			var loader = new THREE.OBJMTLLoader();
+			loader.addEventListener( 'load', loadFunc(type, i) );
+			loader.load( modelFiles[type][i][1], modelFiles[type][i][2] );
+		}
+	}
+}
 
-         var object = event.content;
-         //object.scale.set(.1,.1,.1);
-         scene.add( object );
-         // object and scale
-         models.environment.push([object,1.]);
-         console.log("environment loaded");
-
-      });
-   loader.load( 'roomWithWindows.obj', 'roomWithWindows.mtl' );
-
-   var playerLoader = new THREE.OBJMTLLoader();
-      playerLoader.addEventListener( 'load', function ( event ) {
-
-         var object = event.content;
-         //object.scale.set(.1,.1,.1);
-         // object and scale
-         models.player.push([object,0.2]);
-         console.log("player loaded");
-
-      });
-   playerLoader.load( 'boy.obj', 'boy.mtl' );
-
+/**
+ * Guarantees all models and scripts are loaded before starting main
+ */
+var attempts = 0, attemptsNeeded = 3;
+function attemptStart() {
+	attempts++;
+	if (attempts == attemptsNeeded) {
+		console.log("Enough attempts, time to play!");
+		main();
+	}
 }
