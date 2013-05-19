@@ -36,29 +36,6 @@ function World() {
 /* ENVIRONMENT CREATION FUNCTIONS */
 
 World.prototype.createRoom_ = function() {
-  /*
-	var env = null;
-	var self = this;
-  var loader = new ButterOBJLoader();
-  loader.on( 'load', function ( event ) {
-    var object = event.content;
-    var tempScale = new THREE.Matrix4();
-    object.position.y = -5;
-    object.position.x = -20;
-    //object.scale.set(.1,.1,.1);
-
-    var objMesh = object.children[0];
-    // Set position to same as object. MUST do otherwise collisions off.
-    objMesh.position.y = -5;
-    objMesh.position.x = -20;
-
-		// TODO WRONG. Need to extend collidable and make that obj
-		self.collidables['room'] = obj; 
-		self.enviroObjs['room'] = obj;
-  });
-	loader.load( 'blankRoom.obj' );
-  */
-
 	var env = new Environment();
 
    this.collidables[env.id] = env;
@@ -82,15 +59,20 @@ World.prototype.addPlayer = function(player) {
 }
 
 World.prototype.addCritter = function(numCritters) {
-    for( var i = 0 ; i < numCritters; i++)
-    {
-        var critter = new Critter();
-        critter.position = { x :  Math.floor(Math.random() * 20 - 10) * 20,
-                             y :  Math.floor(Math.random() * 20) * 20 + 10,
-                             z :  Math.floor(Math.random() * 20 - 10) * 20}
-        critter.id = i;
-        this.critters[i] = critter;
-    }
+  for( var i = 0 ; i < numCritters; i++)
+  {
+    var critter = new Critter();
+    // TODO position needs to be somewhere that isnt occupied
+    critter.position.set(
+        Math.floor(Math.random() * 20 - 10) * 20,
+        Math.floor(Math.random() * 20) * 20 + 10,
+        Math.floor(Math.random() * 20 - 10) * 20,
+        1);
+	 critter.id = i;
+    this.collidables[critter.id] = critter;
+    this.critters[critter.id] = critter;
+    this.ncritters++;
+  }
 }
 
 /**
@@ -117,6 +99,17 @@ World.prototype.removePlayer = function(player) {
 	}
 }
 
+World.prototype.removeCritter = function(critter) {
+  if (delete this.collidables[critter.id] &&
+      delete this.critters[critter.id]) {
+    this.ncritters--;
+    return true;
+  } else {
+    return false;
+  }
+  // TODO update all clients that this was deleted
+};
+
 
 /* WORLD MUTATOR FUNCTIONS */
 
@@ -126,7 +119,7 @@ World.prototype.removePlayer = function(player) {
 World.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
-		//this.players[id].addGravity(); // each player has individual gravity
+		this.players[id].addGravity(); // each player has individual gravity
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position

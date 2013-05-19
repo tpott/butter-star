@@ -29,9 +29,15 @@ function Game() {
 	this.world = new World();
 	
 	//setTimeout(gameTick(this), 1000 / this.ticks);
-	this.world.addCritter(100);
+	// this.world.addCritter(10);
 
-	setInterval(gameTick(this), 1000 / this.ticks);
+	var self = this;
+	function serverTick() {
+		setTimeout(serverTick, 1000 / self.ticks);
+		self.gameTickBasedUpdate();
+		self.sendUpdatesToAllClients();
+	}
+	setTimeout(serverTick, 1000 / self.ticks);
 }
 
 /**
@@ -147,7 +153,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		allPlayers.push(player);
 	}
 
- var tempWorld = { players : [], critters : {} };
+    var tempWorld = { players : [], critters : {} };
     //console.log(this.world.players);
     tempWorld.players = allPlayers;
     tempWorld.critters = this.world.critters;

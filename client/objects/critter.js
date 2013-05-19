@@ -20,6 +20,7 @@ Critter.prototype.init = function() {
 }
 
 Critter.prototype.initModel = function(scene, type, size, position) {
+  // TODO critter position will come from server, reorg client side critter obj
     var loader = new THREE.OBJMTLLoader();
                 loader.addEventListener( 'load', function ( event ) {
                     var object = event.content;

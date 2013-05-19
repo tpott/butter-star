@@ -37,7 +37,7 @@ Player.prototype.setMesh = function(scene) {
     var me = this;
     playerLoader.addEventListener( 'load', function (event) {
         var object = event.content;
-        object.scale.set(.02, .02, .02);
+        object.scale.set(.04, .04, .04);
         me.mesh = object;
         scene.add(me.mesh);
     });

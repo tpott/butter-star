@@ -25,14 +25,16 @@ function Player(socket) {
   this.socket = socket;
 
   // Dimensions of player
+  // TODO get from model
   this.width = 1;
   this.height = 3;
   this.depth = 1;
 
   // 3D object this represents
+  // TODO make this load the player model. Trevor: keep the radius line!
   var geometry = new THREE.CubeGeometry(
       this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  var material = new THREE.MeshBasicMaterial();
   this.mesh = new THREE.Mesh(geometry, material);
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
@@ -101,7 +103,7 @@ Player.prototype.move = function(evt) {
 		evt.speed = 0.75;
 	}
 	else {
-		evt.speed = 0.25;
+		evt.speed = 0.125;
 	}
 
 	var direction = evt.angle;
@@ -134,9 +136,8 @@ Player.prototype.move = function(evt) {
   var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
-	var magicAmplifier = 0.01;
-	var force = new THREE.Vector4(dx, dy, dz, 0)
-		.multiplyScalar(magicAmplifier);
+	//var magicAmplifier = 0.8;
+	var force = new THREE.Vector4(dx, dy, dz, 0);
 
   // should resolve to super_.addForce
   this.addForce(force);

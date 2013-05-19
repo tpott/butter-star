@@ -39,6 +39,8 @@ WorldState.prototype.removePlayer = function(id) {
  */
 WorldState.prototype.updateWorldState = function(world){
 	//console.log('updating world state');
+  // TODO stuff will change cuz 'world' (what's received from the server
+  // isn't consistent
   var players = world.players;
   var critters = world.critters;
 	for (var i = 0; i < players.length; i++) {
