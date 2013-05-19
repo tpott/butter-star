@@ -223,7 +223,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			state : this.world.collidables[id].state
 		};
 		world.new.push(colObj);
-    console.log('tryna send an obj');
 	}
 
 	// nothing new, so no point in sending it
@@ -279,12 +278,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
 	var updateMessage = JSON.stringify(world);
  
-  console.log('Ima send a message');
 	// SEND THE WORLD INFO
 	for (var id in this.sockets) {
 		// new players dont need their first game tick
-		if (this.newCollidables.indexOf(id) >= 0) 
+		if (this.newCollidables.indexOf(id) >= 0) {
 			continue;
+    }
 
 		// TODO if socket is already closed and not removed yet
 		this.sockets[id].send(updateMessage);
