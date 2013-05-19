@@ -130,7 +130,7 @@ var attempts = 0, attemptsNeeded = 3;
 function attemptStart() {
 	attempts++;
 	if (attempts == attemptsNeeded) {
-		console.log("Enough attempts, time to play!");
+		console.log("Enough loading, time to play!");
 		main();
 	}
 }

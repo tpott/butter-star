@@ -32,6 +32,14 @@ var Player = function(playerObj) {
 	 this.state = playerObj.state;
 	 this.model = playerObj.model;
 
+	 // defined in client/objects/worldstate.js
+	 this.type = 2; 
+
+	 this.mesh = models.player[this.model];
+    //this.mesh = new THREE.Mesh(models.player[this.model].geometry,
+	//		 models.players[this.model].material);
+	  scene.add(this.mesh);
+
 	 // TODO remove 
 	this.vacuum = null;
 	this.vacTrans = new THREE.Vector3(0,0,0);
