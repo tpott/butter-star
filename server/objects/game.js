@@ -32,11 +32,6 @@ function Game() {
 	//setTimeout(gameTick(this), 1000 / this.ticks);
 	//this.world.addCritter(10);
 
-	this.newCollidables = [];
-	this.setCollidables = [];
-	this.delCollidables = [];
-	this.miscellaneous = [];
-
 	this.keyboardHandler = new Keyboard.Handler();
 
 	var self = this;
@@ -83,7 +78,7 @@ function Game() {
  */
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
-  this.world.addPlayer(socket.player);
+  this.world.addPlayer(socket.player); // Also adds player ID to new collidables
 
   var initObj = {
 	  id : socket.id,
@@ -108,9 +103,6 @@ Game.prototype.addSocket = function(socket) {
 	var initMessage = JSON.stringify(initObj);
 	this.sockets[socket.id].send(initMessage);
 
-
-  this.newCollidables.push(socket.id);
-
 	return socket.id;
 }
 
@@ -120,9 +112,7 @@ Game.prototype.addSocket = function(socket) {
  * @return {boolean} True if successfully removes, false otherwise.
  */
 Game.prototype.removeSocket = function(socket) {
-  this.world.removePlayer(socket.player);
-
-  this.delCollidables.push(socket.id);
+  this.world.removePlayer(socket.player); // Also adds player ID to delete list
 
 	if (delete this.sockets[socket.id]) {
 		return true;
@@ -176,7 +166,7 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
     var obj = JSON.parse(anything);
     if (isEvent(obj)) {
 		 // TODO don't push if the id is already in the list
-		 this.setCollidables.push(socket.id);
+		 this.world.setCollidables.push(socket.id);
         player.direction = obj.angle;
 		player.isVacuum = obj.isVacuum;
         player.vacAngleY = obj.vacAngleY;
@@ -210,10 +200,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		misc : []
 	};
 
-	// TODO clean this up... we already have a toObj() method with
-	// some info. We could override it in the Player class.
-	for (var i = 0; i < this.newCollidables.length; i++) {
-		var id = this.newCollidables[i];
+  var newCollidables = this.world.newCollidables;
+	for (var i = 0; i < newCollidables.length; i++) {
+		var id = newCollidables[i];
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
@@ -232,8 +221,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	}
 
 	// things that have been moved
-	for (var i = 0; i < this.setCollidables.length; i++) {
-		var id = this.setCollidables[i];
+  var setCollidables = this.world.setCollidables;
+	for (var i = 0; i < setCollidables.length; i++) {
+		var id = setCollidables[i];
 		var colObj = {
 			id : id,
 			position : this.world.collidables[id].position,
@@ -249,8 +239,10 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		updates--;
 	}
 
-	for (var i = 0; i < this.delCollidables.length; i++) {
-		var id = this.delCollidables[i];
+  // things to get deleted
+  var delCollidables = this.world.delCollidables;
+	for (var i = 0; i < delCollidables.length; i++) {
+		var id = delCollidables[i];
 		var colObj = {
 			id : id,
 		};
@@ -263,7 +255,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		updates--;
 	}
 
-	world.misc = this.miscellaneous;
+  // TODO ?? this is a list of IDs only lol
+	world.misc = this.world.miscellaneous;
 	
 	// nothing deleted, so no point in sending deletions
 	if (world.misc.length == 0) {
@@ -281,7 +274,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	// SEND THE WORLD INFO
 	for (var id in this.sockets) {
 		// new players dont need their first game tick
-		if (this.newCollidables.indexOf(id) >= 0) {
+		if (newCollidables.indexOf(id) >= 0) {
 			continue;
     }
 
@@ -290,10 +283,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	}
 
 	// reset since this is the end of a tick
-	this.newCollidables = [];
-	this.setCollidables = [];
-	this.delCollidables = [];
-	this.miscellaneous = [];
+  this.world.resetUpdateStateLists();
 }
 
 
