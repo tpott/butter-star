@@ -38,7 +38,7 @@ var scripts = [
 
 var models = {
 	player : [null, null],
-	critters : [],
+	critters : [null],
 	environment : [null, null],
 	food : []
 };
@@ -49,7 +49,8 @@ var modelFiles = {
 		['Default player', 'boy.obj', 'boy.mtl', 0.04]
 		//['Yixin Cube', '', '', 1.]
 	],
-	critters : [],
+  // TODO get bunny models...
+	critters : ['Default critter', 'boo.obj', 'boo.mtl', 0.08],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
 		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
@@ -126,7 +127,7 @@ function loadModels() {
 /**
  * Guarantees all models and scripts are loaded before starting main
  */
-var attempts = 0, attemptsNeeded = 3;
+var attempts = 0, attemptsNeeded = 4;
 function attemptStart() {
 	attempts++;
 	if (attempts == attemptsNeeded) {

@@ -18,11 +18,15 @@ var types = {
 	FOOD : 5
 };
 
+/**
+ * Constructor for the world instance.
+ * @constructor
+ */
 var WorldState = function() {
-    this.players = {};
-    this.critters = {};
-	 this.environments = {};
-	 this.food = {};
+  this.players = {};
+  this.critters = {};
+  this.environments = {};
+  this.food = {};
 }
 
 /**
@@ -66,7 +70,7 @@ WorldState.prototype.addPlayer = function(p) {
 }
 
 WorldState.prototype.addCritter = function(critter) {
-  var crit = new Critter();
+  var crit = new Critter(critter);
   this.critters[crit.id] = crit;
 
   scene.add(crit.mesh);
@@ -126,4 +130,3 @@ WorldState.prototype.updateWorldState = function(newStates){
 	}
 
 }
-

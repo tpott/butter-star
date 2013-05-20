@@ -29,7 +29,7 @@ var Player = function(playerObj) {
 	 this.model = playerObj.model;
 
 	 // defined in client/objects/worldstate.js
-	 this.type = 2; 
+	 this.type = types.PLAYER; 
 
 	 this.mesh = models.player[this.model];
     //this.mesh = new THREE.Mesh(models.player[this.model].geometry,

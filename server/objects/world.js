@@ -24,10 +24,12 @@ function World() {
   this.enviroObjs = {};
   this.players = {};
   this.critters = {};
+  this.food = {};
 
   /* @note We need these counters because the hashes don't have lengths */
 	this.nplayers = 0;
 	this.ncritters = 0;
+  this.nfood = 0;
 
   // Lists of IDs of objects that had state changes
   this.newCollidables = [];
