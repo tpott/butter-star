@@ -282,7 +282,7 @@ function main() {
 	optionMenu = new OptionMenu();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.up = new THREE.Vector3(0,0,1);
+	camera.up = new THREE.Vector3(0,1,0);
 
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 

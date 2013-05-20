@@ -31,9 +31,9 @@ var Player = function(playerObj) {
 	 // defined in client/objects/worldstate.js
 	 this.type = types.PLAYER; 
 
-	 this.mesh = models.player[this.model];
-    //this.mesh = new THREE.Mesh(models.player[this.model].geometry,
-	//		 models.players[this.model].material);
+	 // copy the mesh
+	 var mesh = models.player[this.model];
+    this.mesh = new THREE.Mesh(mesh.geometry, mesh.material);
 
 	 // TODO remove 
 	this.vacuum = null;

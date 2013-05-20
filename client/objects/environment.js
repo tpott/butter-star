@@ -17,8 +17,9 @@ function Environment(jsonEnv) {
   // defined in client/objects/worldstate.js
   this.type = types.ENVIRONMENT;
 
-  this.mesh = models.environment[this.model]; // TODO nothing in model.critters atm
-  // Don't add to scene in constructor. Called in WorldState's addPlayer().
+	var mesh = models.environment[this.model];
+	this.mesh = new THREE.Mesh(mesh.geometry, mesh.material);
 
+  // Don't add to scene in constructor. Called in WorldState's addPlayer().
 }
 
