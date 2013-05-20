@@ -120,8 +120,8 @@ WorldState.prototype.updateWorldState = function(newStates){
 		var update = newStates[i],
 			id = update.id;
 		if (update.id in this.players) {
-			this.players[id].position = update.position;
-			this.players[id].orientation = update.orientation;
+			this.players[id].position.copy(update.position);
+			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
 
 			// TODO ugly
