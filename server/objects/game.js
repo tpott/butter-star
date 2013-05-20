@@ -43,34 +43,6 @@ function Game() {
 	setTimeout(serverTick, 1000 / self.ticks);
 }
 
-
-/**
- * Send an update of all object locations to all the clients
- */
-// TODO link with game logic
-/*Game.prototype.sendUpdate = function() {
-	// create info about every players location and orientation
-	var allPlayers = [];
-	for (var id in this.players) {
-		var player = {};
-		player.id = id;
-		player.type = 'player';
-		player.position = this.players[id].position;
-		//player.direction = this.players[id].direction;
-		player.vacTrans = this.players[id].vacTrans;
-		player.orientation = this.players[id].orientation;
-		allPlayers.push(player);
-	}
-	
-	// TODO spectators
-	// send the data to each of the players + spectators
-	for (var id in this.players) {
-		// TODO HIGH HIGHER
-		// TODO if socket is already closed and not removed yet
-		this.players[id].socket.send(JSON.stringify(allPlayers));
-	}
-}*/
-
 /**
  * Add a socket to this game.
  * @param {Socket} socket The new socket connecting to this game.
@@ -85,7 +57,6 @@ Game.prototype.addSocket = function(socket) {
 	  world : []
   };
 
-  // TODO send init message to socket
 	for (var id in this.world.collidables) {
 		var colObj = {
 			id : id,
@@ -123,7 +94,9 @@ Game.prototype.removeSocket = function(socket) {
 
 /**
  * Parses the keypresses using the keyboard handler. If unable to 
- * parse the keypress, then it returns null.
+ * parse the keypress, then it returns null. The return value of this
+ * function eventually gets passed into eventBasedUpdate (below).
+ * Both are called in server/net/simpleWS.js
  */
 Game.prototype.parseInput = function(player, anything) {
 	// obj should be a non-empty array
@@ -147,37 +120,18 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 	if (evt == null) {
 		return;
 	}
-	else if (Keyboard.isMoveEvent(evt)) {
-		player.move(evt);
+	else if (evt.isMoveEvent()) {
+		player.move(evt.name);
 	}
-	else if (Keyboard['TOGGLE_VACCUM'] == Keyboard[evt]) {
+	else if (evt.isToggleVacuum()) {
 		player.toggleVacuum();
 	}
-	else if (evt instanceof Array) { // mouse movement
-		player.rotate(evt);
+	else if (evt.isRotateEvent()) { // mouse movement
+		player.rotate(evt.data);
 	}
 	else {
-		console.log("Game '%s' unable to process event '%s'", this.id, evt);
+		//console.log("Game '%s' unable to process event '%s'", this.id, evt);
 	}
-	
-/*Game.prototype.eventBasedUpdate = function(socket, anything) {
-    var player = socket.player;
-
-    var obj = JSON.parse(anything);
-    if (isEvent(obj)) {
-		 // TODO don't push if the id is already in the list
-		 this.world.setCollidables.push(socket.id);
-        player.direction = obj.angle;
-		player.isVacuum = obj.isVacuum;
-        player.vacAngleY = obj.vacAngleY;
-        if(obj.moving) {
-            player.move(obj, this.world.collidables);
-        }
-        player.updateVacuum(obj);
-    }
-    else {
-        console.log('Received unknown input: %s', anything);
-    }*/
 }
 
 /**

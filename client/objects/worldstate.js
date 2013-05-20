@@ -120,15 +120,31 @@ WorldState.prototype.getPlayerObject = function(id) {
  */
 WorldState.prototype.updateWorldState = function(newStates){
 	for (var i = 0; i < newStates.length; i++) {
-		var update = newStates[i],
+		var update = newStates[i], 
 			id = update.id;
 		if (update.id in this.players) {
+			// our stuff
 			this.players[id].position.copy(update.position);
 			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
 
-			// TODO ugly
+			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
+			this.players[id].mesh.lookAt(
+					this.players[id].position.clone()
+					.add(this.players[id].orientation));
+		}
+		else if (update.id in this.critters) {
+			this.critters[id].position.copy(update.position);
+			this.critters[id].orientation.copy(update.orientation);
+			this.critters[id].state = update.state;
+
+			// necessary for graphics
+			this.critters[id].mesh.position.copy(update.position);
+			this.critters[id].mesh.lookAt(
+					this.critters[id].position.clone()
+					.add(this.critters[id].orientation));
+
 		}
 	}
 

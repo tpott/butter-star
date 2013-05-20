@@ -12,7 +12,8 @@ var EVENTS = {
 	'MOVE_LEFT' : 2,
 	'MOVE_BACKWARD' : 3,
 	'MOVE_RIGHT' : 4,
-	'TOGGLE_VACCUM' : 5
+	'TOGGLE_VACUUM' : 5,
+	'ROTATE' : 6
 };
 
 // TODO use client settings
@@ -55,6 +56,33 @@ var unusedKeys = {
 	']' : 221,
 };
 
+function Event(name, data) {
+	this.name = name;
+	this.data = data || null;
+
+	var evtEnum = EVENTS[name];
+	this._ismove = evtEnum == EVENTS['MOVE_FORWARD'] ||
+		evtEnum == EVENTS['MOVE_BACKWARD'] || 
+		evtEnum == EVENTS['MOVE_LEFT'] ||
+		evtEnum == EVENTS['MOVE_RIGHT'];
+
+	this._isrotate = evtEnum == EVENTS['ROTATE'];
+
+	this._istogglevacuum = evtEnum == EVENTS['TOGGLE_VACUUM'];
+}
+
+Event.prototype.isMoveEvent = function() {
+	return this._ismove;
+}
+
+Event.prototype.isRotateEvent = function() {
+	return this._isrotate;
+}
+
+Event.prototype.isToggleVacuum = function() {
+	return this._istogglevacuum;
+}
+
 function Handler() {
 }
 
@@ -64,25 +92,25 @@ function Handler() {
 Handler.prototype.parse = function(keyPress) {
 	// keys that the server needs to handle
 	if (keyPress in keymap) {
-		return keymap[keyPress];
+		return new Event(keymap[keyPress]);
 	}
 
 	// keys that only the client needs
 	else if (keyPress in clientOnly) {
-		console.log("'%s' only used in client", keyPress);
+		//console.log("'%s' only used in client", keyPress);
 		return null;
 	}
 
 	// keys the client recognizes but doesnt use
 	else if (keyPress in unusedKeys) {
-		console.log("'%s' is an unused key", keyPress);
+		//console.log("'%s' is an unused key", keyPress);
 		return null;
 	}
 
 	// mouse rotate
 	else if (keyPress instanceof Array) {
 		//console.log("Rotate by %s.", keyPress);
-		return keyPress;
+		return new Event('ROTATE', keyPress);
 	}
 
 	// a completely unrecognized key...
@@ -92,14 +120,13 @@ Handler.prototype.parse = function(keyPress) {
 	}
 }
 
-function isMoveEvent(evtName) {
+/*function isMoveEvent(evtName) {
 	var evtEnum = EVENTS[evtName];
 	return evtEnum == EVENTS['MOVE_FORWARD'] ||
 		evtEnum == EVENTS['MOVE_BACKWARD'] || 
 		evtEnum == EVENTS['MOVE_LEFT'] ||
 		evtEnum == EVENTS['MOVE_RIGHT'];
-}
+}*/
 
 module.exports = EVENTS;
-module.exports.isMoveEvent = isMoveEvent;
 module.exports.Handler = Handler;
