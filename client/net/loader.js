@@ -13,8 +13,8 @@ var scripts = [
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
 	"jquery.js",
 
-	// objects (+ models?) - TODO trevor, include models in objects
-	"player.js", "worldstate.js", "critter.js",
+	// objects 
+	"player.js", "worldstate.js", "critter.js", "environment.js",
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
@@ -50,12 +50,15 @@ var modelFiles = {
 		//['Yixin Cube', '', '', 1.]
 	],
   // TODO get bunny models...
-	critters : ['Default critter', 'boo.obj', 'boo.mtl', 0.08],
+	critters : [
+		['Default critter', 'boo.obj', 'boo.mtl', 0.08]
+	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
 		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
-	food : []
+	food : [
+	]
 };
 
 /**

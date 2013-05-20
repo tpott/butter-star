@@ -35,8 +35,7 @@ var WorldState = function() {
  */
 WorldState.prototype.addObjects = function(objArr) {
 	for (var i = 0; i < objArr.length; i++) {
-		var obj = objArr[i];
-		this.add(obj);
+		this.add(objArr[i]);
 	}
 }
 
@@ -81,6 +80,10 @@ WorldState.prototype.addCritter = function(critter) {
 }
 
 WorldState.prototype.addEnvironment = function(env) {
+	var enviro = new Environment(env);
+	this.environments[env.id] = enviro;
+
+	scene.add(enviro.mesh);
 }
 
 WorldState.prototype.addFood = function(food) {
