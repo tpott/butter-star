@@ -78,19 +78,32 @@ Player.prototype.move = function(evt) {
 	// MAGIC NUMBER
 	var speed = 0.125;
 
-	var direction = 0;
+	// TODO not use y-axis as up? 
+	// an Up vector in OUR world
+	var up = new THREE.Vector4(0, 1, 0, 0);
+
+	// up becomes the orientation projected upwards
+	up.multiplyScalar(up.dot(this.orientation));
+
+	// projected is the orientation projected onto the x-z (horizontal) plane
+	var projected = this.orientation.clone().sub(up);
+
+	// divide by length for normalization
+	// acos returns radians, but Math.sin and cos take degrees... 
+	var direction = 180 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) /
+			projected.length()) / Math.PI;;
 	
 	if (Events[evt] == Events['MOVE_FORWARD']) {
-		direction = 0;
+		direction += 0;
 	}
 	else if (Events[evt] == Events['MOVE_BACKWARD']) {
-		direction = 180;
+		direction += 180;
 	}
 	else if (Events[evt] == Events['MOVE_LEFT']) {
-		direction = 90;
+		direction += 90;
 	}
 	else if (Events[evt] == Events['MOVE_RIGHT']) {
-		direction = 270;
+		direction += 270;
 	}
 	else {
 		console.log("Event '%s' is not a player move event", evt);
@@ -123,9 +136,9 @@ Player.prototype.rotate = function(mouse) {
 
 	// the Y-axis is the "up" in our game
 	var rotationX = new THREE.Matrix4().makeRotationY(mouse[0] * speed);
-	//var rotationY = new THREE.Matrix4().makeRotationZ(mouse[1] * speed);
-	//var rot = rotationX.multiply(rotationY);
-	var rot = rotationX;
+	var rotationY = new THREE.Matrix4().makeRotationZ(mouse[1] * speed);
+	var rot = rotationX.multiply(rotationY);
+	//var rot = rotationX;
 
 	//this.orientation = rot.multiply(this.orientation);
 	this.orientation.applyMatrix4(rot);

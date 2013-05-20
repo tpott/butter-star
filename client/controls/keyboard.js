@@ -115,7 +115,7 @@ function keyDown(e) {
 		case 221:
 			// if the key is not already pressed
 			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
-				console.log("'%s' down.", codemap[e.keyCode]);
+				//console.log("'%s' down.", codemap[e.keyCode]);
 				keyPresses.push(codemap[e.keyCode]);
 			}
 			break;
@@ -126,7 +126,7 @@ function keyDown(e) {
 }
 
 function keyUp(e) {
-	console.log("'%s' up.", codemap[e.keyCode]);
+	//console.log("'%s' up.", codemap[e.keyCode]);
 	// TODO is this right?
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
 		keyPresses.pop(codemap[e.keyCode]);

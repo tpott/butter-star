@@ -149,9 +149,8 @@ WorldState.prototype.updateWorldState = function(newStates){
 
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
-			this.players[id].mesh.lookAt(
-					this.players[id].position.clone()
-					.add(this.players[id].orientation));
+			this.players[id].mesh.lookAt( forwards(this.players[id].position,
+						this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {
 			this.critters[id].position.copy(update.position);
@@ -160,11 +159,27 @@ WorldState.prototype.updateWorldState = function(newStates){
 
 			// necessary for graphics
 			this.critters[id].mesh.position.copy(update.position);
-			this.critters[id].mesh.lookAt(
-					this.critters[id].position.clone()
-					.add(this.critters[id].orientation));
+			this.critters[id].mesh.lookAt( forwards(this.critters[id].position,
+						this.critters[id].orientation) );
 
 		}
 	}
 
+}
+
+/**
+ * Returns a point that is projected onto the x-z (horizontal) axis
+ * in the direction specified by orientation
+ */
+function forwards(position, orientation) {
+	var up = new THREE.Vector4(0, 1, 0, 0);
+
+	// up becomes the orientation projected upwards
+	up.multiplyScalar(up.dot(orientation));
+
+	// projected is the orientation projected onto the x-z (horizontal) plane
+	var projected = orientation.clone().sub(up);
+
+	// returns a point that is in front of you
+	return projected.add(position);
 }
