@@ -128,7 +128,7 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].state = update.state;
 
 			// TODO ugly
-			this.players[id].mesh.position = update.position;
+			this.players[id].mesh.position.copy(update.position);
 		}
 	}
 

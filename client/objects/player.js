@@ -31,9 +31,11 @@ var Player = function(playerObj) {
 	 // defined in client/objects/worldstate.js
 	 this.type = types.PLAYER; 
 
-	 // copy the mesh
-	 var mesh = models.player[this.model];
-    this.mesh = new THREE.Mesh(mesh.geometry, mesh.material);
+	 // defined in client/net/loader.js
+	 this.mesh = models.player[this.model].clone();
+
+	 // ?
+	 this.mesh.position = this.position;
 
 	 // TODO remove 
 	this.vacuum = null;

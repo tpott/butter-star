@@ -15,8 +15,7 @@ var Critter = function(critterObj) {
 
   this.type = types.CRITTER;
 
-	var mesh = models.critter[this.model];
-	this.mesh = new THREE.Mesh(mesh.geometry, mesh.material);
+	this.mesh = models.critter[this.model].clone();
 
   // Don't add to scene in constructor. Called in WorldState's addPlayer().
 };
