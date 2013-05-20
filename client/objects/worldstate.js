@@ -92,21 +92,40 @@ WorldState.prototype.addFood = function(food) {
 /**
  * generic REMOVE function, determines type and then calls specific remove
  */
-WorldState.prototype.remove = function(object) {
+WorldState.prototype.remove = function(id) {
+	if (id in this.players) {
+		this.removePlayer(id);
+	}
+	else if (id in this.critters) {
+		this.removeCritter(id);
+	}
+	else if (id in this.critters) {
+		this.removeEnvironment(id);
+	}
+	else if (id in this.critters) {
+		this.removeFood(id);
+	}
+	else {
+		console.log("Client unrecognized id: %s", id);
+	}
 }
 
-WorldState.prototype.removePlayer = function(p) {
+WorldState.prototype.removePlayer = function(id) {
 	scene.remove(this.players[id].mesh);
 	delete this.players[id];
 }
 
-WorldState.prototype.removeCritter = function(critter) {
+WorldState.prototype.removeCritter = function(id) {
+	scene.remove(this.critters[id].mesh);
+	delete this.critters[id];
 }
 
-WorldState.prototype.removeEnvironment = function(env) {
+WorldState.prototype.removeEnvironment = function(id) {
+	scene.remove(this.environment[id].mesh);
+	delete this.environment[id];
 }
 
-WorldState.prototype.removeFood = function(food) {
+WorldState.prototype.removeFood = function(id) {
 }
 
 // TODO remove this function? 

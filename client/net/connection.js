@@ -36,6 +36,7 @@ function Connection(ip, port, gameid, player, world) {
 				  //console.log("keyPresses is empty");
 			  }
 			  else {
+				  // client side networking happens HERE. BOOM
 				  var allData = keyPresses.slice(0); // aka clone
 				  if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
 					  allData.push(mouseMovement);
@@ -89,31 +90,21 @@ Connection.prototype._onmessage = function(buf) {
 	if ('del' in world) {
 		var deleteIds = world.del;
 		for (var i = 0; i < deleteIds.length; i++) {
-			// TODO define generic remove
-			//this.myWorldState.remove(deleteIds[i]);
+			myWorldState.remove(deleteIds[i].id);
 		}
 	}
 	if ('new' in world) {
 		// world.new should be the same as what is received in the initial
 		//  message.world
 		myWorldState.addObjects(world.new);
-    /*for(var i = 0; i < world.new.length; i++) {
-      var newObj = world.new[i];
-      if(newObj.type == types.PLAYER) {
-        myWorldState.addPlayer(newObj);
-      }
-    }*/
 	}
 	if ('set' in world) {
 		// passes in an array of updated info
 		myWorldState.updateWorldState(world.set);
 	}
-	/*if ('remove' in state) {
-		myWorldState.removePlayer(state['remove']);
-	}*/
+	if ('misc' in world) {
+		// TODO
+	}
 
-//	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-//	this.myPlayer.position = tempPlayer.mesh.position;
-//	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
