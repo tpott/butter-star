@@ -151,7 +151,7 @@ Game.prototype.gameTickBasedUpdate = function() {
  */
 Game.prototype.sendUpdatesToAllClients = function() {
 	var updates = 4; // new, set, del, misc
-	var world = {
+	var worldUpdate = {
 		new : [],
 		set : [],
 		del : [],
@@ -169,12 +169,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		world.new.push(colObj);
+		worldUpdate.new.push(colObj);
 	}
 
 	// nothing new, so no point in sending it
-	if (world.new.length == 0) {
-		delete world.new;
+	if (worldUpdate.new.length == 0) {
+		delete worldUpdate.new;
 		updates--;
 	}
 
@@ -188,12 +188,15 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		world.set.push(colObj);
+		worldUpdate.set.push(colObj);
+
+		// at the end of the tick reset this
+		this.world.collidables[id].moved = false;
 	}
 
 	// nothing moved, so no point in sending moves
-	if (world.set.length == 0) {
-		delete world.set;
+	if (worldUpdate.set.length == 0) {
+		delete worldUpdate.set;
 		updates--;
 	}
 
@@ -204,21 +207,21 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var colObj = {
 			id : id,
 		};
-		world.del.push(colObj);
+		worldUpdate.del.push(colObj);
 	}
 
 	// nothing deleted, so no point in sending deletions
-	if (world.del.length == 0) {
-		delete world.del;
+	if (worldUpdate.del.length == 0) {
+		delete worldUpdate.del;
 		updates--;
 	}
 
   // TODO ?? this is a list of IDs only lol
-	world.misc = this.world.miscellaneous;
+	worldUpdate.misc = this.world.miscellaneous;
 	
 	// nothing deleted, so no point in sending deletions
-	if (world.misc.length == 0) {
-		delete world.misc;
+	if (worldUpdate.misc.length == 0) {
+		delete worldUpdate.misc;
 		updates--;
 	}
 
@@ -227,7 +230,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		return;
 	}
 
-	var updateMessage = JSON.stringify(world);
+	var updateMessage = JSON.stringify(worldUpdate);
  
 	// SEND THE WORLD INFO
 	for (var id in this.sockets) {

@@ -153,9 +153,9 @@ World.prototype.applyForces = function() {
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position
-		var moved = this.players[id].applyForces(this.collidables);
+		this.players[id].applyForces(this.collidables);
 
-    if (moved === true) {
+    if (this.players[id].moved) {
       this.setCollidables.push(id);
     }
 	}

@@ -142,6 +142,9 @@ Player.prototype.rotate = function(mouse) {
 
 	//this.orientation = rot.multiply(this.orientation);
 	this.orientation.applyMatrix4(rot);
+
+	// necessary for graphics to be updated
+	this.moved = true;
 };
 
 /**

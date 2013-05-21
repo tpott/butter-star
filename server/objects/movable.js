@@ -34,6 +34,9 @@ function Movable() {
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
   this.mass = 1.0;
+
+  // used to optimize networking
+  this.moved = false;
 };
 util.inherits(Movable, Collidable);
 
@@ -260,10 +263,8 @@ Movable.prototype.applyForces = function(collidables) {
 	}
 
   // Check if movable changed positions
-  if (originalPosition.equals(this.position)) {
-    return false;
-  } else {
-    return true;
+  if (! originalPosition.equals(this.position)) {
+	  this.moved = true;
   }
 };
 
