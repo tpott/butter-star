@@ -229,10 +229,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
  * @return {boolean} True if moved, false otherwise.
  */
 Movable.prototype.applyForces = function(collidables) {
-  var originalPosition = {x: this.position.x,
-      y: this.position.y,
-      x: this.position.zi
-  };
+  var originalPosition = this.position.clone();
 
 	// Force = mass * acceleration 
 	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
@@ -263,10 +260,7 @@ Movable.prototype.applyForces = function(collidables) {
 	}
 
   // Check if movable changed positions
-  // TODO check if just using .equals() would mess up
-  if (originalPosition.x == this.position.x &&
-      originalPosition.y == this.position.y &&
-      originalPosition.z == this.position.z) {
+  if (originalPosition.equals(this.position)) {
     return false;
   } else {
     return true;
