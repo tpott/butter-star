@@ -129,6 +129,8 @@ Player.prototype.toggleVacuum = function() {
 
 /**
  * rotates the player based off the mouse movement
+ * mouse[0] is delta X mouse coords
+ * mouse[1] is delta Y mouse coords
  */
 Player.prototype.rotate = function(mouse) {
 	// TODO client config
@@ -136,7 +138,7 @@ Player.prototype.rotate = function(mouse) {
 
 	// the Y-axis is the "up" in our game
 	var rotationX = new THREE.Matrix4().makeRotationY(mouse[0] * speed);
-	var rotationY = new THREE.Matrix4().makeRotationZ(mouse[1] * speed);
+	var rotationY = new THREE.Matrix4().makeRotationX(mouse[1] * speed);
 	var rot = rotationX.multiply(rotationY);
 	//var rot = rotationX;
 

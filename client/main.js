@@ -29,8 +29,10 @@ document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
+// GUI stuff
 var minimap = null;
 var optionMenu = null;
+var notifyBar = null;
 
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -281,6 +283,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+	notifyBar = new Notify();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.up = new THREE.Vector3(0,1,0);

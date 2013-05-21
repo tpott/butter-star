@@ -104,6 +104,11 @@ Connection.prototype._onmessage = function(buf) {
 	}
 	if ('misc' in world) {
 		// TODO
+		for (var i = 0; i < world.misc.length; i++) {
+			if ('mess' in world.misc[i]) {
+				notifyBar.addMessage(world.misc[i].mess);
+			}
+		}
 	}
 
 };

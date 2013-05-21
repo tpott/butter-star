@@ -32,10 +32,12 @@ function Game() {
 	
 	//this.world.addCritter(10);
 
+	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
-	this.handler = new Handler();
+	this.handler = new Handler(this.world);
 
 	// game logic
+	// TODO move to server/logic/gameEventsHandler
 	this.status = "Not yet started";
 	this.round = 0;
 
