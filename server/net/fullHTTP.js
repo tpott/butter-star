@@ -252,7 +252,7 @@ Server.prototype.initFiles = function(config) {
 }
 
 Server.prototype.newGame = function() {
-	var g = new Game();
+	var g = new Game(this);
 	this.games[g.id] = g;
 	this.ngames++;
 	return g.id;
