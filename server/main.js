@@ -31,6 +31,11 @@ module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;
 */
 
+// javascript hack
+/*Object.prototype.keys = function() {
+	return Object.keys(this);
+}*/
+
 // needed for the shell
 global.games = httpServer.games;
 var startShell = require('./shell.js');

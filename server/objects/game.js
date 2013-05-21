@@ -29,8 +29,7 @@ function Game() {
 	this.sockets = {};
 	this.world = new World();
 	
-	//setTimeout(gameTick(this), 1000 / this.ticks);
-	//this.world.addCritter(10);
+	this.world.spawnCritters(10);
 
 	this.keyboardHandler = new Keyboard.Handler();
 

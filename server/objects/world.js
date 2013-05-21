@@ -11,6 +11,7 @@ var THREE = require('three');
 var ButterOBJLoader = require('./OBJLoader.js');
 var Environment = require('./environment.js');
 var Critter = require('./critter.js');
+var randomPosition = require('./random.js').randomPosition;
 
 /**
  * Construct the game play world.
@@ -78,7 +79,7 @@ World.prototype.addCritter = function(critter) {
   this.ncritters++;
 
   this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
-  return critter.id
+  return critter.id;
 }
 
 /**
@@ -88,15 +89,29 @@ World.prototype.addCritter = function(critter) {
 World.prototype.spawnCritters = function(numCritters) {
   for (var i = 0; i < numCritters; i++) {
     var critter = new Critter();
-    // TODO position needs to be somewhere that isnt occupied
-    critter.position.set(
-        Math.floor(Math.random() * 20 - 10) * 20,
-        Math.floor(Math.random() * 20) * 20 + 10,
-        Math.floor(Math.random() * 20 - 10) * 20,
-        1);
+
+	 var position = randomPosition();
+
+	 // while position is out of the environment or already occupied
+	 while (! this.enviroContains(position) || this.occupied(position)) {
+		 position = randomPosition();
+	 }
+
+	 critter.position.copy(position);
+
+	 console.log("Spawned critter at %d,%d,%d", critter.position.x,
+			 critter.position.y, critter.position.z);
     this.addCritter(critter);
   }
 };
+
+World.prototype.enviroContains = function(pos) {
+	return true;
+}
+
+World.prototype.occupied = function(pos) {
+	return false;
+}
 
 /**
  * Remove a player from the world.
@@ -161,6 +176,18 @@ World.prototype.applyForces = function() {
 	}
 
   // TODO critters
+	for (var id in this.critters) {
+		// add gravity
+		this.critters[id].addGravity(); // each player has individual gravity
+
+		// collision detection should happen in this call
+		// apply forces ==> update velocity + update position
+		this.critters[id].applyForces(this.collidables);
+
+    if (this.critters[id].moved) {
+      this.setCollidables.push(id);
+    }
+	}
   // TODO food
 }
 
