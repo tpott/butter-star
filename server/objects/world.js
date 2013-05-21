@@ -1,4 +1,5 @@
-/** * @fileoverview Creates the representation of the world and the elements
+/**
+ * @fileoverview Creates the representation of the world and the elements
  * that belong to it. Handles worldwide forces such as gravity.
  * @author Rohan Halliyal
  * @author Jennifer Fang
@@ -6,6 +7,10 @@
 
 // Get external functions
 var THREE = require('three');
+
+var ButterOBJLoader = require('./OBJLoader.js');
+var Environment = require('./environment.js');
+var Critter = require('./critter.js');
 
 /**
  * Construct the game play world.
@@ -16,32 +21,33 @@ function World() {
   this.collidables = {};
 
   // Lists of objects that are in the world
-  this.envrionmentObjs = {}; // TODO food should not be here later
-	this.players = {};
+  this.enviroObjs = {};
+  this.players = {};
   this.critters = {};
+  this.food = {};
 
   /* @note We need these counters because the hashes don't have lengths */
 	this.nplayers = 0;
 	this.ncritters = 0;
-  // TODO food, collidables, etc?
+  this.nfood = 0;
+
+  // Lists of IDs of objects that had state changes
+  this.newCollidables = [];
+  this.setCollidables = [];
+  this.delCollidables = [];
+  this.miscellaneous = [];
 
   // Make world environment
-  this.floor = this.createFloor_();
+  this.createRoom_();
 }
 
 /* ENVIRONMENT CREATION FUNCTIONS */
 
-/**
- * Create the floor of the world.
- * @return {THREE.Mesh} The mesh representing the floor of the world.
- * @private
- */
-World.prototype.createFloor_ = function() {
-  var geometry = new THREE.PlaneGeometry(2000,2000,1,1);
-  geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
-  geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -10, 0));
-  var material = new THREE.MeshBasicMaterial();
-  return new THREE.Mesh(geometry, material);
+World.prototype.createRoom_ = function() {
+	var env = new Environment();
+
+   this.collidables[env.id] = env;
+   this.enviroObjs[env.id] = env;
 };
 
 
@@ -57,8 +63,40 @@ World.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
 	this.nplayers++;
 
+  this.newCollidables.push(player.id);
 	return player.id;
 }
+
+/**
+ * Add a critter to the world.
+ * @param {Critter} critter The new critter to add to the world.
+ * @return {string} The critter ID.
+ */
+World.prototype.addCritter = function(critter) {
+  this.collidables[critter.id] = critter;
+  this.critters[critter.id] = critter;
+  this.ncritters++;
+
+  this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
+  return critter.id
+}
+
+/**
+ * Spawns a given number of critters at random, unoccupied locations.
+ * @param {int} numCritters The number of critters to spawn.
+ */
+World.prototype.spawnCritters = function(numCritters) {
+  for (var i = 0; i < numCritters; i++) {
+    var critter = new Critter();
+    // TODO position needs to be somewhere that isnt occupied
+    critter.position.set(
+        Math.floor(Math.random() * 20 - 10) * 20,
+        Math.floor(Math.random() * 20) * 20 + 10,
+        Math.floor(Math.random() * 20 - 10) * 20,
+        1);
+    this.addCritter(critter);
+  }
+};
 
 /**
  * Remove a player from the world.
@@ -66,17 +104,9 @@ World.prototype.addPlayer = function(player) {
  * @return {boolean} True if successfully removes, false otherwise.
  */
 World.prototype.removePlayer = function(player) {
-	var removedPlayer = {'remove': player.id};
-	for (var id in this.players) {
-		  if (id == player.id) {
-			  continue;
-		  }
-      // TODO make event emitter to tell game to update the socket
-		  this.players[id].socket.send(JSON.stringify(removedPlayer));
-	}
-
-  delete this.collidables[player.id];
-	if (delete this.players[player.id]) {
+  this.delCollidables.push(player.id);
+  if (delete this.collidables[player.id] &&
+	    delete this.players[player.id]) {
 		this.nplayers--;
 		return true;
 	} else {
@@ -84,69 +114,54 @@ World.prototype.removePlayer = function(player) {
 	}
 }
 
+/**
+ * Remove a critter from the world.
+ * @param {Critter} critter The critter to remove from the world.
+ * @return {boolean} True if successfully removes, false otherwise.
+ */
+World.prototype.removeCritter = function(critter) {
+  this.delCollidables.push(critter.id);
+  if (delete this.collidables[critter.id] &&
+      delete this.critters[critter.id]) {
+    this.ncritters--;
+    return true;
+  } else {
+    return false;
+  }
+};
+
+/**
+ * Reset the update state lists.
+ */
+World.prototype.resetUpdateStateLists = function() {
+  this.newCollidables = [];
+  this.setCollidables = [];
+  this.delCollidables = [];
+  this.miscellaneous = [];
+};
+
 
 /* WORLD MUTATOR FUNCTIONS */
 
 /**
- * Apply gravity to all the objects in the world.
+ * Apply forces to all objects that should be applied at the end of every game tick.
  */
-World.prototype.applyGravityToAllObjects = function() {
-    /*for (var id in this.players) {
-        this.applyGravity(this.players[id]);
-    }
-
-    for (var id in this.critters) {
-        this.applyGravity(this.critters[id]);
-    }*/
-
-    // TODO apply to food
-}
-
-/**
- * Apply gravity to the given object.
- * @param {Collidable} obj Object to apply gravity to.
- */
-World.prototype.applyGravity = function(obj) {
-  // Create raycaster in direction gravity points
-  var raycaster = new THREE.Raycaster();
-  raycaster.ray.direction.set(0, -1, 0);
-  raycaster.ray.origin.set(obj.position.x, obj.position.y, obj.position.z);
-
-  // Check for collision against the ground
-  var isOnGround = false;
-  var intersections = raycaster.intersectObjects([this.floor]);
-  if (intersections.length > 0) {
-    var distance = intersections[0].distance;
-    if(distance > 0 && distance <= 1) {
-      isOnGround = true;
-    }
-  }
-
-  // Handle movement in response to gravity
-  if(isOnGround === true) {
-    // TODO fix later for objs of diff heights
-  } else {
-    obj.translate_(0, -1, 0);
-  }
-
-  // Update mesh position for other objects to collide with
-  obj.mesh.matrixWorld.makeTranslation(
-    obj.position.x, 
-    obj.position.y, 
-    obj.position.z
-  );
-  this.collidables[obj.id] = obj.mesh;
-};
-
 World.prototype.applyForces = function() {
 	for (var id in this.players) {
 		// add gravity
-		//this.players[id].addForce(this.gravity);
+		this.players[id].addGravity(); // each player has individual gravity
 
 		// collision detection should happen in this call
 		// apply forces ==> update velocity + update position
-		this.players[id].applyForces();                                           
+		var moved = this.players[id].applyForces(this.collidables);
+
+    if (moved === true) {
+      this.setCollidables.push(id);
+    }
 	}
+
+  // TODO critters
+  // TODO food
 }
 
 module.exports = World;

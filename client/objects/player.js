@@ -1,30 +1,60 @@
-var Player = function() {
-    this.id = null;
-    var geometry = new THREE.CubeGeometry(1,3,1); 
-    var material = new THREE.MeshBasicMaterial({color: 0xffffff, map: THREE.ImageUtils.loadTexture("player.png")});
+/**
+ * client/object/player.js 
+ *
+ * NOT SERVERSIDE
+ * @author Trevor
+ */
 
-    this.mesh = new THREE.Mesh(geometry, material);
+/**
+ * Player constructor, uses a player "skeleton" object from the server
+ * that specifies which model to be used, initial position, orientation,
+ * and state
+ */
+var Player = function(playerObj) {
+	this.id = playerObj.id;
+
+    this.position = new THREE.Vector4(
+			 playerObj.position.x,
+			 playerObj.position.y,
+			 playerObj.position.z,
+			 playerObj.position.w
+		);
+    this.orientation = new THREE.Vector4(
+			 playerObj.orientation.x,
+			 playerObj.orientation.y,
+			 playerObj.orientation.z,
+			 playerObj.orientation.w
+		);
+	 this.state = playerObj.state;
+	 this.model = playerObj.model;
+
+	 // defined in client/objects/worldstate.js
+	 this.type = types.PLAYER; 
+
+	 // defined in client/net/loader.js
+	 this.mesh = models.player[this.model].clone();
+
+	 // ?
+	 this.mesh.position = this.position;
+
+	 // TODO remove 
 	this.vacuum = null;
-	this.vacTrans = new THREE.Vector3();
-    this.model =
+	this.vacTrans = new THREE.Vector3(0,0,0);
+    this.direction = null;
+    this.isVacuum = false;
+    this.vacAngleY = 0;
+
+	 // TODO maybe remove
+	/*this.model =
     {		
         objects : new THREE.Object3D(),
         motion  : 'stand',
         state   : 'stand'
-    };
-    this.position = 
-    {
-        x : 0,
-        y : 0,
-        z : 0,
-        direction : 0
-    };
-    this.camera =
-    {
-        speed : 300,
-        distance : 5,
-        x : 0,
-        y : 0,
-        z : 0
-    };
+    };*/
+};
+
+Player.prototype.setMesh = function(scene) {
+    this.mesh = new THREE.Mesh(models.player[this.model].geometry,
+			 models.players[this.model].material);
+	  scene.add(this.mesh);
 };

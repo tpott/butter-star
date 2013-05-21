@@ -15,6 +15,7 @@ var THREE = require('three');
 var randomID = require('./random.js');
 var World = require('./world.js');
 var Handler = require('../logic/gameEventsHandler.js');
+var Keyboard = require('../controls/handler.js');
 
 /**
  * Construct a game instance.
@@ -24,53 +25,29 @@ function Game() {
 	// generate a random url
 	this.id = randomID(4);
 
-	// TODO necessary? -Trevor
-	this.world = null;
-	this.gravity = new THREE.Vector4(0, 0, -9.8, 0);
-	this.players = [];
-	this.critters = [];
-	this.collidables = [];
-	this.nplayers = 0;
-	this.ncritters = 0;
-
-	this.handler = new Handler();
-
 	this.ticks = 60; // 60 "ticks" per second!
 
 	this.sockets = {};
 	this.world = new World();
+	
+	//this.world.addCritter(10);
 
-	//setTimeout(gameTick(this), 1000 / this.ticks);
-	setInterval(gameTick(this), 1000 / this.ticks);
+	this.keyboardHandler = new Keyboard.Handler();
+	this.handler = new Handler();
+
+	// game logic
+	this.status = "Not yet started";
+	this.round = 0;
+
+	var self = this;
+	function serverTick() {
+		setTimeout(serverTick, 1000 / self.ticks);
+		self.gameTickBasedUpdate();
+		self.sendUpdatesToAllClients();
+	}
+	setTimeout(serverTick, 1000 / self.ticks);
 
 	this.handler.emit('newgame');
-}
-
-/**
- * Send an update of all object locations to all the clients
- */
-// TODO link with game logic
-Game.prototype.sendUpdate = function() {
-	// create info about every players location and orientation
-	var allPlayers = [];
-	for (var id in this.players) {
-		var player = {};
-		player.id = id;
-		player.type = 'player';
-		player.position = this.players[id].position;
-		/*player.direction = this.players[id].direction;*/
-		player.vacTrans = this.players[id].vacTrans;
-		player.orientation = this.players[id].orientation;
-		allPlayers.push(player);
-	}
-	
-	// TODO spectators
-	// send the data to each of the players + spectators
-	for (var id in this.players) {
-		// TODO HIGH HIGHER
-		// TODO if socket is already closed and not removed yet
-		this.players[id].socket.send(JSON.stringify(allPlayers));
-	}
 }
 
 /**
@@ -80,8 +57,30 @@ Game.prototype.sendUpdate = function() {
  */
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
-  this.world.addPlayer(socket.player);
+  this.world.addPlayer(socket.player); // Also adds player ID to new collidables
   this.handler.emit('newplayer', socket.player.id);
+
+  var initObj = {
+	  id : socket.id,
+	  world : []
+  };
+
+	for (var id in this.world.collidables) {
+		var colObj = {
+			id : id,
+			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		initObj.world.push(colObj);
+	}
+
+	// the client receives this and inits stuff in client/object/worldstate.js
+
+	var initMessage = JSON.stringify(initObj);
+	this.sockets[socket.id].send(initMessage);
 
 	return socket.id;
 }
@@ -92,7 +91,7 @@ Game.prototype.addSocket = function(socket) {
  * @return {boolean} True if successfully removes, false otherwise.
  */
 Game.prototype.removeSocket = function(socket) {
-  this.world.removePlayer(socket.player);
+  this.world.removePlayer(socket.player); // Also adds player ID to delete list
   this.handler.emit('delplayer', socket.player.id);
 
 	if (delete this.sockets[socket.id]) {
@@ -102,29 +101,46 @@ Game.prototype.removeSocket = function(socket) {
 	}
 }
 
-// TODO
-function isEvent(anything) {
-  return true;
-}; 
+/**
+ * Parses the keypresses using the keyboard handler. If unable to 
+ * parse the keypress, then it returns null. The return value of this
+ * function eventually gets passed into eventBasedUpdate (below).
+ * Both are called in server/net/simpleWS.js
+ */
+Game.prototype.parseInput = function(player, anything) {
+	// obj should be a non-empty array
+	var obj = JSON.parse(anything);
+	if (obj instanceof Array) {
+		return obj;
+	}
+	else {
+		console.log("Bad input");
+		return null;
+	}
+}
 
 /**
  * Handles updating a given player for a given event.
- * @param {Socket} socket The socket we are receiving the event from.
- * @param {Event} anything The event we are using to update the player.
+ * @param {Array} clientData represents a key press
  */
-Game.prototype.eventBasedUpdate = function(socket, anything) {
-    var player = socket.player;
+Game.prototype.eventBasedUpdate = function(player, clientData) {
+	var evt = this.keyboardHandler.parse(clientData);
 
-    var obj = JSON.parse(anything);
-    if (isEvent(obj)) {
-        if(obj.moving) {
-            player.move(obj, this.world.collidables);
-        }
-        player.updateVacuum(obj);
-    }
-    else {
-        console.log('Received unknown input: %s', anything);
-    }
+	if (evt == null) {
+		return;
+	}
+	else if (evt.isMoveEvent()) {
+		player.move(evt.name);
+	}
+	else if (evt.isToggleVacuum()) {
+		player.toggleVacuum();
+	}
+	else if (evt.isRotateEvent()) { // mouse movement
+		player.rotate(evt.data);
+	}
+	else {
+		//console.log("Game '%s' unable to process event '%s'", this.id, evt);
+	}
 }
 
 /**
@@ -132,7 +148,6 @@ Game.prototype.eventBasedUpdate = function(socket, anything) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
-	this.world.applyGravityToAllObjects();
 	this.world.applyForces(); 
 }
 
@@ -140,35 +155,100 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-	var allPlayers = [];
+	var updates = 4; // new, set, del, misc
+	var world = {
+		new : [],
+		set : [],
+		del : [],
+		misc : []
+	};
 
-	// TODO clean this up... we already have a toObj() method with
-	// some info. We could override it in the Player class.
-	//console.log(this.sockets);
-	for (var id in this.sockets) {
-   // console.log(id);
-		var player = {};
-		player.id = id;
-		player.type = 'player';
-		player.position = this.sockets[id].player.position;
-		player.direction = this.sockets[id].player.direction;
-		player.vacTrans = this.sockets[id].player.vacTrans;
-		allPlayers.push(player);
+  var newCollidables = this.world.newCollidables;
+	for (var i = 0; i < newCollidables.length; i++) {
+		var id = newCollidables[i];
+		var colObj = {
+			id : id,
+			type : this.world.collidables[id].type, 
+			model : 0, // default model for now
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.new.push(colObj);
 	}
+
+	// nothing new, so no point in sending it
+	if (world.new.length == 0) {
+		delete world.new;
+		updates--;
+	}
+
+	// things that have been moved
+  var setCollidables = this.world.setCollidables;
+	for (var i = 0; i < setCollidables.length; i++) {
+		var id = setCollidables[i];
+		var colObj = {
+			id : id,
+			position : this.world.collidables[id].position,
+			orientation : this.world.collidables[id].orientation,
+			state : this.world.collidables[id].state
+		};
+		world.set.push(colObj);
+	}
+
+	// nothing moved, so no point in sending moves
+	if (world.set.length == 0) {
+		delete world.set;
+		updates--;
+	}
+
+  // things to get deleted
+  var delCollidables = this.world.delCollidables;
+	for (var i = 0; i < delCollidables.length; i++) {
+		var id = delCollidables[i];
+		var colObj = {
+			id : id,
+		};
+		world.del.push(colObj);
+	}
+
+	// nothing deleted, so no point in sending deletions
+	if (world.del.length == 0) {
+		delete world.del;
+		updates--;
+	}
+
+  // TODO ?? this is a list of IDs only lol
+	world.misc = this.world.miscellaneous;
+	
+	// nothing deleted, so no point in sending deletions
+	if (world.misc.length == 0) {
+		delete world.misc;
+		updates--;
+	}
+
+	if (updates == 0) {
+		// there is nothing new, moved, deleted, or miscellaneous
+		return;
+	}
+
+	var updateMessage = JSON.stringify(world);
+ 
+	// SEND THE WORLD INFO
 	for (var id in this.sockets) {
-		// TODO HIGH
+		// new players dont need their first game tick
+		if (newCollidables.indexOf(id) >= 0) {
+			continue;
+    }
+
 		// TODO if socket is already closed and not removed yet
-		this.sockets[id].send(JSON.stringify(allPlayers));
+		this.sockets[id].send(updateMessage);
 	}
+
+	// reset since this is the end of a tick
+  this.world.resetUpdateStateLists();
 }
 
-// TODO comment and clean this shit
-gameTick = function(game) {
-	return function() {
-    game.gameTickBasedUpdate();
-		game.sendUpdatesToAllClients();
-		//setTimeout(gameTick(game), 1000 / game.ticks);
-	}
-}
+
 
 module.exports = Game;

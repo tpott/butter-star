@@ -54,26 +54,15 @@
 				cursor: pointer;
 
 			}
+
+			.gui {
+				z-index: 50;
+			}
 	</style> 
 </head> 
 <body> 
 	<script src="loader.js"></script>
-	<!--<script src="three.min.js"> </script> 
-	<script src="MTLLoader.js"></script>
-	<script src="OBJMTLLoader.js"></script>
-	<script src="stats.min.js"></script>
-	<script src="THREEx.FullScreen.js"></script>
-	<script src="PointerLockControls.js"></script>
-    <script src="player.js"></script>
-	 <script src="ControlsEvent.js"></script>
-    <script src="worldstate.js"></script>
-    <script src="connection.js"></script>
-	<script src="ThreeOctree.js"></script>
-	<script src="controls.js"></script>
-	<script src="keyboard.js"></script>
-	<script src="mouse.js"></script>
-	<script src="screen.js"></script>
-	<script src="vacuum.js"></script>-->
+
 	<script type="x-shader/x-vertex" id="vertexShader">
 		//-----------------------BEGIN VERTEX SHADER -------------------------
 		//values for linear interpolation
@@ -91,6 +80,7 @@
 		uniform mat4 offset;
 		uniform mat4 offsetNegative;
 		uniform mat4 offsetRotationY;
+        uniform mat4 offsetRotationX;
 		attribute float alpha;
 		varying float vAlpha;
 		varying vec3 vNormal;
@@ -115,7 +105,8 @@
 		{
 			vAlpha = alpha;
 			gl_PointSize = 1.0;
-			vec4 newPosition = offset * translation * offsetRotationY * rotation * negativeTranslation * vec4(calcFinalPos() ,1.);
+			vec4 newPosition = offset * translation * offsetRotationY
+             * offsetRotationX * rotation * negativeTranslation * vec4(calcFinalPos() ,1.);
 			gl_Position = projectionMatrix * modelViewMatrix * newPosition;
 		}
 		//-----------------------END VERTEX SHADER -------------------------
@@ -134,11 +125,11 @@
 	</script>	
 	<script> 
 
-		// loadAll and onLast are defined in loader.js
+		// load* functions are defined in client/net/loader.js
 		// main is from main.js
-		// TODO move to main
-		loadAll(scripts, document);
-		//onLast(main);
+		loadScripts(scripts, document);
+		//loadModels();
+		console.log("All loading started.");
 		
 	</script> 
 </body> 
