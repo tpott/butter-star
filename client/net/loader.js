@@ -7,7 +7,6 @@
  */
 
 // TODO order!!
-
 var scripts = [
 	// libraries
 	// TODO is MTLLoader being used?
@@ -47,8 +46,8 @@ var models = {
 // entries are structured: [our name, obj, mtl, scale]
 var modelFiles = {
 	player : [
-		['Default player', 'boy.obj', 'boy.mtl', 0.04]
-		//['Yixin Cube', '', '', 1.]
+		['Default player', 'boy.obj', 'boy.mtl', 0.04],
+		['Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
   // TODO get bunny models...
 	critters : [
@@ -143,7 +142,8 @@ function loadAnimations() {
 			// TODO
 			models[type][index] = object;
 			// TODO
-			console.log("%s loaded %d/%d.", type, index+1, modelFiles[type].length);
+			console.log("%s model \"%s\" loaded %d/%d.", type, 
+					modelFiles[type][index][0], index+1, modelFiles[type].length);
 			attemptStart();
 
 			// something about collada.skins[0]
@@ -165,7 +165,7 @@ function loadAnimations() {
 /**
  * Guarantees all models and scripts are loaded before starting main
  */
-var attempts = 0, attemptsNeeded = 4;
+var attempts = 0, attemptsNeeded = 5;
 function attemptStart() {
 	attempts++;
 	if (attempts == attemptsNeeded) {

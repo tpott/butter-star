@@ -57,11 +57,13 @@ var files = [
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
   ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
   ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
+	['yixin.png', "", client + 'objects/yixin.png', 'image/png'],
+  ['yixin_cube.obj', "", client + 'objects/yixin_cube.obj', 'text/plain'],
+  ['yixin_cube.mtl', "", client + 'objects/yixin_cube.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
-  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
+  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png']
 	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png']
 
 ];
 

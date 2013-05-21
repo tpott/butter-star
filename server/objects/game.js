@@ -65,7 +65,7 @@ Game.prototype.addSocket = function(socket) {
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
-			model : 0, // default model for now
+			model : this.world.collidables[id].model, 
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
