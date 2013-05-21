@@ -20,6 +20,7 @@ var files = [
 	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
 	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
+	['ColladaLoader.js', "", client + 'libs/ColladaLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
 	// our client files

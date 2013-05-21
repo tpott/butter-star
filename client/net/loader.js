@@ -10,8 +10,9 @@
 
 var scripts = [
 	// libraries
+	// TODO is MTLLoader being used?
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
-	"jquery.js",
+	"jquery.js", "ColladaLoader.js",
 
 	// objects 
 	"player.js", "worldstate.js", "critter.js", "environment.js",
