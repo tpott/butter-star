@@ -34,6 +34,10 @@ function Game() {
 
 	this.keyboardHandler = new Keyboard.Handler();
 
+	// game logic
+	this.status = "Not yet started";
+	this.round = 0;
+
 	var self = this;
 	function serverTick() {
 		setTimeout(serverTick, 1000 / self.ticks);
