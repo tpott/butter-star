@@ -39,6 +39,7 @@ var files = [
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
+	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
 	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
@@ -49,10 +50,12 @@ var files = [
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	// our data files
-  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
   ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
+  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
+  ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
+  ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
@@ -88,8 +91,8 @@ function dynamic(server, request) {
 			htmlGameList += "<a href=\"" + id + "\">\n";
 			htmlGameList += "\t<div class=\"activeGames\">\n";
 			// game stats
-			htmlGameList += "\t\t<h4>" + game.level + "</h4>\n";
-			htmlGameList += "\t\t<h3>" + game.nplayers + " players</h3>\n";
+			htmlGameList += "\t\t<h4>" + game.status + "</h4>\n";
+			htmlGameList += "\t\t<h3>" + game.world.nplayers + " players</h3>\n";
 			htmlGameList += "\t\t<h5>Join game!</h5>\n";
 			htmlGameList += "\t</div>\n</a>\n\n";
 		}

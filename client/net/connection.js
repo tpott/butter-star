@@ -11,6 +11,7 @@ function Connection(ip, port, gameid, player, world) {
 	this.ip = ip;
 	this.port = port;
 	this.gameid = gameid;
+	this.initialized = false;
 
 	// TODO getting an undefined error, line 43
 	this.messages = [];
@@ -18,15 +19,43 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket = new WebSocket('ws://' + this.ip + ':' + this.port + 
 		'/' + this.gameid); 
 
-	// MORE JAVASCRIPT BULLSHIT
-	this.socket.myPlayer = player;
-	this.socket.myWorldState = world;
-
 	this.socket.binaryType = 'arraybuffer';
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
 	this.socket.onmessage = this._onmessage;
+
+	var socket = this.socket;
+	function clientTick() {
+		 //if (hasBeenSent == false) {
+			  if (socket.readyState != socket.OPEN) {
+					console.log("Connection is not ready yet!");
+			  } 
+			  else if (keyPresses.length == 0 && mouseMovement[0] == 0 &&
+				  mouseMovement[1] == 0) {
+				  //console.log("keyPresses is empty");
+			  }
+			  else {
+				  // client side networking happens HERE. BOOM
+				  var allData = keyPresses.slice(0); // aka clone
+				  if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
+					  allData.push(mouseMovement);
+				  }
+					socket.send(JSON.stringify(allData));
+					mouseMovement[0] = 0;
+					mouseMovement[1] = 0;
+					/*
+					// dont flag event as sent if vacuum is on since client can be
+					// moving without pressing any keys (acceleration)
+					if (controlsEvent.isVacuum == false) {
+						hasBeenSent = true; 
+					}
+					*/
+			  }
+		 //}
+	}
+
+	setInterval(clientTick, 1000/60);
 }
 
 Connection.prototype._onopen = function() {
@@ -45,51 +74,37 @@ Connection.prototype._onmessage = function(buf) {
 	// TODO undefined error here
 	//this.messages.push(buf.data);
 
-  //console.log(buf.data);
-    // connection initialized
-	if (buf.data.substring(0,3) == "ID:") {
-		this.myPlayer.id = buf.data.substring(3);
-		// TODO ???? 
-		//controlsEvent.playerID = this.myPlayer.id;
-		console.log("Client recieved id: " + myPlayer.id);
+	var message = JSON.parse(buf.data);
+	if (! this.initialized) {
+		// this does the same thing as adding new objects
+		myWorldState.addObjects(message.world);
+		myPlayer = myWorldState.players[message.id];
 
-        initClientSend(this); // Pass the socket to the send loop
+		console.log("Client recieved id: " + message.id);
 
+		this.initialized = true;
 		return;
 	}
 
-	var state = JSON.parse(buf.data);
-	if ('remove' in state) {
-		this.myWorldState.removePlayer(state['remove']);
+	var world = message;
+	if ('del' in world) {
+		var deleteIds = world.del;
+		for (var i = 0; i < deleteIds.length; i++) {
+			myWorldState.remove(deleteIds[i].id);
+		}
 	}
-	else {
-		// state is an array of players
-		this.myWorldState.updateWorldState(state);
+	if ('new' in world) {
+		// world.new should be the same as what is received in the initial
+		//  message.world
+		myWorldState.addObjects(world.new);
+	}
+	if ('set' in world) {
+		// passes in an array of updated info
+		myWorldState.updateWorldState(world.set);
+	}
+	if ('misc' in world) {
+		// TODO
 	}
 
-	var tempPlayer = myWorldState.getPlayerObject(myPlayer.id);
-	this.myPlayer.position = tempPlayer.mesh.position;
-	this.myPlayer.vacTrans = tempPlayer.vacTrans;
 };
 
-initClientSend = function(socket) {
-    setInterval(
-        function() {
-            clientSendLoop(socket);
-        }, 1000/60); 
-}
-
-function clientSendLoop(socket) {
-    //if (hasBeenSent == false) {
-        if (socket.readyState != socket.OPEN) {
-            console.log("Connection is not ready yet!");
-        } else {
-            socket.send(JSON.stringify(controlsEvent));
-            // dont flag event as sent if vacuum is on since client can be
-            // moving without pressing any keys (acceleration)
-            if (controlsEvent.isVacuum == false) {
-               hasBeenSent = true; 
-            }
-        }
-    //}
-}

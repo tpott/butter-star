@@ -6,13 +6,15 @@
  * @author Trevossdwwwwsss
  */
 
+// TODO order!!
+
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
 	"jquery.js",
 
-	// objects (+ models?) - TODO trevor, include models in objects
-	"player.js", "worldstate.js", "critter.js",
+	// objects 
+	"player.js", "worldstate.js", "critter.js", "environment.js",
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
@@ -34,14 +36,37 @@ var scripts = [
 	"main.js"
 ];
 
-// TODO order!!
+var models = {
+	player : [null, null],
+	critters : [null],
+	environment : [null, null],
+	food : []
+};
+
+// entries are structured: [our name, obj, mtl, scale]
+var modelFiles = {
+	player : [
+		['Default player', 'boy.obj', 'boy.mtl', 0.04]
+		//['Yixin Cube', '', '', 1.]
+	],
+  // TODO get bunny models...
+	critters : [
+		['Default critter', 'boo.obj', 'boo.mtl', 0.08]
+	],
+	environment : [
+		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
+		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
+	],
+	food : [
+	]
+};
 
 /**
  * appends script elements to the DOM
  * @param scripts - a list/object
  * @param doc - the document global
  */
-function loadAll(scripts, doc) {
+function loadScripts(scripts, doc) {
 	var head = doc.getElementsByTagName('head')[0];
 	console.log('Loading ' + scripts);
 	singleLoader(scripts, 0, doc, head);
@@ -56,7 +81,8 @@ function loadAll(scripts, doc) {
 function singleLoader(scripts, index, doc, head) {
 	// stop recurrance
 	if (index >= scripts.length) {
-		main();
+		loadModels();
+		//attemptStart();
 		//_lastFunc();
 		return;
 	}
@@ -74,4 +100,41 @@ function singleLoader(scripts, index, doc, head) {
 	};
 
 	head.appendChild(script);
+}
+
+/**
+ * loads all the .obj and .mtl files for players, critter, environments, etc.
+ */
+function loadModels() {
+	// stupid javascript
+	function loadFunc(type, index) {
+		return function(evt) {
+			var object = evt.content;
+			var scale = modelFiles[type][index][3];
+			object.scale.set(scale, scale, scale);
+			models[type][index] = object;
+			console.log("%s loaded %d/%d.", type, index+1, modelFiles[type].length);
+			attemptStart();
+		};
+	}
+	console.log("Loading models");
+	for (var type in modelFiles) {
+		for (var i = 0; i < modelFiles[type].length; i++) {
+			var loader = new THREE.OBJMTLLoader();
+			loader.addEventListener( 'load', loadFunc(type, i) );
+			loader.load( modelFiles[type][i][1], modelFiles[type][i][2] );
+		}
+	}
+}
+
+/**
+ * Guarantees all models and scripts are loaded before starting main
+ */
+var attempts = 0, attemptsNeeded = 4;
+function attemptStart() {
+	attempts++;
+	if (attempts == attemptsNeeded) {
+		console.log("Enough loading, time to play!");
+		main();
+	}
 }
