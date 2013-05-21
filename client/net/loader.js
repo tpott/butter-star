@@ -129,6 +129,40 @@ function loadModels() {
 }
 
 /**
+ * loads all the .dae files for animations
+ */
+function loadAnimations() {
+	// http://stackoverflow.com/questions/16202602/multiple-different-collada-scenes-with-three-js-animation-wont-work
+	// stupid javascript
+	function loadFunc(type, index) {
+		return function(collada) {
+			var object = collada.scene;
+			// TODO
+			var scale = modelFiles[type][index][3];
+			object.scale.set(scale, scale, scale);
+			// TODO
+			models[type][index] = object;
+			// TODO
+			console.log("%s loaded %d/%d.", type, index+1, modelFiles[type].length);
+			attemptStart();
+
+			// something about collada.skins[0]
+		};
+	}
+	console.log("Loading animations");
+	// TODO
+	for (var type in modelFiles) {
+		// TODO
+		for (var i = 0; i < modelFiles[type].length; i++) {
+			var loader = new THREE.ColladaLoader();
+			loader.addEventListener( 'load', loadFunc(type, i) );
+			// TODO
+			loader.load( modelFiles[type][i][1], modelFiles[type][i][2] );
+		}
+	}
+}
+
+/**
  * Guarantees all models and scripts are loaded before starting main
  */
 var attempts = 0, attemptsNeeded = 4;
