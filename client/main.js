@@ -48,7 +48,8 @@ var myWorldState = null,
 // each key press will append something here,
 // on each client tick the keypresses will be sent and 
 // this will get emptied
-var keyPresses = [];
+var keyPresses = [],
+	 oldKeyPresses = [];
 var mouseMovement = [0, 0], // [x, y]
 	 mouseClicks = [];
 
@@ -98,40 +99,21 @@ function update() {
 }
 
 //render all other player animations
-function updatePlayersAnimation() {
-  for(player in myWorldState.players)
-  {
-		var players = myWorldState.players[player];
-		//only add vacuum for other players
-		if(players.isVacuum == true && players.id != myPlayer.id)
-		{
-			 if(players.vacuum == null)
-			 {
-				  console.log("generated first vacuum for player");
-				  players.vacuum = new Vacuum(
-						new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
-						players.mesh.position.z), 
-						new THREE.Vector3(0,0,-1),
-						1000, 
-						document.getElementById('vertexShader').textContent, 
-						document.getElementById('fragmentShader').textContent);
-				  players.vacuum.update(players.vacTrans,players.direction);  
-				  players.vacuum.addToScene(scene);   
-			 }
-			 else
-			 {
-				  players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
-			 }
-		}
-		else if(players.vacuum != null)
-		{
+function updateAnimations() {
+	// vacuum animations
+	for (var id in myWorldState.players) {
+		var player = myWorldState.players[id];
 
-			players.vacuum.removeFromScene(scene);
-			players.vacuum = null;
+		if (player.isVacuuming() && player.vacuum == null) {
+			player.startVacuuming();
 		}
-		//update player angles
-		players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
- }
+		else if (player.isVacuuming()) {
+			player.updateVacuum();
+		}
+		else if (! player.isVacuuming() && player.vacuum != null) {
+			player.stopVacuuming();
+		}
+	}
 }
 
 /*
@@ -141,6 +123,7 @@ function render() {
 	requestAnimationFrame(render); 
 	
 	update();
+	updateAnimations();
 	
 	renderer.render(scene, camera); 
 	stats.update();

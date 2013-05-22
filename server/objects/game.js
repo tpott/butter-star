@@ -101,6 +101,7 @@ Game.prototype.removeSocket = function(socket) {
  * function eventually gets passed into eventBasedUpdate (below).
  * Both are called in server/net/simpleWS.js
  */
+// TODO remove
 Game.prototype.parseInput = function(player, anything) {
 	// obj should be a non-empty array
 	var obj = JSON.parse(anything);
@@ -115,25 +116,24 @@ Game.prototype.parseInput = function(player, anything) {
 
 /**
  * Handles updating a given player for a given event.
- * @param {Array} clientData represents a key press
+ * @param {Array} clientData represents key presses and mouse rotates
  */
 Game.prototype.eventBasedUpdate = function(player, clientData) {
-	var evt = this.keyboardHandler.parse(clientData);
+	// what if clientData was all the presses
+	// parse returned multiple player states
+	// player.setStates(events)
+	//   if some state is not specified, set to default
+	var events = this.keyboardHandler.parse(clientData);
+	
+	player.setDefaultState();
 
-	if (evt == null) {
-		return;
-	}
-	else if (evt.isMoveEvent()) {
-		player.move(evt.name);
-	}
-	else if (evt.isToggleVacuum()) {
-		player.toggleVacuum();
-	}
-	else if (evt.isRotateEvent()) { // mouse movement
-		player.rotate(evt.data);
-	}
-	else {
-		//console.log("Game '%s' unable to process event '%s'", this.id, evt);
+	for (var i = 0; i < events.length; i++) {
+		if (events[i].isAState()) {
+			player.updateState(events[i].name);
+		}
+		else if (events[i].isRotateEvent()) {
+			player.rotate(events[i].data);
+		}
 	}
 }
 
@@ -142,6 +142,8 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
+	// check movable states and generate forces
+	this.world.applyStates();
 	this.world.applyForces(); 
 }
 

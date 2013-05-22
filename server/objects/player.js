@@ -15,9 +15,14 @@ var Movable = require('./movable.js');
 var Collidable = require('./collidable.js');
 var Events = require('../controls/handler.js');
 
+// player states
 var STANDING_STILL = 0,
-	 MOVING = 1,
-	 VACUUMING = 2;
+	 MOVING_FORWARD = 1,
+	 MOVING_BACKWARD = 2,
+	 MOVING_LEFT = 4,
+	 MOVING_RIGHT = 8,
+	 VACUUMING = 16,
+	 JUMPING = 32;
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
@@ -45,6 +50,8 @@ function Player(socket) {
   this.mesh = new THREE.Mesh(geometry, material);
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
+  this.keyPresses = [];
+
   // TODO necessary? -Trevor
 	this.camera = {
 		speed : 1,
@@ -69,12 +76,50 @@ function Player(socket) {
 }
 util.inherits(Player, Movable);
 
+Player.prototype.setDefaultState = function() {
+	this.state = STANDING_STILL;
+}
+
+Player.prototype.updateState = function(evt) {
+	switch (Events[evt]) {
+		case Events['MOVE_FORWARD']:
+			this.state ^= MOVING_FORWARD;
+			break;
+		case Events['MOVE_BACKWARD']:
+			this.state ^= MOVING_BACKWARD;
+			break;
+		case Events['MOVE_LEFT']:
+			this.state ^= MOVING_LEFT;
+			break;
+		case Events['MOVE_RIGHT']:
+			this.state ^= MOVING_RIGHT;
+			break;
+		case Events['VACUUM']:
+			this.state ^= VACUUMING;
+			break;
+		case Events['JUMPING']:
+			this.state ^= JUMPING;
+			break;
+	}
+
+	this.moved = true;
+}
+
+Player.prototype.isMoving = function() {
+	return this.state & MOVING_FORWARD || this.state & MOVING_BACKWARD ||
+		this.state & MOVING_LEFT || this.state & MOVING_RIGHT;
+}
+
 /**
  * Calculate player movements and let superclass handle collisions and
  * set actual player movements.
  * @param {Event} evt The player movement event (string).
  */
-Player.prototype.move = function(evt) {
+Player.prototype.move = function() {
+	if (! this.isMoving() ) {
+		return;
+	}
+
 	// MAGIC NUMBER
 	var speed = 0.125;
 
@@ -93,24 +138,21 @@ Player.prototype.move = function(evt) {
 	var direction = 180 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) /
 			projected.length()) / Math.PI;;
 	
-	if (Events[evt] == Events['MOVE_FORWARD']) {
+	if (this.state & MOVING_FORWARD) {
 		direction += 0;
 	}
-	else if (Events[evt] == Events['MOVE_BACKWARD']) {
+	else if (this.state & MOVING_BACKWARD) {
 		direction += 180;
 	}
-	else if (Events[evt] == Events['MOVE_LEFT']) {
+	else if (this.state & MOVING_LEFT) {
 		direction += 90;
 	}
-	else if (Events[evt] == Events['MOVE_RIGHT']) {
+	else if (this.state & MOVING_RIGHT) {
 		direction += 270;
-	}
-	else {
-		console.log("Event '%s' is not a player move event", evt);
 	}
 
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
-  var dy = 0;
+	var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
 	//var magicAmplifier = 0.8;

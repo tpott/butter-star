@@ -26,7 +26,7 @@ var scripts = [
 	"controls.js", "keyboard.js", "mouse.js", "screen.js", "THREEx.FullScreen.js", 
 	"PointerLockControls.js", 
 
-	// effects
+	// shaders
 	"vacuum.js",
 
 	// gui

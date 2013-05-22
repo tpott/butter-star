@@ -46,7 +46,7 @@ var files = [
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
-	['vacuum.js', "", client + 'shader/particleSystem/Vacuum.js', 'text/javascript'],
+	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	// our data files

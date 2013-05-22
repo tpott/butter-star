@@ -158,6 +158,16 @@ World.prototype.resetUpdateStateLists = function() {
 
 /* WORLD MUTATOR FUNCTIONS */
 
+World.prototype.applyStates = function() {
+	for (var id in this.players) {
+		// uses the player state to create the force
+		this.players[id].move();
+	}
+	for (var id in this.critters) {
+		//this.critters[id].useAI();
+	}
+}
+
 /**
  * Apply forces to all objects that should be applied at the end of every game tick.
  */
