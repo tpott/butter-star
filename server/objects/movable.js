@@ -27,13 +27,16 @@ function Movable() {
   this.mesh = null;
   this.radius = 0;
 
-  this.position = new THREE.Vector4(0, 0, 0, 0);
-  this.orientation = new THREE.Vector4(1, 0, 0, 0);
   this.center = new THREE.Vector4(0, 0, 0, 0);
+
+  this.type = Collidable.types.MOVABLE
 
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
   this.mass = 1.0;
+
+  // used to optimize networking
+  this.moved = false;
 };
 util.inherits(Movable, Collidable);
 
@@ -226,8 +229,11 @@ Movable.prototype.detectCollision_ = function(collidables) {
  * Apply the current force vector4 to the current position.
  * Collision detection should be applied here (not defined).
  * @param {Array.<Collidable>} collidables List of collidables.
+ * @return {boolean} True if moved, false otherwise.
  */
 Movable.prototype.applyForces = function(collidables) {
+  var originalPosition = this.position.clone();
+
 	// Force = mass * acceleration 
 	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
 
@@ -258,6 +264,11 @@ Movable.prototype.applyForces = function(collidables) {
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
+
+  // Check if movable changed positions
+  if (! originalPosition.equals(this.position)) {
+	  this.moved = true;
+  }
 };
 
 /**

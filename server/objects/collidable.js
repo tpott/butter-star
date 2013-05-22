@@ -21,7 +21,21 @@ function Collidable() {
 
   this.gravity = new THREE.Vector4(0, -0.00098, 0, 0);
 
+  this.position = new THREE.Vector4(0, 0, 0, 1);
+  this.orientation = new THREE.Vector4(1, 0, 0, 0);
+  this.type = Collidable.types.COLLIDABLE;
+
   this.friction = 0.09; // in physics, this is usually "mu"
+};
+
+// also set in client/objects/worldstate.js
+Collidable.types = {
+	COLLIDABLE : 0,
+	MOVABLE : 1,
+	PLAYER : 2,
+	CRITTER : 3,
+	ENVIRONMENT : 4,
+	FOOD : 5
 };
 
 /**

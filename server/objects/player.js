@@ -12,6 +12,17 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Collidable = require('./collidable.js');
+var Events = require('../controls/handler.js');
+
+// player states
+var STANDING_STILL = 0,
+	 MOVING_FORWARD = 1,
+	 MOVING_BACKWARD = 2,
+	 MOVING_LEFT = 4,
+	 MOVING_RIGHT = 8,
+	 VACUUMING = 16,
+	 JUMPING = 32;
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
@@ -22,6 +33,7 @@ var Movable = require('./movable.js');
 function Player(socket) {
   Player.super_.call(this);
 
+  // TODO socket not needed?
   this.socket = socket;
 
   // Dimensions of player
@@ -38,8 +50,11 @@ function Player(socket) {
   this.mesh = new THREE.Mesh(geometry, material);
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
+  this.keyPresses = [];
+
   // TODO necessary? -Trevor
 	this.camera = {
+		speed : 1,
 		distance : 5,
 		x : 0,
 		y : 0,
@@ -53,9 +68,11 @@ function Player(socket) {
   this.isVacuum = false;
   this.vacAngleY = 0;
 
+  this.type = Collidable.types.PLAYER;
+
 	console.log('Player class, New player: %s', this.id);
-  // TODO is this the only reason we need socket?
-	this.socket.send('ID:' + this.id);
+
+	this.state = STANDING_STILL;
 }
 util.inherits(Player, Movable);
 
@@ -92,48 +109,83 @@ Player.prototype.checkVacIntersection = function(players) {
     }
 }
 
+Player.prototype.setDefaultState = function() {
+	this.state = STANDING_STILL;
+}
+
+Player.prototype.updateState = function(evt) {
+	switch (Events[evt]) {
+		case Events['MOVE_FORWARD']:
+			this.state ^= MOVING_FORWARD;
+			break;
+		case Events['MOVE_BACKWARD']:
+			this.state ^= MOVING_BACKWARD;
+			break;
+		case Events['MOVE_LEFT']:
+			this.state ^= MOVING_LEFT;
+			break;
+		case Events['MOVE_RIGHT']:
+			this.state ^= MOVING_RIGHT;
+			break;
+		case Events['VACUUM']:
+			this.state ^= VACUUMING;
+			break;
+		case Events['JUMPING']:
+			this.state ^= JUMPING;
+			break;
+	}
+
+	this.moved = true;
+}
+
+Player.prototype.isMoving = function() {
+	return this.state & MOVING_FORWARD || this.state & MOVING_BACKWARD ||
+		this.state & MOVING_LEFT || this.state & MOVING_RIGHT;
+}
+
 /**
  * Calculate player movements and let superclass handle collisions and
  * set actual player movements.
- * @param {Event} evt The player movement event.
+ * @param {Event} evt The player movement event (string).
  */
-Player.prototype.move = function(evt) {
-  var speed = evt.speed;
-	if(evt.sprinting === true) {
-		evt.speed = 0.75;
-	}
-	else {
-		evt.speed = 0.125;
+Player.prototype.move = function() {
+	if (! this.isMoving() ) {
+		return;
 	}
 
-	var direction = evt.angle;
-  // TODO can we change these to bitmasks?
-  if(evt.front && !evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 45;
-    } else if(!evt.left && evt.right) {
-      direction += 315;
-    } else { //only forward
-      direction += 0;
-    }
-  } else if(!evt.front && evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 135;
-    } else if(!evt.left && evt.right) {
-      direction += 225;
-    } else { //only back
-      direction += 180;
-    }
-  } else if(evt.left && !evt.right
-      && !evt.front && !evt.Backwards) { // only left
-    direction += 90;
-  } else if(!evt.left && evt.right
-      && !evt.front && !evt.Backwards) { // only right
-    direction += 270;
-  }
+	// MAGIC NUMBER
+	var speed = 0.125;
+
+	// TODO not use y-axis as up? 
+	// an Up vector in OUR world
+	var up = new THREE.Vector4(0, 1, 0, 0);
+
+	// up becomes the orientation projected upwards
+	up.multiplyScalar(up.dot(this.orientation));
+
+	// projected is the orientation projected onto the x-z (horizontal) plane
+	var projected = this.orientation.clone().sub(up);
+
+	// divide by length for normalization
+	// acos returns radians, but Math.sin and cos take degrees... 
+	var direction = 180 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) /
+			projected.length()) / Math.PI;;
+	
+	if (this.state & MOVING_FORWARD) {
+		direction += 0;
+	}
+	else if (this.state & MOVING_BACKWARD) {
+		direction += 180;
+	}
+	else if (this.state & MOVING_LEFT) {
+		direction += 90;
+	}
+	else if (this.state & MOVING_RIGHT) {
+		direction += 270;
+	}
 
 	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
-  var dy = 0;
+	var dy = 0;
 	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
 
 	//var magicAmplifier = 0.8;
@@ -143,13 +195,39 @@ Player.prototype.move = function(evt) {
   this.addForce(force);
 };
 
+Player.prototype.toggleVacuum = function() {
+	// XOR
+	this.state ^= VACUUMING;
+	console.log("Player %s %s vacuuming", this.id, 
+			this.state & VACUUMING ? "is" : "is not");
+};
+
+/**
+ * rotates the player based off the mouse movement
+ */
+Player.prototype.rotate = function(mouse) {
+	// TODO client config
+	var speed = 0.01;
+
+	// the Y-axis is the "up" in our game
+	var rotationX = new THREE.Matrix4().makeRotationY(mouse[0] * speed);
+	var rotationY = new THREE.Matrix4().makeRotationZ(mouse[1] * speed);
+	var rot = rotationX.multiply(rotationY);
+	//var rot = rotationX;
+
+	//this.orientation = rot.multiply(this.orientation);
+	this.orientation.applyMatrix4(rot);
+
+	// necessary for graphics to be updated
+	this.moved = true;
+};
+
 /**
  * Updates the position of the vacuum effect.
  * @param {Event} playerEvent The player movement event.
  */
 // TODO make a vacuum obj. players should have a vacuum obj.
-Player.prototype.updateVacuum = function(playerEvent)
-{
+Player.prototype.updateVacuum = function(playerEvent) {
 	//player done vacuum'in
 	if(playerEvent.isVacuum == false)
 		this.initVacPos = null;
