@@ -23,6 +23,7 @@ var files = [
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
 	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
+	['jquery-ui.css', "", client + 'libs/jquery-ui.css', 'text/css'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],

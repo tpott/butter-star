@@ -7,34 +7,56 @@
 function StatusBox() {
   this.statusBox = $('<div id="statusBox" />');
   this.statusBox.addClass('gui');
+  this.statusBox.css('display', 'inline');
+  this.statusBox.css('position', 'absolute');
+  this.statusBox.css('right', '0px');
+  this.statusBox.css('top', '0px');
+  this.statusBox.css('width', '200px');
+  this.statusBox.css('height', '200px');
 
   // Add status bars and vacuumed bunny counter
   this.addFoodBar();
   this.addVacuumChargeBar();
-  this.addVacuumedBunniesCounter();
+  this.addKillCounter();
 
   $('body').append(this.statusBox);
 };
 
+/* CREATE STATUS ELEMENTS */
 StatusBox.prototype.addFoodBar = function () {
-  var foodBar = $('<div id="foodBar" />');
-  foodBar.addClass('gui');
-  //this.progressbar({value: 0});
+  this.foodBar = $('<div id="foodBar" />');
+  this.foodBar.addClass('gui');
+  this.foodBar.progressbar({value: 0});
 
-  this.statusBox.append(foodBar);
+  this.statusBox.append(this.foodBar);
 };
 
 StatusBox.prototype.addVacuumChargeBar = function () {
-  var vacuumChargeBar = $('<div id="vacuumChargeBar" />');
-  vacuumChargeBar.addClass('gui');
-  //this.progressbar({value: 0});
+  this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
+  this.vacuumChargeBar.addClass('gui');
+  this.vacuumChargeBar.progressbar({value: 0});
 
-  this.statusBox.append(vacuumChargeBar);
+  this.statusBox.append(this.vacuumChargeBar);
 };
 
-StatusBox.prototype.addVacuumedBunniesCounter = function () {
-  var vacuumedBunniesCounter = $('<div id="vacuumedBunniesCounter" align="right" />');
-  vacuumedBunniesCounter.addClass('gui');
+StatusBox.prototype.addKillCounter = function () {
+  this.killCounter =
+      $('<div id="killCounter" align="right" />');
+  this.killCounter.addClass('gui');
 
-  this.statusBox.append(vacuumedBunniesCounter);
+  this.statusBox.append(this.killCounter);
+};
+
+/* STATUS ELEMENT MANIPULATION METHODS */
+
+StatusBox.prototype.updateFoodValue = function(value) {
+  this.foodBar.progressbar("option", "value", value);
+};
+
+StatusBox.prototype.updateVacuumCharge = function(value) {
+  this.vacuumChargeBar.progressbar("option", "value", value);
+};
+
+StatusBox.prototype.updateKillCounter = function(value) {
+  this.killCounter.text(value);
 };
