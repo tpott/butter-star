@@ -22,6 +22,7 @@ var files = [
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
+	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],

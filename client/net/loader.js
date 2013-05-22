@@ -11,7 +11,7 @@
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
-	"jquery.js",
+	"jquery.js", "jquery-ui.js", 
 
 	// objects 
 	"player.js", "worldstate.js", "critter.js", "environment.js",
