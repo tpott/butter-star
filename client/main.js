@@ -51,7 +51,8 @@ var myWorldState = null,
 // each key press will append something here,
 // on each client tick the keypresses will be sent and 
 // this will get emptied
-var keyPresses = [];
+var keyPresses = [],
+	 oldKeyPresses = [];
 var mouseMovement = [0, 0], // [x, y]
 	 mouseClicks = [];
 
@@ -90,19 +91,6 @@ function update() {
 	// skip if myPlayer is not initd
 	if (myPlayer == null || myPlayer.id == null) return; 
 
-	/*var updatedMyPlayer = myWorldState.getPlayerObject(myPlayer.id);
-
-	// skip if undefined
-	if (!updatedMyPlayer) return;
-
-	myPlayer.mesh = updatedMyPlayer.mesh;
-	myPlayer.orientation = updatedMyPlayer.orientation;*/
-	//cube.position = clone(myPlayer.position);
-	//cube.position.y = -2;
-	/*myPlayer.model.objects.position.x = myPlayer.position.x;
-	myPlayer.model.objects.position.y = myPlayer.position.y;
-	myPlayer.model.objects.position.z = myPlayer.position.z;*/
-
 	// begin camera update
 	//   update camera position
 	camera.position = myPlayer.position.clone().sub(
@@ -111,50 +99,24 @@ function update() {
 	
 	//   update camera orientation
 	camera.lookAt( myPlayer.position );
-
-	//myPlayer.mesh.rotation.x = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
-	//var ang = (myPlayer.camera.x / 2 % 360) * Math.PI / 180.0;
-
-	//myWorldState.getPlayerObject(myPlayer.id).mesh.rotation.y = ang + 1.65;
-	//myPlayer.mesh.rotation.y = ang + 1.65;
-	//updatePlayersAnimation();
 }
 
 //render all other player animations
-function updatePlayersAnimation() {
-  for(player in myWorldState.players)
-  {
-		var players = myWorldState.players[player];
-		//only add vacuum for other players
-		if(players.isVacuum == true && players.id != myPlayer.id)
-		{
-			 if(players.vacuum == null)
-			 {
-				  console.log("generated first vacuum for player");
-				  players.vacuum = new Vacuum(
-						new THREE.Vector3(players.mesh.position.x, players.mesh.position.y,
-						players.mesh.position.z), 
-						new THREE.Vector3(0,0,-1),
-						1000, 
-						document.getElementById('vertexShader').textContent, 
-						document.getElementById('fragmentShader').textContent);
-				  players.vacuum.update(players.vacTrans,players.direction);  
-				  players.vacuum.addToScene(scene);   
-			 }
-			 else
-			 {
-				  players.vacuum.update(players.vacTrans,players.direction,players.vacAngleY);
-			 }
-		}
-		else if(players.vacuum != null)
-		{
+function updateAnimations() {
+	// vacuum animations
+	for (var id in myWorldState.players) {
+		var player = myWorldState.players[id];
 
-			players.vacuum.removeFromScene(scene);
-			players.vacuum = null;
+		if (player.isVacuuming() && player.vacuum == null) {
+			player.startVacuuming();
 		}
-		//update player angles
-		players.mesh.rotation.y = players.direction * Math.PI / 180.0 + 1.65;
- }
+		else if (player.isVacuuming()) {
+			player.updateVacuum();
+		}
+		else if (! player.isVacuuming() && player.vacuum != null) {
+			player.stopVacuuming();
+		}
+	}
 }
 
 /*
@@ -164,6 +126,7 @@ function render() {
 	requestAnimationFrame(render); 
 	
 	update();
+	updateAnimations();
 	
 	renderer.render(scene, camera); 
 	stats.update();
@@ -175,21 +138,6 @@ function initLights() {
 		light.position.set( 0, 20, 0 ); 
 		scene.add( light );
 }
-
-//load them textures here
-/*function initTextures() {
-	var neheTexture;
-	function initTexture() {
-	neheTexture = gl.createTexture();
-	neheTexture.image = new Image();
-	neheTexture.image.onload = function()
-	{
-		handleLoadedTexture(neheTexture)
-	}
-
-	neheTexture.image.src = "player.png";
-	}
-}*/
 
 //load sound clips here
 function initSounds()
@@ -205,65 +153,6 @@ function initStats() {
 	stats.domElement.style.top = '0px';
 	stats.domElement.style.zIndex = 100;
 }
-
-/*
-function initFloor() {
-		var geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-		geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
-		geometry.applyMatrix( new THREE.Matrix4().makeTranslation(0,-10,0));
-		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-
-			var face = geometry.faces[ i ];
-			face.vertexColors[ 0 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 1 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 2 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 3 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-		}
-
-		var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-
-		mesh = new THREE.Mesh( geometry, material );
-		scene.add( mesh );
-}
-
-var de;
-function initRoom() {
-  var geometry = new THREE.Geometry();
-
-  geometry.vertices.push( new THREE.Vector3( 100,  100, 100 ) );
-  geometry.vertices.push( new THREE.Vector3( 100, 100, -100 ) );
-  geometry.vertices.push( new THREE.Vector3( 100, -100, 100 ) );
-  geometry.vertices.push( new THREE.Vector3( 100, -100, -100 ) );
-  geometry.vertices.push( new THREE.Vector3( -100,  100, 100 ) );
-  geometry.vertices.push( new THREE.Vector3( -100,  100, -100 ) );
-  geometry.vertices.push( new THREE.Vector3( -100,  -100, 100 ) );
-  geometry.vertices.push( new THREE.Vector3( -100,  -100, -100 ) );
-
-  geometry.faces.push( new THREE.Face4( 0, 1, 3, 2) );
-  geometry.faces.push( new THREE.Face4( 5, 4, 6, 7) );
-  geometry.faces.push( new THREE.Face4( 1, 5, 7, 3) );
-  geometry.faces.push( new THREE.Face4( 4, 0, 2, 6) );
-  geometry.faces.push( new THREE.Face4( 0, 4, 5, 1) );
-  geometry.faces.push( new THREE.Face4( 3, 7, 6, 2) );
-
-		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-
-			var face = geometry.faces[ i ];
-			face.vertexColors[ 0 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 1 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 2 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-			face.vertexColors[ 3 ] = new THREE.Color().setRGB( Math.random() * 0.8, Math.random() * 0.8, Math.random() * 0.8 );
-		}
-
-		var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-		var mesh = new THREE.Mesh( geometry, material );
-    mesh.material.color.setRGB(1,0,0);
-    de = mesh;  		
-scene.add( mesh );
-    
-}
-*/
-
 
 function main() {
 	initStats();

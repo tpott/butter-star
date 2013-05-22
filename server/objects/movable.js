@@ -34,6 +34,9 @@ function Movable() {
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
   this.mass = 1.0;
+
+  // used to optimize networking
+  this.moved = false;
 };
 util.inherits(Movable, Collidable);
 
@@ -229,10 +232,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
  * @return {boolean} True if moved, false otherwise.
  */
 Movable.prototype.applyForces = function(collidables) {
-  var originalPosition = {x: this.position.x,
-      y: this.position.y,
-      x: this.position.zi
-  };
+  var originalPosition = this.position.clone();
 
 	// Force = mass * acceleration 
 	var acceleration = this.force.multiplyScalar(1.0 / this.mass);
@@ -257,19 +257,17 @@ Movable.prototype.applyForces = function(collidables) {
 	else {
 		// TODO before or after changing velocity?
 		this.position.add(this.velocity);
+        //this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
+        //console.log("position: " + this.position);
+        //console.log("position " + this.position.x + " " + this.position.y + " " + this.position.z);
 
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
 
   // Check if movable changed positions
-  // TODO check if just using .equals() would mess up
-  if (originalPosition.x == this.position.x &&
-      originalPosition.y == this.position.y &&
-      originalPosition.z == this.position.z) {
-    return false;
-  } else {
-    return true;
+  if (! originalPosition.equals(this.position)) {
+	  this.moved = true;
   }
 };
 

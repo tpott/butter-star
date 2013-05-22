@@ -7,6 +7,20 @@
  * @author Rohan Halliyal
  */
 
+function array_equals(a, b) {
+	if (a.length != b.length) {
+		return false;
+	}
+
+	for (var i = 0; i < a.length; i++) {
+		if (a[i] != b[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function Connection(ip, port, gameid, player, world) {
 	this.ip = ip;
 	this.port = port;
@@ -27,32 +41,26 @@ function Connection(ip, port, gameid, player, world) {
 
 	var socket = this.socket;
 	function clientTick() {
-		 //if (hasBeenSent == false) {
-			  if (socket.readyState != socket.OPEN) {
-					console.log("Connection is not ready yet!");
-			  } 
-			  else if (keyPresses.length == 0 && mouseMovement[0] == 0 &&
-				  mouseMovement[1] == 0) {
-				  //console.log("keyPresses is empty");
-			  }
-			  else {
-				  // client side networking happens HERE. BOOM
-				  var allData = keyPresses.slice(0); // aka clone
-				  if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
-					  allData.push(mouseMovement);
-				  }
-					socket.send(JSON.stringify(allData));
-					mouseMovement[0] = 0;
-					mouseMovement[1] = 0;
-					/*
-					// dont flag event as sent if vacuum is on since client can be
-					// moving without pressing any keys (acceleration)
-					if (controlsEvent.isVacuum == false) {
-						hasBeenSent = true; 
-					}
-					*/
-			  }
-		 //}
+		if (socket.readyState != socket.OPEN) {
+			console.log("Connection is not ready yet!");
+		} 
+		else if (array_equals(keyPresses, oldKeyPresses) && 
+				mouseMovement[0] == 0 && mouseMovement[1] == 0) {
+			//console.log("Nothing new from the client");
+		}
+		else {
+			// client side networking happens HERE. BOOM
+			var allData = keyPresses.slice(0); // aka clone
+			if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
+				allData.push(mouseMovement);
+			}
+			socket.send(JSON.stringify(allData));
+			mouseMovement[0] = 0;
+			mouseMovement[1] = 0;
+
+			// copy!!! cause javascript sucks
+			oldKeyPresses = keyPresses.slice(0);
+		}
 	}
 
 	setInterval(clientTick, 1000/60);

@@ -12,7 +12,7 @@ var EVENTS = {
 	'MOVE_LEFT' : 2,
 	'MOVE_BACKWARD' : 3,
 	'MOVE_RIGHT' : 4,
-	'TOGGLE_VACUUM' : 5,
+	'VACUUM' : 5,
 	'ROTATE' : 6
 };
 
@@ -22,7 +22,7 @@ var keymap = {
 	'a' : 'MOVE_LEFT', 
 	's' : 'MOVE_BACKWARD', 
 	'd' : 'MOVE_RIGHT',
-	'c' : 'TOGGLE_VACCUM' 
+	'c' : 'VACUUM' 
 };
 
 // these keys don't need to be processed by the server, but
@@ -68,7 +68,7 @@ function Event(name, data) {
 
 	this._isrotate = evtEnum == EVENTS['ROTATE'];
 
-	this._istogglevacuum = evtEnum == EVENTS['TOGGLE_VACUUM'];
+	this._istogglevacuum = evtEnum == EVENTS['VACUUM'];
 }
 
 Event.prototype.isMoveEvent = function() {
@@ -83,41 +83,48 @@ Event.prototype.isToggleVacuum = function() {
 	return this._istogglevacuum;
 }
 
+Event.prototype.isAState = function() {
+	return this._ismove || this._istogglevacuum;
+}
+
 function Handler() {
 }
 
 /**
- * Takes in a single keyPress and should return the movement event
+ * Takes in all the keyPresses and should return the movement events
  */
-Handler.prototype.parse = function(keyPress) {
-	// keys that the server needs to handle
-	if (keyPress in keymap) {
-		return new Event(keymap[keyPress]);
+Handler.prototype.parse = function(keyPresses) {
+	var events = [];
+
+	for (var i = 0; i < keyPresses.length; i++) {
+		// keys that the server needs to handle
+		if (keyPresses[i] in keymap) {
+			events.push(new Event(keymap[keyPresses[i]]));
+		}
+
+		// keys that only the client needs
+		else if (keyPresses[i] in clientOnly) {
+			//console.log("'%s' only used in client", keyPresses[i]);
+		}
+
+		// keys the client recognizes but doesnt use
+		else if (keyPresses[i] in unusedKeys) {
+			//console.log("'%s' is an unused key", keyPresses[i]);
+		}
+
+		// mouse rotate
+		else if (keyPresses[i] instanceof Array) {
+			//console.log("Rotate by %s.", keyPresses[i]);
+			events.push(new Event('ROTATE', keyPresses[i]));
+		}
+
+		// a completely unrecognized key...
+		else {
+			console.log("'%s' is an UNKNOWN key", keyPresses[i]);
+		}
 	}
 
-	// keys that only the client needs
-	else if (keyPress in clientOnly) {
-		//console.log("'%s' only used in client", keyPress);
-		return null;
-	}
-
-	// keys the client recognizes but doesnt use
-	else if (keyPress in unusedKeys) {
-		//console.log("'%s' is an unused key", keyPress);
-		return null;
-	}
-
-	// mouse rotate
-	else if (keyPress instanceof Array) {
-		//console.log("Rotate by %s.", keyPress);
-		return new Event('ROTATE', keyPress);
-	}
-
-	// a completely unrecognized key...
-	else {
-		console.log("'%s' is an UNKNOWN key", keyPress);
-		return null;
-	}
+	return events;
 }
 
 /*function isMoveEvent(evtName) {

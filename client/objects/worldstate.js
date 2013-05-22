@@ -73,10 +73,6 @@ WorldState.prototype.addCritter = function(critter) {
   this.critters[crit.id] = crit;
 
   scene.add(crit.mesh);
-  /*crit.position = critter.position;
-  crit.initModel(scene, 'boo', 10, crit.position);
-  this.critters[critter.id] = crit;
-  console.log("making a critter");*/
 }
 
 WorldState.prototype.addEnvironment = function(env) {

@@ -26,7 +26,7 @@ var scripts = [
 	"controls.js", "keyboard.js", "mouse.js", "screen.js", "THREEx.FullScreen.js", 
 	"PointerLockControls.js", 
 
-	// effects
+	// shaders
 	"vacuum.js",
 
 	// gui
@@ -51,7 +51,7 @@ var modelFiles = {
 	],
   // TODO get bunny models...
 	critters : [
-		['Default critter', 'boo.obj', 'boo.mtl', 0.08]
+		['Default critter', 'boo.obj', 'boo.mtl', 0.4]
 	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],

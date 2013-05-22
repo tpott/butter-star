@@ -33,7 +33,7 @@ function Game(server) {
 	this.sockets = {};
 	this.world = new World();
 	
-	//this.world.addCritter(10);
+	this.world.spawnCritters(10);
 
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
@@ -87,7 +87,7 @@ Game.prototype.addSocket = function(socket) {
 	var initMessage = JSON.stringify(initObj);
 	this.sockets[socket.id].send(initMessage);
 
-	return socket.id;
+    return socket.id;
 }
 
 /**
@@ -112,6 +112,7 @@ Game.prototype.removeSocket = function(socket) {
  * function eventually gets passed into eventBasedUpdate (below).
  * Both are called in server/net/simpleWS.js
  */
+// TODO remove
 Game.prototype.parseInput = function(player, anything) {
 	// obj should be a non-empty array
 	var obj = JSON.parse(anything);
@@ -126,25 +127,24 @@ Game.prototype.parseInput = function(player, anything) {
 
 /**
  * Handles updating a given player for a given event.
- * @param {Array} clientData represents a key press
+ * @param {Array} clientData represents key presses and mouse rotates
  */
 Game.prototype.eventBasedUpdate = function(player, clientData) {
-	var evt = this.keyboardHandler.parse(clientData);
+	// what if clientData was all the presses
+	// parse returned multiple player states
+	// player.setStates(events)
+	//   if some state is not specified, set to default
+	var events = this.keyboardHandler.parse(clientData);
+	
+	player.setDefaultState();
 
-	if (evt == null) {
-		return;
-	}
-	else if (evt.isMoveEvent()) {
-		player.move(evt.name);
-	}
-	else if (evt.isToggleVacuum()) {
-		player.toggleVacuum();
-	}
-	else if (evt.isRotateEvent()) { // mouse movement
-		player.rotate(evt.data);
-	}
-	else {
-		//console.log("Game '%s' unable to process event '%s'", this.id, evt);
+	for (var i = 0; i < events.length; i++) {
+		if (events[i].isAState()) {
+			player.updateState(events[i].name);
+		}
+		else if (events[i].isRotateEvent()) {
+			player.rotate(events[i].data);
+		}
 	}
 }
 
@@ -153,7 +153,10 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
  * client events (player inputs).
  */
 Game.prototype.gameTickBasedUpdate = function() {
+	// check movable states and generate forces
+	this.world.applyStates();
 	this.world.applyForces(); 
+    this.world.checkVacIntersections();
 }
 
 /**
@@ -161,7 +164,7 @@ Game.prototype.gameTickBasedUpdate = function() {
  */
 Game.prototype.sendUpdatesToAllClients = function() {
 	var updates = 4; // new, set, del, misc
-	var world = {
+	var worldUpdate = {
 		new : [],
 		set : [],
 		del : [],
@@ -179,12 +182,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		world.new.push(colObj);
+		worldUpdate.new.push(colObj);
 	}
 
 	// nothing new, so no point in sending it
-	if (world.new.length == 0) {
-		delete world.new;
+	if (worldUpdate.new.length == 0) {
+		delete worldUpdate.new;
 		updates--;
 	}
 
@@ -198,12 +201,15 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		world.set.push(colObj);
+		worldUpdate.set.push(colObj);
+
+		// at the end of the tick reset this
+		this.world.collidables[id].moved = false;
 	}
 
 	// nothing moved, so no point in sending moves
-	if (world.set.length == 0) {
-		delete world.set;
+	if (worldUpdate.set.length == 0) {
+		delete worldUpdate.set;
 		updates--;
 	}
 
@@ -214,21 +220,21 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var colObj = {
 			id : id,
 		};
-		world.del.push(colObj);
+		worldUpdate.del.push(colObj);
 	}
 
 	// nothing deleted, so no point in sending deletions
-	if (world.del.length == 0) {
-		delete world.del;
+	if (worldUpdate.del.length == 0) {
+		delete worldUpdate.del;
 		updates--;
 	}
 
   // TODO ?? this is a list of IDs only lol
-	world.misc = this.world.miscellaneous;
+	worldUpdate.misc = this.world.miscellaneous;
 	
 	// nothing deleted, so no point in sending deletions
-	if (world.misc.length == 0) {
-		delete world.misc;
+	if (worldUpdate.misc.length == 0) {
+		delete worldUpdate.misc;
 		updates--;
 	}
 
@@ -237,7 +243,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		return;
 	}
 
-	var updateMessage = JSON.stringify(world);
+	var updateMessage = JSON.stringify(worldUpdate);
  
 	// SEND THE WORLD INFO
 	for (var id in this.sockets) {
@@ -254,6 +260,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
   this.world.resetUpdateStateLists();
 }
 
-
+// TODO comment and clean this shit
+gameTick = function(game) {
+	return function() {
+        game.gameTickBasedUpdate();
+		game.sendUpdatesToAllClients();
+	}
+}
 
 module.exports = Game;
