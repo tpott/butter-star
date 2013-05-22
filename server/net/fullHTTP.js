@@ -50,6 +50,7 @@ var files = [
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
+	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 	// our data files
   ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
   ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],

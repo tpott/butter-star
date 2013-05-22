@@ -30,7 +30,7 @@ var scripts = [
 	"vacuum.js",
 
 	// gui
-	"minimap.js", "options.js", "notifications.js",
+	"minimap.js", "options.js", "notifications.js", "status.js",
 
 	// this defines main()
 	"main.js"
