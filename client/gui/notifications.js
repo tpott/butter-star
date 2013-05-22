@@ -25,7 +25,8 @@ function Notify() {
  * Create a new message using the string input: str
  */
 Notify.prototype.addMessage = function(str) {
-	var message = $('<h3>' + str + '</h3>');
+	var message = $('<h3 />')
+		.text(str);
 //		.css('background-color', 'transparent');
 	this.bar.append(message);
 
