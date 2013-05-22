@@ -99,8 +99,6 @@ World.prototype.spawnCritters = function(numCritters) {
 
 	 critter.position.copy(position);
 
-	 console.log("Spawned critter at %d,%d,%d", critter.position.x,
-			 critter.position.y, critter.position.z);
     this.addCritter(critter);
   }
 };
