@@ -160,6 +160,10 @@ World.prototype.applyStates = function() {
 	for (var id in this.players) {
 		// uses the player state to create the force
 		this.players[id].move();
+        
+        // uses the player state to determine vacuum intersections
+        // TODO: extend to also affect players/food?
+        this.players[id].checkVacIntersection(this.critters);
 	}
 	for (var id in this.critters) {
 		//this.critters[id].useAI();
@@ -199,15 +203,4 @@ World.prototype.applyForces = function() {
   // TODO food
 }
 
-/**
- * Checks all players to see if there is a vacuum intersection between a player
- * and some collidable object
- */
-World.prototype.checkVacIntersections = function() {
-    for (var id in this.players) {
-        if(this.players[id].isVacuum) {
-            this.players[id].checkVacIntersection(this.players);
-        }
-    }
-}
 module.exports = World;

@@ -70,41 +70,42 @@ function Player(socket) {
 
   this.type = Collidable.types.PLAYER;
 
-	console.log('Player class, New player: %s', this.id);
+  console.log('Player class, New player: %s', this.id);
 
-	this.state = STANDING_STILL;
+  this.state = STANDING_STILL;
 }
 util.inherits(Player, Movable);
 
-Player.prototype.checkVacIntersection = function(players) {
-    var origin = new THREE.Vector3(this.position.x, this.position.y+.2, this.position.z);
-    var vector = new THREE.Vector3(0,0,-1);
+Player.prototype.checkVacIntersection = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        return;
+    }
+    var origin = new THREE.Vector3().copy(this.position);
+    var vector = new THREE.Vector3().copy(this.orientation);
+    /*var vector = new THREE.Vector3(0,0,-1);
     var matrix_x = new THREE.Matrix4();
     var matrix_y = new THREE.Matrix4();
-    matrix_x.identity();
-    matrix_y.identity();
-    //console.log(this.direction);
-    //console.log(this.vacAngleY);
     var angleY = this.direction * Math.PI/180.0;
     var angleX = this.vacAngleY * Math.PI/180.0;
+    matrix_x.identity();
+    matrix_y.identity();
     matrix_x.makeRotationX(-angleX);
     matrix_y.makeRotationY(angleY);
     vector.applyMatrix4(matrix_x);
-    vector.applyMatrix4(matrix_y);
-    //console.log("origin: " + origin.x + " " + origin.y + " " + origin.z);
-    //console.log("collidables length : " + Object.keys(collidables).length);
-    //console.log("vector: " + vector.x + " " + vector.y + " " + vector.z);
+    vector.applyMatrix4(matrix_y);*/
     var raycaster = new THREE.Raycaster(origin, vector);
-    for (key in players) {
-        if (players[key].id != this.id) {
-            //console.log("player: " + this.id + " checking other player " + players[key].id); 
-        //console.log("mesh.position " + this.mesh.position.x + " " + this.mesh.position.y + " " + this.mesh.position.z);
-        //console.log("other player mesh.position " + players[key].mesh.position.x + " " + players[key].mesh.position.y + " " + players[key].mesh.position.z);
-            var intersects = raycaster.intersectObject(players[key].mesh);
-            if(intersects.length > 0 && intersects[0].distance < 10) {
-                console.log("player: " + this.id + " is intersecting with player: " + players[key].id);
-                break;
-            }
+    //console.log(origin);
+    //console.log(vector);
+    for (key in critters) {
+        var intersects = raycaster.intersectObject(critters[key].mesh);
+        console.log(critters[key].mesh);
+        //console.log(critters[key].mesh.position);
+        if(intersects.length > 0 /*&& intersects[0].distance < 10*/) {
+            console.log("player: %s is intersecting with critter: %s", 
+                        this.id, 
+                        critters[key].id);
+            //break;
         }
     }
 }
