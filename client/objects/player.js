@@ -34,7 +34,7 @@ var Player = function(playerObj) {
 	 // defined in client/net/loader.js
 	 this.mesh = models.player[this.model].clone();
 
-	 // ?
+	 // necessary for graphics
 	 this.mesh.position = this.position;
 
 	 // TODO remove 

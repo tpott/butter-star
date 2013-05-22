@@ -17,5 +17,8 @@ var Critter = function(critterObj) {
 
 	this.mesh = models.critters[this.model].clone();
 
+	// necessary for graphics
+	this.mesh.position = this.position;
+
   // Don't add to scene in constructor. Called in WorldState's addPlayer().
 };

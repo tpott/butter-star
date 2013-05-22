@@ -51,7 +51,7 @@ var modelFiles = {
 	],
   // TODO get bunny models...
 	critters : [
-		['Default critter', 'boo.obj', 'boo.mtl', 0.2]
+		['Default critter', 'boo.obj', 'boo.mtl', 0.4]
 	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
