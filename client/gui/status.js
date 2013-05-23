@@ -41,7 +41,7 @@ StatusBox.prototype.addVacuumChargeBar = function () {
 
 StatusBox.prototype.addKillCounter = function () {
   this.killCounter =
-      $('<div id="killCounter" align="right" />');
+      $('<h1 id="killCounter" align="right"></h1>');
   this.killCounter.addClass('gui');
 
   this.statusBox.append(this.killCounter);

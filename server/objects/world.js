@@ -36,8 +36,6 @@ function World() {
   this.newCollidables = []; // all newly created collidables
   this.setCollidables = []; // all collidables that had state change
   this.delCollidables = []; // all deleted collidabls
-  this.vacuumCharges = []; // vacuum charge state changes
-  this.killCounters = []; // kill counter
 
   this.miscellaneous = []; // Currently holds broadcast messages to all players
 
@@ -155,8 +153,6 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
-  this.vacuumCharges = [];
-  this.killCounters = [];
 
   this.miscellaneous = [];
 };

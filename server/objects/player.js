@@ -70,7 +70,12 @@ function Player() {
 
   this.state = STANDING_STILL; // current state of player
   this.numVacKills = 0; // counter for number of vacuumed objects
+  this.prevNumVacKills = -1; // used to see if num vacuumed changed
   this.raycaster = null;
+
+  // Vacuum charge percentage
+  this.vacuumCharge = 100; // counter for % vacuum battery remaining
+  this.prevVacuumCharge = -1; // used to see if num vacuumed changed
 }
 util.inherits(Player, Movable);
 
@@ -84,7 +89,48 @@ Player.prototype.getVacKills = function() {
 
 Player.prototype.resetVacKills = function() {
     this.numVacKills = 0;
+    this.prevNumVacKills = -1;
 }
+
+/**
+ * Check if kill counter should be updated. Used by server/objects/game.js.
+ * @return {boolean} True if kill count updated, false otherwise.
+ */
+Player.prototype.didKillsChange = function() {
+  if (this.prevNumVacKills != this.numVacKills) {
+    this.prevNumVacKills = this.numVacKills;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Set the vacuum charge value.
+ * @param {int} charge The amount of charge to set the vacuum to.
+ */
+Player.prototype.setVacuumCharge = function(charge) {
+  this.vacuumCharge = charge;
+};
+
+/**
+ * Get the vacuum charge value.
+ * @return {int} The amount of charge in the vacuum.
+ */
+Player.prototype.getVacuumCharge = function() {
+  return this.vacuumCharge;
+};
+
+/**
+ * Check if the vacuum charge should be updated. Used by server/objects/game.js
+ * @return {boolean} True if vacuum charge updated, false otherwise.
+ */
+Player.prototype.didVacuumChargeChange = function() {
+  if (this.prevVacuumCharge != this.vacuumCharge) {
+    this.prevVacuumCharge = this.vacuumCharge;
+    return true;
+  }
+  return false;
+};
 
 /*
  * Checks for intersection with objects and returns the closest

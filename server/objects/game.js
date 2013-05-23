@@ -231,14 +231,16 @@ Game.prototype.sendUpdatesToAllClients = function() {
 	}
 
   // vacuum charge states to update
-  var vacuumCharges = this.world.vacuumCharges;
-  for (var i = 0; i < vacuumCharges.length; i++) {
-    var id = vacuumCharges[i];
-    var vacChargeObj = {
-      id: id, // player whose charge state changed
-      charge: this.world.collidables[id].charge
-    };
-    worldUpdate.vac.push(vacChargeObj);
+  for (var id in this.world.players) {
+    var player = this.world.players[id];
+
+    if (player.didVacuumChargeChange() === true) {
+      var vacChargeObj = {
+        id: player.id,
+        charge: player.getVacuumCharge()
+      };
+      worldUpdate.vac.push(vacChargeObj);
+    }
   }
 
   // no vacuum charge changes, so don't send anything for this
@@ -248,14 +250,16 @@ Game.prototype.sendUpdatesToAllClients = function() {
   }
 
   // kill counters to update
-  var killCounters = this.world.killCounters;
-  for (var i = 0; i < killCounters.length; i++) {
-    var id = killCounters[i];
-    var killCounterObj = {
-      id: id, // player whose charge state changed
-      count: this.world.collidables[id].killCount
-    };
-    worldUpdate.kill.push(killCounterObj);
+  for (var id in this.world.players) {
+    var player = this.world.players[id];
+
+    if (player.didKillsChange() === true) {
+      var killCounterObj = {
+        id: player.id,
+        count: player.getVacKills()
+      };
+      worldUpdate.kill.push(killCounterObj);
+    }
   }
 
   // no kill counter changes, so don't send anything for this

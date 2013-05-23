@@ -112,14 +112,14 @@ Connection.prototype._onmessage = function(buf) {
 	}
   if ('vac' in world) {
     var i = 0;
-    while (world.vac[i].id != myPlayer.id) {
+    while (world.vac[i].id != myPlayer.id) { // TODO not get every player's sent over
       i++;
     }
     myPlayer.updateVacuumCharge(world.vac[i].charge);
   }
   if ('kill' in world) {
     var i = 0;
-    while (world.kill[i].id != myPlayer.id) {
+    while (world.kill[i].id != myPlayer.id) { // TODO not get every player's sent over
       i++;
     }
     myPlayer.updateKillCounter(world.kill[i].count);

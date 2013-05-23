@@ -62,6 +62,9 @@ var Player = function(playerObj) {
         motion  : 'stand',
         state   : 'stand'
     };*/
+
+  // TODO should this be on the server side?
+  this.updateKillCounter(0);
 };
 
 Player.prototype.setMesh = function(scene) {
@@ -111,5 +114,5 @@ Player.prototype.updateVacuumCharge = function(charge) {
 };
 
 Player.prototype.updateKillCounter = function(count) {
-  console.log("update the kill counter! but not actually");
+  statusBox.updateKillCounter(count);
 };
