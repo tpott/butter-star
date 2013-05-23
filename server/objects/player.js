@@ -167,26 +167,45 @@ Player.prototype.move = function() {
 	var projected = this.orientation.clone().sub(up);
 
 	// divide by length for normalization
-	// acos returns radians, but Math.sin and cos take degrees... 
-	var direction = 180 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) /
-			projected.length()) / Math.PI;;
-	
-	if (this.state & MOVING_FORWARD) {
-		direction += 0;
+	// acos returns radians, but Math.sin and cos take degrees...
+  //console.log(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() );
+  var direction = 180.0 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() ) / Math.PI;	
+
+  
+  if (this.state & MOVING_FORWARD) {
 	}
 	else if (this.state & MOVING_BACKWARD) {
 		direction += 180;
 	}
 	else if (this.state & MOVING_LEFT) {
-		direction += 90;
-	}
+		if(projected.z > 0)
+    {
+      direction += 270;
+    }
+    else
+    {
+      direction += 90;
+    }
+  }
 	else if (this.state & MOVING_RIGHT) {
-		direction += 270;
-	}
+		if(projected.z > 0)
+    {
+      direction += 90;
+    }
+    else
+    {
+    direction += 270;
+	  }
+  }
 
-	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
-	var dy = 0;
-	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
+  if(projected.z > 0)
+  {
+    direction = -direction;
+  }
+
+	var dx = 1 * (Math.cos(direction * Math.PI / 180) * speed);
+  var dy = 0;
+	var dz = -1 * (Math.sin(direction * Math.PI / 180) * speed);
 
 	//var magicAmplifier = 0.8;
 	var force = new THREE.Vector4(dx, dy, dz, 0);
@@ -210,8 +229,8 @@ Player.prototype.rotate = function(mouse) {
 	var speed = 0.01;
 
 	// the Y-axis is the "up" in our game
-	var rotationX = new THREE.Matrix4().makeRotationY(mouse[0] * speed);
-	var rotationY = new THREE.Matrix4().makeRotationZ(mouse[1] * speed);
+	var rotationX = new THREE.Matrix4().makeRotationY(-mouse[0] * speed);
+	var rotationY = new THREE.Matrix4().makeRotationZ(-mouse[1] * speed);
 	var rot = rotationX.multiply(rotationY);
 	//var rot = rotationX;
 
