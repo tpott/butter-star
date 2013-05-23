@@ -70,43 +70,47 @@ function Player(socket) {
 
   this.type = Collidable.types.PLAYER;
 
-	console.log('Player class, New player: %s', this.id);
+  console.log('Player class, New player: %s', this.id);
 
-	this.state = STANDING_STILL;
+  this.state = STANDING_STILL; // current state of player
+  this.numVacKills = 0; // counter for number of vacuumed objects
+  this.raycaster = null;
 }
 util.inherits(Player, Movable);
 
-Player.prototype.checkVacIntersection = function(players) {
-    var origin = new THREE.Vector3(this.position.x, this.position.y+.2, this.position.z);
-    var vector = new THREE.Vector3(0,0,-1);
-    var matrix_x = new THREE.Matrix4();
-    var matrix_y = new THREE.Matrix4();
-    matrix_x.identity();
-    matrix_y.identity();
-    //console.log(this.direction);
-    //console.log(this.vacAngleY);
-    var angleY = this.direction * Math.PI/180.0;
-    var angleX = this.vacAngleY * Math.PI/180.0;
-    matrix_x.makeRotationX(-angleX);
-    matrix_y.makeRotationY(angleY);
-    vector.applyMatrix4(matrix_x);
-    vector.applyMatrix4(matrix_y);
-    //console.log("origin: " + origin.x + " " + origin.y + " " + origin.z);
-    //console.log("collidables length : " + Object.keys(collidables).length);
-    //console.log("vector: " + vector.x + " " + vector.y + " " + vector.z);
-    var raycaster = new THREE.Raycaster(origin, vector);
-    for (key in players) {
-        if (players[key].id != this.id) {
-            //console.log("player: " + this.id + " checking other player " + players[key].id); 
-        //console.log("mesh.position " + this.mesh.position.x + " " + this.mesh.position.y + " " + this.mesh.position.z);
-        //console.log("other player mesh.position " + players[key].mesh.position.x + " " + players[key].mesh.position.y + " " + players[key].mesh.position.z);
-            var intersects = raycaster.intersectObject(players[key].mesh);
-            if(intersects.length > 0 && intersects[0].distance < 10) {
-                console.log("player: " + this.id + " is intersecting with player: " + players[key].id);
-                break;
-            }
+Player.prototype.incVacKills = function() {
+    this.numVacKills++;
+}
+
+Player.prototype.getVacKills = function() {
+    return this.numVacKills;
+}
+
+Player.prototype.resetVacKills = function() {
+    this.numVacKills = 0;
+}
+
+/*
+ * Checks for intersection with objects and returns the closest
+ * intersected objects
+ */
+Player.prototype.getVacIntersectionObj = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        return;
+    }
+    var origin = new THREE.Vector3().copy(this.position);
+    var vector = new THREE.Vector3().copy(this.orientation);
+    this.raycaster = new THREE.Raycaster(origin, vector);
+    for (key in critters) {
+        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        // check if any intersections within vacuum distance
+        // TODO: don't hardcode vacuum distance
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            return critters[key]; // return closest critter
         }
     }
+    return null; // no intsections
 }
 
 Player.prototype.setDefaultState = function() {
