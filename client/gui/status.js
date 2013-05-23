@@ -19,6 +19,11 @@ function StatusBox() {
   this.addVacuumChargeBar();
   this.addKillCounter();
 
+
+  // TODO init?
+  this.updateVacuumCharge(100);
+  this.updateKillCounter(0);
+
   $('body').append(this.statusBox);
 };
 

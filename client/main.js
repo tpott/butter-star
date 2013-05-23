@@ -158,8 +158,9 @@ function initZero() {
   var geometry = new THREE.CubeGeometry( 20, 20, 20 );
 var material = new THREE.MeshBasicMaterial();
 
+// white cube, center of screen
 cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+//scene.add( cube );
 }
 
 

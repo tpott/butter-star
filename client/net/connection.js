@@ -111,18 +111,15 @@ Connection.prototype._onmessage = function(buf) {
 		myWorldState.updateWorldState(world.set);
 	}
   if ('vac' in world) {
-    var i = 0;
-    while (world.vac[i].id != myPlayer.id) { // TODO not get every player's sent over
-      i++;
-    }
-    myPlayer.updateVacuumCharge(world.vac[i].charge);
+	 for (var i = 0; i < world.vac.length; i++) {
+		 myWorldState.players[world.vac[i].id].updateVacuumCharge(world.vac[i].charge);
+	 }
   }
   if ('kill' in world) {
-    var i = 0;
-    while (world.kill[i].id != myPlayer.id) { // TODO not get every player's sent over
-      i++;
-    }
-    myPlayer.updateKillCounter(world.kill[i].count);
+	 for (var i = 0; i < world.kill.length; i++) {
+		 myWorldState.players[world.kill[i].id]
+			 .updateKillCounter(world.kill[i].count);
+	 }
   }
 	if ('misc' in world) {
 		// TODO

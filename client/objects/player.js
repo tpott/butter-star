@@ -49,6 +49,9 @@ var Player = function(playerObj) {
 	 // needed for vacuum effect
 	this.vacuum = null;
 
+	this.killCount = 0;
+	this.charge = 100;
+
 	 // TODO remove 
 	this.vacTrans = new THREE.Vector3(0,0,0);
     this.direction = null;
@@ -111,9 +114,19 @@ Player.prototype.stopVacuuming = function() {
 }
 
 Player.prototype.updateVacuumCharge = function(charge) {
-  statusBox.updateVacuumCharge(charge);
+	this.charge = charge;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateVacuumCharge(charge);
+	}
 };
 
 Player.prototype.updateKillCounter = function(count) {
-  statusBox.updateKillCounter(count);
+	this.killCount = count;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateKillCounter(count);
+	}
 };
