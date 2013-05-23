@@ -90,14 +90,24 @@ Player.prototype.startVacuuming = function() {
 
 Player.prototype.updateVacuum = function() {
 	// translation from where vacuuming began
-	var vacTrans = new THREE.Vector3(0,0,0);
+	var vacTrans = new THREE.Vector3().copy(this.position);
+    var xorigin = new THREE.Vector4(1,0,0,0);
+    var dotResult = xorigin.dot(this.orientation);
+    console.log(this.orientation.z);
+    //console.log(dotResult);
+    var xRad = Math.acos(dotResult);
+    var xDeg = xRad * 180.0 / Math.PI;
+    if (this.orientation.z > 0) {
+        xDeg = -xDeg;
+    }
+    //console.log("xDeg " + xDeg);
 
 	// angle from positive x axis towards positive z axis
 	var xzPlaneAngle = 0;
 
 	var yAngle = 0;
 
-	this.vacuum.update(vacTrans, xzPlaneAngle, yAngle);
+	this.vacuum.update(vacTrans, xDeg, this.orientation.y);
 }
 
 Player.prototype.stopVacuuming = function() {
