@@ -22,6 +22,8 @@ var files = [
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
+	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
+	['jquery-ui.css', "", client + 'libs/jquery-ui.css', 'text/css'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
@@ -49,6 +51,8 @@ var files = [
 	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
+	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
+	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 	// our data files
   ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
   ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
@@ -91,7 +95,7 @@ function dynamic(server, request) {
 			htmlGameList += "<a href=\"" + id + "\">\n";
 			htmlGameList += "\t<div class=\"activeGames\">\n";
 			// game stats
-			htmlGameList += "\t\t<h4>" + game.status + "</h4>\n";
+			htmlGameList += "\t\t<h4>" + game.handler.status + "</h4>\n";
 			htmlGameList += "\t\t<h3>" + game.world.nplayers + " players</h3>\n";
 			htmlGameList += "\t\t<h5>Join game!</h5>\n";
 			htmlGameList += "\t</div>\n</a>\n\n";
@@ -251,7 +255,7 @@ Server.prototype.initFiles = function(config) {
 }
 
 Server.prototype.newGame = function() {
-	var g = new Game();
+	var g = new Game(this);
 	this.games[g.id] = g;
 	this.ngames++;
 	return g.id;

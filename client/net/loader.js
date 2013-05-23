@@ -11,7 +11,7 @@
 var scripts = [
 	// libraries
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
-	"jquery.js",
+	"jquery.js", "jquery-ui.js", 
 
 	// objects 
 	"player.js", "worldstate.js", "critter.js", "environment.js",
@@ -30,7 +30,7 @@ var scripts = [
 	"vacuum.js",
 
 	// gui
-	"minimap.js", "options.js",
+	"minimap.js", "options.js", "notifications.js", "status.js",
 
 	// this defines main()
 	"main.js"

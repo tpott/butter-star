@@ -49,6 +49,9 @@ var Player = function(playerObj) {
 	 // needed for vacuum effect
 	this.vacuum = null;
 
+	this.killCount = 0;
+	this.charge = 100;
+
 	 // TODO remove 
 	this.vacTrans = new THREE.Vector3(0,0,0);
     this.direction = null;
@@ -62,6 +65,10 @@ var Player = function(playerObj) {
         motion  : 'stand',
         state   : 'stand'
     };*/
+
+  // TODO this should be on the server side?
+  this.updateVacuumCharge(100);
+  this.updateKillCounter(0);
 };
 
 Player.prototype.setMesh = function(scene) {
@@ -106,3 +113,20 @@ Player.prototype.stopVacuuming = function() {
 	this.vacuum = null;
 }
 
+Player.prototype.updateVacuumCharge = function(charge) {
+	this.charge = charge;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateVacuumCharge(charge);
+	}
+};
+
+Player.prototype.updateKillCounter = function(count) {
+	this.killCount = count;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateKillCounter(count);
+	}
+};
