@@ -28,13 +28,9 @@ var STANDING_STILL = 0,
  * Constructor for a player. Makes a mesh that is the same as the
  * client-side mesh for a player. The player is represented by a cube.
  * @constructor
- * @param {wsWebSocket} socket The socket this player is connected through.
  */
-function Player(socket) {
+function Player() {
   Player.super_.call(this);
-
-  // TODO socket not needed?
-  this.socket = socket;
 
   // Dimensions of player
   // TODO get from model
@@ -74,7 +70,12 @@ function Player(socket) {
 
   this.state = STANDING_STILL; // current state of player
   this.numVacKills = 0; // counter for number of vacuumed objects
+  this.prevNumVacKills = -1; // used to see if num vacuumed changed
   this.raycaster = null;
+
+  // Vacuum charge percentage
+  this.vacuumCharge = 100; // counter for % vacuum battery remaining
+  this.prevVacuumCharge = -1; // used to see if num vacuumed changed
 }
 util.inherits(Player, Movable);
 
@@ -88,17 +89,101 @@ Player.prototype.getVacKills = function() {
 
 Player.prototype.resetVacKills = function() {
     this.numVacKills = 0;
+    this.prevNumVacKills = -1;
 }
+
+/**
+ * Check if kill counter should be updated. Used by server/objects/game.js.
+ * @return {boolean} True if kill count updated, false otherwise.
+ */
+Player.prototype.didKillsChange = function() {
+  if (this.prevNumVacKills != this.numVacKills) {
+    this.prevNumVacKills = this.numVacKills;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Decrease the vacuum charge by 1%.
+ */
+Player.prototype.decVacuumCharge = function() {
+  if (this.vacuumCharge > 0) {
+    this.vacuumCharge--;
+  }
+};
+
+/**
+ * Increase the vacuum charge by 1%.
+ */
+Player.prototype.incVacuumCharge = function() {
+  if (this.vacuumCharge < 100) {
+    this.vacuumCharge++;
+  }
+};
+
+/**
+ * Set the vacuum charge value.
+ * @param {int} charge The amount of charge to set the vacuum to.
+ */
+Player.prototype.setVacuumCharge = function(charge) {
+  this.vacuumCharge = charge;
+};
+
+/**
+ * Get the vacuum charge value.
+ * @return {int} The amount of charge in the vacuum.
+ */
+Player.prototype.getVacuumCharge = function() {
+  return this.vacuumCharge;
+};
+
+/**
+ * Check if player has enough charge to vacuum.
+ * @return {boolean} True if enough charge to vacuum, false otherwise.
+ */
+Player.prototype.canVacuum = function() {
+  return (this.vacuumCharge > 0);
+};
+
+/**
+ * Check if the vacuum charge should be updated. Used by server/objects/game.js
+ * @return {boolean} True if vacuum charge updated, false otherwise.
+ */
+Player.prototype.didVacuumChargeChange = function() {
+  if (this.prevVacuumCharge != this.vacuumCharge) {
+    this.prevVacuumCharge = this.vacuumCharge;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Use the vacuum. If not in use, charge the vacuum.
+ * @param {Array.<Critter>} critters The possible critters to vacuum.
+ * @param {Critter} The closest critter the vacuum intersected with.
+ */
+Player.prototype.doVacuum = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        this.incVacuumCharge();
+        return null;
+    }
+
+    this.decVacuumCharge();
+
+    if (this.canVacuum() === true) {
+      return this.getVacIntersectionObj(critters);
+    } else {
+      return null;
+    }
+};
 
 /*
  * Checks for intersection with objects and returns the closest
  * intersected objects
  */
 Player.prototype.getVacIntersectionObj = function(critters) {
-    // check to make sure player state is vacuuming
-    if (!(this.state & VACUUMING)) {
-        return;
-    }
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
     this.raycaster = new THREE.Raycaster(origin, vector);
@@ -227,16 +312,31 @@ Player.prototype.toggleVacuum = function() {
 
 /**
  * rotates the player based off the mouse movement
+ * mouse[0] is delta X mouse coords
+ * mouse[1] is delta Y mouse coords
  */
 Player.prototype.rotate = function(mouse) {
 	// TODO client config
 	var speed = 0.01;
 
-	// the Y-axis is the "up" in our game
-	var rotationX = new THREE.Matrix4().makeRotationY(-mouse[0] * speed);
-	var rotationY = new THREE.Matrix4().makeRotationZ(-mouse[1] * speed);
-	var rot = rotationX.multiply(rotationY);
-	//var rot = rotationX;
+	// variables needed for vertical rotation
+	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var yaxis = new THREE.Vector3(0, 1, 0);
+
+	// vertical rotation math
+	var yRotateAxis = new THREE.Vector3().crossVectors(
+			yaxis, orientation3).normalize();
+	var yRotationMat = new THREE.Matrix4().makeRotationAxis(
+			yRotateAxis, mouse[1] * speed);
+
+	// horizontal rotation math
+	var xRotateAxis = new THREE.Vector3().crossVectors(
+			yRotateAxis, orientation3).normalize();
+	var xRotationMat = new THREE.Matrix4().makeRotationAxis(
+			xRotateAxis, mouse[0] * speed);
+
+	// rotation matricies should be order independent
+	var rot = xRotationMat.multiply(yRotationMat);
 
 	//this.orientation = rot.multiply(this.orientation);
 	this.orientation.applyMatrix4(rot);
