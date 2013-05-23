@@ -28,13 +28,9 @@ var STANDING_STILL = 0,
  * Constructor for a player. Makes a mesh that is the same as the
  * client-side mesh for a player. The player is represented by a cube.
  * @constructor
- * @param {wsWebSocket} socket The socket this player is connected through.
  */
-function Player(socket) {
+function Player() {
   Player.super_.call(this);
-
-  // TODO socket not needed?
-  this.socket = socket;
 
   // Dimensions of player
   // TODO get from model

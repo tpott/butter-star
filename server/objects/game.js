@@ -163,13 +163,15 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
-	var updates = 4; // new, set, del, misc
 	var worldUpdate = {
 		new : [],
 		set : [],
 		del : [],
+    vac : [],
+    kill : [],
 		misc : []
 	};
+	var updates = Object.keys(worldUpdate).length;
 
   var newCollidables = this.world.newCollidables;
 	for (var i = 0; i < newCollidables.length; i++) {
@@ -229,8 +231,41 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		updates--;
 	}
 
-  // TODO ?? this is a list of IDs only lol
-	worldUpdate.misc = this.world.miscellaneous;
+  // vacuum charge states to update
+  var vacuumCharges = this.world.vacuumCharges;
+  for (var i = 0; i < vacuumCharges.length; i++) {
+    var id = vacuumCharges[i];
+    var vacChargeObj = {
+      id: id, // player whose charge state changed
+      charge: this.world.collidables[id].charge
+    };
+    worldUpdate.vac.push(vacChargeObj);
+  }
+
+  // no vacuum charge changes, so don't send anything for this
+  if (worldUpdate.vac.length == 0) {
+    delete worldUpdate.vac;
+    updates--;
+  }
+
+  // kill counters to update
+  var killCounters = this.world.killCounters;
+  for (var i = 0; i < killCounters.length; i++) {
+    var id = killCounters[i];
+    var killCounterObj = {
+      id: id, // player whose charge state changed
+      count: this.world.collidables[id].killCount
+    };
+    worldUpdate.kill.push(killCounterObj);
+  }
+
+  // no kill counter changes, so don't send anything for this
+  if (worldUpdate.kill.length == 0) {
+    delete worldUpdate.kill;
+    updates--;
+  }
+
+	worldUpdate.misc = this.world.miscellaneous; // list of broadcast messages
 	
 	// nothing deleted, so no point in sending deletions
 	if (worldUpdate.misc.length == 0) {

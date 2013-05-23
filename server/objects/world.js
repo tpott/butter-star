@@ -33,10 +33,13 @@ function World() {
   this.nfood = 0;
 
   // Lists of IDs of objects that had state changes
-  this.newCollidables = [];
-  this.setCollidables = [];
-  this.delCollidables = [];
-  this.miscellaneous = [];
+  this.newCollidables = []; // all newly created collidables
+  this.setCollidables = []; // all collidables that had state change
+  this.delCollidables = []; // all deleted collidabls
+  this.vacuumCharges = []; // vacuum charge state changes
+  this.killCounters = []; // kill counter
+
+  this.miscellaneous = []; // Currently holds broadcast messages to all players
 
   // Make world environment
   this.createRoom_();
@@ -150,6 +153,9 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
+  this.vacuumCharges = [];
+  this.killCounters = [];
+
   this.miscellaneous = [];
 };
 

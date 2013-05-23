@@ -110,6 +110,20 @@ Connection.prototype._onmessage = function(buf) {
 		// passes in an array of updated info
 		myWorldState.updateWorldState(world.set);
 	}
+  if ('vac' in world) {
+    var i = 0;
+    while (world.vac[i].id != myPlayer.id) {
+      i++;
+    }
+    myPlayer.updateVacuumCharge(world.vac[i].charge);
+  }
+  if ('kill' in world) {
+    var i = 0;
+    while (world.kill[i].id != myPlayer.id) {
+      i++;
+    }
+    myPlayer.updateKillCounter(world.kill[i].count);
+  }
 	if ('misc' in world) {
 		// TODO
 		for (var i = 0; i < world.misc.length; i++) {

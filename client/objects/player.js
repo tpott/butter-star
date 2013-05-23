@@ -106,3 +106,10 @@ Player.prototype.stopVacuuming = function() {
 	this.vacuum = null;
 }
 
+Player.prototype.updateVacuumCharge = function(charge) {
+  console.log("updating the vacuum charge! but not actually");
+};
+
+Player.prototype.updateKillCounter = function(count) {
+  console.log("update the kill counter! but not actually");
+};
