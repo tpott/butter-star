@@ -145,8 +145,18 @@ WorldState.prototype.updateWorldState = function(newStates){
 
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
-			this.players[id].mesh.lookAt( forwards(this.players[id].position,
-						this.players[id].orientation) );
+		 
+      this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
+      
+      if(this.players[id].mesh.position.z < 0)
+      {
+        this.players[id].mesh.rotation.y -= 45 * Math.PI/2;  
+      }
+      else
+      {
+        this.players[id].mesh.rotation.y += 45 * Math.PI/2;
+      }
+//this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {
 			this.critters[id].position.copy(update.position);
@@ -174,7 +184,7 @@ function forwards(position, orientation) {
 	up.multiplyScalar(up.dot(orientation));
 
 	// projected is the orientation projected onto the x-z (horizontal) plane
-	var projected = orientation.clone().sub(up);
+	var projected =  orientation.clone().sub(up);
 
 	// returns a point that is in front of you
 	return projected.add(position);

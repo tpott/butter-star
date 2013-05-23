@@ -156,7 +156,6 @@ Game.prototype.gameTickBasedUpdate = function() {
 	// check movable states and generate forces
 	this.world.applyStates();
 	this.world.applyForces(); 
-    this.world.checkVacIntersections();
 }
 
 /**

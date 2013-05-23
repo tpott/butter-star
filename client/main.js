@@ -154,12 +154,23 @@ function initStats() {
 	stats.domElement.style.zIndex = 100;
 }
 
+function initZero() {
+  var geometry = new THREE.CubeGeometry( 20, 20, 20 );
+var material = new THREE.MeshBasicMaterial();
+
+cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+}
+
+
+
 function main() {
 	initStats();
 	initLights();
     //initModels();
 	// initTextures();
 	initSounds();
+  initZero(); 
 	//initFloor();
 	//initRoom();
   audio.pause();
