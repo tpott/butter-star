@@ -64,6 +64,7 @@ var Player = function(playerObj) {
     };*/
 
   // TODO should this be on the server side?
+  this.updateVacuumCharge(100);
   this.updateKillCounter(0);
 };
 
