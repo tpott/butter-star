@@ -3,5 +3,5 @@
 	"httpPort" : "8078",
 	"debugPort" : "8090",
 	"server" : "pisa.ucsd.edu",
-	"spawnShell" : "false"
+	"spawnShell" : "true"
 }

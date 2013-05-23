@@ -264,11 +264,14 @@ Movable.prototype.applyForces = function(collidables) {
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
+    
+    //this.mesh.position.copy(this.position); // update mesh position as well
+    this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
 
-  // Check if movable changed positions
-  if (! originalPosition.equals(this.position)) {
-	  this.moved = true;
-  }
+    // Check if movable changed positions
+    if (! originalPosition.equals(this.position)) {
+      this.moved = true;
+    }
 };
 
 /**

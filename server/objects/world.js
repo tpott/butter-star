@@ -98,6 +98,7 @@ World.prototype.spawnCritters = function(numCritters) {
 	 }
 
 	 critter.position.copy(position);
+     critter.mesh.position.copy(position);
 
     this.addCritter(critter);
   }
@@ -136,6 +137,7 @@ World.prototype.removeCritter = function(critter) {
   this.delCollidables.push(critter.id);
   if (delete this.collidables[critter.id] &&
       delete this.critters[critter.id]) {
+    console.log("ncritters is %d", this.ncritters);
     this.ncritters--;
     return true;
   } else {
@@ -161,9 +163,14 @@ World.prototype.applyStates = function() {
 		// uses the player state to create the force
 		this.players[id].move();
         
-        // uses the player state to determine vacuum intersections
+        // uses the player state to get closest vacuum intersectec obj
         // TODO: extend to also affect players/food?
-        this.players[id].checkVacIntersection(this.critters);
+        var critter = this.players[id].getVacIntersectionObj(this.critters);
+        if (critter != null) {
+            this.removeCritter(critter);
+            this.players[id].incVacKills();
+            console.log("Player %s vacuumed up a ghost! count: %d", id, this.players[id].getVacKills());
+        }
 	}
 	for (var id in this.critters) {
 		//this.critters[id].useAI();

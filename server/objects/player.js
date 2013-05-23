@@ -72,42 +72,45 @@ function Player(socket) {
 
   console.log('Player class, New player: %s', this.id);
 
-  this.state = STANDING_STILL;
+  this.state = STANDING_STILL; // current state of player
+  this.numVacKills = 0; // counter for number of vacuumed objects
+  this.raycaster = null;
 }
 util.inherits(Player, Movable);
 
-Player.prototype.checkVacIntersection = function(critters) {
+Player.prototype.incVacKills = function() {
+    this.numVacKills++;
+}
+
+Player.prototype.getVacKills = function() {
+    return this.numVacKills;
+}
+
+Player.prototype.resetVacKills = function() {
+    this.numVacKills = 0;
+}
+
+/*
+ * Checks for intersection with objects and returns the closest
+ * intersected objects
+ */
+Player.prototype.getVacIntersectionObj = function(critters) {
     // check to make sure player state is vacuuming
     if (!(this.state & VACUUMING)) {
         return;
     }
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
-    /*var vector = new THREE.Vector3(0,0,-1);
-    var matrix_x = new THREE.Matrix4();
-    var matrix_y = new THREE.Matrix4();
-    var angleY = this.direction * Math.PI/180.0;
-    var angleX = this.vacAngleY * Math.PI/180.0;
-    matrix_x.identity();
-    matrix_y.identity();
-    matrix_x.makeRotationX(-angleX);
-    matrix_y.makeRotationY(angleY);
-    vector.applyMatrix4(matrix_x);
-    vector.applyMatrix4(matrix_y);*/
-    var raycaster = new THREE.Raycaster(origin, vector);
-    //console.log(origin);
-    //console.log(vector);
+    this.raycaster = new THREE.Raycaster(origin, vector);
     for (key in critters) {
-        var intersects = raycaster.intersectObject(critters[key].mesh);
-        console.log(critters[key].mesh);
-        //console.log(critters[key].mesh.position);
-        if(intersects.length > 0 /*&& intersects[0].distance < 10*/) {
-            console.log("player: %s is intersecting with critter: %s", 
-                        this.id, 
-                        critters[key].id);
-            //break;
+        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        // check if any intersections within vacuum distance
+        // TODO: don't hardcode vacuum distance
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            return critters[key]; // return closest critter
         }
     }
+    return null; // no intsections
 }
 
 Player.prototype.setDefaultState = function() {
