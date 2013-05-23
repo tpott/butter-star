@@ -39,6 +39,10 @@ function World() {
 
   this.miscellaneous = []; // Currently holds broadcast messages to all players
 
+  // needed for logic
+  //  potential problem: used before set
+  this.handler = null;
+
   // Make world environment
   this.createRoom_();
 }
@@ -64,6 +68,8 @@ World.prototype.addPlayer = function(player) {
     this.collidables[player.id] = player;
 	this.players[player.id] = player;
 	this.nplayers++;
+
+  this.handler.emit('newplayer');
 
   this.newCollidables.push(player.id);
 	return player.id;
@@ -123,6 +129,9 @@ World.prototype.removePlayer = function(player) {
   if (delete this.collidables[player.id] &&
 	    delete this.players[player.id]) {
 		this.nplayers--;
+
+    this.handler.emit('delplayer');
+
 		return true;
 	} else {
 		return false;
@@ -138,8 +147,10 @@ World.prototype.removeCritter = function(critter) {
   this.delCollidables.push(critter.id);
   if (delete this.collidables[critter.id] &&
       delete this.critters[critter.id]) {
-    console.log("ncritters is %d", this.ncritters);
     this.ncritters--;
+
+    this.handler.emit('delcritter');
+
     return true;
   } else {
     return false;
@@ -160,6 +171,10 @@ World.prototype.resetUpdateStateLists = function() {
 
 /* WORLD MUTATOR FUNCTIONS */
 
+World.prototype.attachHandler = function(handler) {
+  this.handler = handler;
+}
+
 World.prototype.applyStates = function() {
 	for (var id in this.players) {
 		// uses the player state to create the force
@@ -167,11 +182,10 @@ World.prototype.applyStates = function() {
         
         // uses the player state to get closest vacuum intersectec obj
         // TODO: extend to also affect players/food?
-        var critter = this.players[id].getVacIntersectionObj(this.critters);
+        var critter = this.players[id].doVacuum(this.critters);
         if (critter != null) {
             this.removeCritter(critter);
             this.players[id].incVacKills();
-            console.log("Player %s vacuumed up a ghost! count: %d", id, this.players[id].getVacKills());
         }
 	}
 	for (var id in this.critters) {

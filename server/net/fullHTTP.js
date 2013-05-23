@@ -95,7 +95,7 @@ function dynamic(server, request) {
 			htmlGameList += "<a href=\"" + id + "\">\n";
 			htmlGameList += "\t<div class=\"activeGames\">\n";
 			// game stats
-			htmlGameList += "\t\t<h4>" + game.status + "</h4>\n";
+			htmlGameList += "\t\t<h4>" + game.handler.status + "</h4>\n";
 			htmlGameList += "\t\t<h3>" + game.world.nplayers + " players</h3>\n";
 			htmlGameList += "\t\t<h5>Join game!</h5>\n";
 			htmlGameList += "\t</div>\n</a>\n\n";

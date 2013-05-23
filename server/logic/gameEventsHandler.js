@@ -9,8 +9,11 @@
 var util = require('util'),
 	 events = require('events');
 
-var START_GAME_DELAY = 10 * 1000; // 10 seconds
+var START_GAME_DELAY = 5 * 1000; // 5 seconds
 var END_GAME_DELAY = 5 * 1000; // 5 seconds
+var END_ROUND_DELAY = 5 * 1000; // 5 seconds
+
+var CRIT_MULT = 5;
 
 function Handler(server, gameid, world) {
 	// these two are needed for closing a game
@@ -18,6 +21,12 @@ function Handler(server, gameid, world) {
 	this.gameid = gameid;
 
 	this.world = world;
+  this.world.attachHandler(this);
+
+  this.round = 0;
+
+  // used in client gamelist
+  this.status = "Not yet started";
 
 	var self = this;
 	this.on('newgame', function() {
@@ -36,6 +45,11 @@ function Handler(server, gameid, world) {
 		}
 	});
 
+  this.on('delcritter', function() {
+    if (self.world.ncritters == 0) {
+      setTimeout(self.endRound(), END_ROUND_DELAY);
+    }
+  });
 }
 
 util.inherits(Handler, events.EventEmitter);
@@ -47,7 +61,13 @@ util.inherits(Handler, events.EventEmitter);
 Handler.prototype.startRound = function() {
 	var self = this;
 	return function() {
-		self.message("Round Starting");
+    self.round++;
+
+		self.message("Round " + self.round + " Starting");
+
+    self.status = "Round " + self.round;
+
+    self.world.spawnCritters( CRIT_MULT * self.round );
 	};
 }
 
@@ -57,6 +77,7 @@ Handler.prototype.startRound = function() {
 Handler.prototype.message = function(str) {
 	var message = { 'mess' : str };
 	this.world.miscellaneous.push(message);
+  console.log(this.world.miscellaneous);
 }
 
 /**
@@ -72,5 +93,16 @@ Handler.prototype.endGame = function() {
 		}
 	};
 }
+
+/**
+ * Returns a function that will end the round
+ */
+Handler.prototype.endRound = function() {
+	var self = this;
+	return function() {
+    self.startRound()();
+	};
+}
+
 
 module.exports = Handler;

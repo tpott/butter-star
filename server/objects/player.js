@@ -105,6 +105,24 @@ Player.prototype.didKillsChange = function() {
 };
 
 /**
+ * Decrease the vacuum charge by 1%.
+ */
+Player.prototype.decVacuumCharge = function() {
+  if (this.vacuumCharge > 0) {
+    this.vacuumCharge--;
+  }
+};
+
+/**
+ * Increase the vacuum charge by 1%.
+ */
+Player.prototype.incVacuumCharge = function() {
+  if (this.vacuumCharge < 100) {
+    this.vacuumCharge++;
+  }
+};
+
+/**
  * Set the vacuum charge value.
  * @param {int} charge The amount of charge to set the vacuum to.
  */
@@ -121,6 +139,14 @@ Player.prototype.getVacuumCharge = function() {
 };
 
 /**
+ * Check if player has enough charge to vacuum.
+ * @return {boolean} True if enough charge to vacuum, false otherwise.
+ */
+Player.prototype.canVacuum = function() {
+  return (this.vacuumCharge > 0);
+};
+
+/**
  * Check if the vacuum charge should be updated. Used by server/objects/game.js
  * @return {boolean} True if vacuum charge updated, false otherwise.
  */
@@ -132,15 +158,32 @@ Player.prototype.didVacuumChargeChange = function() {
   return false;
 };
 
+/**
+ * Use the vacuum. If not in use, charge the vacuum.
+ * @param {Array.<Critter>} critters The possible critters to vacuum.
+ * @param {Critter} The closest critter the vacuum intersected with.
+ */
+Player.prototype.doVacuum = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        this.incVacuumCharge();
+        return null;
+    }
+
+    this.decVacuumCharge();
+
+    if (this.canVacuum() === true) {
+      return this.getVacIntersectionObj(critters);
+    } else {
+      return null;
+    }
+};
+
 /*
  * Checks for intersection with objects and returns the closest
  * intersected objects
  */
 Player.prototype.getVacIntersectionObj = function(critters) {
-    // check to make sure player state is vacuuming
-    if (!(this.state & VACUUMING)) {
-        return;
-    }
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
     this.raycaster = new THREE.Raycaster(origin, vector);

@@ -33,16 +33,9 @@ function Game(server) {
 	this.sockets = {};
 	this.world = new World();
 	
-	this.world.spawnCritters(10);
-
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
 	this.handler = new Handler(this.server, this.id, this.world);
-
-	// game logic
-	// TODO move to server/logic/gameEventsHandler
-	this.status = "Not yet started";
-	this.round = 0;
 
 	var self = this;
 	function serverTick() {
@@ -63,7 +56,8 @@ function Game(server) {
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player); // Also adds player ID to new collidables
-  this.handler.emit('newplayer', socket.player.id);
+  // moved to server/objects/world.js
+  // this.handler.emit('newplayer', socket.player.id);
 
   var initObj = {
 	  id : socket.id,
@@ -97,7 +91,8 @@ Game.prototype.addSocket = function(socket) {
  */
 Game.prototype.removeSocket = function(socket) {
   this.world.removePlayer(socket.player); // Also adds player ID to delete list
-  this.handler.emit('delplayer', socket.player.id);
+  // moved to server/objects/world.js
+  //this.handler.emit('delplayer', socket.player.id);
 
 	if (delete this.sockets[socket.id]) {
 		return true;

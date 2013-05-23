@@ -63,7 +63,7 @@ var Player = function(playerObj) {
         state   : 'stand'
     };*/
 
-  // TODO should this be on the server side?
+  // TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
 };
