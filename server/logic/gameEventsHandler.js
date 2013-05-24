@@ -77,7 +77,6 @@ Handler.prototype.startRound = function() {
 Handler.prototype.message = function(str) {
 	var message = { 'mess' : str };
 	this.world.miscellaneous.push(message);
-  console.log(this.world.miscellaneous);
 }
 
 /**
