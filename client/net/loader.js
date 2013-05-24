@@ -11,7 +11,7 @@ var scripts = [
 	// libraries
 	// TODO is MTLLoader being used?
 	"three.min.js", "MTLLoader.js", "OBJMTLLoader.js", "stats.min.js",
-	"jquery.js", "ColladaLoader.js",
+	"jquery.js", "jquery-ui.js", "ColladaLoader.js",
 
 	// objects 
 	"player.js", "worldstate.js", "critter.js", "environment.js",
@@ -26,11 +26,11 @@ var scripts = [
 	"controls.js", "keyboard.js", "mouse.js", "screen.js", "THREEx.FullScreen.js", 
 	"PointerLockControls.js", 
 
-	// effects
+	// shaders
 	"vacuum.js",
 
 	// gui
-	"minimap.js", "options.js",
+	"minimap.js", "options.js", "notifications.js", "status.js",
 
 	// this defines main()
 	"main.js"
@@ -51,7 +51,7 @@ var modelFiles = {
 	],
   // TODO get bunny models...
 	critters : [
-		['Default critter', 'boo.obj', 'boo.mtl', 0.08]
+		['Default critter', 'boo.obj', 'boo.mtl', 0.4]
 	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],

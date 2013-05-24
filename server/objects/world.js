@@ -11,6 +11,7 @@ var THREE = require('three');
 var ButterOBJLoader = require('./OBJLoader.js');
 var Environment = require('./environment.js');
 var Critter = require('./critter.js');
+var randomPosition = require('./random.js').randomPosition;
 
 /**
  * Construct the game play world.
@@ -32,10 +33,15 @@ function World() {
   this.nfood = 0;
 
   // Lists of IDs of objects that had state changes
-  this.newCollidables = [];
-  this.setCollidables = [];
-  this.delCollidables = [];
-  this.miscellaneous = [];
+  this.newCollidables = []; // all newly created collidables
+  this.setCollidables = []; // all collidables that had state change
+  this.delCollidables = []; // all deleted collidabls
+
+  this.miscellaneous = []; // Currently holds broadcast messages to all players
+
+  // needed for logic
+  //  potential problem: used before set
+  this.handler = null;
 
   // Make world environment
   this.createRoom_();
@@ -63,6 +69,8 @@ World.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
 	this.nplayers++;
 
+  this.handler.emit('newplayer');
+
   this.newCollidables.push(player.id);
 	return player.id;
 }
@@ -78,7 +86,7 @@ World.prototype.addCritter = function(critter) {
   this.ncritters++;
 
   this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
-  return critter.id
+  return critter.id;
 }
 
 /**
@@ -88,15 +96,28 @@ World.prototype.addCritter = function(critter) {
 World.prototype.spawnCritters = function(numCritters) {
   for (var i = 0; i < numCritters; i++) {
     var critter = new Critter();
-    // TODO position needs to be somewhere that isnt occupied
-    critter.position.set(
-        Math.floor(Math.random() * 20 - 10) * 20,
-        Math.floor(Math.random() * 20) * 20 + 10,
-        Math.floor(Math.random() * 20 - 10) * 20,
-        1);
+
+	 var position = randomPosition();
+
+	 // while position is out of the environment or already occupied
+	 while (! this.enviroContains(position) || this.occupied(position)) {
+		 position = randomPosition();
+	 }
+
+	 critter.position.copy(position);
+     critter.mesh.position.copy(position);
+
     this.addCritter(critter);
   }
 };
+
+World.prototype.enviroContains = function(pos) {
+	return true;
+}
+
+World.prototype.occupied = function(pos) {
+	return false;
+}
 
 /**
  * Remove a player from the world.
@@ -108,6 +129,9 @@ World.prototype.removePlayer = function(player) {
   if (delete this.collidables[player.id] &&
 	    delete this.players[player.id]) {
 		this.nplayers--;
+
+    this.handler.emit('delplayer');
+
 		return true;
 	} else {
 		return false;
@@ -124,6 +148,9 @@ World.prototype.removeCritter = function(critter) {
   if (delete this.collidables[critter.id] &&
       delete this.critters[critter.id]) {
     this.ncritters--;
+
+    this.handler.emit('delcritter');
+
     return true;
   } else {
     return false;
@@ -137,11 +164,34 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
+
   this.miscellaneous = [];
 };
 
 
 /* WORLD MUTATOR FUNCTIONS */
+
+World.prototype.attachHandler = function(handler) {
+  this.handler = handler;
+}
+
+World.prototype.applyStates = function() {
+	for (var id in this.players) {
+		// uses the player state to create the force
+		this.players[id].move();
+        
+        // uses the player state to get closest vacuum intersectec obj
+        // TODO: extend to also affect players/food?
+        var critter = this.players[id].doVacuum(this.critters);
+        if (critter != null) {
+            this.removeCritter(critter);
+            this.players[id].incVacKills();
+        }
+	}
+	for (var id in this.critters) {
+		//this.critters[id].useAI();
+	}
+}
 
 /**
  * Apply forces to all objects that should be applied at the end of every game tick.
@@ -161,18 +211,19 @@ World.prototype.applyForces = function() {
 	}
 
   // TODO critters
+	for (var id in this.critters) {
+		// add gravity
+		this.critters[id].addGravity(); // each player has individual gravity
+
+		// collision detection should happen in this call
+		// apply forces ==> update velocity + update position
+		this.critters[id].applyForces(this.collidables);
+
+    if (this.critters[id].moved) {
+      this.setCollidables.push(id);
+    }
+	}
   // TODO food
 }
 
-/**
- * Checks all players to see if there is a vacuum intersection between a player
- * and some collidable object
- */
-World.prototype.checkVacIntersections = function() {
-    for (var id in this.players) {
-        if(this.players[id].isVacuum) {
-            this.players[id].checkVacIntersection(this.players);
-        }
-    }
-}
 module.exports = World;
