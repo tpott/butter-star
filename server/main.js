@@ -25,6 +25,21 @@ var serverDebugger = new debug(config, httpServer, wsServer);
 // TODO when user selects 'New Game' 
 //console.log('New game: %s', httpServer.newGame());
 
+/*
 module.exports.config = config;
 module.exports.httpServer = httpServer;
 module.exports.wsServer = wsServer;
+*/
+
+// javascript hack
+/*Object.prototype.keys = function() {
+	return Object.keys(this);
+}*/
+
+// needed for the shell
+global.games = httpServer.games;
+var startShell = require('./shell.js');
+
+if (config.spawnShell) {
+	startShell();
+}

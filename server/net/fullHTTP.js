@@ -22,6 +22,8 @@ var files = [
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
+	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
+	['jquery-ui.css', "", client + 'libs/jquery-ui.css', 'text/css'],
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
@@ -39,20 +41,25 @@ var files = [
 	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
+	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
 	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
-	['vacuum.js', "", client + 'shader/particleSystem/Vacuum.js', 'text/javascript'],
+	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
+	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
+	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 	// our data files
-  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
   ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
+  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
+  ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
+  ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
@@ -88,8 +95,8 @@ function dynamic(server, request) {
 			htmlGameList += "<a href=\"" + id + "\">\n";
 			htmlGameList += "\t<div class=\"activeGames\">\n";
 			// game stats
-			htmlGameList += "\t\t<h4>" + game.level + "</h4>\n";
-			htmlGameList += "\t\t<h3>" + game.nplayers + " players</h3>\n";
+			htmlGameList += "\t\t<h4>" + game.handler.status + "</h4>\n";
+			htmlGameList += "\t\t<h3>" + game.world.nplayers + " players</h3>\n";
 			htmlGameList += "\t\t<h5>Join game!</h5>\n";
 			htmlGameList += "\t</div>\n</a>\n\n";
 		}
@@ -248,7 +255,7 @@ Server.prototype.initFiles = function(config) {
 }
 
 Server.prototype.newGame = function() {
-	var g = new Game();
+	var g = new Game(this);
 	this.games[g.id] = g;
 	this.ngames++;
 	return g.id;

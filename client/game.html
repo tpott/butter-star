@@ -3,6 +3,7 @@
 	<title> 
 		DUST BUSTERS!
 	</title> 
+  <link href="jquery-ui.css" rel="stylesheet" type="text/css">
 	<style> 
 		html, body {
 				width: 100%;
@@ -125,11 +126,11 @@
 	</script>	
 	<script> 
 
-		// loadAll and onLast are defined in loader.js
+		// load* functions are defined in client/net/loader.js
 		// main is from main.js
-		// TODO move to main
-		loadAll(scripts, document);
-		//onLast(main);
+		loadScripts(scripts, document);
+		//loadModels();
+		console.log("All loading started.");
 		
 	</script> 
 </body> 

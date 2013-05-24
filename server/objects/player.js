@@ -12,32 +12,45 @@ var THREE = require('three');
 var util = require('util');
 
 var Movable = require('./movable.js');
+var Collidable = require('./collidable.js');
+var Events = require('../controls/handler.js');
+
+// player states
+var STANDING_STILL = 0,
+	 MOVING_FORWARD = 1,
+	 MOVING_BACKWARD = 2,
+	 MOVING_LEFT = 4,
+	 MOVING_RIGHT = 8,
+	 VACUUMING = 16,
+	 JUMPING = 32;
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
  * client-side mesh for a player. The player is represented by a cube.
  * @constructor
- * @param {wsWebSocket} socket The socket this player is connected through.
  */
-function Player(socket) {
+function Player() {
   Player.super_.call(this);
 
-  this.socket = socket;
-
   // Dimensions of player
+  // TODO get from model
   this.width = 1;
   this.height = 3;
   this.depth = 1;
 
   // 3D object this represents
+  // TODO make this load the player model. Trevor: keep the radius line!
   var geometry = new THREE.CubeGeometry(
       this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  var material = new THREE.MeshBasicMaterial();
   this.mesh = new THREE.Mesh(geometry, material);
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
+  this.keyPresses = [];
+
   // TODO necessary? -Trevor
 	this.camera = {
+		speed : 1,
 		distance : 5,
 		x : 0,
 		y : 0,
@@ -51,55 +64,237 @@ function Player(socket) {
   this.isVacuum = false;
   this.vacAngleY = 0;
 
-	console.log('Player class, New player: %s', this.id);
-  // TODO is this the only reason we need socket?
-	this.socket.send('ID:' + this.id);
+  this.type = Collidable.types.PLAYER;
+
+  console.log('Player class, New player: %s', this.id);
+
+  this.state = STANDING_STILL; // current state of player
+  this.numVacKills = 0; // counter for number of vacuumed objects
+  this.prevNumVacKills = -1; // used to see if num vacuumed changed
+  this.raycaster = null;
+
+  // Vacuum charge percentage
+  this.vacuumCharge = 100; // counter for % vacuum battery remaining
+  this.prevVacuumCharge = -1; // used to see if num vacuumed changed
 }
 util.inherits(Player, Movable);
+
+Player.prototype.incVacKills = function() {
+    this.numVacKills++;
+}
+
+Player.prototype.getVacKills = function() {
+    return this.numVacKills;
+}
+
+Player.prototype.resetVacKills = function() {
+    this.numVacKills = 0;
+    this.prevNumVacKills = -1;
+}
+
+/**
+ * Check if kill counter should be updated. Used by server/objects/game.js.
+ * @return {boolean} True if kill count updated, false otherwise.
+ */
+Player.prototype.didKillsChange = function() {
+  if (this.prevNumVacKills != this.numVacKills) {
+    this.prevNumVacKills = this.numVacKills;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Decrease the vacuum charge by 1%.
+ */
+Player.prototype.decVacuumCharge = function() {
+  if (this.vacuumCharge > 0) {
+    this.vacuumCharge--;
+  }
+};
+
+/**
+ * Increase the vacuum charge by 1%.
+ */
+Player.prototype.incVacuumCharge = function() {
+  if (this.vacuumCharge < 100) {
+    this.vacuumCharge++;
+  }
+};
+
+/**
+ * Set the vacuum charge value.
+ * @param {int} charge The amount of charge to set the vacuum to.
+ */
+Player.prototype.setVacuumCharge = function(charge) {
+  this.vacuumCharge = charge;
+};
+
+/**
+ * Get the vacuum charge value.
+ * @return {int} The amount of charge in the vacuum.
+ */
+Player.prototype.getVacuumCharge = function() {
+  return this.vacuumCharge;
+};
+
+/**
+ * Check if player has enough charge to vacuum.
+ * @return {boolean} True if enough charge to vacuum, false otherwise.
+ */
+Player.prototype.canVacuum = function() {
+  return (this.vacuumCharge > 0);
+};
+
+/**
+ * Check if the vacuum charge should be updated. Used by server/objects/game.js
+ * @return {boolean} True if vacuum charge updated, false otherwise.
+ */
+Player.prototype.didVacuumChargeChange = function() {
+  if (this.prevVacuumCharge != this.vacuumCharge) {
+    this.prevVacuumCharge = this.vacuumCharge;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Use the vacuum. If not in use, charge the vacuum.
+ * @param {Array.<Critter>} critters The possible critters to vacuum.
+ * @param {Critter} The closest critter the vacuum intersected with.
+ */
+Player.prototype.doVacuum = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        this.incVacuumCharge();
+        return null;
+    }
+
+    this.decVacuumCharge();
+
+    if (this.canVacuum() === true) {
+      return this.getVacIntersectionObj(critters);
+    } else {
+      return null;
+    }
+};
+
+/*
+ * Checks for intersection with objects and returns the closest
+ * intersected objects
+ */
+Player.prototype.getVacIntersectionObj = function(critters) {
+    var origin = new THREE.Vector3().copy(this.position);
+    var vector = new THREE.Vector3().copy(this.orientation);
+    this.raycaster = new THREE.Raycaster(origin, vector);
+    for (key in critters) {
+        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        // check if any intersections within vacuum distance
+        // TODO: don't hardcode vacuum distance
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            return critters[key]; // return closest critter
+        }
+    }
+    return null; // no intsections
+}
+
+Player.prototype.setDefaultState = function() {
+	this.state = STANDING_STILL;
+}
+
+Player.prototype.updateState = function(evt) {
+	switch (Events[evt]) {
+		case Events['MOVE_FORWARD']:
+			this.state ^= MOVING_FORWARD;
+			break;
+		case Events['MOVE_BACKWARD']:
+			this.state ^= MOVING_BACKWARD;
+			break;
+		case Events['MOVE_LEFT']:
+			this.state ^= MOVING_LEFT;
+			break;
+		case Events['MOVE_RIGHT']:
+			this.state ^= MOVING_RIGHT;
+			break;
+		case Events['VACUUM']:
+			this.state ^= VACUUMING;
+			break;
+		case Events['JUMPING']:
+			this.state ^= JUMPING;
+			break;
+	}
+
+	this.moved = true;
+}
+
+Player.prototype.isMoving = function() {
+	return this.state & MOVING_FORWARD || this.state & MOVING_BACKWARD ||
+		this.state & MOVING_LEFT || this.state & MOVING_RIGHT;
+}
 
 /**
  * Calculate player movements and let superclass handle collisions and
  * set actual player movements.
- * @param {Event} evt The player movement event.
+ * @param {Event} evt The player movement event (string).
  */
-Player.prototype.move = function(evt) {
-  var speed = evt.speed;
-	if(evt.sprinting === true) {
-		evt.speed = 0.75;
-	}
-	else {
-		evt.speed = 0.125;
+Player.prototype.move = function() {
+	if (! this.isMoving() ) {
+		return;
 	}
 
-	var direction = evt.angle;
-  // TODO can we change these to bitmasks?
-  if(evt.front && !evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 45;
-    } else if(!evt.left && evt.right) {
-      direction += 315;
-    } else { //only forward
-      direction += 0;
+	// MAGIC NUMBER
+	var speed = 0.125;
+
+	// TODO not use y-axis as up? 
+	// an Up vector in OUR world
+	var up = new THREE.Vector4(0, 1, 0, 0);
+
+	// up becomes the orientation projected upwards
+	up.multiplyScalar(up.dot(this.orientation));
+
+	// projected is the orientation projected onto the x-z (horizontal) plane
+	var projected = this.orientation.clone().sub(up);
+
+	// divide by length for normalization
+	// acos returns radians, but Math.sin and cos take degrees...
+  //console.log(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() );
+  var direction = 180.0 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() ) / Math.PI;	
+
+  
+  if (this.state & MOVING_FORWARD) {
+	}
+	else if (this.state & MOVING_BACKWARD) {
+		direction += 180;
+	}
+	else if (this.state & MOVING_LEFT) {
+		if(projected.z > 0)
+    {
+      direction += 270;
     }
-  } else if(!evt.front && evt.Backwards) {
-    if(evt.left && !evt.right) {
-      direction += 135;
-    } else if(!evt.left && evt.right) {
-      direction += 225;
-    } else { //only back
-      direction += 180;
+    else
+    {
+      direction += 90;
     }
-  } else if(evt.left && !evt.right
-      && !evt.front && !evt.Backwards) { // only left
-    direction += 90;
-  } else if(!evt.left && evt.right
-      && !evt.front && !evt.Backwards) { // only right
+  }
+	else if (this.state & MOVING_RIGHT) {
+		if(projected.z > 0)
+    {
+      direction += 90;
+    }
+    else
+    {
     direction += 270;
+	  }
   }
 
-	var dx = -1 * (Math.sin(direction * Math.PI / 180) * speed);
+  if(projected.z > 0)
+  {
+    direction = -direction;
+  }
+
+	var dx = 1 * (Math.cos(direction * Math.PI / 180) * speed);
   var dy = 0;
-	var dz = -1 * (Math.cos(direction * Math.PI / 180) * speed);
+	var dz = -1 * (Math.sin(direction * Math.PI / 180) * speed);
 
 	//var magicAmplifier = 0.8;
 	var force = new THREE.Vector4(dx, dy, dz, 0);
@@ -108,13 +303,54 @@ Player.prototype.move = function(evt) {
   this.addForce(force);
 };
 
+Player.prototype.toggleVacuum = function() {
+	// XOR
+	this.state ^= VACUUMING;
+	console.log("Player %s %s vacuuming", this.id, 
+			this.state & VACUUMING ? "is" : "is not");
+};
+
+/**
+ * rotates the player based off the mouse movement
+ * mouse[0] is delta X mouse coords
+ * mouse[1] is delta Y mouse coords
+ */
+Player.prototype.rotate = function(mouse) {
+	// TODO client config
+	var speed = 0.01;
+
+	// variables needed for vertical rotation
+	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var yaxis = new THREE.Vector3(0, 1, 0);
+
+	// vertical rotation math
+	var yRotateAxis = new THREE.Vector3().crossVectors(
+			yaxis, orientation3).normalize();
+	var yRotationMat = new THREE.Matrix4().makeRotationAxis(
+			yRotateAxis, mouse[1] * speed);
+
+	// horizontal rotation math
+	var xRotateAxis = new THREE.Vector3().crossVectors(
+			yRotateAxis, orientation3).normalize();
+	var xRotationMat = new THREE.Matrix4().makeRotationAxis(
+			xRotateAxis, mouse[0] * speed);
+
+	// rotation matricies should be order independent
+	var rot = xRotationMat.multiply(yRotationMat);
+
+	//this.orientation = rot.multiply(this.orientation);
+	this.orientation.applyMatrix4(rot);
+
+	// necessary for graphics to be updated
+	this.moved = true;
+};
+
 /**
  * Updates the position of the vacuum effect.
  * @param {Event} playerEvent The player movement event.
  */
 // TODO make a vacuum obj. players should have a vacuum obj.
-Player.prototype.updateVacuum = function(playerEvent)
-{
+Player.prototype.updateVacuum = function(playerEvent) {
 	//player done vacuum'in
 	if(playerEvent.isVacuum == false)
 		this.initVacPos = null;

@@ -64,7 +64,16 @@ Server.prototype._newSocket = function(socket) {
 
 	// Socket event handlers
 	socket.on('message', function(anything) {
-        game.eventBasedUpdate(socket, anything);
+		var clientData = JSON.parse(anything);
+		//var clientData = game.parseInput(player, anything);
+		//console.log(clientData);
+
+		if (clientData instanceof Array) {
+			game.eventBasedUpdate(player, clientData);
+		}
+		else {
+			console.log("Bad data from client");
+		}
 	});
 
 	socket.on('close', function() {
