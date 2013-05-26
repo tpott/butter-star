@@ -80,7 +80,8 @@ var animations = {
 	players : [
 	],
 	critters : [
-		[null, null, 'Bunny Kill', 'bunny_spin.dae', 1.]
+		[null, null, 'Bunny Kill', 'bunny_spin.dae', 0.2]
+		[null, null, 'WebGL Monster', 'monster.dae', 1.]
 	],
 	environments : [
 	],
@@ -142,7 +143,8 @@ function loadModels() {
 			var scale = models[type][index][4];
 			object.scale.set(scale, scale, scale);
 			models[type][index][0] = object;
-			console.log("%s loaded %d/%d.", type, index+1, models[type].length);
+			console.log("%s model \"%s\" loaded %d/%d.", type, 
+					models[type][index][1], index+1, models[type].length);
 			attemptStart();
 		};
 	}
@@ -172,8 +174,7 @@ function loadAnimations() {
 			animations[type][index][1] = collada;
 
 			console.log("%s animation \"%s\" loaded %d/%d.", type, 
-					animations[type][index][2], index+1, 
-					animations[type].length);
+				animations[type][index][2], index+1, animations[type].length);
 			attemptStart();
 
 			// something about collada.skins[0]

@@ -15,7 +15,9 @@ var Critter = function(critterObj) {
 
   this.type = types.CRITTER;
 
-	this.mesh = models.critters[this.model][0].clone();
+  // temp
+	//this.mesh = models.critters[this.model][0].clone();
+	this.mesh = animations.critters[this.model][0].clone();
 
 	// necessary for graphics
 	this.mesh.position = this.position;
