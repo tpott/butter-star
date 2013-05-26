@@ -97,7 +97,7 @@ Player.prototype.startVacuuming = function() {
 
 Player.prototype.updateVacuum = function() {
 	// translation from where vacuuming began
-	var vacTrans = new THREE.Vector3(0,0,0);
+	var vacTrans = new THREE.Vector3().copy(this.position);
 
 	// angle from positive x axis towards positive z axis
 	var xzPlaneAngle = 0;
