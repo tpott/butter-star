@@ -90,12 +90,28 @@ var animations = {
 	]
 };
 
+function logger(doc, elem) {
+	return function () {};
+	// TODO
+	return function log(str) {
+		var text = doc.createTextNode(str + "\n");
+		elem.appendChild(text);
+	};
+}
+
+var log;
+
 /**
  * appends script elements to the DOM
  * @param scripts - a list/object
  * @param doc - the document global
  */
-function loadScripts(scripts, doc) {
+function loadAll(doc) {
+	var load_elem = doc.getElementById("loader");
+	console.log(load_elem);
+	log = logger(doc, load_elem);
+
+	// scripts is a global defined in this file
 	var head = doc.getElementsByTagName('head')[0];
 	singleScriptLoader(scripts, 0, doc, head);
 }
@@ -114,6 +130,8 @@ function singleScriptLoader(scripts, index, doc, head) {
 
 	console.log('Loading "%s" %d/%d', 
 			scripts[index][0], index+1, scripts.length);
+	log('Loading "' + scripts[index][0] + '" ' + (index+1) + '/' +
+			scripts.length + '');
 
 	// create the new DOM script element from the url
 	var script = doc.createElement('script');
@@ -144,8 +162,11 @@ function loadModels() {
 			var scale = models[type][index][4];
 			object.scale.set(scale, scale, scale);
 			models[type][index][0] = object;
+
 			console.log("%s model \"%s\" loaded %d/%d.", type, 
 					models[type][index][1], index+1, models[type].length);
+			log("" + type + " model \"" + models[type][index][1] + 
+					"\" loaded " + (index+1) + "/" + models[type].length + ""); 
 			attemptStart();
 		};
 	}
@@ -163,7 +184,6 @@ function loadModels() {
  * loads all the .dae files for animations
  */
 function loadAnimations() {
-	// http://stackoverflow.com/questions/16202602/multiple-different-collada-scenes-with-three-js-animation-wont-work
 	// stupid javascript
 	function loadFunc(type, index) {
 		return function(collada) {
@@ -176,6 +196,9 @@ function loadAnimations() {
 
 			console.log("%s animation \"%s\" loaded %d/%d.", type, 
 				animations[type][index][2], index+1, animations[type].length);
+			log("" + type + " animation \"" + animations[type][index][2] + 
+					"\" loaded " + (index+1) + "/" + animations[type].length + 
+					""); 
 			attemptStart();
 
 			// something about collada.skins[0]
@@ -207,6 +230,11 @@ function attemptStart() {
 			break;
 		case ANIMATIONS_NEEDED + MODELS_NEEDED + SCRIPTS_NEEDED:
 			console.log("Enough loading, time to play!");
+
+			// TODO
+			// remove the loading text
+			//document.removeChild(document.getElementById("loader"));
+
 			main();
 			break;
 	}
