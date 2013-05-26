@@ -6,7 +6,10 @@
  * @author Trevossdwwwwsss
  */
 
-var filesLoaded = 0, filesNeeded = 50;
+var filesLoaded = 0; 
+var SCRIPTS_NEEDED = 27,
+	 MODELS_NEEDED = 5,
+	 ANIMATIONS_NEEDED = 2;
 
 // TODO order!!
 var scripts = [
@@ -77,6 +80,7 @@ var animations = {
 	players : [
 	],
 	critters : [
+		[null, null, 'Bunny Kill', 'bunny_spin.dae', 1.]
 	],
 	environments : [
 	],
@@ -103,9 +107,6 @@ function loadScripts(scripts, doc) {
 function singleScriptLoader(scripts, index, doc, head) {
 	// stop recurrance
 	if (index >= scripts.length) {
-		loadModels();
-		//attemptStart();
-		//_lastFunc();
 		return;
 	}
 
@@ -123,7 +124,6 @@ function singleScriptLoader(scripts, index, doc, head) {
 
 	// load next file!
 	script.onload = function() {
-		console.log('loaded %s', scripts[index][0]);
 		singleScriptLoader(scripts, index+1, doc, head);
 	};
 
@@ -165,15 +165,15 @@ function loadAnimations() {
 	function loadFunc(type, index) {
 		return function(collada) {
 			var object = collada.scene;
-			// TODO
-			var scale = animationFiles[type][index][3];
+			var scale = animations[type][index][4];
 			object.scale.set(scale, scale, scale);
-			// TODO
-			animations[type][index] = object;
-			// TODO
+
+			animations[type][index][0] = object;
+			animations[type][index][1] = collada;
+
 			console.log("%s animation \"%s\" loaded %d/%d.", type, 
-					animationFiles[type][index][0], index+1, 
-					animationFiles[type].length);
+					animations[type][index][2], index+1, 
+					animations[type].length);
 			attemptStart();
 
 			// something about collada.skins[0]
@@ -181,13 +181,11 @@ function loadAnimations() {
 	}
 	console.log("Loading animations");
 	// TODO
-	for (var type in animationFiles) {
+	for (var type in animations) {
 		// TODO
-		for (var i = 0; i < animationFiles[type].length; i++) {
+		for (var i = 0; i < animations[type].length; i++) {
 			var loader = new THREE.ColladaLoader();
-			loader.addEventListener( 'load', loadFunc(type, i) );
-			// TODO
-			loader.load( animationFiles[type][i][1], animationFiles[type][i][2] );
+			loader.load( animations[type][i][3], loadFunc(type, i) );
 		}
 	}
 }
@@ -198,8 +196,16 @@ function loadAnimations() {
  */
 function attemptStart() {
 	filesLoaded++;
-	if (filesLoaded == filesNeeded) {
-		console.log("Enough loading, time to play!");
-		main();
+	switch (filesLoaded) {
+		case SCRIPTS_NEEDED:
+			loadModels();
+			break;
+		case MODELS_NEEDED + SCRIPTS_NEEDED:
+			loadAnimations();
+			break;
+		case ANIMATIONS_NEEDED + MODELS_NEEDED + SCRIPTS_NEEDED:
+			console.log("Enough loading, time to play!");
+			main();
+			break;
 	}
 }

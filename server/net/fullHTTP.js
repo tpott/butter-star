@@ -58,17 +58,18 @@ var files = [
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
 	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 	// our data files
-  ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
-  ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
+  ['boy.obj', "", client + 'objects/boy/boy.obj', 'text/plain'],
+  ['boy.mtl', "", client + 'objects/boy/boy.mtl', 'text/text'],
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
   ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
   ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
-	['yixin.png', "", client + 'objects/yixin.png', 'image/png'],
-  ['yixin_cube.obj', "", client + 'objects/yixin_cube.obj', 'text/plain'],
-  ['yixin_cube.mtl', "", client + 'objects/yixin_cube.mtl', 'text/plain'],
+	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
+  ['yixin_cube.obj', "", client + 'objects/yixin/yixin_cube.obj', 'text/plain'],
+  ['yixin_cube.mtl', "", client + 'objects/yixin/yixin_cube.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
+  ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png']
 	// temp data files, for Thinh's game
 
