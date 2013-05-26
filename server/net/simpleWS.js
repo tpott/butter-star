@@ -40,7 +40,14 @@ util.inherits(Server, WebSocketServer);
 Server.prototype.gameFor = function(socket) {
 	// this gets set in client/net/connection using document.URL
 	var url = socket.upgradeReq.url;
-	return this.httpServer.games[url.replace(/\//, '')];
+	var gameid = url.replace(/\//, '');
+
+	if (gameid in this.httpServer.games) {
+		return this.httpServer.games[gameid];
+	}
+	else {
+		return null;
+	}
 };
 
 /**
@@ -52,6 +59,10 @@ Server.prototype._newSocket = function(socket) {
 	console.log('New connection');
 
 	var game = this.gameFor(socket); // TODO
+
+	if (game == null) {
+		console.log('Game doesnt exist :(');
+	}
 
   // Create a player and connect to socket
 	var player = new Player(socket);

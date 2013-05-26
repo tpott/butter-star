@@ -68,7 +68,7 @@ Game.prototype.addSocket = function(socket) {
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
-			model : 0, // default model for now
+			model : this.world.collidables[id].model, 
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
@@ -157,6 +157,7 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
+	var updates = 6; // new, set, del, misc, vac, kill
 	var worldUpdate = {
 		new : [],
 		set : [],
