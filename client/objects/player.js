@@ -41,7 +41,7 @@ var Player = function(playerObj) {
 	 this.type = types.PLAYER; 
 
 	 // defined in client/net/loader.js
-	 this.mesh = models.player[this.model].clone();
+	 this.mesh = models.players[this.model][0].clone();
 
 	 // necessary for graphics
 	 this.mesh.position = this.position;

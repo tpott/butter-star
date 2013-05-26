@@ -17,7 +17,7 @@ function Environment(jsonEnv) {
   // defined in client/objects/worldstate.js
   this.type = types.ENVIRONMENT;
 
-	this.mesh = models.environment[this.model].clone();
+	this.mesh = models.environments[this.model][0].clone();
 
   // Don't add to scene in constructor. Called in WorldState's addPlayer().
 }
