@@ -20,6 +20,7 @@ var files = [
 	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
 	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
+	['ColladaLoader.js', "", client + 'libs/ColladaLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
 	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
@@ -30,6 +31,7 @@ var files = [
 	//['menu.html', "", client + 'menu.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
+	['game.css', "", client + 'css/game.css', 'text/css'],
 	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
 	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
 	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
@@ -48,23 +50,32 @@ var files = [
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
+	['animate.js', "", client + 'objects/animate.js', 'text/javascript'],
 	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
+	['basic-vert.js', "", client + 'shader/basic-vert.js', 'x-shader/x-vertex'],
+	['basic-frag.js', "", client + 'shader/basic-frag.js', 'x-shader/x-fragment'],
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
+	['scoreboard.js', "", client + 'gui/scoreboard.js', 'text/javascript'],
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
 	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 	// our data files
-  ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
-  ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
+  ['boy.obj', "", client + 'objects/boy/boy.obj', 'text/plain'],
+  ['boy.mtl', "", client + 'objects/boy/boy.mtl', 'text/text'],
   ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
   ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
   ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
+	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
+  ['yixin_cube.obj', "", client + 'objects/yixin/yixin_cube.obj', 'text/plain'],
+  ['yixin_cube.mtl', "", client + 'objects/yixin/yixin_cube.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
+  ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
-	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png']
+	// temp data files, not ours
+  ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
+  ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
 
 ];
 

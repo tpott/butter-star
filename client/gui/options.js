@@ -19,7 +19,7 @@ function OptionMenu() {
 		});
 
 	this.title = $('<div id="optionsTitle" />')
-		.append($('<strong>Menu</title>'));
+		.append($('<strong>Menu</strong>'));
 	this.list = $('<ul />')
 		.css({
 			'list-style-type': 'none'

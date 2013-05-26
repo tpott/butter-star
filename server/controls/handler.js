@@ -34,6 +34,7 @@ var clientOnly = {
 };
 
 var unusedKeys = {
+	'TAB' : 9,
 	'ENTER' : 13,
 	'LSHFT' : 16,
 	'RSHFT' : 16,
