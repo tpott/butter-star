@@ -116,6 +116,10 @@ function updateAnimations() {
 		else if (! player.isVacuuming() && player.vacuum != null) {
 			player.stopVacuuming();
 		}
+
+		if (player.animation != null) {
+			player.animation.update();
+		}
 	}
 }
 

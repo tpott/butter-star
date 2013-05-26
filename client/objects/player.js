@@ -49,6 +49,8 @@ var Player = function(playerObj) {
 	 // needed for vacuum effect
 	this.vacuum = null;
 
+	this.animation = null;
+
 	this.killCount = 0;
 	this.charge = 100;
 
@@ -58,22 +60,25 @@ var Player = function(playerObj) {
     this.isVacuum = false;
     this.vacAngleY = 0;
 
-	 // TODO maybe remove
-	/*this.model =
-    {		
-        objects : new THREE.Object3D(),
-        motion  : 'stand',
-        state   : 'stand'
-    };*/
-
   // TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
+
+  this.setAnimate();
+};
+
+Player.prototype.setAnimate = function() {
+	scene.remove(this.mesh);
+	
+	// mesh.children hack from javascript console twidling
+	this.mesh = animations.critters[0][0].clone();
+	this.animation = new Animation(this.mesh.children[1]);
+
+	scene.add(this.mesh);
 };
 
 Player.prototype.setMesh = function(scene) {
-    this.mesh = new THREE.Mesh(models.player[this.model].geometry,
-			 models.players[this.model].material);
+    this.mesh = models.players[this.model][0].clone();
 	  scene.add(this.mesh);
 };
 

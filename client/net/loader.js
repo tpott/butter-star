@@ -7,9 +7,9 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 27,
+var SCRIPTS_NEEDED = 28,
 	 MODELS_NEEDED = 5,
-	 ANIMATIONS_NEEDED = 2;
+	 ANIMATIONS_NEEDED = 1;
 
 // TODO order!!
 var scripts = [
@@ -47,6 +47,7 @@ var scripts = [
 	["vacuum.js", "text/javascript", null], 
 	["basic-vert.js", "text/javascript", "vertexShader"],
 	["basic-frag.js", "text/javascript", "fragmentShader"],
+	["animate.js", "text/javascript", null],
 
 	// gui
 	["minimap.js", "text/javascript", null], 
@@ -80,8 +81,8 @@ var animations = {
 	players : [
 	],
 	critters : [
-		[null, null, 'Bunny Kill', 'bunny_spin.dae', 0.2]
-		[null, null, 'WebGL Monster', 'monster.dae', 1.]
+		//[null, null, 'Bunny Kill', 'bunny_spin.dae', 0.2],
+		[null, null, 'WebGL Monster', 'monster.dae', 0.005]
 	],
 	environments : [
 	],

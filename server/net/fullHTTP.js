@@ -50,6 +50,7 @@ var files = [
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
+	['animate.js', "", client + 'objects/animate.js', 'text/javascript'],
 	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
 	['basic-vert.js', "", client + 'shader/basic-vert.js', 'x-shader/x-vertex'],
 	['basic-frag.js', "", client + 'shader/basic-frag.js', 'x-shader/x-fragment'],
@@ -69,11 +70,11 @@ var files = [
   ['yixin_cube.mtl', "", client + 'objects/yixin/yixin_cube.mtl', 'text/plain'],
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
-  //['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
-  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png']
+  ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
+  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
-  ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg'],
+  ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
 
 ];
 
