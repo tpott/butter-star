@@ -25,12 +25,12 @@ function World() {
   this.enviroObjs = {};
   this.players = {};
   this.critters = {};
-  this.food = {};
+  this.foods = {};
 
   /* @note We need these counters because the hashes don't have lengths */
 	this.nplayers = 0;
 	this.ncritters = 0;
-  this.nfood = 0;
+  this.nfoods = 0;
 
   // Lists of IDs of objects that had state changes
   this.newCollidables = []; // all newly created collidables
@@ -85,9 +85,23 @@ World.prototype.addCritter = function(critter) {
   this.critters[critter.id] = critter;
   this.ncritters++;
 
-  this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
+  this.newCollidables.push(critter.id);
   return critter.id;
 }
+
+/**
+ * Add a piece of food to the world.
+ * @param {Food} food The new food to add to the world.
+ * @return {string} The food ID.
+ */
+World.prototype.addFood = function(food) {
+  this.collidables[food.id] = food;
+  this.foods[food.id] = food;
+  this.nfoods++;
+
+  this.newCollidables.push(food.id);
+  return food.id;
+};
 
 /**
  * Spawns a given number of critters at random, unoccupied locations.

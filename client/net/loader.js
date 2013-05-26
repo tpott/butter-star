@@ -40,7 +40,7 @@ var models = {
 	player : [null, null],
 	critters : [null],
 	environment : [null, null],
-	food : []
+	foods : []
 };
 
 // entries are structured: [our name, obj, mtl, scale]
@@ -57,7 +57,7 @@ var modelFiles = {
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
 		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
-	food : [
+	foods : [
 	]
 };
 
