@@ -63,8 +63,6 @@ var Player = function(playerObj) {
   // TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
-
-  this.setAnimate();
 };
 
 Player.prototype.setAnimate = function() {
