@@ -22,7 +22,7 @@ function Critter(){
 
     //load the critter mesh - TODO: don't hard code this path
     this.mesh = Loader.parse('../client/models/bunnyv2.obj');
-    this.mesh.scale.set(0.01, 0.01, 0.01);
+    this.mesh.scale.set(0.12, 0.12, 0.12);
     //need to compute geometry face normals for raycaster intersections
     this.mesh.geometry.computeFaceNormals();
     this.radius = this.mesh.geometry.boundingSphere.radius; // for collisions

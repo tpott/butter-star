@@ -35,7 +35,7 @@ function Player() {
 
   // 3D object this represents
   this.mesh = Loader.parse('../client/models/yellow_boy_standing.obj');
-  this.mesh.scale.set(0.04, 0.04, 0.04);
+  this.mesh.scale.set(0.06, 0.06, 0.06);
   this.mesh.geometry.computeFaceNormals(); // needed for raycaster collisions
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
