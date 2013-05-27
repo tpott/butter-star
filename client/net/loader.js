@@ -40,24 +40,23 @@ var models = {
 	player : [null, null],
 	critters : [null],
 	environment : [null, null],
-	food : []
+	foods : []
 };
 
 // entries are structured: [our name, obj, mtl, scale]
 var modelFiles = {
 	player : [
-		['Default player', 'boy.obj', 'boy.mtl', 0.04]
-		//['Yixin Cube', '', '', 1.]
+		['Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06]
+    //['Old player', 'boy.obj', 'boy.mtl', 0.04]
 	],
-  // TODO get bunny models...
 	critters : [
-		['Default critter', 'boo.obj', 'boo.mtl', 0.4]
+		['Default critter', 'bunnyv2.obj', 'bunnyv2.mtl', 0.12]
 	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
 		['Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
-	food : [
+	foods : [
 	]
 };
 

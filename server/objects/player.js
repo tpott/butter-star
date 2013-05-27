@@ -11,9 +11,10 @@
 var THREE = require('three');
 var util = require('util');
 
-var Movable = require('./movable.js');
 var Collidable = require('./collidable.js');
 var Events = require('../controls/handler.js');
+var Loader = require('./OBJLoader.js');
+var Movable = require('./movable.js');
 
 // player states
 var STANDING_STILL = 0,
@@ -32,18 +33,10 @@ var STANDING_STILL = 0,
 function Player() {
   Player.super_.call(this);
 
-  // Dimensions of player
-  // TODO get from model
-  this.width = 1;
-  this.height = 3;
-  this.depth = 1;
-
   // 3D object this represents
-  // TODO make this load the player model. Trevor: keep the radius line!
-  var geometry = new THREE.CubeGeometry(
-      this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial();
-  this.mesh = new THREE.Mesh(geometry, material);
+  this.mesh = Loader.parse('../client/models/yellow_boy_standing.obj');
+  this.mesh.scale.set(0.06, 0.06, 0.06);
+  this.mesh.geometry.computeFaceNormals(); // needed for raycaster collisions
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
   this.keyPresses = [];
