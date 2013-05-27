@@ -85,8 +85,16 @@ Connection.prototype._onmessage = function(buf) {
 	var message = JSON.parse(buf.data);
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
-		myWorldState.addObjects(message.world);
+		myWorldState.addObjects(message.new);
 		myPlayer = myWorldState.players[message.id];
+
+		var nplayers = message.vac.length;
+		for (var i = 0; i < nplayers; i++) {
+			myWorldState.players[message.vac[i].id]
+				.updateVacuumCharge(message.vac[i].charge);
+			myWorldState.players[message.kill[i].id]
+				 .updateKillCounter(message.kill[i].count);
+		}
 
 		console.log("Client recieved id: " + message.id);
 
