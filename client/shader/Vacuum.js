@@ -9,7 +9,8 @@
 **/
 function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 {
-	this.base = base.clone();
+	//this.base = base.clone();
+    this.base = new THREE.Vector3(0,0,0);
 	this.direction = direction.clone();
 	this.numParticles = numParticles;
 	this.currParticleCount = 0;
