@@ -18,7 +18,7 @@ var renderer = new THREE.WebGLRenderer();
 	player : [],
 	critters : [], 
 	environment : [],
-	food : []
+	foods : []
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js

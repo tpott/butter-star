@@ -20,5 +20,5 @@ var Critter = function(critterObj) {
 	// necessary for graphics
 	this.mesh.position = this.position;
 
-  // Don't add to scene in constructor. Called in WorldState's addPlayer().
+  // Don't add to scene in constructor. Called in WorldState's addCritter().
 };

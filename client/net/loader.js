@@ -86,7 +86,7 @@ var animations = {
 	],
 	environments : [
 	],
-	food : [
+	foods : [
 	]
 };
 
