@@ -28,13 +28,13 @@ var keymap = {
 // these keys don't need to be processed by the server, but
 // will handle events that only need to take place on the client
 var clientOnly = {
+	'TAB' : 'TOGGLE_SCOREBOARD',
 	'ESC' : 'TOGGLE_OPTIONMENU',
 	'm' : 'TOGGLE_MUSIC', 
 	'f' : 'TOGGLE_FULLSCREEN'
 };
 
 var unusedKeys = {
-	'TAB' : 9,
 	'ENTER' : 13,
 	'LSHFT' : 16,
 	'RSHFT' : 16,

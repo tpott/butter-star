@@ -147,7 +147,7 @@ function keyUp(e) {
 			optionMenu.toggle();
 			break;
 		case keymap['TAB']:
-			controlBoard.toggle();
+			scoreBoard.toggle();
 			break;
 		case keymap['f']:
 			toggleFullScreen();

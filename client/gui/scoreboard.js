@@ -20,13 +20,10 @@ function ScoreBoard() {
 
 	this.title = $('<div id="scoreTitle" />')
 		.append($('<strong>Score</strong>'));
-	this.list = $('<ul />')
-		.css({
-			'list-style-type': 'none'
-		});
+	this.table = $('<table />');
 
 	this.board.append(this.title);
-	this.board.append(this.list);
+	this.board.append(this.table);
 
 	$('body').append(this.board);
 	this.board.hide();
@@ -56,4 +53,21 @@ ScoreBoard.prototype.toggle = function() {
 };
 
 ScoreBoard.prototype.update = function() {
+	$('#scoreboard table tr').remove();
+
+	var table = $('#scoreboard table');
+
+	// myWorldState is a global from main.js
+	for (var id in myWorldState.players) {
+		var row = $('<tr />');
+		row.append( $('<td />').text(id) );
+		row.append( $('<td />').text(myWorldState.players[id].killCount) );
+
+		table.append(row);
+	}
+};
+
+ScoreBoard.prototype.showing = function() {
+	// showing when not hidden
+	return ! this.hidden;
 };
