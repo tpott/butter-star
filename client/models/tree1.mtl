@@ -49,4 +49,4 @@ newmtl Leaves
 	Kd 0.0196 0.4392 0.0000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_d C:\Program Files\Autodesk\3ds Max 2013\Maps\elmleaf.tga
+	map_d elmleaf.tga

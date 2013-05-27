@@ -47,6 +47,7 @@ var models = {
 var modelFiles = {
 	player : [
 		['Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06]
+    //['Old player', 'boy.obj', 'boy.mtl', 0.04]
 	],
 	critters : [
 		['Default critter', 'bunnyv2.obj', 'bunnyv2.mtl', 0.12]

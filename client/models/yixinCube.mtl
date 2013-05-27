@@ -12,6 +12,6 @@ newmtl Material__46
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka \\acsnfs4.ucsd.edu\CifsHomes\497\phasjim\DUSTBUSTERS\yixinCube\yixin.png
-	map_Kd \\acsnfs4.ucsd.edu\CifsHomes\497\phasjim\DUSTBUSTERS\yixinCube\yixin.png
-	map_Ke \\acsnfs4.ucsd.edu\CifsHomes\497\phasjim\DUSTBUSTERS\yixinCube\yixin.png
+	map_Ka yixin.png
+	map_Kd yixin.png
+	map_Ke yixin.png
