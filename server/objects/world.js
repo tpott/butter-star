@@ -9,8 +9,9 @@
 var THREE = require('three');
 
 var ButterOBJLoader = require('./OBJLoader.js');
-var Environment = require('./environment.js');
 var Critter = require('./critter.js');
+var Environment = require('./environment.js');
+var Food = require('./food.js');
 var randomPosition = require('./random.js').randomPosition;
 
 /**
