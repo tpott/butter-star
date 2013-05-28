@@ -11,9 +11,10 @@
 var THREE = require('three');
 var util = require('util');
 
-var Movable = require('./movable.js');
 var Collidable = require('./collidable.js');
 var Events = require('../controls/handler.js');
+var Loader = require('./OBJLoader.js');
+var Movable = require('./movable.js');
 
 // player states
 var STANDING_STILL = 0,
@@ -28,26 +29,14 @@ var STANDING_STILL = 0,
  * Constructor for a player. Makes a mesh that is the same as the
  * client-side mesh for a player. The player is represented by a cube.
  * @constructor
- * @param {wsWebSocket} socket The socket this player is connected through.
  */
-function Player(socket) {
+function Player() {
   Player.super_.call(this);
 
-  // TODO socket not needed?
-  this.socket = socket;
-
-  // Dimensions of player
-  // TODO get from model
-  this.width = 1;
-  this.height = 3;
-  this.depth = 1;
-
   // 3D object this represents
-  // TODO make this load the player model. Trevor: keep the radius line!
-  var geometry = new THREE.CubeGeometry(
-      this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial();
-  this.mesh = new THREE.Mesh(geometry, material);
+  this.mesh = Loader.parse('../client/models/yellow_boy_standing.obj');
+  this.mesh.scale.set(0.06, 0.06, 0.06);
+  this.mesh.geometry.computeFaceNormals(); // needed for raycaster collisions
   this.radius = this.mesh.geometry.boundingSphere.radius;
 
   this.keyPresses = [];
@@ -70,43 +59,136 @@ function Player(socket) {
 
   this.type = Collidable.types.PLAYER;
 
-	console.log('Player class, New player: %s', this.id);
+  console.log('Player class, New player: %s', this.id);
 
-	this.state = STANDING_STILL;
+  this.state = STANDING_STILL; // current state of player
+  this.numVacKills = 0; // counter for number of vacuumed objects
+  this.prevNumVacKills = -1; // used to see if num vacuumed changed
+  this.raycaster = null;
+
+  // Vacuum charge percentage
+  this.vacuumCharge = 100; // counter for % vacuum battery remaining
+  this.prevVacuumCharge = -1; // used to see if num vacuumed changed
 }
 util.inherits(Player, Movable);
 
-Player.prototype.checkVacIntersection = function(players) {
-    var origin = new THREE.Vector3(this.position.x, this.position.y+.2, this.position.z);
-    var vector = new THREE.Vector3(0,0,-1);
-    var matrix_x = new THREE.Matrix4();
-    var matrix_y = new THREE.Matrix4();
-    matrix_x.identity();
-    matrix_y.identity();
-    //console.log(this.direction);
-    //console.log(this.vacAngleY);
-    var angleY = this.direction * Math.PI/180.0;
-    var angleX = this.vacAngleY * Math.PI/180.0;
-    matrix_x.makeRotationX(-angleX);
-    matrix_y.makeRotationY(angleY);
-    vector.applyMatrix4(matrix_x);
-    vector.applyMatrix4(matrix_y);
-    //console.log("origin: " + origin.x + " " + origin.y + " " + origin.z);
-    //console.log("collidables length : " + Object.keys(collidables).length);
-    //console.log("vector: " + vector.x + " " + vector.y + " " + vector.z);
-    var raycaster = new THREE.Raycaster(origin, vector);
-    for (key in players) {
-        if (players[key].id != this.id) {
-            //console.log("player: " + this.id + " checking other player " + players[key].id); 
-        //console.log("mesh.position " + this.mesh.position.x + " " + this.mesh.position.y + " " + this.mesh.position.z);
-        //console.log("other player mesh.position " + players[key].mesh.position.x + " " + players[key].mesh.position.y + " " + players[key].mesh.position.z);
-            var intersects = raycaster.intersectObject(players[key].mesh);
-            if(intersects.length > 0 && intersects[0].distance < 10) {
-                console.log("player: " + this.id + " is intersecting with player: " + players[key].id);
-                break;
-            }
+Player.prototype.incVacKills = function() {
+    this.numVacKills++;
+}
+
+Player.prototype.getVacKills = function() {
+    return this.numVacKills;
+}
+
+Player.prototype.resetVacKills = function() {
+    this.numVacKills = 0;
+    this.prevNumVacKills = -1;
+}
+
+/**
+ * Check if kill counter should be updated. Used by server/objects/game.js.
+ * @return {boolean} True if kill count updated, false otherwise.
+ */
+Player.prototype.didKillsChange = function() {
+  if (this.prevNumVacKills != this.numVacKills) {
+    this.prevNumVacKills = this.numVacKills;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Decrease the vacuum charge by 1%.
+ */
+Player.prototype.decVacuumCharge = function() {
+  if (this.vacuumCharge > 0) {
+    this.vacuumCharge--;
+  }
+};
+
+/**
+ * Increase the vacuum charge by 1%.
+ */
+Player.prototype.incVacuumCharge = function() {
+  if (this.vacuumCharge < 100) {
+    this.vacuumCharge++;
+  }
+};
+
+/**
+ * Set the vacuum charge value.
+ * @param {int} charge The amount of charge to set the vacuum to.
+ */
+Player.prototype.setVacuumCharge = function(charge) {
+  this.vacuumCharge = charge;
+};
+
+/**
+ * Get the vacuum charge value.
+ * @return {int} The amount of charge in the vacuum.
+ */
+Player.prototype.getVacuumCharge = function() {
+  return this.vacuumCharge;
+};
+
+/**
+ * Check if player has enough charge to vacuum.
+ * @return {boolean} True if enough charge to vacuum, false otherwise.
+ */
+Player.prototype.canVacuum = function() {
+  return (this.vacuumCharge > 0);
+};
+
+/**
+ * Check if the vacuum charge should be updated. Used by server/objects/game.js
+ * @return {boolean} True if vacuum charge updated, false otherwise.
+ */
+Player.prototype.didVacuumChargeChange = function() {
+  if (this.prevVacuumCharge != this.vacuumCharge) {
+    this.prevVacuumCharge = this.vacuumCharge;
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Use the vacuum. If not in use, charge the vacuum.
+ * @param {Array.<Critter>} critters The possible critters to vacuum.
+ * @param {Critter} The closest critter the vacuum intersected with.
+ */
+Player.prototype.doVacuum = function(critters) {
+    // check to make sure player state is vacuuming
+    if (!(this.state & VACUUMING)) {
+        this.incVacuumCharge();
+        return null;
+    }
+
+    this.decVacuumCharge();
+
+    if (this.canVacuum() === true) {
+      return this.getVacIntersectionObj(critters);
+    } else {
+      return null;
+    }
+};
+
+/*
+ * Checks for intersection with objects and returns the closest
+ * intersected objects
+ */
+Player.prototype.getVacIntersectionObj = function(critters) {
+    var origin = new THREE.Vector3().copy(this.position);
+    var vector = new THREE.Vector3().copy(this.orientation);
+    this.raycaster = new THREE.Raycaster(origin, vector);
+    for (key in critters) {
+        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        // check if any intersections within vacuum distance
+        // TODO: don't hardcode vacuum distance
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            return critters[key]; // return closest critter
         }
     }
+    return null; // no intsections
 }
 
 Player.prototype.setDefaultState = function() {
@@ -223,16 +305,31 @@ Player.prototype.toggleVacuum = function() {
 
 /**
  * rotates the player based off the mouse movement
+ * mouse[0] is delta X mouse coords
+ * mouse[1] is delta Y mouse coords
  */
 Player.prototype.rotate = function(mouse) {
 	// TODO client config
 	var speed = 0.01;
 
-	// the Y-axis is the "up" in our game
-	var rotationX = new THREE.Matrix4().makeRotationY(-mouse[0] * speed);
-	var rotationY = new THREE.Matrix4().makeRotationZ(-mouse[1] * speed);
-	var rot = rotationX.multiply(rotationY);
-	//var rot = rotationX;
+	// variables needed for vertical rotation
+	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var yaxis = new THREE.Vector3(0, 1, 0);
+
+	// vertical rotation math
+	var yRotateAxis = new THREE.Vector3().crossVectors(
+			yaxis, orientation3).normalize();
+	var yRotationMat = new THREE.Matrix4().makeRotationAxis(
+			yRotateAxis, mouse[1] * speed);
+
+	// horizontal rotation math
+	var xRotateAxis = new THREE.Vector3().crossVectors(
+			yRotateAxis, orientation3).normalize();
+	var xRotationMat = new THREE.Matrix4().makeRotationAxis(
+			xRotateAxis, mouse[0] * speed);
+
+	// rotation matricies should be order independent
+	var rot = xRotationMat.multiply(yRotationMat);
 
 	//this.orientation = rot.multiply(this.orientation);
 	this.orientation.applyMatrix4(rot);

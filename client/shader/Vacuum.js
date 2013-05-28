@@ -9,7 +9,8 @@
 **/
 function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 {
-	this.base = base.clone();
+	//this.base = base.clone();
+    this.base = new THREE.Vector3(0,0,0);
 	this.direction = direction.clone();
 	this.numParticles = numParticles;
 	this.currParticleCount = 0;
@@ -327,7 +328,7 @@ Vacuum.prototype.update = function(translation,vAngle,vAngleX)
 	this.uniforms.rotation.value.makeRotationAxis(this.direction,this.angle);
 	this.uniforms.offset.value.makeTranslation(translation.x,translation.y,translation.z);
 	this.uniforms.offsetRotationY.value.makeRotationY(angle);
-    this.uniforms.offsetRotationX.value.makeRotationX(-angleX);
+    this.uniforms.offsetRotationX.value.makeRotationZ(-angleX);
 	if(this.uniforms.weight.value >= 1.0)
 		this.uniforms.weight.value = 0.0;
 

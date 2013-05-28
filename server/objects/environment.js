@@ -12,7 +12,8 @@ function Environment() {
   Environment.super_.call(this);
 
   // load geometry obj
-  this.mesh = Loader.parse('../client/objects/blankRoom.obj');
+  /* NOTE(jyfang): DO NOT change to roomWithWindows.obj, collisions hella weird*/
+  this.mesh = Loader.parse('../client/models/blankRoom.obj');
 
   this.mesh.geometry.computeFaceNormals();
   this.mesh.geometry.computeCentroids();

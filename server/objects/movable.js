@@ -21,15 +21,12 @@ function Movable() {
   Movable.super_.call(this);
 
   // Dummy dimensions and mesh. Will be created in subclasses.
-  this.width = 0; // x axis
-  this.height = 0; // y axis
-  this.depth = 0; // z axis
   this.mesh = null;
   this.radius = 0;
 
-  this.center = new THREE.Vector4(0, 0, 0, 0);
+  this.center = new THREE.Vector4(0, 0, 0, 1);
 
-  this.type = Collidable.types.MOVABLE
+  this.type = Collidable.types.MOVABLE;
 
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
@@ -58,9 +55,9 @@ Movable.prototype.hasBoundingSphere = function() {
 Movable.prototype.getCenter_ = function() {
 	// TODO this seems hacky
   this.center.set(
-      this.position.x + (this.width / 2),
-      this.position.y + (this.height / 2),
-      this.position.z + (this.depth / 2),
+      this.position.x, // + (this.width / 2),
+      this.position.y, // + (this.height / 2),
+      this.position.z, // + (this.depth / 2),
       1 // a point rather than a vector
   );
   return this.center;
@@ -70,17 +67,14 @@ Movable.prototype.getCenter_ = function() {
  * Check if the object will collide with another object.
  * @param {Array.<Collidable>} collidables List of collidables.
  * @return {Collidable} The closest object that was collided with. 
- * TODO all objs later?
  * @private
  */
 Movable.prototype.detectCollision_ = function(collidables) {
   var intersectedObjs = [];
   var correctedVec = this.velocity.clone();
 
-  // TODO position or center?
-  // TODO velocity or displacement
   var newPos = this.position.clone().add(this.velocity);
-  // TODO don't want to say new every collision?
+
   var projectedCenter = new THREE.Vector4(0,0,0,1);
   projectedCenter.copy(this.getCenter_());
   projectedCenter.add(this.velocity);
@@ -96,12 +90,9 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
     var collidable = collidables[id]; // Object checking collision against
     var intersecting = false;
-	 // skip enemies for now, cause they were covering the floor...
-	 if (collidable.radius == 0) {
-		 continue;
-	 }
+
     // Case for everything except walls/floors/ceilings
-	 //  this implies getCenter is defined
+	  //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
 		 
       dp.copy(collidable.getCenter_())
@@ -264,11 +255,14 @@ Movable.prototype.applyForces = function(collidables) {
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
+    
+    //this.mesh.position.copy(this.position); // update mesh position as well
+    this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
 
-  // Check if movable changed positions
-  if (! originalPosition.equals(this.position)) {
-	  this.moved = true;
-  }
+    // Check if movable changed positions
+    if (! originalPosition.equals(this.position)) {
+      this.moved = true;
+    }
 };
 
 /**
