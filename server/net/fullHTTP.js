@@ -115,7 +115,6 @@ var files = [
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
 
->>>>>>> fd96f3c798445ab2f1db557ab0db67f8056a5dff
 ];
 
 var staticGamePage = "",
