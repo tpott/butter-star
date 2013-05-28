@@ -23,10 +23,6 @@ function Collidable() {
 
   this.position = new THREE.Vector4(0, 0, 0, 1);
   this.orientation = new THREE.Vector4(0, 0, 1, 0);
-<<<<<<< HEAD
-=======
-
->>>>>>> fd96f3c798445ab2f1db557ab0db67f8056a5dff
   this.type = Collidable.types.COLLIDABLE;
   this.model = 0; // default model for each collidable
 
