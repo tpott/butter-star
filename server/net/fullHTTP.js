@@ -107,7 +107,7 @@ var files = [
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png'],
+	//['player.png', "", thinhGame + 'data/player.png', 'image/png'],
   // sounds
   ['Paris2.ogg', "", client + '/game/data/sounds/Paris2.ogg', 'application/ogg'],
 
