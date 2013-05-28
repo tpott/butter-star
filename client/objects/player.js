@@ -78,7 +78,7 @@ Player.prototype.startVacuuming = function() {
 	var orientation3 = new THREE.Vector3().copy(this.orientation);
 	this.vacuum = new Vacuum(
 			this.position,
-			orientation3,
+			new THREE.Vector3(1,0,0),
 			1000, // number of particles
 			$('#vertexShader').text(),
 			$('#fragmentShader').text()
@@ -92,11 +92,12 @@ Player.prototype.updateVacuum = function() {
 	// translation from where vacuuming began
 	var vacTrans = new THREE.Vector3().copy(this.position);
     var xorigin = new THREE.Vector4(1,0,0,0);
-    var dotResult = xorigin.dot(this.orientation);
-    console.log(this.orientation.z);
-    //console.log(dotResult);
-    var xRad = Math.acos(dotResult);
+	var xOrientation = new THREE.Vector4(this.orientation.x,0,this.orientation.z,0);
+    var dotResult = xorigin.dot(xOrientation);
+	var result = dotResult/(xorigin.length() * xOrientation.length());
+    var xRad = Math.acos(result);
     var xDeg = xRad * 180.0 / Math.PI;
+	//console.log("vacuum :"  + xDeg);
     if (this.orientation.z > 0) {
         xDeg = -xDeg;
     }
@@ -106,8 +107,17 @@ Player.prototype.updateVacuum = function() {
 	var xzPlaneAngle = 0;
 
 	var yAngle = 0;
-
-	this.vacuum.update(vacTrans, xDeg, this.orientation.y);
+	var yOrigin = new THREE.Vector4(1.0,0,0,0);
+	var yOrientation = new THREE.Vector4(1.0,this.orientation.y,0,0);
+	var yDotResult = yOrigin.dot(yOrientation);
+	var yResult = yDotResult/(yOrigin.length() * yOrientation.length());
+	yAngle = Math.acos(yResult);
+//	console.log(yAngle);
+	yAngle = yAngle * 180.0 / Math.PI;
+	if(this.orientation.y > 0)
+		yAngle = -yAngle;
+	//console.log("yDeg " + yAngle);
+	this.vacuum.update(vacTrans, xDeg, yAngle);
 }
 
 Player.prototype.stopVacuuming = function() {
