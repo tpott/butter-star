@@ -170,7 +170,7 @@ function main() {
   initZero(); 
 	//initFloor();
 	//initRoom();
-  audio.pause();
+  //audio.pause();
 	//controls.disable;
 
 	myWorldState = new WorldState();

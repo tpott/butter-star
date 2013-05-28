@@ -60,8 +60,9 @@ var files = [
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png']
-
+	['player.png', "", thinhGame + 'data/player.png', 'image/png'],
+  // sounds
+  ['Paris2.ogg', "", client + '/game/data/sounds/Paris2.ogg', 'application/ogg'],
 ];
 
 var staticGamePage = "",
@@ -139,7 +140,7 @@ function staticFile(server, files, request) {
 				 files[i][3] == 'application/octet-stream') {
 				response.end = 'binary';
 			}
-
+      
 			response.found = true;
 			return response; 
 		}
@@ -221,6 +222,9 @@ Server.prototype.initFiles = function(config) {
 				if (file[3] == 'image/png') {
 					file[1] = data;
 				}
+        else if( file[3] == 'application/ogg') {
+          file[1] = data;
+        }
 				else {
 					file[1] = data
 						.replace(/butterServerIp/g, config.server) // set in main.js
@@ -229,6 +233,9 @@ Server.prototype.initFiles = function(config) {
 			};
 		};
 		if (files[i][3] == 'image/png') {
+			fs.readFile(files[i][2], setFile(files[i]));
+		}
+    else if(files[i][3] == 'application/ogg') {
 			fs.readFile(files[i][2], setFile(files[i]));
 		}
 		else {
