@@ -32,6 +32,7 @@ document.addEventListener( 'keyup', keyUp, false );
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
 
@@ -189,6 +190,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
   statusBox = new StatusBox();
 

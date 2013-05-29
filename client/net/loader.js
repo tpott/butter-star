@@ -51,6 +51,7 @@ var scripts = [
 	// gui
 	["minimap.js", "text/javascript", null], 
 	["options.js", "text/javascript", null], 
+	["scoreboard.js", "text/javascript", null], 
 	["notifications.js", "text/javascript", null], 
 	["status.js", "text/javascript", null], 
 
