@@ -147,7 +147,7 @@ function initLights() {
 //load sound clips here
 function initSounds()
 {
-	source.src = 'Paris2.ogg';
+	source.src = 'AnotherOneBitesTheDust.ogg';
 	audio.appendChild(source);
 	audio.play();
 }
