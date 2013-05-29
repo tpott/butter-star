@@ -66,6 +66,7 @@ var files = [
 	// gui
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
+	['scoreboard.js', "", client + 'gui/scoreboard.js', 'text/javascript'],
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
 	['status.js', "", client + 'gui/status.js', 'text/javascript'],
 

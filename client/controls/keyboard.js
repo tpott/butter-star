@@ -10,6 +10,7 @@
 
 // these should just be ascii character values
 var keymap = {
+	'TAB' : 9,
 	'ENTER' : 13,
 	'LSHFT' : 16,
 	'RSHFT' : 16,
@@ -35,6 +36,7 @@ var keymap = {
 
 // these are the chars that will get sent to the server
 var codemap = {
+	9 : 'TAB', 
 	13 : 'ENTER',
 	16 : 'SHFT',
 	17 : 'LCTRL',
@@ -63,6 +65,7 @@ var codemap = {
 function keyDown(e) {
 	// TODO is this a bad idea?
 	switch (e.keyCode) {
+		case 9:
 		case 13: 
 		/*case 16: 
 		case 17: 
@@ -118,6 +121,9 @@ function keyDown(e) {
 				//console.log("'%s' down.", codemap[e.keyCode]);
 				keyPresses.push(codemap[e.keyCode]);
 			}
+
+			// stops TAB from being handled in the default fashion
+			e.preventDefault();
 			break;
 		default:
 			console.log("Key code '%d' not recognized", e.keyCode);
@@ -139,6 +145,9 @@ function keyUp(e) {
 			 break;
 		case keymap['ESC']:
 			optionMenu.toggle();
+			break;
+		case keymap['TAB']:
+			scoreBoard.toggle();
 			break;
 		case keymap['f']:
 			toggleFullScreen();

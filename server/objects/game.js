@@ -61,7 +61,9 @@ Game.prototype.addSocket = function(socket) {
 
   var initObj = {
 	  id : socket.id,
-	  world : []
+	  new : [],
+		vac : [],
+		kill : []
   };
 
 	for (var id in this.world.collidables) {
@@ -73,7 +75,21 @@ Game.prototype.addSocket = function(socket) {
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		initObj.world.push(colObj);
+		initObj.new.push(colObj);
+	}
+
+	for (var id in this.world.players) {
+		var vacChargeObj = {
+		  id: id,
+		  charge: this.world.players[id].getVacuumCharge()
+		};
+		initObj.vac.push(vacChargeObj);
+
+		var killCounterObj = {
+        id: id,
+        count: this.world.players[id].getVacKills()
+      };
+      initObj.kill.push(killCounterObj);
 	}
 
 	// the client receives this and inits stuff in client/object/worldstate.js
