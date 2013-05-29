@@ -7,9 +7,10 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 28,
+var SCRIPTS_NEEDED = 26,
 	 MODELS_NEEDED = 5,
-	 ANIMATIONS_NEEDED = 1;
+	 ANIMATIONS_NEEDED = 1,
+	 SHADERS_NEEDED = 2;
 
 // TODO order!!
 var scripts = [
@@ -45,8 +46,6 @@ var scripts = [
 
 	// shaders
 	["vacuum.js", "text/javascript", null], 
-	["basic-vert.js", "text/javascript", "vertexShader"],
-	["basic-frag.js", "text/javascript", "fragmentShader"],
 	["animate.js", "text/javascript", null],
 
 	// gui
@@ -89,6 +88,11 @@ var animations = {
 	foods : [
 	]
 };
+
+var shaders = [
+	["basic-vert.js", "x-shader/x-vertex", "vertexShader"],
+	["basic-frag.js", "x-shader/x-fragment", "fragmentShader"]
+];
 
 function logger(doc, elem) {
 	return function () {};
@@ -138,6 +142,7 @@ function singleScriptLoader(scripts, index, doc, head) {
 	script.setAttribute('src', scripts[index][0]);
 	script.setAttribute('type', scripts[index][1]); 
 
+	// TODO now unused... 
 	if (scripts[index][2] != null) {
 		script.setAttribute('id', scripts[index][2]); 
 	}
@@ -148,6 +153,27 @@ function singleScriptLoader(scripts, index, doc, head) {
 	};
 
 	head.appendChild(script);
+	attemptStart();
+}
+
+function singleShaderLoader(shaders, index) {
+	// stop recurrance
+	if (index >= shaders.length) {
+		return;
+	}
+
+	console.log('Loading "%s" %d/%d', 
+		shaders[index][0], index+1, shaders.length);
+
+	var shader = $('<script />')
+		.attr('id', shaders[index][2])
+		.attr('type', shaders[index][1]);
+
+	shader.load(shaders[index][0], function() {
+		singleShaderLoader(shaders, index+1);
+	});
+
+	$('head').append( shader );
 	attemptStart();
 }
 
@@ -216,6 +242,13 @@ function loadAnimations() {
 }
 
 /**
+ * Loads all the shaders, using jQuery!
+ */
+function loadShaders() {
+	singleShaderLoader(shaders, 0);
+}
+
+/**
  * Guarantees all models, animations, and scripts are loaded before 
  * starting main
  */
@@ -229,6 +262,10 @@ function attemptStart() {
 			loadAnimations();
 			break;
 		case ANIMATIONS_NEEDED + MODELS_NEEDED + SCRIPTS_NEEDED:
+			loadShaders();
+			break;
+		case ANIMATIONS_NEEDED + MODELS_NEEDED + SCRIPTS_NEEDED + 
+				SHADERS_NEEDED:
 			console.log("Enough loading, time to play!");
 
 			// TODO
