@@ -18,7 +18,7 @@ var renderer = new THREE.WebGLRenderer();
 	player : [],
 	critters : [], 
 	environment : [],
-	food : []
+	foods : []
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
@@ -179,7 +179,7 @@ function main() {
   initZero(); 
 	//initFloor();
 	//initRoom();
-  audio.pause();
+  //audio.pause();
 	//controls.disable;
 
 	myWorldState = new WorldState();
