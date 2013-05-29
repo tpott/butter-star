@@ -32,12 +32,22 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
+  
+  this.scale = 0.06;
 
   // 3D object this represents
   this.mesh = Loader.parse('../client/models/yellow_boy_standing.obj');
-  this.mesh.scale.set(0.06, 0.06, 0.06);
+  this.mesh.scale.set(this.scale, this.scale, this.scale);
+  this.radius = this.mesh.geometry.boundingSphere.radius * this.scale / 2;
+
+  // Make position center of player, not bottom by shifting mesh down
+  this.mesh.position.copy(this.position);
+  this.mesh.position.setY(this.position.y - this.radius);
+  this.mesh.matrixWorld.makeTranslation(this.position.x,
+      this.position.y - this.radius,
+      this.position.z);
+
   this.mesh.geometry.computeFaceNormals(); // needed for raycaster collisions
-  this.radius = this.mesh.geometry.boundingSphere.radius;
 
   this.keyPresses = [];
 

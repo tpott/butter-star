@@ -19,7 +19,7 @@ function Collidable() {
   // Client-side object this represents Will be set by subclasses.
   this.mesh = null;
 
-  this.gravity = new THREE.Vector4(0, -0.00098, 0, 0);
+  this.gravity = new THREE.Vector4(0, -0.0098, 0, 0);
 
   this.position = new THREE.Vector4(0, 0, 0, 1);
   this.orientation = new THREE.Vector4(0, 0, 1, 0);

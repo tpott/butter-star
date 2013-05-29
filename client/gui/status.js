@@ -15,7 +15,7 @@ function StatusBox() {
   this.statusBox.css('height', '200px');
 
   // Add status bars and vacuumed bunny counter
-  this.addFoodBar();
+  //this.addFoodBar();
   this.addVacuumChargeBar();
   this.addKillCounter();
 
