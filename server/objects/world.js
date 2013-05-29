@@ -225,7 +225,6 @@ World.prototype.applyForces = function() {
     }
 	}
 
-  // TODO critters
 	for (var id in this.critters) {
 		// add gravity
 		this.critters[id].addGravity(); // each player has individual gravity
@@ -238,7 +237,6 @@ World.prototype.applyForces = function() {
       this.setCollidables.push(id);
     }
 	}
-  // TODO food
 }
 
 module.exports = World;
