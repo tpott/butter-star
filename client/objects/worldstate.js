@@ -26,7 +26,7 @@ var WorldState = function() {
   this.players = {};
   this.critters = {};
   this.environments = {};
-  this.food = {};
+  this.foods = {};
 }
 
 /**
@@ -82,7 +82,11 @@ WorldState.prototype.addEnvironment = function(env) {
 	scene.add(enviro.mesh);
 }
 
-WorldState.prototype.addFood = function(food) {
+WorldState.prototype.addFood = function(f) {
+  var food = new Food(f);
+  this.foods[food.id] = food;
+
+  scene.add(food.mesh);
 }
 
 /**
@@ -122,6 +126,8 @@ WorldState.prototype.removeEnvironment = function(id) {
 }
 
 WorldState.prototype.removeFood = function(id) {
+  scene.remove(this.foods[id].mesh);
+  delete this.foods[id];
 }
 
 // TODO remove this function? 
@@ -169,6 +175,15 @@ WorldState.prototype.updateWorldState = function(newStates){
 						this.critters[id].orientation) );
 
 		}
+    else if (update.id in this.critters) {
+      this.foods[id].position.copy(update.position);
+      this.foods[id].state = update.state;
+
+      // necessary for graphics
+      this.foods[id].mesh.position.copy(update.position);
+      this.foods[id].mesh.lookAt( forwards(this.foods[id].position,
+          this.foods[id].orientation) );
+    }
 	}
 
 }

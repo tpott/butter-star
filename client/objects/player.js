@@ -41,7 +41,7 @@ var Player = function(playerObj) {
 	 this.type = types.PLAYER; 
 
 	 // defined in client/net/loader.js
-	 this.mesh = models.player[this.model].clone();
+	 this.mesh = models.players[this.model][0].clone();
 
 	 // necessary for graphics
 	 this.mesh.position = this.position;
@@ -49,24 +49,34 @@ var Player = function(playerObj) {
 	 // needed for vacuum effect
 	this.vacuum = null;
 
+	this.animation = null;
+
+	this.killCount = 0;
+	this.charge = 100;
+
 	 // TODO remove 
 	this.vacTrans = new THREE.Vector3(0,0,0);
     this.direction = null;
     this.isVacuum = false;
     this.vacAngleY = 0;
 
-	 // TODO maybe remove
-	/*this.model =
-    {		
-        objects : new THREE.Object3D(),
-        motion  : 'stand',
-        state   : 'stand'
-    };*/
+  // TODO this should be on the server side?
+  this.updateVacuumCharge(100);
+  this.updateKillCounter(0);
+};
+
+Player.prototype.setAnimate = function() {
+	scene.remove(this.mesh);
+	
+	// mesh.children hack from javascript console twidling
+	this.mesh = animations.critters[0][0].clone();
+	this.animation = new Animation(this.mesh.children[1]);
+
+	scene.add(this.mesh);
 };
 
 Player.prototype.setMesh = function(scene) {
-    this.mesh = new THREE.Mesh(models.player[this.model].geometry,
-			 models.players[this.model].material);
+    this.mesh = models.players[this.model][0].clone();
 	  scene.add(this.mesh);
 };
 
@@ -93,15 +103,15 @@ Player.prototype.updateVacuum = function() {
 	var vacTrans = new THREE.Vector3().copy(this.position);
     var xorigin = new THREE.Vector4(1,0,0,0);
 	var xOrientation = new THREE.Vector4(this.orientation.x,0,this.orientation.z,0);
-    var dotResult = xorigin.dot(xOrientation);
+	var dotResult = xorigin.dot(xOrientation);
 	var result = dotResult/(xorigin.length() * xOrientation.length());
-    var xRad = Math.acos(result);
-    var xDeg = xRad * 180.0 / Math.PI;
+	var xRad = Math.acos(result);
+	var xDeg = xRad * 180.0 / Math.PI;
 	//console.log("vacuum :"  + xDeg);
-    if (this.orientation.z > 0) {
-        xDeg = -xDeg;
-    }
-    //console.log("xDeg " + xDeg);
+	if (this.orientation.z > 0) {
+		xDeg = -xDeg;
+	}
+	//console.log("xDeg " + xDeg);
 
 	// angle from positive x axis towards positive z axis
 	var xzPlaneAngle = 0;
@@ -112,11 +122,9 @@ Player.prototype.updateVacuum = function() {
 	var yDotResult = yOrigin.dot(yOrientation);
 	var yResult = yDotResult/(yOrigin.length() * yOrientation.length());
 	yAngle = Math.acos(yResult);
-//	console.log(yAngle);
 	yAngle = yAngle * 180.0 / Math.PI;
 	if(this.orientation.y > 0)
 		yAngle = -yAngle;
-	//console.log("yDeg " + yAngle);
 	this.vacuum.update(vacTrans, xDeg, yAngle);
 }
 
@@ -126,3 +134,20 @@ Player.prototype.stopVacuuming = function() {
 	this.vacuum = null;
 }
 
+Player.prototype.updateVacuumCharge = function(charge) {
+	this.charge = charge;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateVacuumCharge(charge);
+	}
+};
+
+Player.prototype.updateKillCounter = function(count) {
+	this.killCount = count;
+
+	// using globals
+	if (myPlayer != null && this.id == myPlayer.id) {
+	  statusBox.updateKillCounter(count);
+	}
+};

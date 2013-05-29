@@ -110,8 +110,24 @@ Connection.prototype._onmessage = function(buf) {
 		// passes in an array of updated info
 		myWorldState.updateWorldState(world.set);
 	}
+  if ('vac' in world) {
+	 for (var i = 0; i < world.vac.length; i++) {
+		 myWorldState.players[world.vac[i].id].updateVacuumCharge(world.vac[i].charge);
+	 }
+  }
+  if ('kill' in world) {
+	 for (var i = 0; i < world.kill.length; i++) {
+		 myWorldState.players[world.kill[i].id]
+			 .updateKillCounter(world.kill[i].count);
+	 }
+  }
 	if ('misc' in world) {
 		// TODO
+		for (var i = 0; i < world.misc.length; i++) {
+			if ('mess' in world.misc[i]) {
+				notifyBar.addMessage(world.misc[i].mess);
+			}
+		}
 	}
 
 };

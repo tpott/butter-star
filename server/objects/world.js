@@ -9,8 +9,9 @@
 var THREE = require('three');
 
 var ButterOBJLoader = require('./OBJLoader.js');
-var Environment = require('./environment.js');
 var Critter = require('./critter.js');
+var Environment = require('./environment.js');
+var Food = require('./food.js');
 var randomPosition = require('./random.js').randomPosition;
 
 /**
@@ -25,18 +26,23 @@ function World() {
   this.enviroObjs = {};
   this.players = {};
   this.critters = {};
-  this.food = {};
+  this.foods = {};
 
   /* @note We need these counters because the hashes don't have lengths */
 	this.nplayers = 0;
 	this.ncritters = 0;
-  this.nfood = 0;
+  this.nfoods = 0;
 
   // Lists of IDs of objects that had state changes
-  this.newCollidables = [];
-  this.setCollidables = [];
-  this.delCollidables = [];
-  this.miscellaneous = [];
+  this.newCollidables = []; // all newly created collidables
+  this.setCollidables = []; // all collidables that had state change
+  this.delCollidables = []; // all deleted collidabls
+
+  this.miscellaneous = []; // Currently holds broadcast messages to all players
+
+  // needed for logic
+  //  potential problem: used before set
+  this.handler = null;
 
   // Make world environment
   this.createRoom_();
@@ -64,6 +70,8 @@ World.prototype.addPlayer = function(player) {
 	this.players[player.id] = player;
 	this.nplayers++;
 
+  this.handler.emit('newplayer');
+
   this.newCollidables.push(player.id);
 	return player.id;
 }
@@ -78,9 +86,23 @@ World.prototype.addCritter = function(critter) {
   this.critters[critter.id] = critter;
   this.ncritters++;
 
-  this.newCollidables.push(critter.id); // TODO do we ever send the whole critter??
+  this.newCollidables.push(critter.id);
   return critter.id;
 }
+
+/**
+ * Add a piece of food to the world.
+ * @param {Food} food The new food to add to the world.
+ * @return {string} The food ID.
+ */
+World.prototype.addFood = function(food) {
+  this.collidables[food.id] = food;
+  this.foods[food.id] = food;
+  this.nfoods++;
+
+  this.newCollidables.push(food.id);
+  return food.id;
+};
 
 /**
  * Spawns a given number of critters at random, unoccupied locations.
@@ -122,6 +144,9 @@ World.prototype.removePlayer = function(player) {
   if (delete this.collidables[player.id] &&
 	    delete this.players[player.id]) {
 		this.nplayers--;
+
+    this.handler.emit('delplayer');
+
 		return true;
 	} else {
 		return false;
@@ -137,8 +162,10 @@ World.prototype.removeCritter = function(critter) {
   this.delCollidables.push(critter.id);
   if (delete this.collidables[critter.id] &&
       delete this.critters[critter.id]) {
-    console.log("ncritters is %d", this.ncritters);
     this.ncritters--;
+
+    this.handler.emit('delcritter');
+
     return true;
   } else {
     return false;
@@ -152,11 +179,16 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
+
   this.miscellaneous = [];
 };
 
 
 /* WORLD MUTATOR FUNCTIONS */
+
+World.prototype.attachHandler = function(handler) {
+  this.handler = handler;
+}
 
 World.prototype.applyStates = function() {
 	for (var id in this.players) {
@@ -165,11 +197,10 @@ World.prototype.applyStates = function() {
         
         // uses the player state to get closest vacuum intersectec obj
         // TODO: extend to also affect players/food?
-        var critter = this.players[id].getVacIntersectionObj(this.critters);
+        var critter = this.players[id].doVacuum(this.critters);
         if (critter != null) {
             this.removeCritter(critter);
             this.players[id].incVacKills();
-            console.log("Player %s vacuumed up a ghost! count: %d", id, this.players[id].getVacKills());
         }
 	}
 	for (var id in this.critters) {
