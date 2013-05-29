@@ -18,14 +18,24 @@ var Loader = require('./OBJLoader.js');
 function Critter(){
     Critter.super_.call(this);
 
+    this.scale = 0.12;
+
     this.type = Collidable.types.CRITTER;
 
-    //load the critter mesh - TODO: don't hard code this path
+    //load the critter mesh
     this.mesh = Loader.parse('../client/models/bunnyv2.obj');
-    this.mesh.scale.set(0.12, 0.12, 0.12);
+    this.mesh.scale.set(this.scale, this.scale, this.scale);
+    this.radius = this.mesh.geometry.boundingSphere.radius * this.scale / 2;
+
+    // Make position center of critter, not bottom by shifting mesh down
+    this.mesh.position.copy(this.position);
+    this.mesh.position.setY(this.position.y - this.radius);
+    this.mesh.matrixWorld.makeTranslation(this.position.x,
+        this.position.y - this.radius,
+        this.position.z);
+
     //need to compute geometry face normals for raycaster intersections
     this.mesh.geometry.computeFaceNormals();
-    this.radius = this.mesh.geometry.boundingSphere.radius; // for collisions
 }
 util.inherits(Critter, Movable);
 

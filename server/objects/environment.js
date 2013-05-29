@@ -11,6 +11,8 @@ var Loader = require('./OBJLoader.js');
 function Environment() {
   Environment.super_.call(this);
 
+  this.scale = 1.0;
+
   // load geometry obj
   /* NOTE(jyfang): DO NOT change to roomWithWindows.obj, collisions hella weird*/
   this.mesh = Loader.parse('../client/models/blankRoom.obj');

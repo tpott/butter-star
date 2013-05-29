@@ -193,7 +193,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			model : 0, // TODO which model index to load (yellow boy, blue boy, etc)
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		worldUpdate.new.push(colObj);
 	}
@@ -212,7 +214,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			id : id,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		worldUpdate.set.push(colObj);
 

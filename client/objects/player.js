@@ -34,7 +34,10 @@ var Player = function(playerObj) {
 	 this.mesh = models.players[this.model][0].clone();
 
 	 // necessary for graphics
-	 this.mesh.position = this.position;
+   this.scale = playerObj.scale;
+   this.radius = playerObj.radius;
+	 this.mesh.position.copy(this.position);
+   this.mesh.position.setY(this.position.y - this.radius);
 
 	 // needed for vacuum effect
 	this.vacuum = null;
