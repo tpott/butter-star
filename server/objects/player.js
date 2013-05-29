@@ -74,7 +74,6 @@ function Player() {
   this.state = STANDING_STILL; // current state of player
   this.numVacKills = 0; // counter for number of vacuumed objects
   this.prevNumVacKills = -1; // used to see if num vacuumed changed
-  this.raycaster = null;
 
   // Vacuum charge percentage
   this.vacuumCharge = 100; // counter for % vacuum battery remaining
@@ -189,9 +188,9 @@ Player.prototype.doVacuum = function(critters) {
 Player.prototype.getVacIntersectionObj = function(critters) {
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
-    this.raycaster = new THREE.Raycaster(origin, vector);
+    var raycaster = new THREE.Raycaster(origin, vector);
     for (key in critters) {
-        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        var intersects = raycaster.intersectObject(critters[key].mesh);
         // check if any intersections within vacuum distance
         // TODO: don't hardcode vacuum distance
         if(intersects.length > 0 && intersects[0].distance < 10) {
