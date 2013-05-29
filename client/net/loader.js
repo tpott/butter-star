@@ -50,7 +50,7 @@ var modelFiles = {
     //['Old player', 'boy.obj', 'boy.mtl', 0.04]
 	],
 	critters : [
-		['Default critter', 'bunnyv2.obj', 'bunnyv2.mtl', 0.12]
+		['Default critter', 'bunny.obj', 'bunny.mtl', 0.12]
 	],
 	environment : [
 		['Default room', 'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
