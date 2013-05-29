@@ -89,6 +89,7 @@ Player.prototype.startVacuuming = function() {
 
 	// scene is a global defined in client/main.js
 	this.vacuum.addToScene(scene);
+    updateVacuum();
 }
 
 Player.prototype.updateVacuum = function() {
