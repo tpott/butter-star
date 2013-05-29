@@ -22,18 +22,8 @@ var STANDING_STILL = 0,
 var Player = function(playerObj) {
 	this.id = playerObj.id;
 
-    this.position = new THREE.Vector4(
-			 playerObj.position.x,
-			 playerObj.position.y,
-			 playerObj.position.z,
-			 playerObj.position.w
-		);
-    this.orientation = new THREE.Vector4(
-			 playerObj.orientation.x,
-			 playerObj.orientation.y,
-			 playerObj.orientation.z,
-			 playerObj.orientation.w
-		);
+    this.position = new THREE.Vector4().copy(playerObj.position);
+    this.orientation = new THREE.Vector4().copy(playerObj.orientation);
 	 this.state = playerObj.state;
 	 this.model = playerObj.model;
 
@@ -149,5 +139,9 @@ Player.prototype.updateKillCounter = function(count) {
 	// using globals
 	if (myPlayer != null && this.id == myPlayer.id) {
 	  statusBox.updateKillCounter(count);
+	}
+
+	if (scoreBoard.showing()) {
+		scoreBoard.update();
 	}
 };
