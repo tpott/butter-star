@@ -35,6 +35,11 @@ ScoreBoard.prototype.toggle = function() {
 	if (this.hidden) {
 		console.log('Showing scoreboard');
 
+		// TODO using global in client/main.js
+		if (! optionMenu.hidden) {
+			optionMenu.toggle();
+		}
+
 		$('#scoreboard').show();
 		this.update();
 
