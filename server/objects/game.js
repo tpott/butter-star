@@ -46,6 +46,9 @@ function Game(server) {
 	setTimeout(serverTick, 1000 / self.ticks);
 
 	this.handler.emit('newgame');
+
+	// used to track elapsed time once game is over
+	this.start = Date.now();
 }
 
 /**
