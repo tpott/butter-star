@@ -15,7 +15,7 @@ var Critter = function(critterObj) {
 
   this.type = types.CRITTER;
 
-	this.mesh = models.critters[this.model].clone();
+	this.mesh = models.critters[this.model][0].clone();
 
 	// necessary for graphics
   this.scale = critterObj.scale;

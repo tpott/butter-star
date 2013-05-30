@@ -32,6 +32,7 @@ document.addEventListener( 'keyup', keyUp, false );
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
 
@@ -116,6 +117,10 @@ function updateAnimations() {
 		else if (! player.isVacuuming() && player.vacuum != null) {
 			player.stopVacuuming();
 		}
+
+		if (player.animation != null) {
+			player.animation.update();
+		}
 	}
 }
 
@@ -140,11 +145,15 @@ function initLights() {
 }
 
 //load sound clips here
+
+var myAudio = new Audio('Birds.ogg');
 function initSounds()
 {
-	source.src = 'Paris2.ogg';
-	audio.appendChild(source);
-	audio.play();
+  myAudio.play();
+  myAudio.addEventListener('ended', function() { 
+      myAudio.load();
+      myAudio.play();
+    }, false); 
 }
 
 //initialize the fps counter
@@ -174,7 +183,7 @@ function main() {
   initZero(); 
 	//initFloor();
 	//initRoom();
-  audio.pause();
+  //audio.pause();
 	//controls.disable;
 
 	myWorldState = new WorldState();
@@ -185,6 +194,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
   statusBox = new StatusBox();
 
