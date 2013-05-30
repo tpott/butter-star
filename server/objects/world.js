@@ -205,6 +205,8 @@ World.prototype.applyStates = function() {
 	}
 	for (var id in this.critters) {
 		//this.critters[id].useAI();
+        this.critters[id].move();
+        this.setCollidables.push(id); // make sure updated critter is sent to client
 	}
 }
 
