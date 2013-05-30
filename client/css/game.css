@@ -52,3 +52,8 @@ body {
 .gui {
 	z-index: 50;
 }
+
+#loading {
+	display: block;
+	margin: auto;
+}
