@@ -36,11 +36,21 @@ function Critter(){
 
     //need to compute geometry face normals for raycaster intersections
     this.mesh.geometry.computeFaceNormals();
+    this.rotateVar = 0;
 }
 util.inherits(Critter, Movable);
 
 Critter.prototype.move = function() {
-
+    this.rotateVar += 0.1;
+    var rotateMatrix = new THREE.Matrix4();
+    rotateMatrix.makeRotationY(this.rotateVar);
+    //this.mesh.matrixWorld.multiply(rotateMatrix);
+    this.position.applyMatrix4(rotateMatrix);
+    /*this.position.set(this.mesh.matrixWorld.elements[12],
+                      this.mesh.matrixWorld.elements[13],
+                      this.mesh.matrixWorld.elements[14],
+                      1);*/
+    console.log(this.position);
 }
 
 module.exports = Critter;
