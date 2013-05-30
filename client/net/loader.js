@@ -8,7 +8,7 @@
 
 var filesLoaded = 0; 
 var SCRIPTS_NEEDED = 26,
-	 MODELS_NEEDED = 5,
+	 MODELS_NEEDED = 6,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -61,16 +61,17 @@ var scripts = [
 // entries are structured: [model, model name, obj file, mtl file, scale]
 var models = {
 	players : [
-		[null, 'Default player', 'boy.obj', 'boy.mtl', 0.04],
+		[null, 'Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
 		[null, 'Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
 	critters : [
-		[null, 'Default critter', 'boo.obj', 'boo.mtl', 0.4]
+		[null, 'Default critter', 'bunny.obj', 'bunny.mtl', 0.12]
 	],
 	environments : [
-		[null, 'Default room', 
-			'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
-		[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
+    [null, 'Default room', 'room1.obj', 'room1.mtl', 1.],
+		[null, 'Old room', 
+			'roomWithWindows.obj', 'roomWithWindows.mtl', 1.]
+		//[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
 	food : [
 	]
@@ -80,6 +81,7 @@ var animations = {
 	players : [
 	],
 	critters : [
+		['Default critter', 'bunny.obj', 'bunny.mtl', 0.12],
 		//[null, null, 'Bunny Kill', 'bunny_spin.dae', 0.2],
 		[null, null, 'WebGL Monster', 'monster.dae', 0.005]
 	],
