@@ -22,7 +22,6 @@ var scripts = [
 	["jquery.js", "text/javascript", null], 
 	["jquery-ui.js", "text/javascript", null], 
 	["ColladaLoader.js", "text/javascript", null], 
-
 	// objects 
 	["player.js", "text/javascript", null], 
 	["worldstate.js", "text/javascript", null], 

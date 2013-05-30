@@ -113,6 +113,7 @@ var files = [
   ['Paris2.ogg', "", client + '/game/data/sounds/Paris2.ogg', 'application/ogg'],
   ['AnotherOneBitesTheDust.ogg', "", client + 'sound/AnotherOneBitesTheDust.ogg', 'application/ogg'],
 
+  ['Birds.ogg', "", client + '/game/data/sounds/Birds.ogg', 'application/ogg'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
