@@ -73,7 +73,9 @@ Game.prototype.addSocket = function(socket) {
 			model : this.world.collidables[id].model, 
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		initObj.new.push(colObj);
 	}
@@ -147,6 +149,10 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 	//   if some state is not specified, set to default
 	var events = this.keyboardHandler.parse(clientData);
 	
+    // remember old state
+    var oldState = player.state;
+
+    //do state changes
 	player.setDefaultState();
 
 	for (var i = 0; i < events.length; i++) {
@@ -157,6 +163,10 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 			player.rotate(events[i].data);
 		}
 	}
+    //check if diff from old state and if so add to update array so client is notified
+    if (player.state != oldState) {
+        this.world.setCollidables.push(player.id); 
+    }
 }
 
 /**

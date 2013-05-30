@@ -197,9 +197,9 @@ World.prototype.applyStates = function() {
         
         // uses the player state to get closest vacuum intersectec obj
         // TODO: extend to also affect players/food?
-        var critter = this.players[id].doVacuum(this.critters);
-        if (critter != null) {
-            this.removeCritter(critter);
+        var critters = this.players[id].doVacuum(this.critters);
+        for (var cid in critters) {
+            this.removeCritter(critters[cid]);
             this.players[id].incVacKills();
         }
 	}

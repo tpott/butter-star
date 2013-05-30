@@ -29,14 +29,17 @@ var files = [
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
-	['loading.gif', "", client + 'loading.gif', 'image/gif'],
+	['instructions.html', "", client + 'instructions.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
 	['game.css', "", client + 'css/game.css', 'text/css'],
-	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
-	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
-	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
-	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/octet-stream'],
+	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/x-font-ttf'],
+	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/x-font-ttf'],
+	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/x-font-ttf'],
+	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/x-font-ttf'],
+	['home.png', "", client + 'imgs/home.png', 'image/png'],
+	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
+	['loading.gif', "", client + 'loading.gif', 'image/gif'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
@@ -77,25 +80,24 @@ var files = [
 	// TODO migrate everything to client/models/
 	// our data files
 	// boy
-  ['boy.obj', "", client + 'objects/boy/boy.obj', 'text/plain'],
-  ['boy.mtl', "", client + 'objects/boy/boy.mtl', 'text/text'],
+  //['boy.obj', "", client + 'objects/boy/boy.obj', 'text/plain'],
+  //['boy.mtl', "", client + 'objects/boy/boy.mtl', 'text/text'],
   ['yellow_boy_standing.obj', "", client + 'models/yellow_boy_standing.obj', 'text/plain'],
   ['yellow_boy_standing.mtl', "", client + 'models/yellow_boy_standing.mtl', 'text/text'],
   ['boy_texture_yellow.png', "", client + 'models/boy_texture_yellow.png', 'image/png'],
 
   // rooms
-  //['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
-  //['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
-  //['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
-  //['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
   ['blankRoom.obj', "", client + 'models/blankRoom.obj', 'text/plain'],
   ['blankRoom.mtl', "", client + 'models/blankRoom.mtl', 'text/plain'],
   ['roomWithWindows.obj', "", client + 'models/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'models/roomWithWindows.mtl', 'text/plain'],
+  ['room1.obj', "", client + 'models/room1.obj', 'text/plain'],
+  ['room1.mtl', "", client + 'models/room1.mtl', 'text/text'],
+  ['room1_texture.png', "", client + 'models/room1_texture.png', 'image/png'],
 
   // bunnies
-  ['bunnyv2.obj', "", client + 'models/bunnyv2.obj', 'text/plain'],
-  ['bunnyv2.mtl', "", client + 'models/bunnyv2.mtl', 'text/text'],
+  ['bunny.obj', "", client + 'models/bunny.obj', 'text/plain'],
+  ['bunny.mtl', "", client + 'models/bunny.mtl', 'text/text'],
   ['bunny_texture.png', "", client + 'models/bunny_texture.png', 'image/png'],
   ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
 
@@ -105,15 +107,16 @@ var files = [
   ['yixin_cube.mtl', "", client + 'objects/yixin/yixin_cube.mtl', 'text/plain'],
 
   // ghost
-  ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
-  ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
-  ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
+  //['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
+  //['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
+  //['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, for Thinh's game
 	//['player.png', "", thinhGame + 'data/player.png', 'image/png'],
   // sounds
   ['Paris2.ogg', "", client + '/game/data/sounds/Paris2.ogg', 'application/ogg'],
   ['AnotherOneBitesTheDust.ogg', "", client + 'sound/AnotherOneBitesTheDust.ogg', 'application/ogg'],
 
+  ['Birds.ogg', "", client + '/game/data/sounds/Birds.ogg', 'application/ogg'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
@@ -153,6 +156,11 @@ function dynamic(server, request) {
 			htmlGameList += "\t</div>\n</a>\n\n";
 		}
 		response.body = staticGamePage.replace(/dynamiclist/, htmlGameList);
+		response.found = true;
+		return response;
+	}
+	else if (request.url == '/instructions') {
+		response.body = files[10][1];
 		response.found = true;
 		return response;
 	}
