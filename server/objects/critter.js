@@ -39,4 +39,8 @@ function Critter(){
 }
 util.inherits(Critter, Movable);
 
+Critter.prototype.move = function() {
+
+}
+
 module.exports = Critter;

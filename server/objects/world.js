@@ -205,6 +205,7 @@ World.prototype.applyStates = function() {
 	}
 	for (var id in this.critters) {
 		//this.critters[id].useAI();
+        this.critters[id].move();
 	}
 }
 
