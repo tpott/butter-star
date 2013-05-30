@@ -29,13 +29,17 @@ var files = [
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
+	['instructions.html', "", client + 'instructions.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
 	['game.css', "", client + 'css/game.css', 'text/css'],
-	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
-	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
-	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
-	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/octet-stream'],
+	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/x-font-ttf'],
+	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/x-font-ttf'],
+	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/x-font-ttf'],
+	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/x-font-ttf'],
+	['home.png', "", client + 'imgs/home.png', 'image/png'],
+	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
+	['loading.gif', "", client + 'imgs/loading.gif', 'application/octet-stream'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
@@ -152,6 +156,11 @@ function dynamic(server, request) {
 			htmlGameList += "\t</div>\n</a>\n\n";
 		}
 		response.body = staticGamePage.replace(/dynamiclist/, htmlGameList);
+		response.found = true;
+		return response;
+	}
+	else if (request.url == '/instructions') {
+		response.body = files[10][1];
 		response.found = true;
 		return response;
 	}
