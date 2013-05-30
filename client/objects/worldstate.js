@@ -78,7 +78,6 @@ WorldState.prototype.addCritter = function(critter) {
 WorldState.prototype.addEnvironment = function(env) {
 	var enviro = new Environment(env);
 	this.environments[env.id] = enviro;
-
 	scene.add(enviro.mesh);
 }
 

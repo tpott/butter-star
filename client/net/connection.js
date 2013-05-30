@@ -134,6 +134,14 @@ Connection.prototype._onmessage = function(buf) {
 		for (var i = 0; i < world.misc.length; i++) {
 			if ('mess' in world.misc[i]) {
 				notifyBar.addMessage(world.misc[i].mess);
+				
+				// TODO bad idea?
+				if (world.misc[i].mess == "GAME OVER") {
+					setTimeout(function() {
+						// forces the browser to reload from server
+						location.reload(true);
+					}, 1000);
+				}
 			}
 		}
 	}
