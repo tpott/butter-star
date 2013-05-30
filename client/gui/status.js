@@ -1,6 +1,7 @@
 /**
  * Adds status bars to the client game.
  * @author Jennifer Fang
+ * @author Prita Hasjim
  */
 
 
@@ -15,7 +16,7 @@ function StatusBox() {
   this.statusBox.css('height', '200px');
 
   // Add status bars and vacuumed bunny counter
-  //this.addFoodBar();
+  // this.addFoodBar();
   this.addVacuumChargeBar();
   this.addKillCounter();
 
@@ -37,7 +38,24 @@ StatusBox.prototype.addFoodBar = function () {
 };
 
 StatusBox.prototype.addVacuumChargeBar = function () {
-  this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
+  this.vacuumChargeBar = $('<div id="vacuumChargeBar" />'
+		.addClass('gui')
+		.attr('height', '100')
+		.attr('width', '200')
+		.css({ 
+			'display': 'inline',
+			'position': 'absolute',
+			'top': '5px',
+			'left': '5px',
+			'background': '#ffffff',
+    			'background': '-webkit-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
+    			'background': '-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
+    			'background': '-moz-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
+    			'border-radius': '10px', 
+    			'-moz-border-radius': '10px', 
+    			'-webkit-border-radius': '10px' 
+		});
+);
   this.vacuumChargeBar.addClass('gui');
   this.vacuumChargeBar.progressbar({value: 0});
 

@@ -1,6 +1,8 @@
 /*
  * DUST BUSTERS
  * A Butter* Production
+ *
+ * Prita Hasjim
  */
 
 /*
@@ -31,7 +33,7 @@ html, table, div {
 }
 
 body {
-    background-color:#95dffe;
+    background-color:#dbf5ff;
     background: -webkit-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
     background: -linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
     background: -moz-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
@@ -222,14 +224,31 @@ div.option:hover {
     transition: all 0.1s ease-out;
 }
 
-/**********/
+/* HIGHLIGHT */
+.disable_text_highlighting {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none; /* Webkit */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE 10  */
+    /* Currently not supported in Opera but will be soon */
+    -o-user-select: none;
+    user-select: none;
+}
+
+::selection {
+    background: #dbf5ff; /* Safari */
+}
+::-moz-selection {
+    background: #dbf5ff; /* Firefox */
+}
+
 /* CLOUDS */
-/**********/
 
 #clouds{
     padding: 100px 0;
     position: relative;
     bottom: -250px;
+    height: 100px;
 }
 
 /*Time to finalise the cloud shape*/
