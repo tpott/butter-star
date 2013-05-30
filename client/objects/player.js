@@ -34,7 +34,10 @@ var Player = function(playerObj) {
 	 this.mesh = models.players[this.model][0].clone();
 
 	 // necessary for graphics
-	 this.mesh.position = this.position;
+   this.scale = playerObj.scale;
+   this.radius = playerObj.radius;
+	 this.mesh.position.copy(this.position);
+   this.mesh.position.setY(this.position.y - this.radius);
 
 	 // needed for vacuum effect
 	this.vacuum = null;
@@ -86,20 +89,23 @@ Player.prototype.startVacuuming = function() {
 
 	// scene is a global defined in client/main.js
 	this.vacuum.addToScene(scene);
+    this.updateVacuum();
 }
 
 Player.prototype.updateVacuum = function() {
 	// translation from where vacuuming began
 	var vacTrans = new THREE.Vector3().copy(this.position);
     var xorigin = new THREE.Vector4(1,0,0,0);
-    var xOrientation = new THREE.Vector4(this.orientation.x, 0, this.orientation.z, 0);
-    var dotResult = xorigin.dot(xOrientation);
-    var result = dotResult / (xorigin.length() * xOrientation.length());
-    var xRad = Math.acos(result);
-    var xDeg = xRad * 180.0 / Math.PI;
-    if (this.orientation.z > 0) {
-        xDeg = -xDeg;
-    }
+	var xOrientation = new THREE.Vector4(this.orientation.x,0,this.orientation.z,0);
+	var dotResult = xorigin.dot(xOrientation);
+	var result = dotResult/(xorigin.length() * xOrientation.length());
+	var xRad = Math.acos(result);
+	var xDeg = xRad * 180.0 / Math.PI;
+	//console.log("vacuum :"  + xDeg);
+	if (this.orientation.z > 0) {
+		xDeg = -xDeg;
+	}
+	//console.log("xDeg " + xDeg);
 
 	// angle from positive x axis towards positive z axis
 	var xzPlaneAngle = 0;

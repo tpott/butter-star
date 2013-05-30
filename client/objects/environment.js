@@ -10,6 +10,7 @@ function Environment(jsonEnv) {
   this.id = jsonEnv.id;
 
   this.position = new THREE.Vector4().copy(jsonEnv.position);
+  console.log("WTFFFFFF " + JSON.stringify(this.position));
   this.orientation = new THREE.Vector4().copy(jsonEnv.orientation);
   this.state = jsonEnv.state;
   this.model = jsonEnv.model;
@@ -18,6 +19,10 @@ function Environment(jsonEnv) {
   this.type = types.ENVIRONMENT;
 
 	this.mesh = models.environments[this.model][0].clone();
+  this.mesh.position.copy(this.position);
+  this.mesh.matrixWorld.makeTranslation(this.position.x,
+      this.position.y,
+      this.position.z);
 
   // Don't add to scene in constructor. Called in WorldState's addPlayer().
 }

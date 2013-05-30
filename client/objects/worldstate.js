@@ -137,7 +137,8 @@ WorldState.prototype.getPlayerObject = function(id) {
 
 /**
  * newStates is an array of objects, each object represents a collidable
- *   object on the server and contains: id, position, orientation, state
+ *   object on the server and contains: id, position, orientation, state,
+ *   radius, and scale
  */
 WorldState.prototype.updateWorldState = function(newStates){
 	for (var i = 0; i < newStates.length; i++) {
@@ -148,42 +149,37 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].position.copy(update.position);
 			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
+            this.players[id].radius = update.radius;
 
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
+            this.players[id].mesh.position.setY(update.position.y - update.radius);
 		 
-      this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
-      
-      if(this.players[id].mesh.position.z < 0)
-      {
-        this.players[id].mesh.rotation.y -= 45 * Math.PI/2;  
-      }
-      else
-      {
-        this.players[id].mesh.rotation.y += 45 * Math.PI/2;
-      }
-//this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
+            this.players[id].mesh.lookAt( forwards(this.players[id].mesh.position, this.players[id].orientation) );
+
+            if(this.players[id].mesh.position.z < 0)
+            {
+            this.players[id].mesh.rotation.y -= 45 * Math.PI/2;  
+            }
+            else
+            {
+            this.players[id].mesh.rotation.y += 45 * Math.PI/2;
+            }
+            //this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {
+            //var radius = this.critters[id].radius; // TODO if updated from server
+
 			this.critters[id].position.copy(update.position);
 			this.critters[id].orientation.copy(update.orientation);
 			this.critters[id].state = update.state;
 
 			// necessary for graphics
 			this.critters[id].mesh.position.copy(update.position);
-			this.critters[id].mesh.lookAt( forwards(this.critters[id].position,
-						this.critters[id].orientation) );
-
+            this.critters[id].mesh.position.setY(update.position.y - update.radius);
+			this.critters[id].mesh.lookAt( forwards(this.critters[id].mesh.position,
+                                                    this.critters[id].orientation) );
 		}
-    else if (update.id in this.critters) {
-      this.foods[id].position.copy(update.position);
-      this.foods[id].state = update.state;
-
-      // necessary for graphics
-      this.foods[id].mesh.position.copy(update.position);
-      this.foods[id].mesh.lookAt( forwards(this.foods[id].position,
-          this.foods[id].orientation) );
-    }
 	}
 
 }

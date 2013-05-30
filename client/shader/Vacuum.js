@@ -322,7 +322,7 @@ Vacuum.prototype.init = function()
 *@this {Vacuum}
 **/
 Vacuum.prototype.update = function(translation,vAngle,vAngleX)
-{	
+{
 	var angle = vAngle * Math.PI/180.0;
     var angleX = vAngleX * Math.PI/180.0;
 	this.uniforms.rotation.value.makeRotationAxis(this.direction,this.angle);

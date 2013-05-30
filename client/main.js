@@ -145,11 +145,15 @@ function initLights() {
 }
 
 //load sound clips here
+
+var myAudio = new Audio('Birds.ogg');
 function initSounds()
 {
-	source.src = 'Paris2.ogg';
-	audio.appendChild(source);
-	audio.play();
+  myAudio.play();
+  myAudio.addEventListener('ended', function() { 
+      myAudio.load();
+      myAudio.play();
+    }, false); 
 }
 
 //initialize the fps counter
