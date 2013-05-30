@@ -71,7 +71,8 @@ var models = {
 	environments : [
 		[null, 'Default room', 
 			'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
-		[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
+		[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.],
+		[null, 'skybox', 'skybox.obj', 'skybox.mtl', 0.5]
 	],
 	food : [
 	]

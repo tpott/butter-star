@@ -91,6 +91,11 @@ var files = [
   ['blankRoom.mtl', "", client + 'models/blankRoom.mtl', 'text/plain'],
   ['roomWithWindows.obj', "", client + 'models/roomWithWindows.obj', 'text/plain'],
   ['roomWithWindows.mtl', "", client + 'models/roomWithWindows.mtl', 'text/plain'],
+  
+  //skybox
+  ['skybox.obj', "", client + 'models/skybox.obj', 'text/plain'],
+  ['skybox.mtl', "", client + 'models/skybox.mtl', 'text/plain'], 
+  ['skybox_texture.png', "", client + 'models/skybox_texture.png', 'image/png'],
 
   // bunnies
   ['bunnyv2.obj', "", client + 'models/bunnyv2.obj', 'text/plain'],
