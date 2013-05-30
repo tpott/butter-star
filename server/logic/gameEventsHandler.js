@@ -44,7 +44,7 @@ function Handler(server, gameid, world) {
 		self.message("Player left");
 
 		if (self.world.nplayers == 0) {
-			setTimeout(self.endGame(), END_GAME_DELAY);
+			setTimeout(self.timedEndGame(), END_GAME_DELAY);
 		}
 	});
 
@@ -68,7 +68,9 @@ function Handler(server, gameid, world) {
   });
 
   // TODO emit gameover
-  // this.on('gameover') is on git branch feature/endgame
+  this.on('gameover', function() {
+	  self.server.endGame(self.gameid);
+  });
 }
 
 util.inherits(Handler, events.EventEmitter);
@@ -95,13 +97,13 @@ Handler.prototype.message = function(str) {
 /**
  * Returns a function that will end the game
  */
-Handler.prototype.endGame = function() {
+Handler.prototype.timedEndGame = function() {
 	var self = this;
 	return function() {
 		// this check if the number of players is STILL zero, so
 		//   if no one has rejoined...
 		if (self.world.nplayers == 0) {
-			self.server.removeGame(self.gameid);
+			self.server.endGame(self.gameid);
 		}
 	};
 }

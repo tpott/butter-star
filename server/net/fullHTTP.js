@@ -11,6 +11,7 @@ var http = require('http'),
 	 events = require('events');
 
 var Game = require('./../objects/game.js');
+var EndedGame = require('./../objects/endedgame.js');
 var thinhGame = "../client/game/";
 var client = "../client/";
 
@@ -29,6 +30,7 @@ var files = [
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
+	['endgame.html', "", client + 'endgame.html', 'text/html'],
 	['instructions.html', "", client + 'instructions.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
@@ -130,7 +132,8 @@ var files = [
 
 var staticGamePage = "",
 	 indexPos = 0,
-	 gamePos = 0;
+	 gamePos = 0,
+	 endGamePos = 0;
 
 // TODO use obj for dynamic pages
 
@@ -143,6 +146,7 @@ function dynamic(server, request) {
 		body : '',
 		end : ''
 	};
+
 	if (request.url == '/') {
 		response.body = files[indexPos][1];
 		response.found = true;
@@ -175,14 +179,42 @@ function dynamic(server, request) {
 		return response;
 	}
 
-	// return game pages
-	for (var id in server.games) {
-		if (request.url == '/' + id) {
-			response.body = files[gamePos][1]; // file contents ;-)
-			response.found = true;
-			return response;
-		}
+	// eleminate '/'
+	var url = request.url.slice(1);
+
+	if (url in server.games) {
+		response.body = files[gamePos][1]; // file contents ;-)
+		response.found = true;
+		return response;
 	}
+	else if (url in server.game_history) {
+		var stats = "<table>\n";
+		stats += "\t<tr>\n";
+		stats += "\t\t<th>Player</th>\n";
+		stats += "\t\t<th>Kills</th>\n";
+		stats += "\t</tr>\n";
+
+		var game = server.game_history[url];
+		for (var id in game.players) {
+			stats += "\t<tr>\n";
+			// player stats
+			var pstats = game.players[id];
+			stats += "\t\t<td>" + pstats.display_name + "</td>\n";
+			stats += "\t\t<td>" + pstats.points + "</td>\n";
+			stats += "\t</tr>\n";
+		}
+		stats += "</table>\n";
+		stats += "<h2>TIME ELAPSED: " + game.time_elapsed_str + "</h2>\n";
+		response.body = files[endGamePos][1].replace(/dynamicended/, stats);
+		response.found = true;
+		return response;
+	}
+	/*else {
+		response.head = { 'Location' : '/gamelist' };
+		response.found = true;
+		return response;
+	}*/
+	
 	
 	return response;
 }
@@ -257,6 +289,9 @@ var Server = function(config) {
 	this.games = [];
 	this.ngames = 0; // number of games
 
+	this.game_history = [];
+	this.ngame_history = 0;
+
 	this.initFiles(config);
 }
 
@@ -318,6 +353,9 @@ Server.prototype.initFiles = function(config) {
 		else if (files[i][0] == 'game.html') {
 			gamePos = i;
 		}
+		else if (files[i][0] == 'endgame.html') {
+			endGamePos = i;
+		}
 	}
 
 	fs.readFile(client + 'gamelist.html', 'utf8', function(err, data) {
@@ -340,6 +378,20 @@ Server.prototype.removeGame = function(id) {
 	}
 	else {
 		return false;
+	}
+}
+
+Server.prototype.endGame = function(id) {
+	if (id in this.games) {
+		// then the game hasn't ended yet
+		
+		var game = this.games[id];
+		game.gameOver();
+
+		this.game_history[id] = new EndedGame(game);
+		this.ngame_history++;
+
+		this.removeGame(id);
 	}
 }
 
