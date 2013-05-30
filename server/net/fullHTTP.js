@@ -174,6 +174,11 @@ function dynamic(server, request) {
 	}
 	else if (url in server.game_history) {
 		var stats = "<table>\n";
+		stats += "\t<tr>\n";
+		stats += "\t\t<th>Player</th>\n";
+		stats += "\t\t<th>Kills</th>\n";
+		stats += "\t</tr>\n";
+
 		var game = server.game_history[url];
 		for (var id in game.players) {
 			stats += "\t<tr>\n";
@@ -361,10 +366,17 @@ Server.prototype.removeGame = function(id) {
 }
 
 Server.prototype.endGame = function(id) {
-	this.game_history[id] = new EndedGame(this.games[id]);
-	this.ngame_history++;
+	if (id in this.games) {
+		// then the game hasn't ended yet
+		
+		var game = this.games[id];
+		game.gameOver();
 
-	this.removeGame(id);
+		this.game_history[id] = new EndedGame(game);
+		this.ngame_history++;
+
+		this.removeGame(id);
+	}
 }
 
 module.exports.files = files;

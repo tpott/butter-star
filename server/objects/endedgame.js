@@ -35,7 +35,7 @@ function EndedGame(game) {
 	this.players = {};
 
 	for (var id in game.world.players) {
-		this.players[id] = new Player(game.world.players);
+		this.players[id] = new Player(game.world.players[id]);
 	}
 
 	// in milliseconds

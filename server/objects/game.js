@@ -121,6 +121,17 @@ Game.prototype.removeSocket = function(socket) {
 }
 
 /**
+ * Sends a message to all the clients, telling them the game is over
+ */
+Game.prototype.gameOver = function() {
+	this.handler.message("GAME OVER");
+
+	// TODO bad idea? 
+	// force message sending
+	this.sendUpdatesToAllClients();
+};
+
+/**
  * Parses the keypresses using the keyboard handler. If unable to 
  * parse the keypress, then it returns null. The return value of this
  * function eventually gets passed into eventBasedUpdate (below).
@@ -170,6 +181,8 @@ Game.prototype.gameTickBasedUpdate = function() {
 	// check movable states and generate forces
 	this.world.applyStates();
 	this.world.applyForces(); 
+
+	//this.handler.timer -= (1.0 / this.ticks);
 }
 
 /**
