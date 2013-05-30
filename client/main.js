@@ -6,7 +6,7 @@
 
 //GLOBALS AND SHIT
 var timer; // TODO not being used
-
+var loader = new THREE.OBJMTLLoader();
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var audio = document.createElement('audio');
@@ -172,6 +172,16 @@ cube = new THREE.Mesh( geometry, material );
 //scene.add( cube );
 }
 
+function initSkyBox()
+{
+	loader.addEventListener('load', function(event){
+		var skybox = event.content;
+		skybox.position.y -= 4.93; // magic number from server/objects/environment.js
+		scene.add(skybox);
+	});
+	loader.load('skybox.obj', 'skybox.mtl');
+}
+
 
 
 function main() {
@@ -180,7 +190,8 @@ function main() {
     //initModels();
 	// initTextures();
 	initSounds();
-  initZero(); 
+  initZero();
+	initSkyBox(); 
 	//initFloor();
 	//initRoom();
   //audio.pause();

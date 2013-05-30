@@ -10,7 +10,6 @@ function Environment(jsonEnv) {
   this.id = jsonEnv.id;
 
   this.position = new THREE.Vector4().copy(jsonEnv.position);
-  console.log("WTFFFFFF " + JSON.stringify(this.position));
   this.orientation = new THREE.Vector4().copy(jsonEnv.orientation);
   this.state = jsonEnv.state;
   this.model = jsonEnv.model;
