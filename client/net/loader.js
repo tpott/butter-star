@@ -272,6 +272,8 @@ function attemptStart() {
 			// TODO
 			// remove the loading text
 			//document.removeChild(document.getElementById("loader"));
+			var loadingGif = document.getElementById("loading");
+			loadingGif.parentNode.removeChild(loadingGif);
 
 			main();
 			break;
