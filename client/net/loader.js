@@ -8,7 +8,7 @@
 
 var filesLoaded = 0; 
 var SCRIPTS_NEEDED = 26,
-	 MODELS_NEEDED = 5,
+	 MODELS_NEEDED = 6,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -68,9 +68,10 @@ var models = {
 		[null, 'Default critter', 'bunny.obj', 'bunny.mtl', 0.12]
 	],
 	environments : [
-		[null, 'Default room', 
-			'roomWithWindows.obj', 'roomWithWindows.mtl', 1.],
-		[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
+    [null, 'Default room', 'room1.obj', 'room1.mtl', 1.],
+		[null, 'Old room', 
+			'roomWithWindows.obj', 'roomWithWindows.mtl', 1.]
+		//[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
 	food : [
 	]
@@ -80,7 +81,7 @@ var animations = {
 	players : [
 	],
 	critters : [
-		['Default critter', 'bunny.obj', 'bunny.mtl', 0.12]
+		['Default critter', 'bunny.obj', 'bunny.mtl', 0.12],
 		//[null, null, 'Bunny Kill', 'bunny_spin.dae', 0.2],
 		[null, null, 'WebGL Monster', 'monster.dae', 0.005]
 	],
