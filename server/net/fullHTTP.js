@@ -39,7 +39,7 @@ var files = [
 	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/x-font-ttf'],
 	['home.png', "", client + 'imgs/home.png', 'image/png'],
 	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
-	['loading.gif', "", client + 'imgs/loading.gif', 'application/octet-stream'],
+	['loading.gif', "", client + 'loading.gif', 'image/gif'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
@@ -200,6 +200,7 @@ function staticFile(server, files, request) {
 			response.body = files[i][1];
 
 			if (files[i][3] == 'image/png' ||
+				 files[i][3] == 'image/gif' || 
 				 files[i][3] == 'application/octet-stream') {
 				response.end = 'binary';
 			}
@@ -282,12 +283,12 @@ Server.prototype.initFiles = function(config) {
 		var setFile = function(file) {
 			return function(err, data) {
 				if (err) throw err;
-				if (file[3] == 'image/png') {
+				if (file[3] == 'image/png' || file[3] == 'image/gif') {
 					file[1] = data;
 				}
-        else if( file[3] == 'application/ogg') {
-          file[1] = data;
-        }
+				else if( file[3] == 'application/ogg') {
+				 file[1] = data;
+				}
 				else {
 					file[1] = data
 						.replace(/butterServerIp/g, config.server) // set in main.js
@@ -295,7 +296,7 @@ Server.prototype.initFiles = function(config) {
 				}
 			};
 		};
-		if (files[i][3] == 'image/png') {
+		if (files[i][3] == 'image/png' || files[i][3] == 'image/gif') {
 			fs.readFile(files[i][2], setFile(files[i]));
 		}
     else if(files[i][3] == 'application/ogg') {
