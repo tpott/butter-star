@@ -5,11 +5,11 @@
 		<link href="game.css" rel="stylesheet" type="text/css">
 	</head> 
 	<body> 
-		<script src="loader.js"></script>
-		<script> 
 
-			// load* functions are defined in client/net/loader.js
-			// eventually calls main(), which is defined in client/main.js
+	    <script src="loader.js"></script>
+	    <script> 
+		// load* functions are defined in client/net/loader.js
+		// eventually calls main(), which is defined in client/main.js
 			loadAll(document);
 			console.log("All loading started.");
 		
@@ -17,5 +17,7 @@
 
 		<!-- used while joining a game -->
 		<div id="loader"> </div>
+		<img id="loading" src="loading.gif"
+        style="position:absolute;top:50%;left:50%;margin-top:-75px;margin-left:-75px;"/>
 	</body> 
 </html> 

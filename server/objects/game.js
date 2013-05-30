@@ -73,7 +73,9 @@ Game.prototype.addSocket = function(socket) {
 			model : this.world.collidables[id].model, 
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		initObj.new.push(colObj);
 	}

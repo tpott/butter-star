@@ -23,7 +23,7 @@ function Critter(){
     this.type = Collidable.types.CRITTER;
 
     //load the critter mesh
-    this.mesh = Loader.parse('../client/models/bunnyv2.obj');
+    this.mesh = Loader.parse('../client/models/bunny.obj');
     this.mesh.scale.set(this.scale, this.scale, this.scale);
     this.radius = this.mesh.geometry.boundingSphere.radius * this.scale / 2;
 
