@@ -175,29 +175,173 @@ Player.prototype.doVacuum = function(critters) {
     this.decVacuumCharge();
 
     if (this.canVacuum() === true) {
-      return this.getVacIntersectionObj(critters);
+      return this.getVacIntersectionObjs(critters);
     } else {
       return null;
     }
 };
 
+function isNegative(number)
+{
+	if(number < 0.0)
+		return true;
+	return false;
+}
+
+function createOrthoVector(positive,negative)
+{
+	var vector = [1,2,3];
+
+	if(negative.length % 2 != 0)
+	{
+		if(negative.length == 1) //negative length is 1
+		{
+			vector[negative[0].type] = -1/negative[0].value;
+			vector[positive[0].type] = 1/positive[0].value;
+			vector[positive[1].type] = 0.0;
+		}
+		else // negative length is 3
+		{
+			vector[negative[0].type] = 0.0;
+			vector[negative[1].type] = -1/negative[0].value;
+			vector[negative[2].type] = 1/negative[0].value;
+		}
+	}
+	else
+	{
+		if(negative.length == 2) // negative length is 2
+		{
+			vector[positive[0].type] = 1/positive[0].value;
+			vector[negative[0].type] = -1/negative[0].value;
+			vector[negative[1].type] = 0.0;
+		}
+		else // negative length is 0
+		{
+			vector[positive[0].type] = -1/positive[0].value;
+			vector[positive[1].type] = 1/positive[1].value;
+			vector[positive[2].type] = 0.0;
+		}
+	}
+	return new THREE.Vector3(vector[0],vector[1],vector[2]);
+}
+
+function findOrthoVector(vector)
+{
+	var x,y,z,rand;
+	rand = Math.random();
+	var magnitude = Math.sqrt((vX*vX) + (vY*vY) + (vZ*vZ));
+	var vX = vector.x;var vY = vector.y;var vZ = vector.z;
+
+	var positive = [];
+	var negative = [];
+	var objX = {type: 0, value: vX};
+	var objY = {type: 1, value: vY};
+	var objZ = {type: 2, value: vZ};
+
+	isNegative(vX) ? negative.push(objX) : positive.push(objX);
+	isNegative(vY) ? negative.push(objY) : positive.push(objY);
+	isNegative(vZ) ? negative.push(objZ) : positive.push(objZ);
+
+	//if all three values are non zero
+	if(vX != 0.0 && vY != 0.0 && vZ != 0.0)
+ 	{
+ 		return createOrthoVector(positive,negative);
+	}
+
+	vector.x == 0 ? x = rand: x = 0.0;
+	vector.y == 0 ? y = rand: y = 0.0;
+	vector.z == 0 ? z = rand: z = 0.0;
+	return new THREE.Vector3(x,y,z).normalize();
+}
+
+function generateCirclePoint(direction,center,radius,angle)
+{
+	var vectorV = direction;
+	var vectorA = findOrthoVector(direction);
+	var vectorCross = vectorV.clone();
+	var vectorB = vectorCross.crossVectors(vectorV, vectorA);
+    
+    vectorA.normalize();
+    vectorB.normalize();
+
+	var x = center.x + radius*Math.cos(angle)*vectorA.x + radius*Math.sin(angle)*vectorB.x;
+   	var y = center.y + radius*Math.cos(angle)*vectorA.y + radius*Math.sin(angle)*vectorB.y;
+   	var z = center.z + radius*Math.cos(angle)*vectorA.z + radius*Math.sin(angle)*vectorB.z;
+   				
+	return new THREE.Vector3(x,y,z);
+}
 /*
  * Checks for intersection with objects and returns the closest
  * intersected objects
  */
-Player.prototype.getVacIntersectionObj = function(critters) {
+Player.prototype.getVacIntersectionObjs = function(critters) {
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
-    var raycaster = new THREE.Raycaster(origin, vector);
+    var raycaster0 = new THREE.Raycaster(origin, vector);
+
+    var projected_center = new THREE.Vector3();
+    var scalar = new THREE.Vector3().copy(vector);
+    scalar.multiplyScalar(10);
+    projected_center.addVectors(origin, scalar);
+    //projected_center.y = 0;
+
+    var p1 = generateCirclePoint(vector, projected_center, 1.5, 45.0  /*Math.PI / 180.0*/);
+    var p2 = generateCirclePoint(vector, projected_center, 1.5, 135.0 /* Math.PI / 180.0*/);
+    var p3 = generateCirclePoint(vector, projected_center, 1.5, 225.0 /* Math.PI / 180.0*/);
+    var p4 = generateCirclePoint(vector, projected_center, 1.5, 315.0 /* Math.PI / 180.0*/);
+
+    /*console.log("center:");
+    console.log(projected_center);
+    console.log(p1);
+    console.log(p2);
+    console.log(p3);
+    console.log(p4);*/
+    
+    p1.sub(origin);
+    p1.normalize();
+    p2.sub(origin);
+    p2.normalize();
+    p3.sub(origin);
+    p3.normalize();
+    p4.sub(origin);
+    p4.normalize();
+
+    var raycaster1 = new THREE.Raycaster(origin, p1);
+    var raycaster2 = new THREE.Raycaster(origin, p2);
+    var raycaster3 = new THREE.Raycaster(origin, p3);
+    var raycaster4 = new THREE.Raycaster(origin, p4);
+
+    var ret_objs = {}; // table of intersected objects to return
     for (key in critters) {
-        var intersects = raycaster.intersectObject(critters[key].mesh);
+        var intersects = raycaster0.intersectObject(critters[key].mesh);
         // check if any intersections within vacuum distance
         // TODO: don't hardcode vacuum distance
         if(intersects.length > 0 && intersects[0].distance < 10) {
-            return critters[key]; // return closest critter
+            //console.log("intersected with ray0");
+            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+        }
+        intersects = raycaster1.intersectObject(critters[key].mesh);
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            //console.log("intersected with ray1");
+            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+        }
+        intersects = raycaster2.intersectObject(critters[key].mesh);
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            //console.log("intersected with ray2");
+            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+        }
+        intersects = raycaster3.intersectObject(critters[key].mesh);
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            //console.log("intersected with ray3");
+            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+        }
+        intersects = raycaster4.intersectObject(critters[key].mesh);
+        if(intersects.length > 0 && intersects[0].distance < 10) {
+            //console.log("intersected with ray4");
+            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
         }
     }
-    return null; // no intsections
+    return ret_objs; // return table
 }
 
 Player.prototype.setDefaultState = function() {
