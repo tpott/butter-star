@@ -145,11 +145,15 @@ function initLights() {
 }
 
 //load sound clips here
+
+var myAudio = new Audio('Birds.ogg');
 function initSounds()
 {
-	source.src = 'AnotherOneBitesTheDust.ogg';
-	audio.appendChild(source);
-	audio.play();
+  myAudio.play();
+  myAudio.addEventListener('ended', function() { 
+      myAudio.load();
+      myAudio.play();
+    }, false); 
 }
 
 //initialize the fps counter
@@ -172,7 +176,7 @@ function initSkyBox()
 {
 	loader.addEventListener('load', function(event){
 		var skybox = event.content;
-		skybox.position.y -= 1;
+		skybox.position.y -= 4.93; // magic number from server/objects/environment.js
 		scene.add(skybox);
 	});
 	loader.load('skybox.obj', 'skybox.mtl');
