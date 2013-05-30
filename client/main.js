@@ -6,7 +6,7 @@
 
 //GLOBALS AND SHIT
 var timer; // TODO not being used
-
+var loader = new THREE.OBJMTLLoader();
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var audio = document.createElement('audio');
@@ -18,7 +18,7 @@ var renderer = new THREE.WebGLRenderer();
 	player : [],
 	critters : [], 
 	environment : [],
-	food : []
+	foods : []
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
@@ -32,6 +32,7 @@ document.addEventListener( 'keyup', keyUp, false );
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
 
@@ -116,6 +117,10 @@ function updateAnimations() {
 		else if (! player.isVacuuming() && player.vacuum != null) {
 			player.stopVacuuming();
 		}
+
+		if (player.animation != null) {
+			player.animation.update();
+		}
 	}
 }
 
@@ -142,7 +147,7 @@ function initLights() {
 //load sound clips here
 function initSounds()
 {
-	source.src = 'Paris2.ogg';
+	source.src = 'AnotherOneBitesTheDust.ogg';
 	audio.appendChild(source);
 	audio.play();
 }
@@ -163,6 +168,16 @@ cube = new THREE.Mesh( geometry, material );
 //scene.add( cube );
 }
 
+function initSkyBox()
+{
+	loader.addEventListener('load', function(event){
+		var skybox = event.content;
+		skybox.position.y -= 1;
+		scene.add(skybox);
+	});
+	loader.load('skybox.obj', 'skybox.mtl');
+}
+
 
 
 function main() {
@@ -171,10 +186,11 @@ function main() {
     //initModels();
 	// initTextures();
 	initSounds();
-  initZero(); 
+  initZero();
+	initSkyBox(); 
 	//initFloor();
 	//initRoom();
-  audio.pause();
+  //audio.pause();
 	//controls.disable;
 
 	myWorldState = new WorldState();
@@ -185,6 +201,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
   statusBox = new StatusBox();
 

@@ -15,10 +15,13 @@ var Critter = function(critterObj) {
 
   this.type = types.CRITTER;
 
-	this.mesh = models.critters[this.model].clone();
+	this.mesh = models.critters[this.model][0].clone();
 
 	// necessary for graphics
-	this.mesh.position = this.position;
+  this.scale = critterObj.scale;
+  this.radius = critterObj.radius;
+	this.mesh.position.copy(this.position);
+  this.mesh.position.setY(this.position.y - this.radius);
 
-  // Don't add to scene in constructor. Called in WorldState's addPlayer().
+  // Don't add to scene in constructor. Called in WorldState's addCritter().
 };

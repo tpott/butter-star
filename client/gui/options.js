@@ -19,7 +19,7 @@ function OptionMenu() {
 		});
 
 	this.title = $('<div id="optionsTitle" />')
-		.append($('<strong>Menu</title>'));
+		.append($('<strong>Menu</strong>'));
 	this.list = $('<ul />')
 		.css({
 			'list-style-type': 'none'
@@ -44,6 +44,12 @@ function OptionMenu() {
 OptionMenu.prototype.toggle = function() {
 	if (this.hidden) {
 		console.log('Showing options');
+
+		// TODO global from client/main.js
+		if (! scoreBoard.hidden) {
+			scoreBoard.toggle();
+		}
+
 		$('#options').show();
 		$('.game').css('opacity', '0.4');
 

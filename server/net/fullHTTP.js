@@ -20,51 +20,107 @@ var files = [
 	['stats.min.js', "", client + 'libs/stats.min.js', 'text/javascript'],
 	['three.min.js', "", client + 'libs/three.min.js', 'text/javascript'],
 	['MTLLoader.js', "", client + 'libs/MTLLoader.js', 'text/javascript'],
+	['ColladaLoader.js', "", client + 'libs/ColladaLoader.js', 'text/javascript'],
 	['OBJMTLLoader.js', "", client + 'libs/OBJMTLLoader.js', 'text/javascript'],
 	['jquery.js', "", client + 'libs/jquery-1.9.1.js', 'text/javascript'],
 	['jquery-ui.js', "", client + 'libs/jquery-ui.js', 'text/javascript'],
 	['jquery-ui.css', "", client + 'libs/jquery-ui.css', 'text/css'],
+
 	// our client files
 	['', "", client + 'index.html', 'text/html'],
 	['game.html', "", client + 'game.html', 'text/html'],
-	//['menu.html', "", client + 'menu.html', 'text/html'],
 	['font.css', "", client + 'font/font.css', 'text/css'],
 	['style.css', "", client + 'css/style.css', 'text/css'],
+	['game.css', "", client + 'css/game.css', 'text/css'],
 	['dustismo_bold_italic.ttf', "", client + 'font/dustismo_bold_italic.ttf', 'application/octet-stream'],
 	['dustismo_bold.ttf', "", client + 'font/dustismo_bold.ttf', 'application/octet-stream'],
 	['dustismo_italic.ttf', "", client + 'font/dustismo_italic.ttf', 'application/octet-stream'],
 	['Dustismo.ttf', "", client + 'font/Dustismo.ttf', 'application/octet-stream'],
+
+	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
-	['main.js', "", client + 'main.js', 'text/javascript'],
+	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
+	// TODO remove
 	['ControlsEvent.js', "", client + 'controls/ControlsEvent.js', 'text/javascript'],
-	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
-	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
+
+	// objects
 	['player.js', "", client + 'objects/player.js', 'text/javascript'],
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
-	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
 	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
-	['connection.js', "", client + 'net/connection.js', 'text/javascript'],
+	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
+
+	// controls
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
+	['THREEx.FullScreen.js', "", client + 'controls/THREEx.FullScreen.js', 'text/javascript'],
+	['PointerLockControls.js', "", client + 'controls/PointerLockControls.js', 'text/javascript'],
+
+	// shaders
 	['vacuum.js', "", client + 'shader/Vacuum.js', 'text/javascript'],
+	['basic-vert.js', "", client + 'shader/basic-vert.js', 'x-shader/x-vertex'],
+	['basic-frag.js', "", client + 'shader/basic-frag.js', 'x-shader/x-fragment'],
+	['animate.js', "", client + 'objects/animate.js', 'text/javascript'],
+
+	// gui
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
+	['scoreboard.js', "", client + 'gui/scoreboard.js', 'text/javascript'],
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
 	['status.js', "", client + 'gui/status.js', 'text/javascript'],
+
+	// main
+	['main.js', "", client + 'main.js', 'text/javascript'],
+
+	// TODO migrate everything to client/models/
 	// our data files
-  ['boy.obj', "", client + 'objects/boy.obj', 'text/plain'],
-  ['boy.mtl', "", client + 'objects/boy.mtl', 'text/text'],
-  ['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
-  ['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
-  ['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
-  ['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
+	// boy
+  ['boy.obj', "", client + 'objects/boy/boy.obj', 'text/plain'],
+  ['boy.mtl', "", client + 'objects/boy/boy.mtl', 'text/text'],
+  ['yellow_boy_standing.obj', "", client + 'models/yellow_boy_standing.obj', 'text/plain'],
+  ['yellow_boy_standing.mtl', "", client + 'models/yellow_boy_standing.mtl', 'text/text'],
+  ['boy_texture_yellow.png', "", client + 'models/boy_texture_yellow.png', 'image/png'],
+
+  // rooms
+  //['blankRoom.obj', "", client + 'objects/blankRoom.obj', 'text/plain'],
+  //['blankRoom.mtl', "", client + 'objects/blankRoom.mtl', 'text/plain'],
+  //['roomWithWindows.obj', "", client + 'objects/roomWithWindows.obj', 'text/plain'],
+  //['roomWithWindows.mtl', "", client + 'objects/roomWithWindows.mtl', 'text/plain'],
+  ['blankRoom.obj', "", client + 'models/blankRoom.obj', 'text/plain'],
+  ['blankRoom.mtl', "", client + 'models/blankRoom.mtl', 'text/plain'],
+  ['roomWithWindows.obj', "", client + 'models/roomWithWindows.obj', 'text/plain'],
+  ['roomWithWindows.mtl', "", client + 'models/roomWithWindows.mtl', 'text/plain'],
+  
+  //skybox
+  ['skybox.obj', "", client + 'models/skybox.obj', 'text/plain'],
+  ['skybox.mtl', "", client + 'models/skybox.mtl', 'text/plain'], 
+  ['skybox_texture.png', "", client + 'models/skybox_texture.png', 'image/png'],
+
+  // bunnies
+  ['bunnyv2.obj', "", client + 'models/bunnyv2.obj', 'text/plain'],
+  ['bunnyv2.mtl', "", client + 'models/bunnyv2.mtl', 'text/text'],
+  ['bunny_texture.png', "", client + 'models/bunny_texture.png', 'image/png'],
+  ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
+
+  // yixin
+	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
+  ['yixin_cube.obj', "", client + 'objects/yixin/yixin_cube.obj', 'text/plain'],
+  ['yixin_cube.mtl', "", client + 'objects/yixin/yixin_cube.mtl', 'text/plain'],
+
+  // ghost
   ['boo.obj', "", client + 'objects/ghost/boo.obj', 'text/plain'],
   ['boo.mtl', "", client + 'objects/ghost/boo.mtl', 'text/plain'],
   ['boo_grp.png', "", client + 'objects/ghost/boo_grp.png', 'image/png'],
 	// temp data files, for Thinh's game
-	['player.png', "", thinhGame + 'data/player.png', 'image/png']
+	//['player.png', "", thinhGame + 'data/player.png', 'image/png'],
+  // sounds
+  ['Paris2.ogg', "", client + '/game/data/sounds/Paris2.ogg', 'application/ogg'],
+  ['AnotherOneBitesTheDust.ogg', "", client + 'sound/AnotherOneBitesTheDust.ogg', 'application/ogg'],
+
+	// temp data files, not ours
+  ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
+  ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
 
 ];
 
@@ -143,7 +199,7 @@ function staticFile(server, files, request) {
 				 files[i][3] == 'application/octet-stream') {
 				response.end = 'binary';
 			}
-
+      
 			response.found = true;
 			return response; 
 		}
@@ -225,6 +281,9 @@ Server.prototype.initFiles = function(config) {
 				if (file[3] == 'image/png') {
 					file[1] = data;
 				}
+        else if( file[3] == 'application/ogg') {
+          file[1] = data;
+        }
 				else {
 					file[1] = data
 						.replace(/butterServerIp/g, config.server) // set in main.js
@@ -233,6 +292,9 @@ Server.prototype.initFiles = function(config) {
 			};
 		};
 		if (files[i][3] == 'image/png') {
+			fs.readFile(files[i][2], setFile(files[i]));
+		}
+    else if(files[i][3] == 'application/ogg') {
 			fs.readFile(files[i][2], setFile(files[i]));
 		}
 		else {

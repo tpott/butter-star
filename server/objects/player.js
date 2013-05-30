@@ -11,9 +11,10 @@
 var THREE = require('three');
 var util = require('util');
 
-var Movable = require('./movable.js');
 var Collidable = require('./collidable.js');
 var Events = require('../controls/handler.js');
+var Loader = require('./OBJLoader.js');
+var Movable = require('./movable.js');
 
 // player states
 var STANDING_STILL = 0,
@@ -31,20 +32,22 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-
-  // Dimensions of player
-  // TODO get from model
-  this.width = 1;
-  this.height = 3;
-  this.depth = 1;
+  
+  this.scale = 0.06;
 
   // 3D object this represents
-  // TODO make this load the player model. Trevor: keep the radius line!
-  var geometry = new THREE.CubeGeometry(
-      this.width, this.height, this.depth);
-  var material = new THREE.MeshBasicMaterial();
-  this.mesh = new THREE.Mesh(geometry, material);
-  this.radius = this.mesh.geometry.boundingSphere.radius;
+  this.mesh = Loader.parse('../client/models/yellow_boy_standing.obj');
+  this.mesh.scale.set(this.scale, this.scale, this.scale);
+  this.radius = this.mesh.geometry.boundingSphere.radius * this.scale / 2;
+
+  // Make position center of player, not bottom by shifting mesh down
+  this.mesh.position.copy(this.position);
+  this.mesh.position.setY(this.position.y - this.radius);
+  this.mesh.matrixWorld.makeTranslation(this.position.x,
+      this.position.y - this.radius,
+      this.position.z);
+
+  this.mesh.geometry.computeFaceNormals(); // needed for raycaster collisions
 
   this.keyPresses = [];
 
@@ -71,7 +74,6 @@ function Player() {
   this.state = STANDING_STILL; // current state of player
   this.numVacKills = 0; // counter for number of vacuumed objects
   this.prevNumVacKills = -1; // used to see if num vacuumed changed
-  this.raycaster = null;
 
   // Vacuum charge percentage
   this.vacuumCharge = 100; // counter for % vacuum battery remaining
@@ -186,9 +188,9 @@ Player.prototype.doVacuum = function(critters) {
 Player.prototype.getVacIntersectionObj = function(critters) {
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
-    this.raycaster = new THREE.Raycaster(origin, vector);
+    var raycaster = new THREE.Raycaster(origin, vector);
     for (key in critters) {
-        var intersects = this.raycaster.intersectObject(critters[key].mesh);
+        var intersects = raycaster.intersectObject(critters[key].mesh);
         // check if any intersections within vacuum distance
         // TODO: don't hardcode vacuum distance
         if(intersects.length > 0 && intersects[0].distance < 10) {

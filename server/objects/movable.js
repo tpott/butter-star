@@ -21,15 +21,10 @@ function Movable() {
   Movable.super_.call(this);
 
   // Dummy dimensions and mesh. Will be created in subclasses.
-  this.width = 0; // x axis
-  this.height = 0; // y axis
-  this.depth = 0; // z axis
   this.mesh = null;
   this.radius = 0;
 
-  this.center = new THREE.Vector4(0, 0, 0, 0);
-
-  this.type = Collidable.types.MOVABLE
+  this.type = Collidable.types.MOVABLE;
 
   this.velocity = new THREE.Vector4(0, 0, 0, 0);
   this.force = new THREE.Vector4(0, 0, 0, 0);
@@ -51,38 +46,20 @@ Movable.prototype.hasBoundingSphere = function() {
 };
 
 /**
- * Calculate the center of your object. The position is at the base of the object.
- * @return {THREE.Vector4} The point where the center of the object is.
- * @private
- */
-Movable.prototype.getCenter_ = function() {
-	// TODO this seems hacky
-  this.center.set(
-      this.position.x + (this.width / 2),
-      this.position.y + (this.height / 2),
-      this.position.z + (this.depth / 2),
-      1 // a point rather than a vector
-  );
-  return this.center;
-};
-
-/**
  * Check if the object will collide with another object.
  * @param {Array.<Collidable>} collidables List of collidables.
  * @return {Collidable} The closest object that was collided with. 
- * TODO all objs later?
  * @private
  */
 Movable.prototype.detectCollision_ = function(collidables) {
   var intersectedObjs = [];
   var correctedVec = this.velocity.clone();
+  var meshCorrection = new THREE.Vector4(0,0,0,0);
 
-  // TODO position or center?
-  // TODO velocity or displacement
   var newPos = this.position.clone().add(this.velocity);
-  // TODO don't want to say new every collision?
-  var projectedCenter = new THREE.Vector4(0,0,0,1);
-  projectedCenter.copy(this.getCenter_());
+
+  var projectedCenter = new THREE.Vector4(0,0,0,1); // should be same as newPos
+  projectedCenter.copy(this.position);
   projectedCenter.add(this.velocity);
   
   var dp = new THREE.Vector4(0, 0, 0, 1); // change in position set below
@@ -96,15 +73,11 @@ Movable.prototype.detectCollision_ = function(collidables) {
 
     var collidable = collidables[id]; // Object checking collision against
     var intersecting = false;
-	 // skip enemies for now, cause they were covering the floor...
-	 if (collidable.radius == 0) {
-		 continue;
-	 }
+
     // Case for everything except walls/floors/ceilings
-	 //  this implies getCenter is defined
     if (collidable.hasBoundingSphere() === true) {
 		 
-      dp.copy(collidable.getCenter_())
+      dp.copy(collidable.position)
       dp.sub(projectedCenter);
 
       var minDist = this.radius + collidable.radius;
@@ -141,7 +114,7 @@ Movable.prototype.detectCollision_ = function(collidables) {
         var overlapDist = Math.sqrt(overlapDistSq);
         var backDist = minDist - overlapDist;
         var backMagnitudeRatio = backDist / overlapDist;
-        var targetCenter = collidable.getCenter_();
+        var targetCenter = collidable.position;
         // TODO don't say new every time? :(
         var backVector = new THREE.Vector4(
             (projectedCenter.x - targetCenter.x) * backMagnitudeRatio,
@@ -173,43 +146,56 @@ Movable.prototype.detectCollision_ = function(collidables) {
 					 1.0
 				);
 
-			  var oldVec = this.position.clone().sub(faceCenter);
-			  var newVec = newPos.clone().sub(faceCenter);
+        // check if any side of this object will hit the walls
+        for (var j = 0; j < 6; j++) {
+          var oldVec = this.position.clone().sub(faceCenter);
+          var newVec = newPos.clone().sub(faceCenter);
 
-			  // TODO position or center
-			  var oldFacingFront = normal.dot(oldVec) > 0;
-			  var newFacingFront = normal.dot(newVec) > 0;
+          var coordType = j % 3;
+          var sign = ((j % 2) === 0) ? 1 : -1;
+          var signedRadius =
+              ((j % 2) === 0) ? (this.radius) : (-1 * this.radius);
+          if (coordType === 0) { // try adjusting for radius in x dir
+            oldVec.setX(oldVec.x + signedRadius);
+            newVec.setX(newVec.x + signedRadius);
+          } else if (coordType === 1) { // try adjusting for radius in y dir
+            oldVec.setY(oldVec.y + signedRadius);
+            newVec.setY(newVec.y + signedRadius);
+          } else if (coordType === 2) { // try adjusting for radius in z dir
+            oldVec.setZ(oldVec.z + signedRadius);
+            newVec.setZ(newVec.z + signedRadius);
+          }
 
-			  if (oldFacingFront !== newFacingFront) {
-				  var projected = normal.multiplyScalar(normal.dot(newVec) /
-					  	 normal.length());
-				  intersectedObjs.push(collidable);
-				  correctedVec.sub(projected);
-			  }
+          var oldFacingFront = normal.dot(oldVec) > 0;
+          var newFacingFront = normal.dot(newVec) > 0;
 
-			  // check for distance
-			  // TODO
+          if (oldFacingFront !== newFacingFront) {
+            // projected is how much through the wall it went
+            var projected = normal.multiplyScalar(normal.dot(newVec) /
+                 normal.length());
+            intersectedObjs.push(collidable);
+            correctedVec.sub(projected);
 
-        /*
-        var plane = normal.dot(faceCenter);
-        var startDistToWall = normal.dot(this.getCenter_()).sub(plane);
-        var endDistToWall = normal.dot(projectedCenter).sub(plane);
+            // If going through wall, correct position to be at edge of wall
+            // NOTE(jyfang): Magic numbers below are because player x,z velocity
+            // too high -> goes through wall, therefore need extra correction
+            if ((projected.x < 0) && (coordType === 0)) {
+              meshCorrection.setX(face.centroid.x + this.radius + 0.2);
+            } else if((projected.x > 0) && (coordType === 0)) {
+              meshCorrection.setX(face.centroid.x - this.radius - 0.2);
+            } else if (projected.y < 0) {
+              meshCorrection.setY(face.centroid.y + this.radius);
+            } else if (projected.y > 0) {
+              meshCorrection.setY(face.centroid.y - this.radius);
+            } else if ((projected.z < 0) && (coordType === 2)) {
+              meshCorrection.setZ(face.centroid.z + this.radius + 0.2);
+            } else if ((projected.z > 0) && (coordType === 2)) {
+              meshCorrection.setZ(face.centroid.z - this.radius - 0.2);
+            }
 
-        // Check if already intersecting wall
-        if (Math.abs(startDistToWall) <= this.radius) {
-          intersecting = true;
-        } else {
-          var negRadius = -1 * this.radius;
-          // Check if movement will cross the wall
-          if ((startDistToWall > this.radius && endDistToWall < negRadius)
-              || (startDistToWall < negRadius && endDistToWall > this.radius)) {
-            intersecting = true;
+            break;
           }
         }
-
-        */
-
-        // TODO correcting for intersection
 		  } // end loop over faces
     } // end else for walls/floors/ceilings
   }
@@ -218,7 +204,8 @@ Movable.prototype.detectCollision_ = function(collidables) {
   if (intersectedObjs.length > 0) { // at least one intersection
     collidable = {
         obj: intersectedObjs[0], // TODO
-        vector: correctedVec
+        vector: correctedVec,
+        meshCorrection : meshCorrection
     };
   }
 
@@ -252,21 +239,31 @@ Movable.prototype.applyForces = function(collidables) {
 		// collision.vector is the corrected vector
 		this.position.add(collision.vector);
 		this.velocity.copy(collision.vector); // TODO unecessary copy?
-		//this.force.set(0, 0, 0, 0);
+
+    // hack shit together
+    // If collided with wall, set position to be at edge of wall
+    if (collision.meshCorrection.x != 0) {
+      this.position.setX(collision.meshCorrection.x);
+    }
+    if (collision.meshCorrection.y != 0) {
+      this.position.setY(collision.meshCorrection.y);
+    }
+    if (collision.meshCorrection.z != 0) {
+      this.position.setZ(collision.meshCorrection.z);
+    }
 	}
 	else {
 		// TODO before or after changing velocity?
 		this.position.add(this.velocity);
-        //this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
-        //console.log("position: " + this.position);
-        //console.log("position " + this.position.x + " " + this.position.y + " " + this.position.z);
 
 		// reset forces, because all of these have been applied
 		this.force.set(0, 0, 0, 0);
 	}
     
     //this.mesh.position.copy(this.position); // update mesh position as well
-    this.mesh.matrixWorld.makeTranslation(this.position.x, this.position.y, this.position.z);
+    this.mesh.matrixWorld.makeTranslation(this.position.x,
+        this.position.y - this.radius,
+        this.position.z);
 
     // Check if movable changed positions
     if (! originalPosition.equals(this.position)) {

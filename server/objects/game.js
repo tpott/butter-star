@@ -61,19 +61,35 @@ Game.prototype.addSocket = function(socket) {
 
   var initObj = {
 	  id : socket.id,
-	  world : []
+	  new : [],
+		vac : [],
+		kill : []
   };
 
 	for (var id in this.world.collidables) {
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
-			model : 0, // default model for now
+			model : this.world.collidables[id].model, 
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state
 		};
-		initObj.world.push(colObj);
+		initObj.new.push(colObj);
+	}
+
+	for (var id in this.world.players) {
+		var vacChargeObj = {
+		  id: id,
+		  charge: this.world.players[id].getVacuumCharge()
+		};
+		initObj.vac.push(vacChargeObj);
+
+		var killCounterObj = {
+        id: id,
+        count: this.world.players[id].getVacKills()
+      };
+      initObj.kill.push(killCounterObj);
 	}
 
 	// the client receives this and inits stuff in client/object/worldstate.js
@@ -131,6 +147,10 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 	//   if some state is not specified, set to default
 	var events = this.keyboardHandler.parse(clientData);
 	
+    // remember old state
+    var oldState = player.state;
+
+    //do state changes
 	player.setDefaultState();
 
 	for (var i = 0; i < events.length; i++) {
@@ -141,6 +161,10 @@ Game.prototype.eventBasedUpdate = function(player, clientData) {
 			player.rotate(events[i].data);
 		}
 	}
+    //check if diff from old state and if so add to update array so client is notified
+    if (player.state != oldState) {
+        this.world.setCollidables.push(player.id); 
+    }
 }
 
 /**
@@ -157,6 +181,7 @@ Game.prototype.gameTickBasedUpdate = function() {
  * Send an update of the world state to all clients.
  */
 Game.prototype.sendUpdatesToAllClients = function() {
+	var updates = 6; // new, set, del, misc, vac, kill
 	var worldUpdate = {
 		new : [],
 		set : [],
@@ -173,10 +198,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
-			model : 0, // default model for now
+			model : 0, // TODO which model index to load (yellow boy, blue boy, etc)
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		worldUpdate.new.push(colObj);
 	}
@@ -195,7 +222,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			id : id,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
-			state : this.world.collidables[id].state
+			state : this.world.collidables[id].state,
+      radius : this.world.collidables[id].radius,
+      scale : this.world.collidables[id].scale
 		};
 		worldUpdate.set.push(colObj);
 
