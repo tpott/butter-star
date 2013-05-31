@@ -121,6 +121,8 @@ World.prototype.spawnCritters = function(numCritters) {
 
 	 critter.position.copy(position);
      critter.mesh.position.copy(position);
+     critter.speed = Math.random() * (0.02 - 0.005) + 0.005; // number between 0.005 and 0.02
+     critter.rotation = Math.floor(Math.random() * 2); // 0 or 1
 
     this.addCritter(critter);
   }
