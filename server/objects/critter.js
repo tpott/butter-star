@@ -36,13 +36,19 @@ function Critter(){
 
     //need to compute geometry face normals for raycaster intersections
     this.mesh.geometry.computeFaceNormals();
-    this.speed = 0.01;
+
+    this.speed = 0.01; // speed of critter rotation 
+    this.rotation; // determines if rotating clockwise or counterclockwise 
 }
 util.inherits(Critter, Movable);
 
 Critter.prototype.move = function() {
     var rotateMatrix = new THREE.Matrix4();
-    rotateMatrix.makeRotationY(this.speed);
+    if (this.rotation == 0) {
+        rotateMatrix.makeRotationY(this.speed);
+    } else {
+        rotateMatrix.makeRotationY(-this.speed);
+    }
     //this.mesh.matrixWorld.multiply(rotateMatrix);
     this.position.applyMatrix4(rotateMatrix);
     /*this.position.set(this.mesh.matrixWorld.elements[12],
