@@ -143,6 +143,7 @@ var files = [
 var staticGamePage = "",
 	 indexPos = 0,
 	 gamePos = 0,
+	 instrPos = 0,
 	 endGamePos = 0;
 
 // TODO use obj for dynamic pages
@@ -179,7 +180,7 @@ function dynamic(server, request) {
 		return response;
 	}
 	else if (request.url == '/instructions') {
-		response.body = files[10][1];
+		response.body = files[instrPos][1];
 		response.found = true;
 		return response;
 	}
@@ -363,6 +364,9 @@ Server.prototype.initFiles = function(config) {
 		else if (files[i][0] == 'game.html') {
 			gamePos = i;
 		}
+    else if (files[i][0] == 'instructions.html') {
+      instrPos = i;
+    }
 		else if (files[i][0] == 'endgame.html') {
 			endGamePos = i;
 		}
