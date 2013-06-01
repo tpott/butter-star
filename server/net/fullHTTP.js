@@ -87,6 +87,16 @@ var files = [
   ['yellow_boy_standing.obj', "", client + 'models/yellow_boy_standing.obj', 'text/plain'],
   ['yellow_boy_standing.mtl', "", client + 'models/yellow_boy_standing.mtl', 'text/text'],
   ['boy_texture_yellow.png', "", client + 'models/boy_texture_yellow.png', 'image/png'],
+  ['blue_boy_standing.mtl', "", client + 'models/blue_boy_standing.mtl', 'text/text'],
+  ['boy_texture_blue.png', "", client + 'models/boy_texture_blue.png', 'image/png'],
+  ['green_boy_standing.mtl', "", client + 'models/green_boy_standing.mtl', 'text/text'],
+  ['boy_texture_green.png', "", client + 'models/boy_texture_green.png', 'image/png'],
+  ['orange_boy_standing.mtl', "", client + 'models/orange_boy_standing.mtl', 'text/text'],
+  ['boy_texture_orange.png', "", client + 'models/boy_texture_orange.png', 'image/png'],
+  ['purple_boy_standing.mtl', "", client + 'models/purple_boy_standing.mtl', 'text/text'],
+  ['boy_texture_purple.png', "", client + 'models/boy_texture_purple.png', 'image/png'],
+  ['red_boy_standing.mtl', "", client + 'models/red_boy_standing.mtl', 'text/text'],
+  ['boy_texture_red.png', "", client + 'models/boy_texture_red.png', 'image/png'],
 
   // rooms
   ['blankRoom.obj', "", client + 'models/blankRoom.obj', 'text/plain'],
