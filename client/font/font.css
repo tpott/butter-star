@@ -1,0 +1,20 @@
+/* Dustismo webfont */ 
+@font-face {
+    font-family: "Dustismo";
+    src: url("http://ff.static.1001fonts.net/d/u/dustismo.regular.ttf")  format("truetype");
+}
+
+@font-face {
+    font-family: "Dustismo Bold Italic";
+    src: url("http://ff.static.1001fonts.net/d/u/dustismo.italic.ttf")  format("truetype");
+}
+
+@font-face {
+    font-family: "Dustismo Bold";
+    src: url("http://ff.static.1001fonts.net/d/u/dustismo.bold.ttf")  format("truetype");
+}
+
+@font-face {
+    font-family: "Dustismo Italic";
+    src: url("http://ff.static.1001fonts.net/d/u/dustismo.bold-italic.ttf")  format("truetype");
+}

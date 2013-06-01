@@ -1,0 +1,365 @@
+/*
+ * DUST BUSTERS
+ * A Butter* Production
+ *
+ * Prita Hasjim
+ */
+
+/*
+ * LIGHT BLUE: #94dffe;
+ * MEDIUM BLUE: #5fcffe;
+ * DARK BLUE: #29bffe;
+ * DARKER BLUE: #0b82b4;
+ *
+ * LIGHT ORANGE: #fedc94;
+ * MEDIUM ORANGE: #fecb5f;
+ * DARK ORANGE: #feba29;
+ *
+ * LIGHT GRAY: #cdcdcd;
+ * MEDIUM GRAY: #9f9f9f;
+ * DARK GRAY: #3b3b3b;
+ */
+
+
+
+html, table, div {
+    border:0;
+    font-size:100%;
+    font:inherit;
+    margin:0;
+    padding:0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color:#dbf5ff;
+    background: -webkit-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
+    background: -linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
+    background: -moz-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
+    margin: 0;
+    overflow: hidden;
+    font-family: "Dustimo Bold", Helvetica, Arial, sans-serif;
+}
+
+#blocker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+#instructions {
+    width: 100%;
+    height: 100%;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+
+    color: #ffffff;
+    text-align: center;
+
+    cursor: pointer;
+}
+
+/* DUST BUSTERS TEXT */
+h1 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 60px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+    color: #feba29;
+}
+
+/* FOR OPTIONS TEXT */
+h2 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+    color: #404040;
+}
+
+/* FOR USERS PLAYING TEXT */
+h3 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    text-align: center;
+    color: #404040;
+}
+
+/* FOR GAME NAME TEXT */
+h4 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    text-align: center;
+    color: #0b82b4;
+}
+
+/* FOR 'JOIN GAME' TEXT */
+h5 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    text-align: center;
+    color: #ffffff;
+}
+
+p {
+    font-family: "Dustismo", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    margin: 0 auto;
+    text-align: center;
+    color: #404040;
+}
+
+a {
+    font-family: "Dustismo", Helvetica, Arial, sans-serif;
+    color: #29bffe;
+    text-decoration: none;
+    -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
+    -moz-transition: all 0.1s ease-out; /* Firefox 4+ */
+    -ms-transition: all 0.1s ease-out; /* IE10+ */
+    -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
+    transition: all 0.1s ease-out;
+}
+
+a:hover {
+    color: #fedc94;
+}
+
+#main {
+    background-color: #ffffff;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    position: fixed;
+    width: 550px;
+    height: 400px;
+    top: -2%;
+    left: 50%;
+    margin-top: 100px;
+    margin-left: -300px;
+    padding: 20px;
+}
+
+#inner {
+    background-color: #ffffff;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    width: 500px;
+    margin-top: 15px;
+    margin-left: 25px;
+    margin-right: 25px;
+    height: 300px;
+    overflow: auto;
+
+}
+
+.activeGames {
+    float: left;
+    background-color: #94dffe;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    padding-top: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 10px;
+    width: 130px;
+    height: 130px;
+    margin-left: 2px;
+    margin-right: 3px;
+    margin-bottom: 5px;
+}
+
+div.activeGames:hover {
+    background-color: #fedc94;
+    -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
+    -moz-transition: all 0.1s ease-out; /* Firefox 4+ */
+    -ms-transition: all 0.1s ease-out; /* IE10+ */
+    -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
+    transition: all 0.1s ease-out;
+}
+
+.option {
+    background-color: #cdcdcd;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    padding: 10px;
+    width: 300px;
+    height: auto;
+    margin-left: 90px;
+    margin-bottom: 10px;
+}
+
+div.option:hover {
+    background-color: #fedc94;
+    -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
+    -moz-transition: all 0.1s ease-out; /* Firefox 4+ */
+    -ms-transition: all 0.1s ease-out; /* IE10+ */
+    -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
+    transition: all 0.1s ease-out;
+}
+
+/* HIGHLIGHT */
+.disable_text_highlighting {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none; /* Webkit */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE 10  */
+    /* Currently not supported in Opera but will be soon */
+    -o-user-select: none;
+    user-select: none;
+}
+
+::selection {
+    background: #dbf5ff; /* Safari */
+}
+::-moz-selection {
+    background: #dbf5ff; /* Firefox */
+}
+
+/* CLOUDS */
+
+#clouds{
+    padding: 100px 0;
+    position: relative;
+    bottom: -250px;
+    height: 100px;
+}
+
+/*Time to finalise the cloud shape*/
+.cloud {
+    width: 200px;
+    height: 60px;
+    background: #8DA6B0;
+    border-radius: 200px;
+    -moz-border-radius: 200px;
+    -webkit-border-radius: 200px;
+    position: relative; 
+}
+
+.cloud:before, .cloud:after {
+    content: '';
+    position: absolute; 
+    background: #8DA6B0;
+    width: 100px;
+    height: 80px;
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    
+    border-radius: 100px;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    
+    -webkit-transform: rotate(30deg);
+    transform: rotate(30deg);
+    -moz-transform: rotate(30deg);
+}
+
+.cloud:after {
+    width: 120px;
+    height: 120px;
+    top: -55px;
+    left: auto;
+    right: 15px;
+}
+
+.x1 {
+    opacity: 0.6;
+    -webkit-animation: moveclouds 15s linear infinite;
+    -moz-animation: moveclouds 15s linear infinite;
+    -o-animation: moveclouds 15s linear infinite;
+}
+
+.x2 {
+    left: 200px;
+    
+    -webkit-transform: scale(0.3);
+    -moz-transform: scale(0.3);
+    transform: scale(0.3);
+    opacity: 0.4;
+    
+    -webkit-animation: moveclouds 25s linear infinite;
+    -moz-animation: moveclouds 25s linear infinite;
+    -o-animation: moveclouds 25s linear infinite;
+}
+
+.x3 {
+    left: -250px;
+    top: -200px;
+    
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    transform: scale(0.5);
+    opacity: 0.5;
+    
+    -webkit-animation: moveclouds 20s linear infinite;
+    -moz-animation: moveclouds 20s linear infinite;
+    -o-animation: moveclouds 20s linear infinite;
+}
+
+.x4 {
+    left: 470px;
+    top: -250px;
+    
+    -webkit-transform: scale(0.55);
+    -moz-transform: scale(0.55);
+    transform: scale(0.55);
+    opacity: 0.55;
+    
+    -webkit-animation: moveclouds 18s linear infinite;
+    -moz-animation: moveclouds 18s linear infinite;
+    -o-animation: moveclouds 18s linear infinite;
+}
+
+.x5 {
+    left: -150px;
+    top: -150px;
+    
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    transform: scale(0.5);
+    opacity: 0.5;
+    
+    -webkit-animation: moveclouds 20s linear infinite;
+    -moz-animation: moveclouds 20s linear infinite;
+    -o-animation: moveclouds 20s linear infinite;
+}
+
+@-webkit-keyframes moveclouds {
+    0% {margin-left: 1000px;}
+    100% {margin-left: -1000px;}
+}
+@-moz-keyframes moveclouds {
+    0% {margin-left: 1000px;}
+    100% {margin-left: -1000px;}
+}
+@-o-keyframes moveclouds {
+    0% {margin-left: 1000px;}
+    100% {margin-left: -1000px;}
+}
