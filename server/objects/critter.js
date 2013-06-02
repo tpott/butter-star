@@ -49,12 +49,10 @@ Critter.prototype.move = function() {
     } else {
         rotateMatrix.makeRotationY(-this.speed);
     }
-    //this.mesh.matrixWorld.multiply(rotateMatrix);
+    var old_position = new THREE.Vector4().copy(this.position);
     this.position.applyMatrix4(rotateMatrix);
-    /*this.position.set(this.mesh.matrixWorld.elements[12],
-                      this.mesh.matrixWorld.elements[13],
-                      this.mesh.matrixWorld.elements[14],
-                      1);*/
+    this.orientation.subVectors(this.position, old_position);
+    this.orientation.normalize();
 }
 
 module.exports = Critter;
