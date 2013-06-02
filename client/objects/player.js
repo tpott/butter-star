@@ -34,11 +34,11 @@ var Player = function(playerObj) {
 	 this.mesh = models.players[this.model][0].clone();
 
 	 // necessary for graphics
-   this.scale = playerObj.scale;
-   this.radius = playerObj.radius;
-	 this.mesh.position.copy(this.position);
-   this.mesh.position.setY(this.position.y - this.radius);
-
+	this.scale = playerObj.scale;
+	this.radius = playerObj.radius;
+	this.mesh.position.copy(this.position);
+	this.mesh.position.setY(this.position.y - this.radius);
+	
 	 // needed for vacuum effect
 	this.vacuum = null;
 
@@ -79,8 +79,19 @@ Player.prototype.isVacuuming = function() {
 
 Player.prototype.startVacuuming = function() {
 	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var position = this.position.clone();
+	var a = new THREE.Vector3(this.orientation.x,0,this.orientation.z);
+	var b = new THREE.Vector3(0,1,0);
+	var direction = a.cross(b);
+	direction.normalize();
+	direction = direction.multiplyScalar(1.05);
+	var zProjection = this.orientation.clone();
+	zProjection.multiplyScalar(1.5);
+	var offset = zProjection.addVectors(zProjection,direction);
+	offset.y += 0.5
+	position = position.addVectors(position,offset);
 	this.vacuum = new Vacuum(
-			this.position,
+			position,
 			new THREE.Vector3(1,0,0),
 			1000, // number of particles
 			$('#vertexShader').text(),
@@ -94,8 +105,26 @@ Player.prototype.startVacuuming = function() {
 
 Player.prototype.updateVacuum = function() {
 	// translation from where vacuuming began
+	//cross orientation vector with (0,1,) to get "right" side of position
 	var vacTrans = new THREE.Vector3().copy(this.position);
-    var xorigin = new THREE.Vector4(1,0,0,0);
+	var zProjection = this.orientation.clone();
+	zProjection.multiplyScalar(1.5);
+	//vacTrans.addVectors(vacTrans,zProjection);	
+	//cross orientation with Y axis to find right and left vector then scale to offset	
+	var a = new THREE.Vector3(this.orientation.x,0,this.orientation.z)
+	var b = new THREE.Vector3(0,1,0);
+	var direction = a.cross(b);
+	direction.normalize();
+	direction = direction.multiplyScalar(1.02);
+	var vacTrans = this.position.clone();
+	vacTrans.addVectors(vacTrans,direction);
+	vacTrans.addVectors(vacTrans,zProjection);
+	vacTrans.y += .5;	
+	var preTrans = new THREE.Vector3();
+	//var preTrans = zProjection.addVectors(zProjection,direction);
+	//preTrans.y += 0.5;
+	
+	var xorigin = new THREE.Vector4(1,0,0,0);
 	var xOrientation = new THREE.Vector4(this.orientation.x,0,this.orientation.z,0);
 	var dotResult = xorigin.dot(xOrientation);
 	var result = dotResult/(xorigin.length() * xOrientation.length());
@@ -119,7 +148,7 @@ Player.prototype.updateVacuum = function() {
 	yAngle = yAngle * 180.0 / Math.PI;
 	if(this.orientation.y > 0)
 		yAngle = -yAngle;
-	this.vacuum.update(vacTrans, xDeg, yAngle);
+	this.vacuum.update(vacTrans, preTrans, xDeg, yAngle);
 }
 
 Player.prototype.stopVacuuming = function() {

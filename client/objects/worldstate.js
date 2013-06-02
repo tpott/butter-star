@@ -153,9 +153,8 @@ WorldState.prototype.updateWorldState = function(newStates){
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
             this.players[id].mesh.position.setY(update.position.y - update.radius);
-		 
+			 
             this.players[id].mesh.lookAt( forwards(this.players[id].mesh.position, this.players[id].orientation) );
-
             //this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {
