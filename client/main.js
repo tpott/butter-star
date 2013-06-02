@@ -108,13 +108,13 @@ function updateAnimations() {
 	for (var id in myWorldState.players) {
 		var player = myWorldState.players[id];
 
-		if (player.isVacuuming() && player.vacuum == null) {
+		if (player.isVacuuming() && player.vacuum == null && player.charge > 0) {
 			player.startVacuuming();
 		}
-		else if (player.isVacuuming()) {
+		else if (player.isVacuuming() && player.charge > 0) {
 			player.updateVacuum();
 		}
-		else if (! player.isVacuuming() && player.vacuum != null) {
+		else if (! player.isVacuuming() || player.charge <= 0) {
 			player.stopVacuuming();
 		}
 

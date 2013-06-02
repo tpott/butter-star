@@ -153,8 +153,10 @@ Player.prototype.updateVacuum = function() {
 
 Player.prototype.stopVacuuming = function() {
 	// scene is a global defined in client/main.js
-	this.vacuum.removeFromScene(scene);
-	this.vacuum = null;
+    if (this.vacuum != null) {
+    	this.vacuum.removeFromScene(scene);
+	    this.vacuum = null;
+    }
 }
 
 Player.prototype.updateVacuumCharge = function(charge) {
