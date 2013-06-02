@@ -139,9 +139,24 @@ function render() {
 
 //place to initialize lights (temporary, may not need)
 function initLights() {
-		var light = new THREE.PointLight( 0xffffff, 1, 1000); 
-		light.position.set( 0, 20, 0 ); 
+		var light = new THREE.PointLight( 0xffffff, 1, 2000); 
+		light.position.set( 0, 200, 0 ); 
 		scene.add( light );
+        var light1 = new THREE.PointLight(0xffffff, 1, 1000);
+        light1.position.set(0,5,0);
+        scene.add(light1);
+        var light2 = new THREE.PointLight(0xffffff, 1, 100);
+        light2.position.set(100,5,0);
+        scene.add(light2);
+        var light3 = new THREE.PointLight(0xffffff, 1, 100);
+        light3.position.set(-100,5,0);
+        scene.add(light3);
+        var light4 = new THREE.PointLight(0xffffff, 1, 100);
+        light4.position.set(0,5,100);
+        scene.add(light4);
+        var light5 = new THREE.PointLight(0xffffff, 1, 100);
+        light5.position.set(0,5,-100);
+        scene.add(light5);
 }
 
 //load sound clips here
@@ -209,7 +224,7 @@ function main() {
 	notifyBar = new Notify();
   statusBox = new StatusBox();
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up = new THREE.Vector3(0,1,0);
 
 	renderer.setSize(window.innerWidth, window.innerHeight); 
