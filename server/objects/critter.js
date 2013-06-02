@@ -17,7 +17,7 @@ var Loader = require('./OBJLoader.js');
  */
 function Critter(){
     Critter.super_.call(this);
-
+	this.hp = 30;
     this.scale = 0.12;
 
     this.type = Collidable.types.CRITTER;

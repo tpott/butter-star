@@ -204,9 +204,13 @@ World.prototype.applyStates = function() {
         // TODO: extend to also affect players/food?
         var critters = this.players[id].doVacuum(this.critters);
         for (var cid in critters) {
-            this.removeCritter(critters[cid]);
-            this.players[id].incVacKills();
-        }
+			critters[cid].hp--;
+			if(critters[cid].hp <= 0)
+			{
+            	this.removeCritter(critters[cid]);
+            	this.players[id].incVacKills();
+        	}
+		}
 	}
 	for (var id in this.critters) {
 		//this.critters[id].useAI();
