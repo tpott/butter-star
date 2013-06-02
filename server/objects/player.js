@@ -259,7 +259,7 @@ function generateCirclePoint(direction,center,radius,angle)
 	var vectorV = direction;
 	var vectorA = findOrthoVector(direction);
 	var vectorCross = vectorV.clone();
-	var vectorB = vectorCross.crossVectors(vectorV, vectorA);
+	var vectorB = vectorCross.cross(vectorA);
     
     vectorA.normalize();
     vectorB.normalize();
