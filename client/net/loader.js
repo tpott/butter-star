@@ -8,7 +8,7 @@
 
 var filesLoaded = 0; 
 var SCRIPTS_NEEDED = 26,
-	 MODELS_NEEDED = 6,
+	 MODELS_NEEDED = 11,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -61,7 +61,12 @@ var scripts = [
 // entries are structured: [model, model name, obj file, mtl file, scale]
 var models = {
 	players : [
+		[null, 'Default player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
+		[null, 'Default player', 'yellow_boy_standing.obj', 'orange_boy_standing.mtl', 0.06],
 		[null, 'Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
+		[null, 'Default player', 'yellow_boy_standing.obj', 'green_boy_standing.mtl', 0.06],
+		[null, 'Default player', 'yellow_boy_standing.obj', 'blue_boy_standing.mtl', 0.06],
+		[null, 'Default player', 'yellow_boy_standing.obj', 'purple_boy_standing.mtl', 0.06],
 		[null, 'Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
 	critters : [
