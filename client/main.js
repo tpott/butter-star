@@ -15,7 +15,7 @@ var renderer = new THREE.WebGLRenderer();
 
 //sounds
 var myAudio = new Audio('Birds.ogg');
-var vacAudio = new Audio('vacuum_sound.ogg');
+var vacAudio = new Audio('vacuum_clip.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {

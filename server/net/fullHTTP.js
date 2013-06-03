@@ -134,7 +134,8 @@ var files = [
   ['AnotherOneBitesTheDust.ogg', "", client + 'sound/AnotherOneBitesTheDust.ogg', 'application/ogg'],
 
   ['Birds.ogg', "", client + '/game/data/sounds/Birds.ogg', 'application/ogg'],
-  ['vacuum_sound.ogg', "", client + 'sound/vacuum_sound.ogg', 'application/ogg'],
+  ['vacuum_clip.ogg', "", client + 'sound/vacuum_clip.ogg', 'application/ogg'],
+  ['level_complete.ogg', "", client + 'sound/level_complete.ogg', 'application/ogg'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
