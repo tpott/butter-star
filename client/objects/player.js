@@ -192,7 +192,7 @@ Player.prototype.plusOneAnimation = function()
 			
 			console.log("creating plus one texture");
 			var geometry = new THREE.Geometry();
-			geometry.vertices.push(new THREE.Vector3(this.plusOne[id].x,this.plusOne[id].y+5,this.plusOne[id].z));	
+			geometry.vertices.push(new THREE.Vector3(this.plusOne[id].x,this.plusOne[id].y+1,this.plusOne[id].z));	
 			var material = new THREE.ParticleBasicMaterial(
 			{
 				size: 5,
