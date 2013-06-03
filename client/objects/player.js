@@ -52,7 +52,9 @@ var Player = function(playerObj) {
     this.direction = null;
     this.isVacuum = false;
     this.vacAngleY = 0;
-
+	this.plusOne = [];
+	this.billboard = [];
+	this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
   // TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
@@ -176,5 +178,39 @@ Player.prototype.updateKillCounter = function(count) {
 
 	if (scoreBoard.showing()) {
 		scoreBoard.update();
+	}
+};
+Player.prototype.plusOneAnimation = function()
+{
+	for(id in this.plusOne)
+	{
+		//create billboard texture
+		if(this.billboard[id] == null)
+		{
+			
+			console.log("creating plus one texture");
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(new THREE.Vector3(this.plusOne[id].x,this.plusOne[id].y+5,this.plusOne[id].z));	
+			var material = new THREE.ParticleBasicMaterial(
+			{
+				size: 5,
+				map: this.pSprite,
+				transparent: true
+			});
+			var particle = new THREE.ParticleSystem(geometry,material);
+			scene.add(particle);
+			this.billboard[id] = particle;	
+			
+		}
+		//update the billbaord texture
+		this.billboard[id].position.y += 0.1;
+		this.billboard[id].material.opacity -= 0.01;
+		//remove from scene and data structure
+		if(this.billboard[id].material.opacity <=0)
+		{
+			scene.remove(this.billboard[id]);
+			delete this.billboard[id];
+			delete this.plusOne[id];
+		}
 	}
 };
