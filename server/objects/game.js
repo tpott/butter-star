@@ -324,7 +324,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
     }
   }
     // if flag was set for time update, put it in obj to be sent
-    console.log(this.timeHasChanged);
     if (this.timeHasChanged) {
         worldUpdate.timer.push(this.remainingTime);
     } else {

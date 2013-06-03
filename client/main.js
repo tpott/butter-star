@@ -5,7 +5,6 @@
  */
 
 //GLOBALS AND SHIT
-var timer; // TODO not being used
 var loader = new THREE.OBJMTLLoader();
 var scene = new THREE.Scene(); 
 var stats = new Stats();
@@ -41,6 +40,7 @@ var optionMenu = null;
 var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
+var gameTimer = null; // TODO not being used
 
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -254,7 +254,8 @@ function main() {
 	optionMenu = new OptionMenu();
 	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
-  statusBox = new StatusBox();
+    statusBox = new StatusBox();
+    gameTimer = new Timer();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up = new THREE.Vector3(0,1,0);

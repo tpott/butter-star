@@ -83,7 +83,6 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
-    console.log(buf.data);
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);
