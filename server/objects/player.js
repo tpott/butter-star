@@ -406,7 +406,7 @@ Player.prototype.move = function() {
   //console.log(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() );
   var direction = 180.0 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() ) / Math.PI;	
 
-  
+ /* 
   if (this.state & MOVING_FORWARD) {
 	}
 	else if (this.state & MOVING_BACKWARD) {
@@ -438,6 +438,35 @@ Player.prototype.move = function() {
     direction = -direction;
   }
 
+  */
+
+if(projected.z > 0)
+   {
+     if(this.state == 1 ){direction +=   0}
+     if(this.state == 5){direction += 315}
+     if(this.state == 4){direction += 270}
+     if(this.state == 6){direction += 225}
+     if(this.state == 2){direction += 180}
+     if(this.state == 10){direction += 135}
+     if(this.state == 8){direction += 90}
+     if(this.state == 9){direction += 45} 
+   }
+else if(projected.z <= 0)
+   {
+     if(this.state == 1){direction +=   0}
+     if(this.state == 5){direction +=  45}
+     if(this.state == 4){direction +=  90}
+     if(this.state == 6){direction += 135}
+     if(this.state == 2){direction += 180}
+     if(this.state == 10){direction += 225}
+     if(this.state == 8){direction += 270}
+     if(this.state == 9){direction += 315} 
+   }
+
+ if(projected.z > 0)
+  {
+    direction = -direction;
+  }
 	var dx = 1 * (Math.cos(direction * Math.PI / 180) * speed);
   var dy = 0;
 	var dz = -1 * (Math.sin(direction * Math.PI / 180) * speed);

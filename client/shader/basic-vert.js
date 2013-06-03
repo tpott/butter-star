@@ -15,8 +15,6 @@ uniform mat4 offsetNegative;
 uniform mat4 offsetRotationY;
   uniform mat4 offsetRotationX;
 uniform mat4 vacTranslation;
-attribute float alpha;
-varying float vAlpha;
 varying vec3 vNormal;
 
 //linear interpolation
@@ -28,7 +26,7 @@ vec3 lerp(vec3 start, vec3 end, float weight)
 //calculate new position using linear interpolation with given weights
 vec3 calcFinalPos()
 {
-	vec3 displace = position + normals * vec3(displacement);
+	vec3 displace = position + normal * vec3(displacement);
 	float newWeight = particleWeight + weight;
 	if(newWeight >=1.0)
 		newWeight -= 1.0;
@@ -37,7 +35,6 @@ vec3 calcFinalPos()
 //set gl_Position to newly calculated position
 void main()
 {
-	vAlpha = alpha;
 	gl_PointSize = 1.0;
 	vec4 newPosition = vacTranslation * offset * translation *  offsetRotationY
 		 * offsetRotationX * rotation *negativeTranslation * vec4(calcFinalPos() ,1.);
