@@ -137,6 +137,7 @@ var files = [
   ['Birds.ogg', "", client + '/game/data/sounds/Birds.ogg', 'application/ogg'],
   ['vacuum_clip.ogg', "", client + 'sound/vacuum_clip.ogg', 'application/ogg'],
   ['level_complete.ogg', "", client + 'sound/level_complete.ogg', 'application/ogg'],
+  ['critter_death.ogg', "", client + 'sound/critter_death.ogg', 'application/ogg'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']

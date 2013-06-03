@@ -15,7 +15,9 @@ var renderer = new THREE.WebGLRenderer();
 
 //sounds
 var myAudio = new Audio('Birds.ogg');
+var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
 var vacAudio = new Audio('vacuum_clip.ogg');
+var critterDeathAudio = new Audio('critter_death.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {
@@ -141,7 +143,9 @@ function updateAnimations() {
 			player.animation.update();
 		}
 	}
-	myPlayer.plusOneAnimation();
+    if (myPlayer != null) {
+	    myPlayer.plusOneAnimation();
+    }
 }
 
 /*
@@ -187,6 +191,11 @@ function initSounds()
   myAudio.addEventListener('ended', function() { 
       myAudio.load();
       myAudio.play();
+    }, false); 
+  themeAudio.play();
+  themeAudio.addEventListener('ended', function() { 
+      themeAudio.load();
+      themeAudio.play();
     }, false); 
   vacAudio.addEventListener('ended', function() {
     vacAudio.load();

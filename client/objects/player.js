@@ -190,7 +190,9 @@ Player.prototype.plusOneAnimation = function()
 		if(this.billboard[id] == null)
 		{
 			
-			console.log("creating plus one texture");
+			//console.log("creating plus one texture");
+            critterDeathAudio.load();
+            critterDeathAudio.play();
 			var geometry = new THREE.Geometry();
 			geometry.vertices.push(new THREE.Vector3(this.plusOne[id].x,this.plusOne[id].y+1,this.plusOne[id].z));	
 			var material = new THREE.ParticleBasicMaterial(
