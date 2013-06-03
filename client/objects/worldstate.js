@@ -116,6 +116,8 @@ WorldState.prototype.removePlayer = function(id) {
 
 WorldState.prototype.removeCritter = function(id) {
 	scene.remove(this.critters[id].mesh);
+	for(pId in this.players)
+		this.players[pId].plusOne[id] = this.critters[id].position;	
 	delete this.critters[id];
 }
 
@@ -155,6 +157,16 @@ WorldState.prototype.updateWorldState = function(newStates){
             this.players[id].mesh.position.setY(update.position.y - update.radius);
 			 
             this.players[id].mesh.lookAt( forwards(this.players[id].mesh.position, this.players[id].orientation) );
+			/*
+            if(this.players[id].mesh.position.z < 0)
+            {
+            this.players[id].mesh.rotation.y -= 45 * Math.PI/2;  
+            }
+            else
+            {
+            this.players[id].mesh.rotation.y += 45 * Math.PI/2;
+            }
+			*/
             //this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {
