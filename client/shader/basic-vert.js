@@ -26,7 +26,7 @@ vec3 lerp(vec3 start, vec3 end, float weight)
 //calculate new position using linear interpolation with given weights
 vec3 calcFinalPos()
 {
-	vec3 displace = position + normal * vec3(displacement);
+	vec3 displace = position + normals * vec3(displacement);
 	float newWeight = particleWeight + weight;
 	if(newWeight >=1.0)
 		newWeight -= 1.0;
