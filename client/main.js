@@ -141,6 +141,7 @@ function updateAnimations() {
 			player.animation.update();
 		}
 	}
+	myPlayer.plusOneAnimation();
 }
 
 /*
