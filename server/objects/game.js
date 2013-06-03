@@ -39,11 +39,10 @@ function Game(server) {
 
 	var self = this;
 	function serverTick() {
-		setTimeout(serverTick, 1000 / self.ticks);
 		self.gameTickBasedUpdate();
 		self.sendUpdatesToAllClients();
 	}
-	setTimeout(serverTick, 1000 / self.ticks);
+	setInterval(serverTick, 1000 / self.ticks);
 
 	this.handler.emit('newgame');
 

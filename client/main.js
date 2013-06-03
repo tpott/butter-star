@@ -18,6 +18,8 @@ var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
 var vacAudio = new Audio('vacuum_clip.ogg');
 var critterDeathAudio = new Audio('critter_death.ogg');
+var fastGiggleAudio= new Audio('fast_giggle.ogg');
+var heheheAudio= new Audio('he_he_he.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {
@@ -263,6 +265,15 @@ function main() {
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
+	
+    var self = this;
+	function randomAudio() {
+        console.log("randomAudio called");
+        setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
+		self.heheheAudio.load();
+		self.heheheAudio.play();
+	}
+	setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
 
 	$('canvas').addClass('game');
 	render(); 
