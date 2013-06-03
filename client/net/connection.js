@@ -83,6 +83,7 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    console.log(buf.data);
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);
@@ -109,6 +110,12 @@ Connection.prototype._onmessage = function(buf) {
 			myWorldState.remove(deleteIds[i].id);
 		}
 	}
+    if ('timer' in world) {
+        console.log("received timer");
+        // THIS HAS THE UPDATED TIMER VALUE
+        myWorldState.handleUpdatedTime(world.timer);
+    }
+
 	if ('new' in world) {
 		// world.new should be the same as what is received in the initial
 		//  message.world

@@ -61,6 +61,12 @@ WorldState.prototype.add = function(object) {
 	}
 }
 
+WorldState.prototype.handleUpdatedTime = function(timer) {
+    console.log(timer);
+    //TODO paint the time onto the screen right here
+    // when time runs out, have to prompt either the next round, or a game over.
+}
+
 WorldState.prototype.addPlayer = function(p) {
 	var player = new Player(p);
 	this.players[player.id] = player;
