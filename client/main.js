@@ -13,6 +13,10 @@ var audio = document.createElement('audio');
 var source = document.createElement('source');
 var renderer = new THREE.WebGLRenderer(); 
 
+//sounds
+var myAudio = new Audio('Birds.ogg');
+var vacAudio = new Audio('vacuum_sound.ogg');
+
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {
 	player : [],
@@ -102,6 +106,15 @@ function update() {
 	camera.lookAt( myPlayer.position );
 }
 
+function startVacuumSound() {
+    vacAudio.load();
+    vacAudio.play();
+}
+
+function stopVacuumSound() {
+    vacAudio.pause();
+}
+
 //render all other player animations
 function updateAnimations() {
 	// vacuum animations
@@ -110,12 +123,18 @@ function updateAnimations() {
 
 		if (player.isVacuuming() && player.vacuum == null && player.charge > 0) {
 			player.startVacuuming();
+            if (id == myPlayer.id) {
+                startVacuumSound();
+            }
 		}
 		else if (player.isVacuuming() && player.charge > 0) {
 			player.updateVacuum();
 		}
 		else if (! player.isVacuuming() || player.charge <= 0) {
 			player.stopVacuuming();
+            if (id == myPlayer.id) {
+                stopVacuumSound();
+            }
 		}
 
 		if (player.animation != null) {
@@ -161,7 +180,6 @@ function initLights() {
 
 //load sound clips here
 
-var myAudio = new Audio('Birds.ogg');
 function initSounds()
 {
   myAudio.play();
@@ -169,6 +187,10 @@ function initSounds()
       myAudio.load();
       myAudio.play();
     }, false); 
+  vacAudio.addEventListener('ended', function() {
+    vacAudio.load();
+    vacAudio.play();
+    }, false);
 }
 
 //initialize the fps counter
