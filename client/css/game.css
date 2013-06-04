@@ -57,3 +57,15 @@ body {
 	display: block;
 	margin: auto;
 }
+
+#vacuumChargeBar {
+	background: -webkit-linear-gradient(top, #e7d9bb 0%, #faf3e5 100%);
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border: 5px solid #fff;
+}
+
+.ui-progressbar-value {
+	background: -webkit-linear-gradient(top, #29bffe 0%, #d4f2ff 100%);
+}
