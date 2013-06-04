@@ -28,7 +28,7 @@ function Game(server) {
 	// generate a random url
 	this.id = randomID(4);
 
-	this.ticks = 60; // 60 "ticks" per second!
+	this.ticks = 30; // 60 "ticks" per second!
 
 	this.sockets = {};
 	this.world = new World();
@@ -46,8 +46,6 @@ function Game(server) {
 
 	this.handler.emit('newgame');
 
-	// used to track elapsed time once game is over
-	this.start = Date.now();
 }
 
 /**
@@ -190,8 +188,7 @@ Game.prototype.gameTickBasedUpdate = function() {
 	// check movable states and generate forces
 	this.world.applyStates();
 	this.world.applyForces(); 
-
-	//this.handler.timer -= (1.0 / this.ticks);
+    this.handler.getUpdatedTime();
 }
 
 /**
@@ -203,13 +200,15 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		new : [],
 		set : [],
 		del : [],
-    vac : [],
-    kill : [],
-		misc : []
+        vac : [],
+        kill : [],
+		misc : [],
+        timer : []
 	};
+
 	var updates = Object.keys(worldUpdate).length;
 
-  var newCollidables = this.world.newCollidables;
+    var newCollidables = this.world.newCollidables;
 	for (var i = 0; i < newCollidables.length; i++) {
 		var id = newCollidables[i];
 		var colObj = {
@@ -230,7 +229,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		delete worldUpdate.new;
 		updates--;
 	}
-
+    
 	// things that have been moved
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
@@ -302,6 +301,14 @@ Game.prototype.sendUpdatesToAllClients = function() {
       worldUpdate.kill.push(killCounterObj);
     }
   }
+    // if flag was set for time update, put it in obj to be sent
+    if (this.handler.hasTimeChanged()) {
+        worldUpdate.timer.push(this.handler.getRemainingTime());
+    } else {
+        delete worldUpdate.timer;
+        updates--;
+    }
+
 
   // no kill counter changes, so don't send anything for this
   if (worldUpdate.kill.length == 0) {
