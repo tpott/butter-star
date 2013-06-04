@@ -3,6 +3,7 @@
  *
  * @fileoverview Timer gui
  * @author Rohan
+ * @author Priscilla
  */
 
 function Timer() {
@@ -18,9 +19,20 @@ function Timer() {
 	this.timer.css('bottom', '0');
 	this.timer.css('right', '0');
 	//this.timer.hide();
-    this.timer.css('font-family', '\"Dustismo Bold\"');
-    this.timer.css('font-size', '22px');
-	//this.ctx.strokeStyle = '#000000';
+	this.timer.css('font-family', '\"Dustismo Bold\"');
+	this.timer.css('text-align', 'center');
+	this.timer.css('color', '#fff');
+	this.timer.css('font-size', '60px');
+	this.timer.css('width', '175px');
+	this.timer.css('height', '75px');
+	this.timer.css('left', '50%');
+	this.timer.css('margin-left', '-100px');
+ 	this.timer.css('padding', '10px');
+ 	this.timer.css('top', '5px');
+ 	this.timer.css('background', 'rgba(219, 245, 255, 0.4)');
+ 	this.timer.css('-moz-border-radius', '10px');
+ 	this.timer.css('-webkit-border-radius', '10px');
+
     //this.ctx.font = "24px Arial";
 }
 
