@@ -109,6 +109,10 @@ Connection.prototype._onmessage = function(buf) {
 			myWorldState.remove(deleteIds[i].id);
 		}
 	}
+    if ('timer' in world) {
+        myWorldState.handleUpdatedTime(world.timer);
+    }
+
 	if ('new' in world) {
 		// world.new should be the same as what is received in the initial
 		//  message.world
