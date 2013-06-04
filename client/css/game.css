@@ -10,6 +10,16 @@ body {
 	font-family: arial;
 }
 
+/* LOADING TEXT */
+h1 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+    color: #feba29;
+}
+
 #blocker {
 
 	position: absolute;
