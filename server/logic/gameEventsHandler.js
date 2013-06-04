@@ -24,7 +24,8 @@ function Handler(server, gameid, world) {
 
 	this.world = world;
     this.world.attachHandler(this);
-    
+ 
+    this.timer = 30;   
     this.round = 0;
     // time in seconds of machine when game begins
 	this.start = Date.now()/1000;
