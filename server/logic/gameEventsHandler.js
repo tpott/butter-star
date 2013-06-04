@@ -24,7 +24,8 @@ function Handler(server, gameid, world) {
 
 	this.world = world;
     this.world.attachHandler(this);
-
+    
+    this.round = 0;
     // time in seconds of machine when game begins
 	this.start = Date.now()/1000;
     this.roundLength = 70; // length of a round as 70 seconds
@@ -118,7 +119,6 @@ Handler.prototype.getUpdatedTime = function() {
     this.remainingTime = val;
     // if time ever reaches 0, game is over.
     if (this.remainingTime == 0) {
-        console.log("Time up, ending game");
         this.server.endGame(this.gameid);
     }
 
