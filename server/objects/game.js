@@ -190,7 +190,6 @@ Game.prototype.gameTickBasedUpdate = function() {
 	this.world.applyStates();
 	this.world.applyForces(); 
     this.handler.getUpdatedTime();
-	//this.handler.timer -= (1.0 / this.ticks);
 }
 
 /**
