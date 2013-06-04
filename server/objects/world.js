@@ -126,8 +126,11 @@ World.prototype.spawnCritters = function(numCritters) {
      critter.mesh.position.copy(position);
      critter.speed = Math.random() * (0.02 - 0.005) + 0.005; // number between 0.005 and 0.02
      critter.rotation = Math.floor(Math.random() * 2); // 0 or 1
-
-    this.addCritter(critter);
+     critter.rotation_point = new THREE.Vector3(
+                                        Math.random() * 50 - 25,
+                                        0,
+                                        Math.random() * 50 - 25);
+     this.addCritter(critter);
   }
 };
 
