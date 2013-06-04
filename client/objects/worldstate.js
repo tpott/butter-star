@@ -61,6 +61,10 @@ WorldState.prototype.add = function(object) {
 	}
 }
 
+WorldState.prototype.handleUpdatedTime = function(time) {
+    gameTimer.update(time);
+}
+
 WorldState.prototype.addPlayer = function(p) {
 	var player = new Player(p);
 	this.players[player.id] = player;
