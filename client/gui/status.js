@@ -39,7 +39,7 @@ StatusBox.prototype.addFoodBar = function () {
 
 StatusBox.prototype.addVacuumChargeBar = function () {
   this.vacuumChargeBar = $('<div id="vacuumChargeBar" />')
-		.addClass('gui')
+/*		.addClass('gui')
 		.attr('height', '100')
 		.attr('width', '200')
 		.css({ 
@@ -54,7 +54,7 @@ StatusBox.prototype.addVacuumChargeBar = function () {
 			'border-radius': '10px', 
 			'-moz-border-radius': '10px', 
 			'-webkit-border-radius': '10px' 
-		});
+		})*/;
   this.vacuumChargeBar.addClass('gui');
   this.vacuumChargeBar.progressbar({value: 0});
 
