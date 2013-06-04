@@ -246,7 +246,7 @@ function initSkyBox()
 
 
 function main() {
-	renderer.shadowMapEnabled = false;
+	renderer.shadowMapEnabled = true;
   renderer.shadowMapSoft = true;
   renderer.setClearColorHex(0x0000ff, 1);
   initStats();
