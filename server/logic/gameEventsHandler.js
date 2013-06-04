@@ -120,7 +120,7 @@ Handler.prototype.getUpdatedTime = function() {
     this.remainingTime = val;
     // if time ever reaches 0, game is over.
     if (this.remainingTime == 0) {
-        this.server.endGame(this.gameid);
+        this.emit('gameover');
     }
 
 }
