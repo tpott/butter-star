@@ -28,7 +28,7 @@ function Game(server) {
 	// generate a random url
 	this.id = randomID(4);
 
-	this.ticks = 60; // 60 "ticks" per second!
+	this.ticks = 30; // 60 "ticks" per second!
 
 	this.sockets = {};
 	this.world = new World();
