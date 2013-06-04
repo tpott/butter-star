@@ -47,11 +47,6 @@ function Game(server) {
 
 	this.handler.emit('newgame');
 
-	// time in seconds of machine when game begins
-	this.start = Date.now()/1000;
-    this.roundLength = 70; // length of a round as 70 seconds
-    this.remainingTime = this.roundLength;
-    this.timeHasChanged = true;
 }
 
 /**
@@ -194,24 +189,10 @@ Game.prototype.gameTickBasedUpdate = function() {
 	// check movable states and generate forces
 	this.world.applyStates();
 	this.world.applyForces(); 
-    this.getUpdatedTime();
+    this.handler.getUpdatedTime();
 	//this.handler.timer -= (1.0 / this.ticks);
 }
 
-Game.prototype.getUpdatedTime = function() {
-    var temp = Date.now()/1000;
-    var val = temp - this.start;
-    val = Math.floor(this.roundLength - val);
-
-    if ( val == this.remainingTime ) {
-        // time has not changed, don't send an extra event
-        this.timeHasChanged = false;
-    } else {
-        this.timeHasChanged = true;
-    }
-    this.remainingTime = val;
-
-}
 /**
  * Send an update of the world state to all clients.
  */
@@ -227,10 +208,9 @@ Game.prototype.sendUpdatesToAllClients = function() {
         timer : []
 	};
 
-
 	var updates = Object.keys(worldUpdate).length;
 
-  var newCollidables = this.world.newCollidables;
+    var newCollidables = this.world.newCollidables;
 	for (var i = 0; i < newCollidables.length; i++) {
 		var id = newCollidables[i];
 		var colObj = {
@@ -324,8 +304,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
     }
   }
     // if flag was set for time update, put it in obj to be sent
-    if (this.timeHasChanged) {
-        worldUpdate.timer.push(this.remainingTime);
+    if (this.handler.hasTimeChanged()) {
+        worldUpdate.timer.push(this.handler.getRemainingTime());
     } else {
         delete worldUpdate.timer;
         updates--;

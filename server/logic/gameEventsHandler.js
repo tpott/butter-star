@@ -23,15 +23,22 @@ function Handler(server, gameid, world) {
 	this.gameid = gameid;
 
 	this.world = world;
-  this.world.attachHandler(this);
+    this.world.attachHandler(this);
 
-  this.round = 0;
-  this.timer = 30;
+    this.round = 0;
+	
+    // time in seconds of machine when game begins
+	this.start = Date.now()/1000;
+    this.roundLength = 70; // length of a round as 70 seconds
+    this.remainingTime = this.roundLength;
+    this.timeHasChanged = true;
 
-  // used in client gamelist
-  this.status = "Not yet started";
+    // used in client gamelist
+    this.status = "Not yet started";
 
 	var self = this;
+
+
 	this.on('newgame', function() {
 		setTimeout(self.startRound(), START_GAME_DELAY);
 	});
@@ -50,7 +57,8 @@ function Handler(server, gameid, world) {
 
   this.on('delcritter', function() {
     if (self.world.ncritters == 0) {
-      setTimeout(self.endRound(), END_ROUND_DELAY);
+        this.start = Date.now()/1000;
+        setTimeout(self.endRound(), END_ROUND_DELAY);
     }
   });
 
@@ -94,6 +102,30 @@ Handler.prototype.message = function(str) {
 	this.world.miscellaneous.push(message);
 }
 
+
+/* Updates game timer
+ * */
+Handler.prototype.getUpdatedTime = function() {
+    var temp = Date.now()/1000;
+    var val = temp - this.start;
+    val = Math.floor(this.roundLength - val);
+
+    if ( val == this.remainingTime ) {
+        // time has not changed, don't send an extra event
+        this.timeHasChanged = false;
+    } else {
+        this.timeHasChanged = true;
+    }
+
+    this.remainingTime = val;
+    // if time ever reaches 0, game is over.
+    if (this.remainingTime == 0) {
+        console.log("Time up, ending game");
+        this.server.endGame(this.gameid);
+    }
+
+}
+
 /**
  * Returns a function that will end the game
  */
@@ -108,6 +140,13 @@ Handler.prototype.timedEndGame = function() {
 	};
 }
 
+Handler.prototype.hasTimeChanged = function() {
+    return this.timeHasChanged;
+}
+
+Handler.prototype.getRemainingTime = function() {
+    return this.remainingTime;
+}
 /**
  * Returns a function that will end the round
  */

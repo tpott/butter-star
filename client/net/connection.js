@@ -110,8 +110,6 @@ Connection.prototype._onmessage = function(buf) {
 		}
 	}
     if ('timer' in world) {
-        console.log("received timer");
-        // THIS HAS THE UPDATED TIMER VALUE
         myWorldState.handleUpdatedTime(world.timer);
     }
 
