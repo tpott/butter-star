@@ -10,7 +10,10 @@ var scene = new THREE.Scene();
 var stats = new Stats();
 var audio = document.createElement('audio');
 var source = document.createElement('source');
-var renderer = new THREE.WebGLRenderer(); 
+var renderer = new THREE.WebGLRenderer({
+  antialias : true,
+  preserveDrawingBuffer : true
+}); 
 
 //sounds
 var myAudio = new Audio('Birds.ogg');
@@ -165,6 +168,9 @@ function render() {
 
 //place to initialize lights (temporary, may not need)
 function initLights() {
+  var ambient = new THREE.AmbientLight(0x444444);
+  scene.add(ambient);
+
 		var light = new THREE.PointLight( 0xffffff, 1, 2000); 
 		light.position.set( 0, 200, 0 ); 
 		scene.add( light );
@@ -183,6 +189,28 @@ function initLights() {
         var light5 = new THREE.PointLight(0xffffff, 1, 100);
         light5.position.set(0,5,-100);
         scene.add(light5);
+  
+  var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, Math.PI, 1);
+      slight.target.position.set(0,0,0);
+      slight.position.set(0, 200,0);
+      slight.shadowCameraNear = 10;
+      slight.shadowCameraFar = 300;
+      slight.castShadow = true;
+      slight.shadowBias = .0001;
+      slight.shadowDarkness = .5;
+      slight.shadowCameraVisible = true;
+
+      slight.shadowMapHeight = 2048;
+      slight.shadowMapWidth = 2048;
+
+      //slight.shadowCameraRight = 20;
+      //slight.shadowCameraLeft = -20;
+      //slight.shadowCameraTop = 20;
+      //slight.shadowCameraBottem = -20;
+
+      scene.add(slight);
+
+
 }
 
 //load sound clips here
@@ -227,6 +255,7 @@ function initSkyBox()
 		var skybox = event.content;
 		skybox.position.y -= 4.93; // magic number from server/objects/environment.js
 		scene.add(skybox);
+    
 	});
 	loader.load('skybox.obj', 'skybox.mtl');
 }
@@ -234,7 +263,10 @@ function initSkyBox()
 
 
 function main() {
-	initStats();
+	renderer.shadowMapEnabled = true;
+  renderer.shadowMapSoft = true;
+  renderer.setClearColorHex(0x0000ff, 1);
+  initStats();
 	initLights();
     //initModels();
 	// initTextures();
