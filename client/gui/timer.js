@@ -15,12 +15,12 @@ function Timer() {
 	this.timer.css('position', 'absolute');
 	this.timer.css('bottom', '0');
 	this.timer.css('right', '0');
-	this.timer.css('font-family', '\"Dustismo Bold\"');
+	this.timer.css('font-family', '\"Gtown\"');
 	this.timer.css('text-align', 'center');
 	this.timer.css('color', '#fff');
 	this.timer.css('font-size', '60px');
-	this.timer.css('width', '175px');
-	this.timer.css('height', '75px');
+	this.timer.css('width', '150px');
+	this.timer.css('height', '50px');
 	this.timer.css('left', '50%');
 	this.timer.css('margin-left', '-100px');
  	this.timer.css('padding', '10px');
