@@ -40,18 +40,13 @@ function StatusBox() {
 
 StatusBox.prototype.addVacuumChargeBar = function () {
   this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
-  this.vacuumChargeBar.css('background', '#cdcdcd');
-
-   this.vacuumChargeBar.css('background', '-webkit-linear-gradient(top, #cdcdcd 0%, #fff 100%');
-   this.vacuumChargeBar.css('border-radius', '10px');
-   this.vacuumChargeBar.css('-moz-border-radius', '10px');
-   this.vacuumChargeBar.css('-webkit-border-radius', '10px');
-
-   this.vacuumChargeBar.addClass('gui');
 /*
-   this.vacuumChargeBar.progressbar.css('background-image', '-webkit-linear-gradient(top, rgb(254, 186, 41) 0%, rgb(254, 220, 148) 100%)');
-   this.vacuumChargeBar.progressbar.css('background', '#feba29');
+  this.vacuumChargeBar.css('background', '-webkit-linear-gradient(top, #cdcdcd 0%, #fff 100%');
+  this.vacuumChargeBar.css('border-radius', '10px');
+  this.vacuumChargeBar.css('-moz-border-radius', '10px');
+  this.vacuumChargeBar.css('-webkit-border-radius', '10px');
 */
+  this.vacuumChargeBar.addClass('gui');
   this.vacuumChargeBar.progressbar({value: 0});
 
   this.statusBox.append(this.vacuumChargeBar);
