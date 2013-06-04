@@ -275,6 +275,20 @@ function generateCirclePoint(direction,center,radius,angle)
  * intersected objects
  */
 Player.prototype.getVacIntersectionObjs = function(critters) {
+    var ret_objs = {}; // table of intersected objects to return
+    var close_critters = {}; // table of critters within vacuum range
+    for (key in critters) {
+        // check if in range
+        if (Math.abs(this.position.x - critters[key].position.x) <= 10 &&
+            Math.abs(this.position.z - critters[key].position.z) <= 10) {
+            close_critters[key] = critters[key]; // add to table 
+        }
+    }
+    // if no critters within range, short circuit
+    if (Object.keys(critters).length == 0) {
+        return ret_objs;
+    }
+
     var origin = new THREE.Vector3().copy(this.position);
     var vector = new THREE.Vector3().copy(this.orientation);
     var raycaster0 = new THREE.Raycaster(origin, vector);
@@ -311,34 +325,37 @@ Player.prototype.getVacIntersectionObjs = function(critters) {
     var raycaster3 = new THREE.Raycaster(origin, p3);
     var raycaster4 = new THREE.Raycaster(origin, p4);
 
-    var ret_objs = {}; // table of intersected objects to return
-    for (key in critters) {
-        var intersects = raycaster0.intersectObject(critters[key].mesh);
-        // check if any intersections within vacuum distance
-        // TODO: don't hardcode vacuum distance
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray0");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+    // check itersection with nearby critters
+    for (key in close_critters) {
+        var intersects = raycaster0.intersectObject(close_critters[key].mesh);
+        // check if any intersections
+        if(intersects.length > 0) {
+            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            continue; // optimization: take out if we decide to add forces
         }
-        intersects = raycaster1.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray1");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+
+        intersects = raycaster1.intersectObject(close_critters[key].mesh);
+        if(intersects.length > 0) {
+            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            continue; // optimization: take out if we decide to add forces
         }
-        intersects = raycaster2.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray2");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+
+        intersects = raycaster2.intersectObject(close_critters[key].mesh);
+        if(intersects.length > 0) {
+            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            continue; // optimization: take out if we decide to add forces
         }
-        intersects = raycaster3.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray3");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+
+        intersects = raycaster3.intersectObject(close_critters[key].mesh);
+        if(intersects.length > 0) {
+            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            continue; // optimization: take out if we decide to add forces
         }
-        intersects = raycaster4.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray4");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+
+        intersects = raycaster4.intersectObject(close_critters[key].mesh);
+        if(intersects.length > 0) {
+            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            continue; // optimization: take out if we decide to add forces
         }
     }
     return ret_objs; // return table
