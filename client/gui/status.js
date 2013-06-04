@@ -10,8 +10,8 @@ function StatusBox() {
   this.statusBox.addClass('gui');
   this.statusBox.css('display', 'inline');
   this.statusBox.css('position', 'absolute');
-  this.statusBox.css('right', '0px');
-  this.statusBox.css('top', '0px');
+  this.statusBox.css('right', '10px');
+  this.statusBox.css('top', '10px');
   this.statusBox.css('width', '200px');
   this.statusBox.css('height', '200px');
 
@@ -29,33 +29,29 @@ function StatusBox() {
 };
 
 /* CREATE STATUS ELEMENTS */
-StatusBox.prototype.addFoodBar = function () {
+/*StatusBox.prototype.addFoodBar = function () {
   this.foodBar = $('<div id="foodBar" />');
   this.foodBar.addClass('gui');
   this.foodBar.progressbar({value: 0});
 
   this.statusBox.append(this.foodBar);
 };
+*/
 
 StatusBox.prototype.addVacuumChargeBar = function () {
-  this.vacuumChargeBar = $('<div id="vacuumChargeBar" />')
-		.addClass('gui')
-		.attr('height', '100')
-		.attr('width', '200')
-		.css({ 
-			'display': 'inline',
-			'position': 'absolute',
-			'top': '5px',
-			'left': '5px',
-			'background': '#ffffff',
-			'background': '-webkit-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
-			'background': '-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
-			'background': '-moz-linear-gradient(top, #ffffff 0%, #dbf5ff 100%)',
-			'border-radius': '10px', 
-			'-moz-border-radius': '10px', 
-			'-webkit-border-radius': '10px' 
-		});
-  this.vacuumChargeBar.addClass('gui');
+  this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
+  this.vacuumChargeBar.css('background', '#cdcdcd');
+
+   this.vacuumChargeBar.css('background', '-webkit-linear-gradient(top, #cdcdcd 0%, #fff 100%');
+   this.vacuumChargeBar.css('border-radius', '10px');
+   this.vacuumChargeBar.css('-moz-border-radius', '10px');
+   this.vacuumChargeBar.css('-webkit-border-radius', '10px');
+
+   this.vacuumChargeBar.addClass('gui');
+/*
+   this.vacuumChargeBar.progressbar.css('background-image', '-webkit-linear-gradient(top, rgb(254, 186, 41) 0%, rgb(254, 220, 148) 100%)');
+   this.vacuumChargeBar.progressbar.css('background', '#feba29');
+*/
   this.vacuumChargeBar.progressbar({value: 0});
 
   this.statusBox.append(this.vacuumChargeBar);
