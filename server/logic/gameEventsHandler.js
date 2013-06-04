@@ -29,7 +29,7 @@ function Handler(server, gameid, world) {
     this.round = 0;
     // time in seconds of machine when game begins
 	this.start = Date.now()/1000;
-    this.roundLength = 70; // length of a round as 70 seconds
+    this.roundLength = 100; // length of a round as 70 seconds
     this.remainingTime = this.roundLength;
     this.timeHasChanged = true;
 

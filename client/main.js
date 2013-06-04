@@ -168,49 +168,32 @@ function render() {
 
 //place to initialize lights (temporary, may not need)
 function initLights() {
-  var ambient = new THREE.AmbientLight(0x444444);
-  scene.add(ambient);
+    var ambient = new THREE.AmbientLight(0x444444);
+    scene.add(ambient);
 
-		var light = new THREE.PointLight( 0xffffff, 1, 2000); 
-		light.position.set( 0, 200, 0 ); 
-		scene.add( light );
-        var light1 = new THREE.PointLight(0xffffff, 1, 1000);
-        light1.position.set(0,5,0);
-        scene.add(light1);
-        var light2 = new THREE.PointLight(0xffffff, 1, 100);
-        light2.position.set(100,5,0);
-        scene.add(light2);
-        var light3 = new THREE.PointLight(0xffffff, 1, 100);
-        light3.position.set(-100,5,0);
-        scene.add(light3);
-        var light4 = new THREE.PointLight(0xffffff, 1, 100);
-        light4.position.set(0,5,100);
-        scene.add(light4);
-        var light5 = new THREE.PointLight(0xffffff, 1, 100);
-        light5.position.set(0,5,-100);
-        scene.add(light5);
-  
-  var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, Math.PI, 1);
-      slight.target.position.set(0,0,0);
-      slight.position.set(0, 200,0);
-      slight.shadowCameraNear = 10;
-      slight.shadowCameraFar = 300;
-      slight.castShadow = true;
-      slight.shadowBias = .0001;
-      slight.shadowDarkness = .5;
-      slight.shadowCameraVisible = true;
+    var light = new THREE.PointLight( 0xffffff, 1, 2000); 
+    light.position.set( 0, 500, 0 ); 
+    scene.add( light );
 
-      slight.shadowMapHeight = 2048;
-      slight.shadowMapWidth = 2048;
+    var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, Math.PI, 1);
+    slight.target.position.set(0,0,0);
+    slight.position.set(0, 200,0);
+    slight.shadowCameraNear = 10;
+    slight.shadowCameraFar = 300;
+    slight.castShadow = true;
+    slight.shadowBias = .0001;
+    slight.shadowDarkness = .5;
+    slight.shadowCameraVisible = true;
 
-      //slight.shadowCameraRight = 20;
-      //slight.shadowCameraLeft = -20;
-      //slight.shadowCameraTop = 20;
-      //slight.shadowCameraBottem = -20;
+    slight.shadowMapHeight = 2048;
+    slight.shadowMapWidth = 2048;
 
-      scene.add(slight);
+    //slight.shadowCameraRight = 20;
+    //slight.shadowCameraLeft = -20;
+    //slight.shadowCameraTop = 20;
+    //slight.shadowCameraBottem = -20;
 
-
+    scene.add(slight);
 }
 
 //load sound clips here
@@ -263,7 +246,7 @@ function initSkyBox()
 
 
 function main() {
-	renderer.shadowMapEnabled = true;
+	renderer.shadowMapEnabled = false;
   renderer.shadowMapSoft = true;
   renderer.setClearColorHex(0x0000ff, 1);
   initStats();
@@ -301,7 +284,6 @@ function main() {
 	
     var self = this;
 	function randomAudio() {
-        console.log("randomAudio called");
         setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
 		self.heheheAudio.load();
 		self.heheheAudio.play();
