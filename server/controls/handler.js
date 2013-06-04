@@ -22,7 +22,7 @@ var keymap = {
 	'a' : 'MOVE_LEFT', 
 	's' : 'MOVE_BACKWARD', 
 	'd' : 'MOVE_RIGHT',
-	'c' : 'VACUUM' 
+	'SPACE' : 'VACUUM' 
 };
 
 // these keys don't need to be processed by the server, but
@@ -40,7 +40,7 @@ var unusedKeys = {
 	'RSHFT' : 16,
 	'LCTRL' : 17,
 	'LALT' : 18,
-	'SPACE' : 32,
+	'c' : 67,
 	'LARRW' : 37, 'UARRW' : 38, 'RARRW' : 39, 'DARRW' : 40,
 	'0' : 48, '1' : 49, '2' : 50, '3' : 51, '4' : 52,
 	'5' : 53, '6' : 54, '7' : 55, '8' : 56, '9' : 57,
