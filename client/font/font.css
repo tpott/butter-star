@@ -19,7 +19,8 @@
     src: url("http://ff.static.1001fonts.net/d/u/dustismo.bold-italic.ttf")  format("truetype");
 }
 
+/* Adventuring webfont */
 @font-face {
-    font-family: "Gtown";
-    src: url("http://www.urbanfonts.com/fonts/folders/gtown/Gtown.ttf");
+    font-family: "Adventuring";
+    src: url("http://ff.static.1001fonts.net/a/d/adventuring.regular.ttf");
 }
