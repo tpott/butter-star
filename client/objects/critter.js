@@ -8,6 +8,8 @@
 var Critter = function(critterObj) {
   this.id = critterObj.id;
 
+  this.hp = 30;
+
   this.position = new THREE.Vector4().copy(critterObj.position);
   this.orientation = new THREE.Vector4().copy(critterObj.orientation);
   this.state = critterObj.state;
@@ -24,4 +26,8 @@ var Critter = function(critterObj) {
   this.mesh.position.setY(this.position.y - this.radius);
 
   // Don't add to scene in constructor. Called in WorldState's addCritter().
+};
+
+Critter.prototype.updateHP = function(hp) {
+  this.hp = hp;
 };

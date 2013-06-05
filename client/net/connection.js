@@ -96,6 +96,10 @@ Connection.prototype._onmessage = function(buf) {
 				 .updateKillCounter(message.kill[i].count);
 		}
 
+    for (var i = 0; i < message.bun.length; i++) {
+      myWorldState.critters[message.bun[i].id].updateHP(message.bun[i].hp);
+    }
+
 		console.log("Client recieved id: " + message.id);
 
 		this.initialized = true;
@@ -132,6 +136,11 @@ Connection.prototype._onmessage = function(buf) {
 		 myWorldState.players[world.kill[i].id]
 			 .updateKillCounter(world.kill[i].count);
 	 }
+  }
+  if ('bun' in world) {
+    for (var i = 0; i < world.bun.length; i++) {
+      myWorldState.critters[world.bun[i].id].updateHP(world.bun[i].hp);
+    }
   }
 	if ('misc' in world) {
 		// TODO
