@@ -107,9 +107,9 @@ function update() {
 	//   update camera position
 	camera.position = myPlayer.position.clone().sub(
 			myPlayer.orientation.clone().multiplyScalar(15))
-	console.log("camera pos:" + JSON.stringify(camera.position));
+	//console.log("camera pos:" + JSON.stringify(camera.position));
   camera.position.add(new THREE.Vector3(0, 5, 0));
-  console.log(camera.position);
+  //console.log(camera.position);
 	
 	//   update camera orientation
 	camera.lookAt( myPlayer.position.clone().add(new THREE.Vector3(0,5,0) ));
