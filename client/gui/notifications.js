@@ -11,7 +11,6 @@
 var NOTIFY_DELAY = 9 * 1000; // 9 seconds
 
 function Notify() {
-	// TODO positioning
 	this.bar = $('<div id="notify" align="center" />')
 		.addClass('gui');
 
