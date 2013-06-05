@@ -20,7 +20,7 @@ function Timer() {
 	this.timer.css('color', '#fff');
 	this.timer.css('font-size', '45px');
 	this.timer.css('width', '150px');
-	this.timer.css('height', '80px');
+	this.timer.css('height', '90px');
 	this.timer.css('left', '10px');
  	this.timer.css('top', '10px');
  	this.timer.css('padding', '10px');

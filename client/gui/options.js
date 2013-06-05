@@ -4,33 +4,30 @@
  * @fileoverview Present an interface to change client options. This depends
  * on having jQuery
  * @author Trevor
+ * @author Prita Priscilla
  */
 
 function OptionMenu() {
 	this.menu = $('<div id="options" />')
 		.addClass('gui')
-		.attr('height', '200')
-		.attr('width', '200')
+		.attr('height', '500')
+		.attr('width', '500')
 		.css({ 
 			'display': 'inline',
 			'position': 'absolute',
 			'top': '50%',
-			'left': '50%'
+			'left': '50%',
+			'margin-top': '-250px',
+			'margin-left': '-250px',
 		});
 
-	this.title = $('<div id="optionsTitle" />')
-		.append($('<strong>Menu</strong>'));
-	this.list = $('<ul />')
-		.css({
-			'list-style-type': 'none'
-		})
-		.append($('<li />')
-			.append('Show hints')
-			.append($('<input type="checkbox" />'))
-		)
-		.append($('<li />')
-			.append($('<button>Example</button>'))
-		);
+	var currURL = window.location.href;
+
+	this.title = $('<div id="optionsStuff" />')
+		.append($( '<center><h6>MENU</h6></center>' +
+'<a href="gamelist"><div class="menuOpt"><h5>return to the game list</h5></div></a>' +
+'<div class="menuOpt"><h5>invite your friends to this game by sharing the link below!</h5><br>' +
+'<center><textarea>' + currURL + '</textarea></center>' ));
 
 	this.menu.append(this.title);
 	this.menu.append(this.list);
@@ -51,14 +48,22 @@ OptionMenu.prototype.toggle = function() {
 		}
 
 		$('#options').show();
+		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '0.4');
+		$('#gameTimer').css('opacity', '0.4');
+		$('#statusBox').css('opacity', '0.4');
+		//$('.game').css('z-index', '100');
 
 		this.hidden = false;
 	}
 	else {
 		console.log('Hiding options');
 		$('#options').hide();
+		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '1.0');
+		$('#gameTimer').css('opacity', '1.0');
+		$('#statusBox').css('opacity', '0.4');
+		//$('.game').css('z-index', '-100');
 
 		this.hidden = true;
 	}
