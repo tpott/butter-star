@@ -25,11 +25,12 @@ function Timer() {
 	this.timer.css('margin-left', '-100px');
  	this.timer.css('padding', '10px');
  	this.timer.css('top', '5px');
+	this.timer.css('border', '2px solid rgba(255, 255, 255, 0.2)');
  	this.timer.css('background', 'rgba(41, 191, 254, 0.5)');
  	this.timer.css('-moz-border-radius', '10px');
  	this.timer.css('-webkit-border-radius', '10px');
 }
 
 Timer.prototype.update = function(value) {
-	$('#gameTimer').html('<h1>time remaining:</h1>' + value);
+	$('#gameTimer').html('<h1>time remaining:</h1> <h2>' + value + '</h2>');
 }
