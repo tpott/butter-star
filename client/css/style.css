@@ -126,6 +126,16 @@ h5 {
     color: #ffffff;
 }
 
+/* FOR END GAME TEXT */
+h6 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+    color: #0b82b4;
+}
+
 p {
     font-family: "Dustismo", Helvetica, Arial, sans-serif;
     font-size: 18px;
