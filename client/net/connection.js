@@ -97,7 +97,7 @@ Connection.prototype._onmessage = function(buf) {
 		}
 
     for (var i = 0; i < message.bun.length; i++) {
-      myWorldState.players[message.bun[i].id].updateHP(message.bun[i].hp);
+      myWorldState.critters[message.bun[i].id].updateHP(message.bun[i].hp);
     }
 
 		console.log("Client recieved id: " + message.id);
