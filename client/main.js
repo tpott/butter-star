@@ -15,6 +15,8 @@ var renderer = new THREE.WebGLRenderer({
   preserveDrawingBuffer : true
 }); 
 
+var myName = "";
+
 //sounds
 var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
@@ -92,6 +94,11 @@ for (var attr in obj) {
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
 
+function setName(name) {
+    myName = name;
+    connection.sendName(myName);
+}
+
 /*
 update the states of the game
 examples:
@@ -150,6 +157,7 @@ function updateAnimations() {
 	}
     if (myPlayer != null) {
 	    myPlayer.plusOneAnimation();
+        myPlayer.nameAnimation();
     }
 }
 

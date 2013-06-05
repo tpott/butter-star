@@ -21,6 +21,7 @@ var STANDING_STILL = 0,
  */
 var Player = function(playerObj) {
 	this.id = playerObj.id;
+    this.name = "";
 
     this.position = new THREE.Vector4().copy(playerObj.position);
     this.orientation = new THREE.Vector4().copy(playerObj.orientation);
@@ -59,6 +60,10 @@ var Player = function(playerObj) {
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
 };
+
+Player.prototype.setName = function(name) {
+    this.name = name;
+}
 
 Player.prototype.setAnimate = function() {
 	scene.remove(this.mesh);
@@ -181,6 +186,31 @@ Player.prototype.updateKillCounter = function(count) {
 	if (scoreBoard.showing()) {
 		scoreBoard.update();
 	}
+};
+Player.prototype.nameAnimation = function()
+{
+			
+			//console.log("creating plus one texture");
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(new THREE.Vector3(this.position.x,this.position.y+1,this.position.z));	
+		
+            var canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 100;
+        
+            var context = canvas.getContext('2d');
+            context.fillStyle = "yellow";
+            context.fillRect(0,0,100,100);
+            context.font = "24pt Arial";
+            context.fillText("SUP BETCH", 0, 0);
+			
+            var texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            
+            var material = new THREE.MeshBasicMaterial( {map: texture, transparent: true } );
+            var particle = new THREE.ParticleSystem(geometry,material);
+			scene.add(particle);
+			
 };
 Player.prototype.plusOneAnimation = function()
 {

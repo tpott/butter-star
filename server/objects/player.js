@@ -32,7 +32,7 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-  
+  this.name = ""; 
   this.scale = 0.06;
 
   // 3D object this represents
@@ -80,6 +80,10 @@ function Player() {
   this.prevVacuumCharge = -1; // used to see if num vacuumed changed
 }
 util.inherits(Player, Movable);
+
+Player.prototype.setName = function(name) {
+    this.name = name;
+}
 
 Player.prototype.incVacKills = function() {
     this.numVacKills++;

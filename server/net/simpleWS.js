@@ -81,7 +81,11 @@ Server.prototype._newSocket = function(socket) {
 
 		if (clientData instanceof Array) {
 			game.eventBasedUpdate(player, clientData);
-		}
+		} else if (clientData.name) {
+            // set name
+            player.setName(clientData.name);
+            console.log(clientData.name);
+        }
 		else {
 			console.log("Bad data from client");
 		}

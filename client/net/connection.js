@@ -37,9 +37,10 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
-	this.socket.onmessage = this._onmessage;
-
+    this.socket.onmessage = this._onmessage;
 	var socket = this.socket;
+
+
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
 			console.log("Connection is not ready yet!");
@@ -66,6 +67,12 @@ function Connection(ip, port, gameid, player, world) {
 	setInterval(clientTick, 1000/60);
 }
 
+Connection.prototype.sendName = function(name) {
+    var data = {};
+    data.name = name;
+    this.socket.send(JSON.stringify(data));
+}
+
 Connection.prototype._onopen = function() {
 	console.log("Connection is opened!");
 };
@@ -83,6 +90,9 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    if (message.new) {
+        console.log("Received name: " +  buf.data);
+    }
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);
