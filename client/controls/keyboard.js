@@ -205,7 +205,6 @@ function keyDown(e) {
 			// stops TAB from being handled in the default fashion
 			e.preventDefault();
 			break;
-    // Want to use arrows to move camera by adding to mouse movement
 		default:
 			console.log("Key code '%d' not recognized", e.keyCode);
 			break;
@@ -218,8 +217,6 @@ function keyUp(e) {
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
         keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);
 	}
-
-  //keyMoveReset();
 
 	switch(e.keyCode) {
 		// client loop back functionality
