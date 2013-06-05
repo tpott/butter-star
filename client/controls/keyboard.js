@@ -133,9 +133,9 @@ function keyDown(e) {
 
 function keyUp(e) {
 	//console.log("'%s' up.", codemap[e.keyCode]);
-	// TODO is this right?
+	// TODO is this right? no this was not faurking right before
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
-		keyPresses.pop(codemap[e.keyCode]);
+        keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);
 	}
 
 	switch(e.keyCode) {
