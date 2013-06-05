@@ -97,7 +97,7 @@ Game.prototype.addSocket = function(socket) {
 
   for (var id in this.world.critters) {
     var critterHPObj = {
-      id:id,
+      id: id,
       hp: this.world.critters[id].hp
     };
     initObj.bun.push(critterHPObj);
@@ -332,8 +332,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
     if (critter.didHPChange() === true) {
       var critterHPObj = {
-        id: critter.id;
-        hp: critter.hp;
+        id: critter.id,
+        hp: critter.hp
       };
       worldUpdate.bun.push(critterHPObj);
     }
