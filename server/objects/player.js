@@ -524,6 +524,8 @@ Player.prototype.rotate = function(mouse) {
 	// variables needed for vertical rotation
 	var orientation3 = new THREE.Vector3().copy(this.orientation);
 	var yaxis = new THREE.Vector3(0, 1, 0);
+  
+  //console.log(orientation3);
 
 	// vertical rotation math
 	var yRotateAxis = new THREE.Vector3().crossVectors(
@@ -541,10 +543,27 @@ Player.prototype.rotate = function(mouse) {
 	var rot = xRotationMat.multiply(yRotationMat);
 
 	//this.orientation = rot.multiply(this.orientation);
-	this.orientation.applyMatrix4(rot);
+	var newOrientation = new THREE.Vector4().copy(this.orientation);
+  newOrientation.applyMatrix4(rot);
+ 
+  this.moved = true;
+
+  //this.orientation.applyMatrix4(rot);
+  if(newOrientation.y >= .1)
+  {
+      //console.log("stop moving down");
+      return;
+  }
+  if(newOrientation.y <= -.5)
+  {
+      //console.log("stop moving up");
+      return;
+  }
+  
+  this.orientation = newOrientation;
 
 	// necessary for graphics to be updated
-	this.moved = true;
+	//this.moved = true;
 };
 
 /**
