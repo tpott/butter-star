@@ -16,7 +16,6 @@ function StatusBox() {
   this.statusBox.css('height', '200px');
 
   // Add status bars and vacuumed bunny counter
-  // this.addFoodBar();
   this.addVacuumChargeBar();
   this.addKillCounter();
 
@@ -37,7 +36,7 @@ StatusBox.prototype.addVacuumChargeBar = function () {
 
 StatusBox.prototype.addKillCounter = function () {
   this.killCounter =
-      $('<h1 id="killCounter" align="right"></h1>');
+      $('<h1>bunnies sucked</h1><br><h2 id="killCounter" align="right"></h2>');
   this.killCounter.addClass('gui');
 
   this.statusBox.append(this.killCounter);

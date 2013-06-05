@@ -15,10 +15,10 @@ function Timer() {
 	this.timer.css('position', 'absolute');
 	this.timer.css('bottom', '0');
 	this.timer.css('right', '0');
-	this.timer.css('font-family', '\"Gtown\"');
+	this.timer.css('font-family', '\"Adventuring\"');
 	this.timer.css('text-align', 'center');
 	this.timer.css('color', '#fff');
-	this.timer.css('font-size', '55px');
+	this.timer.css('font-size', '45px');
 	this.timer.css('width', '150px');
 	this.timer.css('height', '80px');
 	this.timer.css('left', '50%');

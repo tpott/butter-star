@@ -13,10 +13,29 @@ body {
 /* GUI TEXT */
 h1 {
     font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #fff;
     font-size: 22px;
     margin: 0 auto;
     text-align: center;
-    color: #94dffe;
+    text-shadow:
+	-1px 0px 1px #3b3b3b,
+	0px 1px 1px #3b3b3b,
+	1px 0px 1px #3b3b3b,
+	0px -1px 1px #3b3b3b;
+}
+
+/* BUNNY KILL TEXT */
+h2 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-size: 45px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #94dffe,
+	0px 1px 1px #94dffe,
+	1px 0px 1px #94dffe,
+	0px -1px 1px #94dffe;
 }
 
 #blocker {
