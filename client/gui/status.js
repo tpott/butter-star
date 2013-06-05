@@ -28,16 +28,6 @@ function StatusBox() {
   $('body').append(this.statusBox);
 };
 
-/* CREATE STATUS ELEMENTS */
-/*StatusBox.prototype.addFoodBar = function () {
-  this.foodBar = $('<div id="foodBar" />');
-  this.foodBar.addClass('gui');
-  this.foodBar.progressbar({value: 0});
-
-  this.statusBox.append(this.foodBar);
-};
-*/
-
 StatusBox.prototype.addVacuumChargeBar = function () {
   this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
   this.vacuumChargeBar.progressbar({value: 0});
