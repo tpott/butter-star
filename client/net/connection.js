@@ -43,25 +43,28 @@ function Connection(ip, port, gameid, player, world) {
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
 			console.log("Connection is not ready yet!");
-		} 
-		else if (array_equals(keyPresses, oldKeyPresses) && 
-				mouseMovement[0] == 0 && mouseMovement[1] == 0) {
-			//console.log("Nothing new from the client");
-		}
-		else {
-			// client side networking happens HERE. BOOM
-			var allData = keyPresses.slice(0); // aka clone
-			if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
-				allData.push(mouseMovement);
-			}
-			socket.send(JSON.stringify(allData));
-			mouseMovement[0] = 0;
-			mouseMovement[1] = 0;
+		} else {
+      keyMove();
+      if (array_equals(keyPresses, oldKeyPresses) && 
+          mouseMovement[0] == 0 && mouseMovement[1] == 0) {
+        //console.log("Nothing new from the client");
+      }
+      else {
+        // client side networking happens HERE. BOOM
+        var allData = keyPresses.slice(0); // aka clone
+        if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
+          allData.push(mouseMovement);
+        }
 
-			// copy!!! cause javascript sucks
-			oldKeyPresses = keyPresses.slice(0);
-		}
-	}
+        socket.send(JSON.stringify(allData));
+        mouseMovement[0] = 0;
+        mouseMovement[1] = 0;
+
+        // copy!!! cause javascript sucks
+        oldKeyPresses = keyPresses.slice(0);
+      }
+    }
+  }
 
 	setInterval(clientTick, 1000/60);
 }
