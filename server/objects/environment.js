@@ -16,7 +16,7 @@ function Environment() {
   // load geometry obj
   /* NOTE(jyfang): DO NOT change to the actual model, collisions hella weird*/
   // TODO HOLY CRAP HELP WITH THIS
-  this.mesh = Loader.parse('../client/models/blankRoom.obj');
+  this.mesh = Loader.parse('../client/models/emptyRoom.obj');
 
   this.mesh.geometry.computeFaceNormals();
   this.mesh.geometry.computeCentroids();
