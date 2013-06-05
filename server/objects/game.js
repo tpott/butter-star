@@ -63,7 +63,8 @@ Game.prototype.addSocket = function(socket) {
 	  id : socket.id,
 	  new : [],
 		vac : [],
-		kill : []
+		kill : [],
+    bun : []
   };
 
 	for (var id in this.world.collidables) {
@@ -93,6 +94,14 @@ Game.prototype.addSocket = function(socket) {
       };
       initObj.kill.push(killCounterObj);
 	}
+
+  for (var id in this.world.critters) {
+    var critterHPObj = {
+      id:id,
+      hp: this.world.critters[id].hp
+    };
+    initObj.bun.push(critterHPObj);
+  }
 
 	// the client receives this and inits stuff in client/object/worldstate.js
 
@@ -202,6 +211,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		del : [],
         vac : [],
         kill : [],
+    bun : [],
 		misc : [],
         timer : []
 	};
@@ -313,6 +323,24 @@ Game.prototype.sendUpdatesToAllClients = function() {
   // no kill counter changes, so don't send anything for this
   if (worldUpdate.kill.length == 0) {
     delete worldUpdate.kill;
+    updates--;
+  }
+
+  // check for critter HP updates
+  for (var id in this.world.critters) {
+    var critter = this.world.critters[id];
+
+    if (critter.didHPChange() === true) {
+      var critterHPObj = {
+        id: critter.id;
+        hp: critter.hp;
+      };
+      worldUpdate.bun.push(critterHPObj);
+    }
+  }
+
+  if (worldUpdate.bun.length == 0) {
+    delete worldUpdate.bun;
     updates--;
   }
 

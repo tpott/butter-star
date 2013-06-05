@@ -18,6 +18,7 @@ var Loader = require('./OBJLoader.js');
 function Critter(){
     Critter.super_.call(this);
 	this.hp = 30;
+  this.prevHP = -1;
     this.scale = 0.12;
 
     this.type = Collidable.types.CRITTER;
@@ -42,6 +43,14 @@ function Critter(){
     this.rotation_point; // determines the point in which critter rotates around
 }
 util.inherits(Critter, Movable);
+
+Critter.prototype.didHPChange = function() {
+  if (this.prevHP != this.hp) {
+    this.prevHP = this.hp;
+    return true;
+  }
+  return false;
+};
 
 Critter.prototype.move = function() {
     //start at origin
