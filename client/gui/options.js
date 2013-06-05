@@ -29,7 +29,7 @@ function OptionMenu() {
 '<div class="menuOpt"><h5>Invite your friends to this game by sharing the link below!</h5><br>' +
 '<center><textarea onclick=\"this.focus();this.select()\" readonly=\"readonly\">' + currURL + '</textarea></center></div><br>' +
 '<center><img src="controllers.png" width="450px"></center><br>' +
-'<h1>**Hit ESC to get back to the game!</h1>' ));
+'<h1>Psst! You can also press TAB to view other players\' scores!<br><br>To get back to the game, hit ESC</h1>' ));
 
 	this.menu.append(this.title);
 	this.menu.append(this.list);

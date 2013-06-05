@@ -25,7 +25,7 @@ StatusBox.prototype.addVacuumChargeBar = function () {
   this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
   this.vacuumChargeBar.progressbar({value: 0});
   
-  this.statusBox.html('<h1>vacuum charge:</h1>');
+  this.statusBox.html('<h1>vacuum charge</h1>');
   this.statusBox.append(this.vacuumChargeBar);
 };
 
@@ -48,5 +48,5 @@ StatusBox.prototype.updateVacuumCharge = function(value) {
 };
 
 StatusBox.prototype.updateKillCounter = function(value) {
-  this.killCounter.html('<br><h1>bunnies sucked:</h1> <h3>' + value + '</h3>');
+  this.killCounter.html('<br><h1>bunnies sucked</h1> <h3>' + value + '</h3>');
 };

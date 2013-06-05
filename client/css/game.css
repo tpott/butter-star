@@ -70,7 +70,7 @@ h4 {
 /* FOR OPTIONS TEXT */
 h5 {
     font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     margin: 0 auto;
     text-align: center;
@@ -91,6 +91,33 @@ h6 {
 
 a {
     text-decoration: none;
+}
+
+#scoreText {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #3b3b3b;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #fff,
+	0px 1px 1px #fff,
+	1px 0px 1px #fff,
+	0px -1px 1px #fff;
+
+}
+
+#scoreNumb {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #3b3b3b;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #fff,
+	0px 1px 1px #fff,
+	1px 0px 1px #fff,
+	0px -1px 1px #fff;
 }
 
 #blocker {

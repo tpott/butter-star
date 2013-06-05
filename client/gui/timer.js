@@ -31,5 +31,5 @@ function Timer() {
 }
 
 Timer.prototype.update = function(value) {
-	$('#gameTimer').html('<h1>time remaining:</h1> <h2>' + value + '</h2>');
+	$('#gameTimer').html('<h1>time remaining</h1> <h2>' + value + '</h2>');
 }
