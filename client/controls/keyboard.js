@@ -101,6 +101,19 @@ function keyMove() {
     }
   }
 
+  // if opposing keys pressed, no camera movement
+  if ((keyPresses.indexOf('LARRW') != -1 || keyPresses.indexOf('j') != -1) &&
+      (keyPresses.indexOf('RARRW') != -1 || keyPresses.indexOf('l') != -1)) {
+    keyMoveXNeg = 0;
+    keyMoveXPos = 0;
+  }
+
+  if ((keyPresses.indexOf('UARRW') != -1 || keyPresses.indexOf('i') != -1) &&
+      (keyPresses.indexOf('DARRW') != -1 || keyPresses.indexOf('k') != -1)) {
+    keyMoveYNeg = 0;
+    keyMoveYPos = 0;
+  }
+
   mouseMovement[0] += keyMoveXNeg + keyMoveXPos;
   mouseMovement[1] += keyMoveYNeg + keyMoveYPos;
 }
