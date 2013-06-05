@@ -401,9 +401,19 @@ Player.prototype.isMoving = function() {
  * @param {Event} evt The player movement event (string).
  */
 Player.prototype.move = function() {
+  //console.log(this.isMoving());
 	if (! this.isMoving() ) {
+    //console.log("this isnt moving");
 		return;
 	}
+
+  //dont let the player move if they press both left + right or up + down at the same time
+  if(this.state == 12 || this.state == 3 || this.state == 28 || this.state == 19)
+  {
+    return;
+  }
+
+  //console.log(this.state);
 
 	// MAGIC NUMBER
 	var speed = 0.125;
@@ -459,25 +469,25 @@ Player.prototype.move = function() {
 
 if(projected.z > 0)
    {
-     if(this.state == 1 ){direction +=   0}
-     if(this.state == 5){direction += 315}
-     if(this.state == 4){direction += 270}
-     if(this.state == 6){direction += 225}
-     if(this.state == 2){direction += 180}
-     if(this.state == 10){direction += 135}
-     if(this.state == 8){direction += 90}
-     if(this.state == 9){direction += 45} 
+     if(this.state == 1 || this.state == 17){direction +=   0}
+     if(this.state == 5 || this.state == 21){direction += 315}
+     if(this.state == 4 || this.state == 20){direction += 270}
+     if(this.state == 6 || this.state == 22){direction += 225}
+     if(this.state == 2 || this.state == 18){direction += 180}
+     if(this.state == 10 || this.state == 26){direction += 135}
+     if(this.state == 8 || this.state == 24){direction += 90}
+     if(this.state == 9 || this.state == 25){direction += 45} 
    }
 else if(projected.z <= 0)
    {
-     if(this.state == 1){direction +=   0}
-     if(this.state == 5){direction +=  45}
-     if(this.state == 4){direction +=  90}
-     if(this.state == 6){direction += 135}
-     if(this.state == 2){direction += 180}
-     if(this.state == 10){direction += 225}
-     if(this.state == 8){direction += 270}
-     if(this.state == 9){direction += 315} 
+     if(this.state == 1 || this.state == 17){direction +=   0}
+     if(this.state == 5 || this.state == 21){direction +=  45}
+     if(this.state == 4 || this.state == 20){direction +=  90}
+     if(this.state == 6 || this.state == 22){direction += 135}
+     if(this.state == 2 || this.state == 18){direction += 180}
+     if(this.state == 10 || this.state == 26){direction += 225}
+     if(this.state == 8 || this.state == 24){direction += 270}
+     if(this.state == 9 || this.state == 25){direction += 315} 
    }
 
  if(projected.z > 0)
