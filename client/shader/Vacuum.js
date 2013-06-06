@@ -19,7 +19,7 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.angle = 0.0;
 	this.vCenterCircle = new THREE.Vector3();
 	this.length = 10;
-	this.radius = 5;
+	this.radius = 3;
 
 	//shader attributes and uniforms
 	this.uniforms = {};
