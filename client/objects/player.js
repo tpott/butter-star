@@ -195,19 +195,20 @@ Player.prototype.nameAnimation = function()
 			geometry.vertices.push(new THREE.Vector3(this.position.x,this.position.y+1,this.position.z));	
 		
             var canvas = document.createElement('canvas');
-            canvas.width = 100;
-            canvas.height = 100;
+            canvas.width = 1000;
+            canvas.height = 1000;
         
             var context = canvas.getContext('2d');
-            context.fillStyle = "yellow";
-            context.fillRect(0,0,100,100);
-            context.font = "24pt Arial";
-            context.fillText("SUP BETCH", 0, 0);
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.fillStyle = "black";
+            context.font = "500pt Arial";
+            context.fillText("NAME", canvas.width/2, canvas.height/2);
 			
             var texture = new THREE.Texture(canvas);
             texture.needsUpdate = true;
             
-            var material = new THREE.MeshBasicMaterial( {map: texture, transparent: true } );
+            var material = new THREE.ParticleBasicMaterial( {map: texture, transparent: true } );
             var particle = new THREE.ParticleSystem(geometry,material);
 			scene.add(particle);
 			
