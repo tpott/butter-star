@@ -97,6 +97,7 @@ for (var attr in obj) {
 function setName() {
     myName = $("#nametagbox").val();
     connection.sendName(myName);
+    optionMenu.toggle();
 }
 
 /*
