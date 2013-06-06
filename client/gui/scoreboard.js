@@ -32,9 +32,9 @@ function ScoreBoard() {
 	this.board.append(this.table);
 
 	$('body').append(this.board);
-	this.board.hide();
+	this.board.show();
 
-	this.hidden = true;
+	this.hidden = false;
 }
 
 ScoreBoard.prototype.toggle = function() {
