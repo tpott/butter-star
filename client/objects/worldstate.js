@@ -200,6 +200,7 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
             this.players[id].radius = update.radius;
+            this.players[id].updateNameLocation();
 
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);

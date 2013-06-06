@@ -21,7 +21,6 @@ var STANDING_STILL = 0,
  */
 var Player = function(playerObj) {
 	this.id = playerObj.id;
-    this.name = "";
 
     this.position = new THREE.Vector4().copy(playerObj.position);
     this.orientation = new THREE.Vector4().copy(playerObj.orientation);
@@ -40,6 +39,7 @@ var Player = function(playerObj) {
 	this.mesh.position.copy(this.position);
 	this.mesh.position.setY(this.position.y - this.radius);
 	
+
 	 // needed for vacuum effect
 	this.vacuum = null;
 
@@ -59,6 +59,11 @@ var Player = function(playerObj) {
   // TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
+
+    // for nametag
+    this.name = "oogla";
+    this.nameTagParticle = null;
+    this.nameAnimation();
 };
 
 Player.prototype.setName = function(name) {
@@ -187,6 +192,15 @@ Player.prototype.updateKillCounter = function(count) {
 		scoreBoard.update();
 	}
 };
+    
+Player.prototype.updateNameLocation = function () {
+    //console.log(this.nameTagParticle.geometry.vertices);
+    this.nameTagParticle.geometry.vertices[0].set(this.position.x, this.position.y+3, this.position.z);
+    this.nameTagParticle.geometry.verticesNeedUpdate = true;
+    /*this.nameTagParticle.geometry.vertices.position.x = this.position.x;
+    this.nameTagParticle.geometry.vertices.position.y = this.position.y+1;
+    this.nameTagParticle.geometry.vertices.position.z = this.position.z;*/
+}
 Player.prototype.nameAnimation = function()
 {
 			
@@ -209,8 +223,8 @@ Player.prototype.nameAnimation = function()
             texture.needsUpdate = true;
             
             var material = new THREE.ParticleBasicMaterial( {map: texture, transparent: true } );
-            var particle = new THREE.ParticleSystem(geometry,material);
-			scene.add(particle);
+            this.nameTagParticle = new THREE.ParticleSystem(geometry,material);
+			scene.add(this.nameTagParticle);
 			
 };
 Player.prototype.plusOneAnimation = function()

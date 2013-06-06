@@ -157,7 +157,6 @@ function updateAnimations() {
 	}
     if (myPlayer != null) {
 	    myPlayer.plusOneAnimation();
-        myPlayer.nameAnimation();
     }
 }
 
