@@ -237,26 +237,15 @@ function keyUp(e) {
 		case keymap['f']:
 			toggleFullScreen();
 			break;
-<<<<<<< HEAD
-=======
-    case 37:
-    case 38:
-    case 39:
-    case 40:
-    case 73:
-    case 74:
-    case 75:
-    case 76:
-      keyMoveReset();
-      break;
-		// client send only once
-		/*case keymap['c']:
-			keyPresses.push(codemap[e.keyCode]);*/
-			/*myPlayer.vacuum.removeFromScene(scene);
-			myPlayer.vacuum = null;
-			controlsEvent.set("isVacuum", false);*/
-		//default:
-			//console.log(e.keyCode);
->>>>>>> 693fc4ab74b61820a7dca2246f5b03c3816a3633
-	}
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+        case 73:
+        case 74:
+        case 75:
+        case 76:
+              keyMoveReset();
+              break;
+        }
 }

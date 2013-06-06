@@ -52,11 +52,8 @@ OptionMenu.prototype.toggle = function() {
 		$('.game').css('opacity', '0.4');
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
-<<<<<<< HEAD
-=======
 		$('#scoreboard').css('opacity', '0.4');
 
->>>>>>> 693fc4ab74b61820a7dca2246f5b03c3816a3633
 		this.hidden = false;
         disableKeyPresses = true;
 	}
