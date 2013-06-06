@@ -57,7 +57,17 @@ var files = [
 	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
 	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
 	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
-        ['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
+        
+	
+	['one_left.png', "", client + 'imgs/one_left.png', 'image/png'],
+
+	['zero_left.png', "", client + 'imgs/zero_left.png', 'image/png'],
+	['two_left.png', "", client + 'imgs/two_left.png', 'image/png'],
+	['three_left.png', "", client + 'imgs/three_left.png', 'image/png'],
+	['four_left.png', "", client + 'imgs/four_left.png', 'image/png'],
+	['five_left.png', "", client + 'imgs/five_left.png', 'image/png'],
+
+	['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
