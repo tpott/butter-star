@@ -38,7 +38,6 @@ module.exports.wsServer = wsServer;
 
 // needed for the shell
 global.games = httpServer.games;
-global.requests = httpServer.requests;
 var startShell = require('./shell.js');
 
 if (config.spawnShell) {

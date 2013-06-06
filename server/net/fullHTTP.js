@@ -320,7 +320,6 @@ var Server = function(config) {
 	this.game_history = [];
 	this.ngame_history = 0;
 
-	this.requests = [];
 	this.start = Date.now();
 
 	this.initFiles(config);
@@ -338,11 +337,11 @@ Server.prototype.requestHandler = function() {
 
 		potentialResponse = staticFile(self, files, request);
 		if (potentialResponse.found) {
-			if (request.headers['If-Modified-Since'] > self.start) {
+			var lastModified = parseInt(request.headers['if-modified-since']);
+			if (lastModified >= self.start) {
 				notModified(response);
 				return;
 			}
-			self.requests.push(request);
 			sendResponse(potentialResponse, response, true);
 			return;
 		}
