@@ -48,6 +48,9 @@ function rotateCamera() {
 }
 
 function mouseMove(evt) {
+    if (disableKeyPresses) {
+        return;
+    }
 	var movementX = evt.movementX || evt.mozMovementX || evt.webkitMovementX || 0;
 	var movementY = evt.movementY || evt.mozMovementY || evt.webkitMovementY || 0;
 

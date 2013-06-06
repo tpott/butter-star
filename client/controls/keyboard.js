@@ -29,7 +29,7 @@ var keymap = {
 	'u' : 85, 'v' : 86, 'w' : 87, 'x' : 88,
 	'y' : 89, 'z' : 90,
 	'=' : 187,
-	'-' : 189,
+    '-' : 189,
 	'[' : 219,
 	']' : 221,
 };
@@ -54,8 +54,8 @@ var codemap = {
 	85 : 'u', 86 : 'v', 87 : 'w', 88 : 'x',
 	89 : 'y', 90 : 'z',
 	187 : '=',
-	189 : '-',
-	219 : '[',
+    189 : '-',
+    219 : '[',
 	221 : ']',
 };
 
@@ -144,7 +144,10 @@ function keyMoveReset() {
  */
 function keyDown(e) {
 	// TODO is this a bad idea?
-	switch (e.keyCode) {
+	if (disableKeyPresses && e.keyCode != keymap['ESC']) {
+        return;
+    }
+    switch (e.keyCode) {
 		case 9:
 		case 13: 
 		/*case 16: 
@@ -193,7 +196,7 @@ function keyDown(e) {
 		case 89:
 		case 90:
 		case 187:
-		case 189:
+        case 189:
 		case 219:
 		case 221:
 			// if the key is not already pressed
@@ -212,7 +215,9 @@ function keyDown(e) {
 }
 
 function keyUp(e) {
-	//console.log("'%s' up.", codemap[e.keyCode]);
+	if (disableKeyPresses && e.keyCode != keymap['ESC']) {
+        return;
+    }
 	// TODO is this right? no this was not faurking right before
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
         keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);
@@ -232,23 +237,15 @@ function keyUp(e) {
 		case keymap['f']:
 			toggleFullScreen();
 			break;
-    case 37:
-    case 38:
-    case 39:
-    case 40:
-    case 73:
-    case 74:
-    case 75:
-    case 76:
-      keyMoveReset();
-      break;
-		// client send only once
-		/*case keymap['c']:
-			keyPresses.push(codemap[e.keyCode]);*/
-			/*myPlayer.vacuum.removeFromScene(scene);
-			myPlayer.vacuum = null;
-			controlsEvent.set("isVacuum", false);*/
-		//default:
-			//console.log(e.keyCode);
-	}
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+        case 73:
+        case 74:
+        case 75:
+        case 76:
+              keyMoveReset();
+              break;
+        }
 }
