@@ -7,8 +7,8 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 27,
-	 MODELS_NEEDED = 11,
+var SCRIPTS_NEEDED = 30,
+	 MODELS_NEEDED = 14,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -27,6 +27,9 @@ var scripts = [
 	["worldstate.js", "text/javascript", null], 
 	["critter.js", "text/javascript", null], 
 	["environment.js", "text/javascript", null], 
+	["battery.js", "text/javascript", null], 
+	["soap.js", "text/javascript", null], 
+	["butter.js", "text/javascript", null], 
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
@@ -80,7 +83,12 @@ var models = {
 		//[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
 	food : [
-	]
+	],
+    items : [
+        [null, 'battery', 'battery.obj', 'battery.mtl', 0.07],
+        [null, 'soap', 'soap.obj', 'soap.mtl', 0.07],
+        [null, 'butter', 'butter.obj', 'butter.mtl', 0.07]
+    ]
 };
 
 var animations = {

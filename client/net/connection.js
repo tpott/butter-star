@@ -147,9 +147,8 @@ Connection.prototype._onmessage = function(buf) {
   }
     if ('items' in world) {
         for (var i = 0; i < world.items.length; i++) {
-            if (world.items[i].name == "battery") {
-                console.log("client recieved battery!");
-            }
+            notifyBar.addMessage(world.items[i].name + " spawned!");
+            myWorldState.spawnItem(world.items[i].name, world.items[i].position);
         }
     }
 	if ('misc' in world) {

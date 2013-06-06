@@ -27,6 +27,7 @@ var WorldState = function() {
   this.critters = {};
   this.environments = {};
   this.foods = {};
+  this.items = {};
 }
 
 /**
@@ -63,6 +64,28 @@ WorldState.prototype.add = function(object) {
 
 WorldState.prototype.handleUpdatedTime = function(time) {
     gameTimer.update(time);
+}
+
+WorldState.prototype.spawnItem = function(name, position) {
+    // if item still exists
+    if (this.items[name] != null) {
+        scene.remove(this.items[name].mesh);
+    }
+    if (name == "battery") {
+        var battery = new Battery(position);
+        this.items[name] = battery; 
+        scene.add(battery.mesh);
+    } else if (name == "soap") {
+        var soap = new Soap(position);
+        this.items[name] = soap;
+        scene.add(soap.mesh);
+    } else if (name == "butter") {
+        var butter = new Butter(position);
+        this.items[name] = butter;
+        scene.add(butter.mesh);
+    } else {
+        console.log("ERROR: unknown item name recieved from server");
+    }
 }
 
 WorldState.prototype.addPlayer = function(p) {

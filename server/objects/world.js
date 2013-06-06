@@ -13,6 +13,8 @@ var Critter = require('./critter.js');
 var Environment = require('./environment.js');
 var Food = require('./food.js');
 var Battery = require('./battery.js');
+var Soap = require('./soap.js');
+var Butter = require('./butter.js');
 var randomPosition = require('./random.js').randomPosition;
 
 /**
@@ -139,12 +141,29 @@ World.prototype.spawnCritters = function(numCritters) {
 World.prototype.spawnBattery = function() {
     var battery = new Battery();
     battery.position = randomPosition();
+    battery.position.y = 1;
     battery.mesh.matrixWorld.makeTranslation(battery.position.x, 
                                              battery.position.y,
                                              battery.position.z);
     this.items[battery.name] = battery;
-    console.log("server spawned a battery");
-    //TODO: add to notification updateWorld list
+}
+World.prototype.spawnSoap = function() {
+    var soap = new Soap();
+    soap.position = randomPosition();
+    soap.position.y = 1;
+    soap.mesh.matrixWorld.makeTranslation(soap.position.x, 
+                                          soap.position.y,
+                                          soap.position.z);
+    this.items[soap.name] = soap;
+}
+World.prototype.spawnButter = function() {
+    var butter = new Butter();
+    butter.position = randomPosition();
+    butter.position.y = 1;
+    butter.mesh.matrixWorld.makeTranslation(butter.position.x, 
+                                            butter.position.y,
+                                            butter.position.z);
+    this.items[butter.name] = butter;
 }
 
 World.prototype.enviroContains = function(pos) {

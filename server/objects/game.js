@@ -45,8 +45,19 @@ function Game(server) {
 	setInterval(serverTick, 1000 / self.ticks);
     
     function randomItemDrop() {
-        setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
-        self.world.spawnBattery();
+        //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
+        setTimeout(randomItemDrop, 10000);
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
+                self.world.spawnBattery();
+                break;
+            case 1:
+                self.world.spawnSoap();
+                break;
+            case 2: 
+                self.world.spawnButter();
+                break;
+        }
     }
     //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
     setTimeout(randomItemDrop, 10000);
