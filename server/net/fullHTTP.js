@@ -146,6 +146,14 @@ var files = [
   ['bunny_texture.png', "", client + 'models/bunny_texture.png', 'image/png'],
   ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
 
+  // items
+  ['battery.obj', "", client + 'models/battery.obj', 'text/plain'],
+  ['battery.mtl', "", client + 'models/battery.mtl', 'text/text'],
+  ['soap.obj', "", client + 'models/soap.obj', 'text/plain'],
+  ['soap.mtl', "", client + 'models/soap.mtl', 'text/text'],
+  ['butter.obj', "", client + 'models/soap.obj', 'text/plain'],
+  ['butter.mtl', "", client + 'models/soap.mtl', 'text/text'],
+
   // yixin
 	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
   ['yixin_cube.obj', "", client + 'objects/yixin/yixin_cube.obj', 'text/plain'],
