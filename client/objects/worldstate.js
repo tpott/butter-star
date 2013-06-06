@@ -67,10 +67,9 @@ WorldState.prototype.handleUpdatedTime = function(time) {
 }
 
 WorldState.prototype.spawnItem = function(name, position) {
-    // if item still exists
-    if (this.items[name] != null) {
-        scene.remove(this.items[name].mesh);
-    }
+    // make sure only one of each item
+    this.deleteItem(name);
+
     if (name == "battery") {
         var battery = new Battery(position);
         this.items[name] = battery; 
@@ -85,6 +84,13 @@ WorldState.prototype.spawnItem = function(name, position) {
         scene.add(butter.mesh);
     } else {
         console.log("ERROR: unknown item name recieved from server");
+    }
+}
+
+WorldState.prototype.deleteItem = function(name) {
+    if (this.items[name] != null) {
+        scene.remove(this.items[name].mesh);
+        this.items[name] = null;
     }
 }
 

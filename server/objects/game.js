@@ -46,18 +46,20 @@ function Game(server) {
     
     function randomItemDrop() {
         //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
-        setTimeout(randomItemDrop, 10000);
+        setTimeout(randomItemDrop, 20000);
+        var item_name;
         switch (Math.floor(Math.random() * 3)) {
             case 0:
-                self.world.spawnBattery();
+                item_name = "battery";
                 break;
             case 1:
-                self.world.spawnSoap();
+                item_name = "soap";
                 break;
             case 2: 
-                self.world.spawnButter();
+                item_name = "butter";
                 break;
         }
+        self.world.spawnItem(item_name);
     }
     //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
     setTimeout(randomItemDrop, 10000);
@@ -232,7 +234,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
         bun : [],
 		misc : [],
         timer : [],
-        items: []
+        newItems: [],
+        delItems: []
 	};
 
 	var updates = Object.keys(worldUpdate).length;
@@ -363,16 +366,28 @@ Game.prototype.sendUpdatesToAllClients = function() {
     updates--;
   }
   
-    for (itemName in this.world.items) {
+    for (itemName in this.world.newItems) {
         var itemObj = {
             name: itemName,
             position: this.world.items[itemName].position
         };
-        worldUpdate.items.push(itemObj);
+        worldUpdate.newItems.push(itemObj);
     }
     
-    if (worldUpdate.items.length == 0) {
-        delete worldUpdate.items;
+    if (worldUpdate.newItems.length == 0) {
+        delete worldUpdate.newItems;
+        updates--;
+    }
+
+    for (itemName in this.world.delItems) {
+        var itemObj = {
+            name: itemName,
+        };
+        worldUpdate.delItems.push(itemObj);
+    }
+    
+    if (worldUpdate.delItems.length == 0) {
+        delete worldUpdate.delItems;
         updates--;
     }
 

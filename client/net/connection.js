@@ -145,10 +145,16 @@ Connection.prototype._onmessage = function(buf) {
       myWorldState.critters[world.bun[i].id].updateHP(world.bun[i].hp);
     }
   }
-    if ('items' in world) {
-        for (var i = 0; i < world.items.length; i++) {
-            notifyBar.addMessage(world.items[i].name + " spawned!");
-            myWorldState.spawnItem(world.items[i].name, world.items[i].position);
+    if ('newItems' in world) {
+        for (var i = 0; i < world.newItems.length; i++) {
+            notifyBar.addMessage(world.newItems[i].name + " spawned!");
+            myWorldState.spawnItem(world.newItems[i].name, world.newItems[i].position);
+        }
+    }
+    if ('delItems' in world) {
+        for (var i = 0; i < world.delItems.length; i++) {
+            notifyBar.addMessage(playername + " acquired " + world.delItems[i].name + "!");
+            myWorldState.deleteItem(world.delItems[i].name);
         }
     }
 	if ('misc' in world) {

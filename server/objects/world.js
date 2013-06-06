@@ -41,7 +41,8 @@ function World() {
   this.newCollidables = []; // all newly created collidables
   this.setCollidables = []; // all collidables that had state change
   this.delCollidables = []; // all deleted collidabls
-
+  this.newItems = [];
+  this.delItems = [];
   this.miscellaneous = []; // Currently holds broadcast messages to all players
 
   // needed for logic
@@ -138,32 +139,26 @@ World.prototype.spawnCritters = function(numCritters) {
   }
 };
 
-World.prototype.spawnBattery = function() {
-    var battery = new Battery();
-    battery.position = randomPosition();
-    battery.position.y = 1;
-    battery.mesh.matrixWorld.makeTranslation(battery.position.x, 
-                                             battery.position.y,
-                                             battery.position.z);
-    this.items[battery.name] = battery;
-}
-World.prototype.spawnSoap = function() {
-    var soap = new Soap();
-    soap.position = randomPosition();
-    soap.position.y = 1;
-    soap.mesh.matrixWorld.makeTranslation(soap.position.x, 
-                                          soap.position.y,
-                                          soap.position.z);
-    this.items[soap.name] = soap;
-}
-World.prototype.spawnButter = function() {
-    var butter = new Butter();
-    butter.position = randomPosition();
-    butter.position.y = 1;
-    butter.mesh.matrixWorld.makeTranslation(butter.position.x, 
-                                            butter.position.y,
-                                            butter.position.z);
-    this.items[butter.name] = butter;
+World.prototype.spawnItem = function(name) {
+    var item;
+    switch (name) {
+        case "battery":
+            item = new Battery();
+            break;
+        case "soap":
+            item = new Soap();
+            break;
+        case "butter":
+            item = new Butter();
+            break;
+    }
+    item.position = randomPosition();
+    item.position.y = 1;
+    item.mesh.matrixWorld.makeTranslation(item.position.x, 
+                                          item.position.y,
+                                          item.position.z);
+    this.items[item.name] = item;
+    this.newItems[item.name] = item;
 }
 
 World.prototype.enviroContains = function(pos) {
@@ -219,7 +214,8 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
-  this.items = [];
+  this.newItems = [];
+  this.delItems = [];
   this.miscellaneous = [];
 };
 
