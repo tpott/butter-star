@@ -32,9 +32,9 @@ function random(length) {
  */
 function randomPosition() {
 	return new THREE.Vector4(
-			Math.floor(Math.random() * 80 - 40),
+			Math.floor(Math.random() * 100 - 50),
 			4, 
-			Math.floor(Math.random() * 80 - 40),
+			Math.floor(Math.random() * 100 - 50),
 			1
 			);
 }
