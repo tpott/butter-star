@@ -30,4 +30,6 @@ var Critter = function(critterObj) {
 
 Critter.prototype.updateHP = function(hp) {
   this.hp = hp;
+  var mesh_scale = Math.max(0.01 * this.hp, 0.08);
+  this.mesh.scale.set(mesh_scale, mesh_scale, mesh_scale);
 };

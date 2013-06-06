@@ -269,7 +269,9 @@ function dynamic(server, request) {
  */
 function staticFile(server, files, request) {
 	var response = {
-		head : {},
+		head : {
+			'Last-Modified' : server.start
+		},
 		found : false,
 		body : '',
 		end : ''
@@ -296,6 +298,8 @@ function staticFile(server, files, request) {
 /**
  * Send the response-like object if it was filled out and return true, 
  * otherwise return false and do nothing
+ * If its a static response, the responseObj.head should have the
+ * Last-Modified field set
  */
 function sendResponse(responseObj, response) {
 	if ('Location' in responseObj.head) {
@@ -320,6 +324,12 @@ function sendResponse(responseObj, response) {
 	}
 }
 
+function notModified(response) {
+	response.writeHead(304, {});
+	response.end();
+	return;
+}
+
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
@@ -336,21 +346,29 @@ var Server = function(config) {
 	this.game_history = [];
 	this.ngame_history = 0;
 
+	this.start = Date.now();
+
 	this.initFiles(config);
 }
 
-Server.prototype.requestHandler = function(server) {
+Server.prototype.requestHandler = function() {
+	var self = this;
 	return function (request, response) {
 
-		var potentialResponse = dynamic(server, request);
+		var potentialResponse = dynamic(self, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			sendResponse(potentialResponse, response, false);
 			return;
 		}
 
-		potentialResponse = staticFile(server, files, request);
+		potentialResponse = staticFile(self, files, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			var lastModified = parseInt(request.headers['if-modified-since']);
+			if (lastModified >= self.start) {
+				notModified(response);
+				return;
+			}
+			sendResponse(potentialResponse, response, true);
 			return;
 		}
 

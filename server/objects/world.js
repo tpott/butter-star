@@ -208,6 +208,8 @@ World.prototype.applyStates = function() {
         var critters = this.players[id].doVacuum(this.critters);
         for (var cid in critters) {
 			critters[cid].hp--;
+            var new_scale = Math.max(0.01 * critters[cid].hp, 0.08);
+            critters[cid].mesh.scale.set(new_scale, new_scale, new_scale);
 			if(critters[cid].hp <= 0)
 			{
             	this.removeCritter(critters[cid]);
