@@ -54,10 +54,33 @@ var Player = function(playerObj) {
     this.vacAngleY = 0;
 	this.plusOne = [];
 	this.billboard = [];
-	this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
-  // TODO this should be on the server side?
+	this.critters = [];
+	this.critterHP = [];
+	this.numbers = [];
+	
+	//this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
+	//this.mSprite = THREE.ImageUtils.loadTexture('minusone.png');
+	this.initTextures();  
+// TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
+};
+
+Player.prototype.initTextures = function()
+{
+	
+	this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
+	this.mSprite = THREE.ImageUtils.loadTexture('minusone.png');
+	this.numbers[0] = THREE.ImageUtils.loadTexture('zero.png');
+	this.numbers[1] = THREE.ImageUtils.loadTexture('one.png');
+	this.numbers[2] = THREE.ImageUtils.loadTexture('two.png');
+	this.numbers[3] = THREE.ImageUtils.loadTexture('three.png');
+	this.numbers[4] = THREE.ImageUtils.loadTexture('four.png');
+	this.numbers[5] = THREE.ImageUtils.loadTexture('five.png');
+	this.numbers[6] = THREE.ImageUtils.loadTexture('six.png');
+	this.numbers[7] = THREE.ImageUtils.loadTexture('seven.png');
+	this.numbers[8] = THREE.ImageUtils.loadTexture('eight.png');
+	this.numbers[9] = THREE.ImageUtils.loadTexture('nine.png');
 };
 
 Player.prototype.setAnimate = function() {
@@ -217,4 +240,49 @@ Player.prototype.plusOneAnimation = function()
 			delete this.plusOne[id];
 		}
 	}
+};
+Player.prototype.critterHealth = function(critters)
+{
+	
+	for(id in critters)
+	{
+		//init critter table
+		if(this.critters[id] == null)
+		{
+			
+			this.critters[id] = critters[id].hp;
+			var position = critters[id].position.clone();
+			position.y += 3;
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(position);
+			var material = new THREE.ParticleBasicMaterial(
+			{
+				size: 2,
+				map: this.numbers[9],
+				transparent: true
+			});
+			var particle = new THREE.ParticleSystem(geometry,material);
+			scene.add(particle);
+			this.critterHP[id] = particle;	
+			continue;
+		}
+		//update position 
+		if(this.critters[id] == critters[id].hp)
+		{	
+			var position = critters[id].position.clone();
+			position.y += 3;
+			this.critterHP[id].geometry.vertices[0] = position;
+			this.critterHP[id].geometry.verticesNeedUpdate = true;	
+			continue;
+		}
+		else
+		{
+			//show hp and update hp	
+			this.critters[id] = critters[id].hp;
+			var value = this.critters[id] % 10;
+			this.critterHP[id].material.map = this.numbers[value];
+			var tens = this.critters[id]/10;	
+		}
+	}
+	
 };

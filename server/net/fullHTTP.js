@@ -47,6 +47,17 @@ var files = [
 	['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
 		
 
+	['zero.png', "", client + 'imgs/zero.png', 'image/png'],
+	['one.png', "", client + 'imgs/one.png', 'image/png'],
+	['two.png', "", client + 'imgs/two.png', 'image/png'],
+	['three.png', "", client + 'imgs/three.png', 'image/png'],
+	['four.png', "", client + 'imgs/four.png', 'image/png'],
+	['five.png', "", client + 'imgs/five.png', 'image/png'],
+	['six.png', "", client + 'imgs/six.png', 'image/png'],
+	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
+	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
+	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
+
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
 	['connection.js', "", client + 'net/connection.js', 'text/javascript'],

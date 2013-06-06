@@ -150,6 +150,7 @@ function updateAnimations() {
 	}
     if (myPlayer != null) {
 	    myPlayer.plusOneAnimation();
+		myPlayer.critterHealth(myWorldState.critters);
     }
 }
 
