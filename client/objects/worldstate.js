@@ -201,7 +201,6 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].state = update.state;
             this.players[id].radius = update.radius;
             if (this.players[id].nametag.name != update.name) { 
-                console.log("updating name from " + this.players[id].nametag.name + " to " + update.name);
                 this.players[id].setName(update.name);
             }
             this.players[id].updateNameLocation();

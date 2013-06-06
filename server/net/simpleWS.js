@@ -84,7 +84,6 @@ Server.prototype._newSocket = function(socket) {
 		} else if (clientData.name) {
             // set name
             player.setName(clientData.name);
-            console.log(clientData.name);
         }
 		else {
 			console.log("Bad data from client");

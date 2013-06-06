@@ -76,7 +76,6 @@ var Player = function(playerObj) {
 Player.prototype.setName = function(name) {
     this.nametag.hasChanged = true;
     this.nametag.name = name;
-    console.log("nametag is now " + this.nametag.name);
 }
 
 Player.prototype.setAnimate = function() {

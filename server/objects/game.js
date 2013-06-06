@@ -244,9 +244,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
 		var id = setCollidables[i];
-        if (this.world.collidables[id].name) {
-            console.log("name getting sent from server: " + this.world.collidables[id].name);
-        }
 		var colObj = {
 			id : id,
             name : this.world.collidables[id].name,

@@ -96,7 +96,6 @@ for (var attr in obj) {
 
 function setName() {
     myName = $("#nametagbox").val();
-    console.log("GOT " + myName + " FROM THE CLICK");
     connection.sendName(myName);
 }
 

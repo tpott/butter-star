@@ -39,8 +39,6 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onclose = this._onclose;
     this.socket.onmessage = this._onmessage;
 	var socket = this.socket;
-
-
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
 			console.log("Connection is not ready yet!");
