@@ -1,3 +1,8 @@
+/*
+ * CSS for the game
+ * @author Prita Priscilla Hasjim
+ */
+
 html, body {
 	width: 100%;
 	height: 100%;
@@ -10,14 +15,109 @@ body {
 	font-family: arial;
 }
 
-/* LOADING TEXT */
+/* GUI TEXT */
 h1 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #3b3b3b,
+	0px 1px 1px #3b3b3b,
+	1px 0px 1px #3b3b3b,
+	0px -1px 1px #3b3b3b;
+}
+
+/* TIMER NUMBER TEXT */
+h2 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-size: 45px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #94dffe,
+	0px 1px 1px #94dffe,
+	1px 0px 1px #94dffe,
+	0px -1px 1px #94dffe;
+}
+
+/* BUNNY KILL TEXT */
+h3 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 50px;
+    background: -webkit-linear-gradient(top, #29bffe 0%, #d4f2ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 5px white;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* NOTIFICATIONS TEXT */
+h4 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    background: -webkit-linear-gradient(top, #feba29 0%, #ffedc8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px white;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* FOR OPTIONS TEXT */
+h5 {
     font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
     font-size: 20px;
     font-weight: bold;
     margin: 0 auto;
     text-align: center;
-    color: #feba29;
+    color: #fff;
+}
+
+/* MENU TITLE TEXT */
+h6 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 80px;
+    background: -webkit-linear-gradient(top, #feba29 0%, #ffedc8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px #feba29;
+    margin: 0 auto;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+#scoreText {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #3b3b3b;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #fff,
+	0px 1px 1px #fff,
+	1px 0px 1px #fff,
+	0px -1px 1px #fff;
+
+}
+
+#scoreNumb {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #3b3b3b;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #fff,
+	0px 1px 1px #fff,
+	1px 0px 1px #fff,
+	0px -1px 1px #fff;
 }
 
 #blocker {
@@ -76,6 +176,84 @@ h1 {
 	border: 5px solid #fff;
 }
 
+#statusBox {
+	position: absolute;
+	text-align: center;
+	display: inline;
+  	right: 10px;
+ 	top: 10px;
+	width: 200px;
+	height: 170px;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+ 	background: rgba(100, 100, 100, 0.2);
+ 	-moz-border-radius: 10px;
+ 	-webkit-border-radius: 10px;
+	padding: 10px;
+}
+
+#notify {
+	position: absolute;
+	text-align: center;
+	display: inline;
+	top: 10px;
+  	left: 50%;
+	margin-left: -450px;
+	width: 900px;
+ 	background: transparent;
+	padding: 10px;
+}
+
+/* TEXTAREA */
+textarea {
+	background-color: #fff;
+	font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    	font-size: 15px;
+	text-align: center;
+	color: #3b3b3b;
+    	border: 2px solid #9f9f9f;
+    	border-radius: 10px; 
+    	-moz-border-radius: 10px; 
+    	-webkit-border-radius: 10px;
+	width: 280px;
+	height: 30px;
+	padding: 5px;
+}
+
+#optionsStuff {
+	width: 500px;
+	left: 50%;
+	top: 20px;
+}
+
+/* HIGHLIGHT STUFF */
+::selection {
+    background: #dbf5ff; /* Safari */
+}
+::-moz-selection {
+    background: #dbf5ff; /* Firefox */
+}
+
 .ui-progressbar-value {
 	background: -webkit-linear-gradient(top, #29bffe 0%, #d4f2ff 100%);
+}
+
+.menuOpt {
+    background-color: #0b82b4;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    padding: 10px;
+    width: 300px;
+    height: auto;
+    margin-left: 90px;
+    margin-bottom: 10px;
+}
+
+div.menuOpt:hover {
+    background-color: #29bffe;
+    -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
+    -moz-transition: all 0.1s ease-out; /* Firefox 4+ */
+    -ms-transition: all 0.1s ease-out; /* IE10+ */
+    -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
+    transition: all 0.1s ease-out;
 }

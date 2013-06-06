@@ -45,7 +45,7 @@ function Game(server) {
 	setInterval(serverTick, 1000 / self.ticks);
 
 	this.handler.emit('newgame');
-
+    this.start = Date.now();
 }
 
 /**

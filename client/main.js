@@ -106,11 +106,13 @@ function update() {
 	// begin camera update
 	//   update camera position
 	camera.position = myPlayer.position.clone().sub(
-			myPlayer.orientation.clone().multiplyScalar(8))
-	//camera.position.add(new THREE.Vector4(7, 3, 0, 0));
+			myPlayer.orientation.clone().multiplyScalar(15))
+	//console.log("camera pos:" + JSON.stringify(camera.position));
+  camera.position.add(new THREE.Vector3(0, 5, 0));
+  //console.log(camera.position);
 	
 	//   update camera orientation
-	camera.lookAt( myPlayer.position );
+	camera.lookAt( myPlayer.position.clone().add(new THREE.Vector3(0,5,0) ));
 }
 
 function startVacuumSound() {
@@ -184,7 +186,7 @@ function initLights() {
     slight.castShadow = true;
     slight.shadowBias = .0001;
     slight.shadowDarkness = .5;
-    slight.shadowCameraVisible = true;
+    //slight.shadowCameraVisible = true;
 
     slight.shadowMapHeight = 2048;
     slight.shadowMapWidth = 2048;
@@ -220,7 +222,8 @@ function initSounds()
 //initialize the fps counter
 function initStats() {
 	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0px';
+	stats.domElement.style.bottom = '0px';
+	stats.domElement.style.right = '0px';
 	stats.domElement.style.zIndex = 100;
 }
 

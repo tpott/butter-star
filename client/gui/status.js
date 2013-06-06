@@ -8,15 +8,8 @@
 function StatusBox() {
   this.statusBox = $('<div id="statusBox" />');
   this.statusBox.addClass('gui');
-  this.statusBox.css('display', 'inline');
-  this.statusBox.css('position', 'absolute');
-  this.statusBox.css('right', '10px');
-  this.statusBox.css('top', '10px');
-  this.statusBox.css('width', '200px');
-  this.statusBox.css('height', '200px');
 
   // Add status bars and vacuumed bunny counter
-  // this.addFoodBar();
   this.addVacuumChargeBar();
   this.addKillCounter();
 
@@ -28,26 +21,17 @@ function StatusBox() {
   $('body').append(this.statusBox);
 };
 
-/* CREATE STATUS ELEMENTS */
-/*StatusBox.prototype.addFoodBar = function () {
-  this.foodBar = $('<div id="foodBar" />');
-  this.foodBar.addClass('gui');
-  this.foodBar.progressbar({value: 0});
-
-  this.statusBox.append(this.foodBar);
-};
-*/
-
 StatusBox.prototype.addVacuumChargeBar = function () {
   this.vacuumChargeBar = $('<div id="vacuumChargeBar" />');
   this.vacuumChargeBar.progressbar({value: 0});
-
+  
+  this.statusBox.html('<h1>vacuum charge</h1>');
   this.statusBox.append(this.vacuumChargeBar);
 };
 
 StatusBox.prototype.addKillCounter = function () {
   this.killCounter =
-      $('<h1 id="killCounter" align="right"></h1>');
+      $('<div id="killCounter"></div>');
   this.killCounter.addClass('gui');
 
   this.statusBox.append(this.killCounter);
@@ -64,5 +48,5 @@ StatusBox.prototype.updateVacuumCharge = function(value) {
 };
 
 StatusBox.prototype.updateKillCounter = function(value) {
-  this.killCounter.text(value);
+  this.killCounter.html('<br><h1>bunnies sucked</h1> <h3>' + value + '</h3>');
 };

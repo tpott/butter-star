@@ -57,6 +57,7 @@ var files = [
 	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
 	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
 	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
+        ['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
