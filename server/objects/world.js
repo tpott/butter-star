@@ -12,6 +12,7 @@ var ButterOBJLoader = require('./OBJLoader.js');
 var Critter = require('./critter.js');
 var Environment = require('./environment.js');
 var Food = require('./food.js');
+var Battery = require('./battery.js');
 var randomPosition = require('./random.js').randomPosition;
 
 /**
@@ -27,6 +28,7 @@ function World() {
   this.players = {};
   this.critters = {};
   this.foods = {};
+  this.items = {};
 
   /* @note We need these counters because the hashes don't have lengths */
 	this.nplayers = 0;
@@ -134,6 +136,17 @@ World.prototype.spawnCritters = function(numCritters) {
   }
 };
 
+World.prototype.spawnBattery = function() {
+    var battery = new Battery();
+    battery.position = randomPosition();
+    battery.mesh.matrixWorld.makeTranslation(battery.position.x, 
+                                             battery.position.y,
+                                             battery.position.z);
+    this.items[battery.name] = battery;
+    console.log("server spawned a battery");
+    //TODO: add to notification updateWorld list
+}
+
 World.prototype.enviroContains = function(pos) {
 	return true;
 }
@@ -187,7 +200,7 @@ World.prototype.resetUpdateStateLists = function() {
   this.newCollidables = [];
   this.setCollidables = [];
   this.delCollidables = [];
-
+  this.items = [];
   this.miscellaneous = [];
 };
 

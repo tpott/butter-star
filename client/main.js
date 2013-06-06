@@ -57,7 +57,7 @@ var gameid = document.URL.replace(/.*\//,'');
 
 // dont iniailize until main()
 var myWorldState = null,
-	 camera = null;
+	 camera = null,
 	 connection = null;
 
 // each key press will append something here,

@@ -145,6 +145,13 @@ Connection.prototype._onmessage = function(buf) {
       myWorldState.critters[world.bun[i].id].updateHP(world.bun[i].hp);
     }
   }
+    if ('items' in world) {
+        for (var i = 0; i < world.items.length; i++) {
+            if (world.items[i].name == "battery") {
+                console.log("client recieved battery!");
+            }
+        }
+    }
 	if ('misc' in world) {
 		// TODO
 		for (var i = 0; i < world.misc.length; i++) {

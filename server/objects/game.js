@@ -43,6 +43,13 @@ function Game(server) {
 		self.sendUpdatesToAllClients();
 	}
 	setInterval(serverTick, 1000 / self.ticks);
+    
+    function randomItemDrop() {
+        setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
+        self.world.spawnBattery();
+    }
+    //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
+    setTimeout(randomItemDrop, 10000);
 
 	this.handler.emit('newgame');
     this.start = Date.now();
@@ -211,9 +218,10 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		del : [],
         vac : [],
         kill : [],
-    bun : [],
+        bun : [],
 		misc : [],
-        timer : []
+        timer : [],
+        items: []
 	};
 
 	var updates = Object.keys(worldUpdate).length;
@@ -228,8 +236,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.new.push(colObj);
 	}
@@ -244,13 +252,13 @@ Game.prototype.sendUpdatesToAllClients = function() {
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
 		var id = setCollidables[i];
-		var colObj = {
+	  	var colObj = {
 			id : id,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.set.push(colObj);
 
@@ -343,6 +351,19 @@ Game.prototype.sendUpdatesToAllClients = function() {
     delete worldUpdate.bun;
     updates--;
   }
+  
+    for (itemName in this.world.items) {
+        var itemObj = {
+            name: itemName,
+            position: this.world.items[itemName].position
+        };
+        worldUpdate.items.push(itemObj);
+    }
+    
+    if (worldUpdate.items.length == 0) {
+        delete worldUpdate.items;
+        updates--;
+    }
 
 	worldUpdate.misc = this.world.miscellaneous; // list of broadcast messages
 	
