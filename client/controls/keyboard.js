@@ -59,6 +59,86 @@ var codemap = {
 	221 : ']',
 };
 
+/**
+ * Check if arrow key pressed and adds that to the mouse movement.
+ */
+var keyMoveXNeg = 0;
+var keyMoveXPos = 0;
+var keyMoveYNeg = 0;
+var keyMoveYPos = 0;
+var keyMoveRate = 0.10;
+var keyMoveInitial = 2;
+function keyMove() {
+  if (keyPresses.indexOf('LARRW') != -1 || keyPresses.indexOf('j') != -1) {
+    if (keyMoveXNeg == 0) { // initially move faster
+      keyMoveXNeg -= keyMoveInitial;
+    } else {
+      keyMoveXNeg -= keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('UARRW') != -1 || keyPresses.indexOf('i') != -1) {
+    if (keyMoveYPos == 0) { // initially move faster
+      keyMoveYPos -= keyMoveInitial;
+    } else {
+      keyMoveYPos -= keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('RARRW') != -1 || keyPresses.indexOf('l') != -1) {
+    if (keyMoveXPos == 0) { // initially move faster
+      keyMoveXPos += keyMoveInitial;
+    } else {
+      keyMoveXPos += keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('DARRW') != -1 || keyPresses.indexOf('k') != -1) {
+    if (keyMoveYNeg == 0) { // initially move faster
+      keyMoveYNeg += keyMoveInitial;
+    } else {
+      keyMoveYNeg += keyMoveRate;
+    }
+  }
+
+  // if opposing keys pressed, no camera movement
+  if ((keyPresses.indexOf('LARRW') != -1 || keyPresses.indexOf('j') != -1) &&
+      (keyPresses.indexOf('RARRW') != -1 || keyPresses.indexOf('l') != -1)) {
+    keyMoveXNeg = 0;
+    keyMoveXPos = 0;
+  }
+
+  if ((keyPresses.indexOf('UARRW') != -1 || keyPresses.indexOf('i') != -1) &&
+      (keyPresses.indexOf('DARRW') != -1 || keyPresses.indexOf('k') != -1)) {
+    keyMoveYNeg = 0;
+    keyMoveYPos = 0;
+  }
+
+  mouseMovement[0] += keyMoveXNeg + keyMoveXPos;
+  mouseMovement[1] += keyMoveYNeg + keyMoveYPos;
+}
+
+/**
+ * Handles mouse camera movement on key up.
+ */
+function keyMoveReset() {
+  if (keyPresses.indexOf('LARRW') == -1 && keyPresses.indexOf('j') == -1) {
+    keyMoveXNeg = 0;
+  }
+  
+  if (keyPresses.indexOf('UARRW') == -1 && keyPresses.indexOf('i') == -1) {
+    keyMoveYPos = 0;
+  }
+  
+  if (keyPresses.indexOf('RARRW') == -1 && keyPresses.indexOf('l') == -1) {
+    keyMoveXPos = 0;
+  } 
+  
+  if (keyPresses.indexOf('DARRW') == -1 && keyPresses.indexOf('k') == -1) {
+    keyMoveYNeg = 0;
+  }
+}
+
 /*
  * check for key pressed from the player
  */
@@ -75,7 +155,7 @@ function keyDown(e) {
 		case 18: */
 		case 27: 
 		case 32:
-		case 37:
+    case 37:
 		case 38:
 		case 39:
 		case 40:
@@ -97,7 +177,7 @@ function keyDown(e) {
 		case 70:
 		case 71:
 		case 72:
-		case 73:
+    case 73:
 		case 74:
 		case 75:
 		case 76:
@@ -122,7 +202,7 @@ function keyDown(e) {
 			// if the key is not already pressed
 			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
 				//console.log("'%s' down.", codemap[e.keyCode]);
-				keyPresses.push(codemap[e.keyCode]);
+			keyPresses.push(codemap[e.keyCode]);
 			}
 
 			// stops TAB from being handled in the default fashion
@@ -157,5 +237,26 @@ function keyUp(e) {
 		case keymap['f']:
 			toggleFullScreen();
 			break;
+<<<<<<< HEAD
+=======
+    case 37:
+    case 38:
+    case 39:
+    case 40:
+    case 73:
+    case 74:
+    case 75:
+    case 76:
+      keyMoveReset();
+      break;
+		// client send only once
+		/*case keymap['c']:
+			keyPresses.push(codemap[e.keyCode]);*/
+			/*myPlayer.vacuum.removeFromScene(scene);
+			myPlayer.vacuum = null;
+			controlsEvent.set("isVacuum", false);*/
+		//default:
+			//console.log(e.keyCode);
+>>>>>>> 693fc4ab74b61820a7dca2246f5b03c3816a3633
 	}
 }

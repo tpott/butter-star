@@ -47,16 +47,16 @@ OptionMenu.prototype.toggle = function() {
 	if (this.hidden) {
 		console.log('Showing options');
 
-		// TODO global from client/main.js
-		if (! scoreBoard.hidden) {
-			scoreBoard.toggle();
-		}
-
 		$('#options').show();
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '0.4');
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
+<<<<<<< HEAD
+=======
+		$('#scoreboard').css('opacity', '0.4');
+
+>>>>>>> 693fc4ab74b61820a7dca2246f5b03c3816a3633
 		this.hidden = false;
         disableKeyPresses = true;
 	}
@@ -67,6 +67,7 @@ OptionMenu.prototype.toggle = function() {
 		$('.game').css('opacity', '1.0');
 		$('#gameTimer').css('opacity', '1.0');
 		$('#statusBox').css('opacity', '1.0');
+		$('#scoreboard').css('opacity', '1.0');
 
 
 		this.hidden = true;

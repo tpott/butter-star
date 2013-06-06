@@ -124,12 +124,12 @@ World.prototype.spawnCritters = function(numCritters) {
 
 	 critter.position.copy(position);
      critter.mesh.position.copy(position);
-     critter.speed = Math.random() * (0.012 - 0.005) + 0.005; // number between 0.005 and 0.02
+     critter.speed = Math.random() * (0.015 - 0.005) + 0.005; // number between 0.005 and 0.02
      critter.rotation = Math.floor(Math.random() * 2); // 0 or 1
      critter.rotation_point = new THREE.Vector3(
-                                        Math.random() * 40 - 20,
+                                        Math.random() * 50 - 25,
                                         0,
-                                        Math.random() * 40 - 20);
+                                        Math.random() * 50 - 25);
      this.addCritter(critter);
   }
 };
@@ -208,6 +208,8 @@ World.prototype.applyStates = function() {
         var critters = this.players[id].doVacuum(this.critters);
         for (var cid in critters) {
 			critters[cid].hp--;
+            var new_scale = Math.max(0.01 * critters[cid].hp, 0.08);
+            critters[cid].mesh.scale.set(new_scale, new_scale, new_scale);
 			if(critters[cid].hp <= 0)
 			{
             	this.removeCritter(critters[cid]);

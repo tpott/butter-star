@@ -301,19 +301,12 @@ Player.prototype.getVacIntersectionObjs = function(critters) {
     var scalar = new THREE.Vector3().copy(vector);
     scalar.multiplyScalar(10);
     projected_center.addVectors(origin, scalar);
-    //projected_center.y = 0;
 
-    var p1 = generateCirclePoint(vector, projected_center, 1.5, 45.0  /*Math.PI / 180.0*/);
-    var p2 = generateCirclePoint(vector, projected_center, 1.5, 135.0 /* Math.PI / 180.0*/);
-    var p3 = generateCirclePoint(vector, projected_center, 1.5, 225.0 /* Math.PI / 180.0*/);
-    var p4 = generateCirclePoint(vector, projected_center, 1.5, 315.0 /* Math.PI / 180.0*/);
-
-    /*console.log("center:");
-    console.log(projected_center);
-    console.log(p1);
-    console.log(p2);
-    console.log(p3);
-    console.log(p4);*/
+    //radians..
+    var p1 = generateCirclePoint(vector, projected_center, 0.5, 0.0);
+    var p2 = generateCirclePoint(vector, projected_center, 0.5, 90.0 * Math.PI / 180.0);
+    var p3 = generateCirclePoint(vector, projected_center, 0.5, 180.0 * Math.PI / 180.0);
+    var p4 = generateCirclePoint(vector, projected_center, 0.5, 270.0 * Math.PI / 180.0);
     
     p1.sub(origin);
     p1.normalize();
@@ -528,6 +521,8 @@ Player.prototype.rotate = function(mouse) {
 	// variables needed for vertical rotation
 	var orientation3 = new THREE.Vector3().copy(this.orientation);
 	var yaxis = new THREE.Vector3(0, 1, 0);
+  
+  //console.log(orientation3);
 
 	// vertical rotation math
 	var yRotateAxis = new THREE.Vector3().crossVectors(
@@ -545,10 +540,27 @@ Player.prototype.rotate = function(mouse) {
 	var rot = xRotationMat.multiply(yRotationMat);
 
 	//this.orientation = rot.multiply(this.orientation);
-	this.orientation.applyMatrix4(rot);
+	var newOrientation = new THREE.Vector4().copy(this.orientation);
+  newOrientation.applyMatrix4(rot);
+ 
+  this.moved = true;
+
+  //this.orientation.applyMatrix4(rot);
+  if(newOrientation.y >= .1)
+  {
+      //console.log("stop moving down");
+      return;
+  }
+  if(newOrientation.y <= -.5)
+  {
+      //console.log("stop moving up");
+      return;
+  }
+  
+  this.orientation = newOrientation;
 
 	// necessary for graphics to be updated
-	this.moved = true;
+	//this.moved = true;
 };
 
 /**

@@ -54,9 +54,16 @@ var Player = function(playerObj) {
     this.isVacuum = false;
     this.vacAngleY = 0;
 	this.plusOne = [];
+	this.critterID = [];
 	this.billboard = [];
-	this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
-  // TODO this should be on the server side?
+	this.critters = [];
+	this.critterHP = [];
+	this.numbers = [];
+	
+	//this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
+	//this.mSprite = THREE.ImageUtils.loadTexture('minusone.png');
+	this.initTextures();  
+// TODO this should be on the server side?
   this.updateVacuumCharge(100);
   this.updateKillCounter(0);
 
@@ -77,6 +84,29 @@ Player.prototype.setName = function(name) {
     this.nametag.hasChanged = true;
     this.nametag.name = name;
 }
+
+Player.prototype.initTextures = function()
+{
+	
+	this.pSprite = THREE.ImageUtils.loadTexture('plusone.png');
+	this.mSprite = THREE.ImageUtils.loadTexture('minusone.png');
+	this.numbers[0] = THREE.ImageUtils.loadTexture('zero.png');
+	this.numbers[1] = THREE.ImageUtils.loadTexture('one.png');
+	this.numbers[2] = THREE.ImageUtils.loadTexture('two.png');
+	this.numbers[3] = THREE.ImageUtils.loadTexture('three.png');
+	this.numbers[4] = THREE.ImageUtils.loadTexture('four.png');
+	this.numbers[5] = THREE.ImageUtils.loadTexture('five.png');
+	this.numbers[6] = THREE.ImageUtils.loadTexture('six.png');
+	this.numbers[7] = THREE.ImageUtils.loadTexture('seven.png');
+	this.numbers[8] = THREE.ImageUtils.loadTexture('eight.png');
+	this.numbers[9] = THREE.ImageUtils.loadTexture('nine.png');
+	this.numbers[10] = THREE.ImageUtils.loadTexture('zero_left.png');
+	this.numbers[11] = THREE.ImageUtils.loadTexture('one_left.png');
+	this.numbers[12] = THREE.ImageUtils.loadTexture('two_left.png');
+	this.numbers[13] = THREE.ImageUtils.loadTexture('three_left.png');
+	this.numbers[14] = THREE.ImageUtils.loadTexture('four_left.png');
+	this.numbers[15] = THREE.ImageUtils.loadTexture('five_left.png');
+};
 
 Player.prototype.setAnimate = function() {
 	scene.remove(this.mesh);
@@ -292,7 +322,85 @@ Player.prototype.plusOneAnimation = function()
 		{
 			scene.remove(this.billboard[id]);
 			delete this.billboard[id];
+			delete this.critterID[id];
 			delete this.plusOne[id];
+			
+		}
+		if(this.critterID[id] == null)
+		{
+			this.critterID[id] = true;
+			if(this.critterHP[id] != null)
+			{
+				scene.remove(this.critterHP[id].single);
+				scene.remove(this.critterHP[id].tens);
+				delete this.critterHP[id];
+				delete this.critters[id];
+			}
 		}
 	}
+};
+Player.prototype.critterHealth = function(critters)
+{
+	
+	for(id in critters)
+	{
+		//init critter table
+		if(this.critters[id] == null)
+		{
+			
+			this.critters[id] = critters[id].hp;
+			var position = critters[id].position.clone();
+			position.y += 3;
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(position);
+			var material = new THREE.ParticleBasicMaterial(
+			{
+				size: 2,
+				map: this.numbers[0],
+				transparent: true
+			});
+			var particle = new THREE.ParticleSystem(geometry,material);
+			scene.add(particle);
+
+
+			var position = critters[id].position.clone();
+			position.y += 3;
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(position);
+			var material = new THREE.ParticleBasicMaterial(
+			{
+				size: 2,
+				map: this.numbers[13],
+				transparent: true
+			});
+			var particle2 = new THREE.ParticleSystem(geometry,material);
+			scene.add(particle2);
+			this.critterHP[id] = {tens: particle2 , single: particle};	
+			continue;
+		}
+		//update position 
+		if(this.critters[id] == critters[id].hp)
+		{	
+			var position = critters[id].position.clone();
+			position.y += 3;
+			this.critterHP[id].single.geometry.vertices[0] = position;
+			this.critterHP[id].tens.geometry.vertices[0] = position;
+			this.critterHP[id].single.geometry.verticesNeedUpdate = true;	
+			this.critterHP[id].tens.geometry.verticesNeedUpdate = true;
+			continue;
+		}
+		else
+		{
+			//show hp and update hp	
+			this.critters[id] = critters[id].hp;
+			
+			var value = this.critters[id] % 10;
+			this.critterHP[id].single.material.map = this.numbers[value];
+			
+			var tens = Math.floor(this.critters[id] / 10);
+			this.critterHP[id].tens.material.map = this.numbers[10+tens];	
+			
+		}
+	}
+	
 };

@@ -43,8 +43,31 @@ var files = [
 	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
 	['loading.gif', "", client + 'loading.gif', 'image/gif'],
 	['plusone.png', "", client + 'imgs/plusone.png', 'image/png'],
-        ['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
-        ['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
+    ['minusone.png',"", client + 'imgs/minusone.png', 'image/png'],
+	['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
+		
+
+	['zero.png', "", client + 'imgs/zero.png', 'image/png'],
+	['one.png', "", client + 'imgs/one.png', 'image/png'],
+	['two.png', "", client + 'imgs/two.png', 'image/png'],
+	['three.png', "", client + 'imgs/three.png', 'image/png'],
+	['four.png', "", client + 'imgs/four.png', 'image/png'],
+	['five.png', "", client + 'imgs/five.png', 'image/png'],
+	['six.png', "", client + 'imgs/six.png', 'image/png'],
+	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
+	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
+	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
+        
+	
+	['one_left.png', "", client + 'imgs/one_left.png', 'image/png'],
+
+	['zero_left.png', "", client + 'imgs/zero_left.png', 'image/png'],
+	['two_left.png', "", client + 'imgs/two_left.png', 'image/png'],
+	['three_left.png', "", client + 'imgs/three_left.png', 'image/png'],
+	['four_left.png', "", client + 'imgs/four_left.png', 'image/png'],
+	['five_left.png', "", client + 'imgs/five_left.png', 'image/png'],
+
+	['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
@@ -122,6 +145,14 @@ var files = [
   ['bunny.mtl', "", client + 'models/bunny.mtl', 'text/text'],
   ['bunny_texture.png', "", client + 'models/bunny_texture.png', 'image/png'],
   ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
+
+  // items
+  ['battery.obj', "", client + 'models/battery.obj', 'text/plain'],
+  ['battery.mtl', "", client + 'models/battery.mtl', 'text/text'],
+  ['soap.obj', "", client + 'models/soap.obj', 'text/plain'],
+  ['soap.mtl', "", client + 'models/soap.mtl', 'text/text'],
+  ['butter.obj', "", client + 'models/soap.obj', 'text/plain'],
+  ['butter.mtl', "", client + 'models/soap.mtl', 'text/text'],
 
   // yixin
 	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
@@ -246,7 +277,9 @@ function dynamic(server, request) {
  */
 function staticFile(server, files, request) {
 	var response = {
-		head : {},
+		head : {
+			'Last-Modified' : server.start
+		},
 		found : false,
 		body : '',
 		end : ''
@@ -273,6 +306,8 @@ function staticFile(server, files, request) {
 /**
  * Send the response-like object if it was filled out and return true, 
  * otherwise return false and do nothing
+ * If its a static response, the responseObj.head should have the
+ * Last-Modified field set
  */
 function sendResponse(responseObj, response) {
 	if ('Location' in responseObj.head) {
@@ -297,6 +332,12 @@ function sendResponse(responseObj, response) {
 	}
 }
 
+function notModified(response) {
+	response.writeHead(304, {});
+	response.end();
+	return;
+}
+
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
@@ -313,21 +354,29 @@ var Server = function(config) {
 	this.game_history = [];
 	this.ngame_history = 0;
 
+	this.start = Date.now();
+
 	this.initFiles(config);
 }
 
-Server.prototype.requestHandler = function(server) {
+Server.prototype.requestHandler = function() {
+	var self = this;
 	return function (request, response) {
 
-		var potentialResponse = dynamic(server, request);
+		var potentialResponse = dynamic(self, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			sendResponse(potentialResponse, response, false);
 			return;
 		}
 
-		potentialResponse = staticFile(server, files, request);
+		potentialResponse = staticFile(self, files, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			var lastModified = parseInt(request.headers['if-modified-since']);
+			if (lastModified >= self.start) {
+				notModified(response);
+				return;
+			}
+			sendResponse(potentialResponse, response, true);
 			return;
 		}
 
