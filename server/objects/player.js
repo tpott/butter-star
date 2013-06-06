@@ -297,19 +297,12 @@ Player.prototype.getVacIntersectionObjs = function(critters) {
     var scalar = new THREE.Vector3().copy(vector);
     scalar.multiplyScalar(10);
     projected_center.addVectors(origin, scalar);
-    //projected_center.y = 0;
 
-    var p1 = generateCirclePoint(vector, projected_center, 1.5, 45.0  /*Math.PI / 180.0*/);
-    var p2 = generateCirclePoint(vector, projected_center, 1.5, 135.0 /* Math.PI / 180.0*/);
-    var p3 = generateCirclePoint(vector, projected_center, 1.5, 225.0 /* Math.PI / 180.0*/);
-    var p4 = generateCirclePoint(vector, projected_center, 1.5, 315.0 /* Math.PI / 180.0*/);
-
-    /*console.log("center:");
-    console.log(projected_center);
-    console.log(p1);
-    console.log(p2);
-    console.log(p3);
-    console.log(p4);*/
+    //radians..
+    var p1 = generateCirclePoint(vector, projected_center, 1, 0.0);
+    var p2 = generateCirclePoint(vector, projected_center, 1, 90.0 * Math.PI / 180.0);
+    var p3 = generateCirclePoint(vector, projected_center, 1, 180.0 * Math.PI / 180.0);
+    var p4 = generateCirclePoint(vector, projected_center, 1, 270.0 * Math.PI / 180.0);
     
     p1.sub(origin);
     p1.normalize();
