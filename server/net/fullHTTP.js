@@ -43,8 +43,31 @@ var files = [
 	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
 	['loading.gif', "", client + 'loading.gif', 'image/gif'],
 	['plusone.png', "", client + 'imgs/plusone.png', 'image/png'],
-        ['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
-        ['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
+    ['minusone.png',"", client + 'imgs/minusone.png', 'image/png'],
+	['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
+		
+
+	['zero.png', "", client + 'imgs/zero.png', 'image/png'],
+	['one.png', "", client + 'imgs/one.png', 'image/png'],
+	['two.png', "", client + 'imgs/two.png', 'image/png'],
+	['three.png', "", client + 'imgs/three.png', 'image/png'],
+	['four.png', "", client + 'imgs/four.png', 'image/png'],
+	['five.png', "", client + 'imgs/five.png', 'image/png'],
+	['six.png', "", client + 'imgs/six.png', 'image/png'],
+	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
+	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
+	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
+        
+	
+	['one_left.png', "", client + 'imgs/one_left.png', 'image/png'],
+
+	['zero_left.png', "", client + 'imgs/zero_left.png', 'image/png'],
+	['two_left.png', "", client + 'imgs/two_left.png', 'image/png'],
+	['three_left.png', "", client + 'imgs/three_left.png', 'image/png'],
+	['four_left.png', "", client + 'imgs/four_left.png', 'image/png'],
+	['five_left.png', "", client + 'imgs/five_left.png', 'image/png'],
+
+	['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
