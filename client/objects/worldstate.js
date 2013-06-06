@@ -200,8 +200,11 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
             this.players[id].radius = update.radius;
+            if (this.players[id].nametag.name != update.name) { 
+                console.log("updating name from " + this.players[id].nametag.name + " to " + update.name);
+                this.players[id].setName(update.name);
+            }
             this.players[id].updateNameLocation();
-
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
             this.players[id].mesh.position.setY(update.position.y - update.radius);

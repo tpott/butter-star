@@ -32,7 +32,11 @@ function OptionMenu() {
 '<center><img src="controllers.png" width="450px"></center><br>' +
 '<h1>Psst! You can also press TAB to view other players\' scores!</h1>' ));
 
+    
+    //this.nickname = $('<form> <textarea name="nickname" cols="10" rows="1"> nickname </textarea> <input type ="button" onclick="setName()" value="Change it!"/> </form>');
+    this.nickname = $('<form> <input type="text" value="nickname"> <input type ="button" onclick="setName()" value="Change it!"/> </form>');
 	this.menu.append(this.title);
+    this.menu.append(this.nickname);
 	this.menu.append(this.list);
 
 	$('body').append(this.menu);

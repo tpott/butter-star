@@ -223,7 +223,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var id = newCollidables[i];
 		var colObj = {
 			id : id,
-            name : this.world.collidables[id].name,
 			type : this.world.collidables[id].type, 
 			model : this.world.collidables[id].model,
 			position : this.world.collidables[id].position,
@@ -245,8 +244,12 @@ Game.prototype.sendUpdatesToAllClients = function() {
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
 		var id = setCollidables[i];
+        if (this.world.collidables[id].name) {
+            console.log("name getting sent from server: " + this.world.collidables[id].name);
+        }
 		var colObj = {
 			id : id,
+            name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,

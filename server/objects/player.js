@@ -32,7 +32,7 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-  this.name = ""; 
+  this.name = "nickname"; 
   this.scale = 0.06;
 
   // 3D object this represents

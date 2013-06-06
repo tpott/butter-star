@@ -61,13 +61,22 @@ var Player = function(playerObj) {
   this.updateKillCounter(0);
 
     // for nametag
-    this.name = "oogla";
-    this.nameTagParticle = null;
+    this.nametag = {
+        hasChanged: false,
+        name: "nickname",
+        particle: null,
+        context: null,
+        canvas: null,
+        texture: null,
+        material: null
+    };
     this.nameAnimation();
 };
 
 Player.prototype.setName = function(name) {
-    this.name = name;
+    this.nametag.hasChanged = true;
+    this.nametag.name = name;
+    console.log("nametag is now " + this.nametag.name);
 }
 
 Player.prototype.setAnimate = function() {
@@ -194,37 +203,62 @@ Player.prototype.updateKillCounter = function(count) {
 };
     
 Player.prototype.updateNameLocation = function () {
-    //console.log(this.nameTagParticle.geometry.vertices);
-    this.nameTagParticle.geometry.vertices[0].set(this.position.x, this.position.y+3, this.position.z);
-    this.nameTagParticle.geometry.verticesNeedUpdate = true;
-    /*this.nameTagParticle.geometry.vertices.position.x = this.position.x;
-    this.nameTagParticle.geometry.vertices.position.y = this.position.y+1;
-    this.nameTagParticle.geometry.vertices.position.z = this.position.z;*/
+    //console.log(this.nametagParticle.geometry.vertices);
+    if (this.nametag.hasChanged) {
+        scene.remove(this.nametag.particle);
+        console.log("Constructing new nametag with name " +this.nametag.name);
+        this.nametag.context.clearRect(0,0,this.nametag.canvas.width, this.nametag.canvas.height);
+        this.nametag.context.fillText(this.nametag.name, this.nametag.canvas.width/2, this.nametag.canvas.height/2);
+        
+        this.nametag.texture = new THREE.Texture(this.nametag.canvas);
+        this.nametag.texture.needsUpdate = true;
+        
+        this.nametag.material = new THREE.ParticleBasicMaterial( 
+        {
+            map: this.nametag.texture, 
+            size: 5,
+            transparent: true 
+        });
+        this.nametag.particle = new THREE.ParticleSystem(this.nametag.geometry,this.nametag.material);
+        this.nametag.hasChanged = false;
+        this.nametag.particle.geometry.verticesNeedUpdate = true;
+
+        scene.add(this.nametag.particle);
+    } else {
+        this.nametag.particle.geometry.vertices[0].set(this.position.x, this.position.y+3, this.position.z);
+        this.nametag.particle.geometry.verticesNeedUpdate = true;
+    }
 }
 Player.prototype.nameAnimation = function()
 {
 			
 			//console.log("creating plus one texture");
-			var geometry = new THREE.Geometry();
-			geometry.vertices.push(new THREE.Vector3(this.position.x,this.position.y+1,this.position.z));	
+			this.nametag.geometry = new THREE.Geometry();
+			this.nametag.geometry.vertices.push(
+                new THREE.Vector3(this.position.x,this.position.y+3,this.position.z));	
 		
-            var canvas = document.createElement('canvas');
-            canvas.width = 1000;
-            canvas.height = 1000;
+            this.nametag.canvas = document.createElement('canvas');
+            this.nametag.canvas.width = 200;
+            this.nametag.canvas.height = 100;
         
-            var context = canvas.getContext('2d');
-            context.textAlign = "center";
-            context.textBaseline = "middle";
-            context.fillStyle = "black";
-            context.font = "500pt Arial";
-            context.fillText("NAME", canvas.width/2, canvas.height/2);
+            this.nametag.context = this.nametag.canvas.getContext('2d');
+            this.nametag.context.textAlign = "center";
+            this.nametag.context.textBaseline = "middle";
+            this.nametag.context.fillStyle = "black";
+            this.nametag.context.font = "18pt Arial";
+            this.nametag.context.fillText(this.nametag.name, this.nametag.canvas.width/2, this.nametag.canvas.height/2);
 			
-            var texture = new THREE.Texture(canvas);
-            texture.needsUpdate = true;
+            this.nametag.texture = new THREE.Texture(this.nametag.canvas);
+            this.nametag.texture.needsUpdate = true;
             
-            var material = new THREE.ParticleBasicMaterial( {map: texture, transparent: true } );
-            this.nameTagParticle = new THREE.ParticleSystem(geometry,material);
-			scene.add(this.nameTagParticle);
+            this.nametag.material = new THREE.ParticleBasicMaterial( 
+            {
+                map: this.nametag.texture, 
+                size: 5,
+                transparent: true 
+            });
+            this.nametag.particle = new THREE.ParticleSystem(this.nametag.geometry,this.nametag.material);
+			scene.add(this.nametag.particle);
 			
 };
 Player.prototype.plusOneAnimation = function()
