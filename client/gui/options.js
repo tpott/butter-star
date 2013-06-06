@@ -59,8 +59,8 @@ OptionMenu.prototype.toggle = function() {
 		$('.game').css('opacity', '0.4');
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
-
 		this.hidden = false;
+        disableKeyPresses = true;
 	}
 	else {
 		console.log('Hiding options');
@@ -70,6 +70,8 @@ OptionMenu.prototype.toggle = function() {
 		$('#gameTimer').css('opacity', '1.0');
 		$('#statusBox').css('opacity', '1.0');
 
+
 		this.hidden = true;
+        disableKeyPresses = false;
 	}
 }
