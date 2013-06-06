@@ -83,6 +83,9 @@ var Player = function(playerObj) {
 Player.prototype.setName = function(name) {
     this.nametag.hasChanged = true;
     this.nametag.name = name;
+	if (scoreBoard.showing()) {
+		scoreBoard.update();
+	}
 }
 
 Player.prototype.initTextures = function()
