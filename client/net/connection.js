@@ -37,8 +37,7 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
-	this.socket.onmessage = this._onmessage;
-
+    this.socket.onmessage = this._onmessage;
 	var socket = this.socket;
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
@@ -47,7 +46,6 @@ function Connection(ip, port, gameid, player, world) {
       keyMove();
       if (array_equals(keyPresses, oldKeyPresses) && 
           mouseMovement[0] == 0 && mouseMovement[1] == 0) {
-        //console.log("Nothing new from the client");
       }
       else {
         // client side networking happens HERE. BOOM
@@ -69,6 +67,17 @@ function Connection(ip, port, gameid, player, world) {
 	setInterval(clientTick, 1000/60);
 }
 
+Connection.prototype.sendChatMessage = function (msg) {
+    var data = {};
+    data.chatmessage = msg;
+    this.socket.send(JSON.stringify(data));
+}
+Connection.prototype.sendName = function(name) {
+    var data = {};
+    data.name = name;
+    this.socket.send(JSON.stringify(data));
+}
+
 Connection.prototype._onopen = function() {
 	console.log("Connection is opened!");
 };
@@ -86,6 +95,10 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    if (message.chatmessages) {
+        chatbox_receiveMessage(message.chatmessages);
+        return;
+    }
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);

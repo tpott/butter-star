@@ -32,7 +32,7 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-  
+  this.name = "nickname"; 
   this.scale = 0.06;
 
   // 3D object this represents
@@ -107,6 +107,10 @@ Player.prototype.resetItems = function() {
     this.hasBatteryItem = false;
     this.hasSoapItem = false;
     this.hasButterItem = false;
+}
+
+Player.prototype.setName = function(name) {
+    this.name = name;
 }
 
 Player.prototype.incVacKills = function() {
