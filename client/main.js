@@ -112,6 +112,7 @@ function muteAll() {
 function chatbox_sendMessage() {
     var msg = $("#chatinput").val();
     connection.sendChatMessage(msg);
+    console.log("sending message");
     chatBox.toggle();
 }
 

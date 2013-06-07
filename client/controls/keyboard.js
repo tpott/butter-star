@@ -146,13 +146,14 @@ function keyMoveReset() {
  */
 function keyDown(e) {
 	// TODO is this a bad idea?
+    
+    // THESE KEYPRESSES DISABLE SENDING SHIT TO SERVER AND INSTEAD DO STUFF ON CLIENT
 	if (options_disableKeyPresses && e.keyCode != keymap['`']) {
         return;
     } else if (chatbox_disableKeyPresses) {
         return;
     }
     switch (e.keyCode) {
-		case 9:
 		case keymap['ENTER']:
             if (!optionMenu.hidden) {
                 optionMenu.hidden = true;
@@ -166,8 +167,10 @@ function keyDown(e) {
             muteAll();
 			break;
 		case keymap['TAB']:
-			scoreBoard.toggle();
-			break;
+			// stops TAB from being handled in the default fashion
+            console.log("DISABLING TAB");
+			e.preventDefault();
+            break;
 		case keymap['`']:
             if (!optionMenu.hidden) {
 			    optionMenu.toggle();
@@ -176,6 +179,8 @@ function keyDown(e) {
 			    optionMenu.toggle();
             }
 			break;
+
+        // ALL OF THE BELOW KEY PRESSES GET SENT TO SERVER
 		case 32:
         case 37:
 		case 38:
@@ -223,11 +228,9 @@ function keyDown(e) {
 		case 221:
 			// if the key is not already pressed
 			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
-			keyPresses.push(codemap[e.keyCode]);
+			    keyPresses.push(codemap[e.keyCode]);
 			}
 
-			// stops TAB from being handled in the default fashion
-			e.preventDefault();
 			break;
 		default:
 			console.log("Key code '%d' not recognized", e.keyCode);
@@ -237,7 +240,7 @@ function keyDown(e) {
 
 function keyUp(e) {
 	// TODO is this right? no this was not faurking right before
-	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
+    while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
         keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);
 	}
 
