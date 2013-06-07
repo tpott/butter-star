@@ -159,6 +159,10 @@ Player.prototype.startVacuuming = function() {
 }
 
 Player.prototype.updateVacuum = function() {
+    this.animationTimer+=1;
+    this.animationOffset = Math.sin(this.animationTimer) / 30;
+    this.mesh.position.addScalar(this.animationOffset);
+    //this.mesh.position.copy(this.position.copy().addScalar(this.animationOffset));
 	// translation from where vacuuming began
 	//cross orientation vector with (0,1,) to get "right" side of position
 	var vacTrans = new THREE.Vector3().copy(this.position);
@@ -209,6 +213,10 @@ Player.prototype.updateVacuum = function() {
 Player.prototype.stopVacuuming = function() {
 	// scene is a global defined in client/main.js
     if (this.vacuum != null) {
+        this.animationTimer = 0;
+        this.mesh.position.copy(this.position);
+        this.mesh.position.y = 0;
+        //this.mesh.position = this.position.copy().addScalar(-this.animationOffset);
     	this.vacuum.removeFromScene(scene);
 	    this.vacuum = null;
     }
