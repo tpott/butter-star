@@ -134,6 +134,7 @@ function setName() {
     myName = $("#nametagbox").val();
     connection.sendName(myName);
     optionMenu.toggle();
+    myPlayer.setName(myName);
 }
 
 /*
