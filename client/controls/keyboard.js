@@ -144,7 +144,9 @@ function keyMoveReset() {
  */
 function keyDown(e) {
 	// TODO is this a bad idea?
-	if (disableKeyPresses && e.keyCode != keymap['ESC']) {
+	if (options_disableKeyPresses && e.keyCode != keymap['ESC']) {
+        return;
+    } else if (chatbox_disableKeyPresses) {
         return;
     }
     switch (e.keyCode) {
@@ -215,7 +217,9 @@ function keyDown(e) {
 }
 
 function keyUp(e) {
-	if (disableKeyPresses && e.keyCode != keymap['ESC']) {
+	if (options_disableKeyPresses && e.keyCode != keymap['ESC']) {
+        return;
+    } else if (chatbox_disableKeyPresses) {
         return;
     }
 	// TODO is this right? no this was not faurking right before
@@ -228,14 +232,14 @@ function keyUp(e) {
 		case keymap['m']:
 			 audio.pause();
 			 break;
-		case keymap['ENTER']:
-			chatBox.toggle();
-			break;
 		case keymap['ESC']:
 			optionMenu.toggle();
 			break;
 		case keymap['TAB']:
 			scoreBoard.toggle();
+			break;
+		case keymap['z']:
+			chatBox.toggle();
 			break;
 		case keymap['f']:
 			toggleFullScreen();

@@ -68,6 +68,11 @@ function Connection(ip, port, gameid, player, world) {
 	setInterval(clientTick, 1000/60);
 }
 
+Connection.prototype.sendChatMessage = function (msg) {
+    var data = {};
+    data.chatmessage = msg;
+    this.socket.send(JSON.stringify(data));
+}
 Connection.prototype.sendName = function(name) {
     var data = {};
     data.name = name;
@@ -91,6 +96,11 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    if (message.chatmessages) {
+        chatbox_receiveMessage(message.chatmessages);
+        console.log(message.chatmessages[0].player + " " + message.chatmessages[0].msg);
+        return;
+    }
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);

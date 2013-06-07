@@ -32,7 +32,7 @@ function OptionMenu() {
     this.controllersStuff = '<center><img src="controllers.png" width="450px"></center><br>' +
 '<h1>Psst! You can also press TAB to view other players\' scores!</h1>'
     this.menu.append(this.title);    
-    this.nickname = $('<form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" cols="10" rows="1">nickname</textarea><center></form>');
+    this.nickname = $('<form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" autofocus cols="10" rows="1">nickname</textarea><center></form>');
     this.menu.append(this.nickname);
     this.menu.append(this.controllersStuff);
 	this.menu.append(this.list);
@@ -48,6 +48,8 @@ OptionMenu.prototype.toggle = function() {
 		console.log('Showing options');
 
 		$('#options').show();
+        $('#nametagbox').focus();
+        $('#nametagbox').val('');
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '0.4');
 		$('#gameTimer').css('opacity', '0.4');
@@ -55,7 +57,7 @@ OptionMenu.prototype.toggle = function() {
 		$('#scoreboard').css('opacity', '0.4');
 
 		this.hidden = false;
-        disableKeyPresses = true;
+        options_disableKeyPresses = true;
 	}
 	else {
 		console.log('Hiding options');
@@ -68,6 +70,6 @@ OptionMenu.prototype.toggle = function() {
 
 
 		this.hidden = true;
-        disableKeyPresses = false;
+        options_disableKeyPresses = false;
 	}
 }

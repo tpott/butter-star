@@ -17,7 +17,8 @@ var renderer = new THREE.WebGLRenderer({
 var chatbox_messages = [];
 
 var myName = "";
-var disableKeyPresses = false;
+var options_disableKeyPresses = false;
+var chatbox_disableKeyPresses = false;
 //sounds
 var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
@@ -96,10 +97,20 @@ for (var attr in obj) {
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
 
-function sendMessage() {
+function chatbox_sendMessage() {
     var msg = $("#chatinput").val();
-    // connection.send a message
+    connection.sendChatMessage(msg);
+    chatBox.toggle();
 }
+
+function chatbox_receiveMessage(messages) {
+        console.log(messages[0].player + " " + messages[0].msg);
+        this.chatbox_messages.concat(messages);
+        for (var i = 0; i < messages.length; i++) {
+            $("#chatbox_messages").append(messages[i].player + ": " + messages[i].msg +"<br/>");
+        }
+}
+
 function setName() {
     myName = $("#nametagbox").val();
     connection.sendName(myName);
