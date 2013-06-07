@@ -171,14 +171,15 @@ function render() {
 
 //place to initialize lights (temporary, may not need)
 function initLights() {
-    var ambient = new THREE.AmbientLight(0x444444);
+    var ambient = new THREE.AmbientLight(0x666666);
     scene.add(ambient);
 
     var light = new THREE.PointLight( 0xffffff, 1, 2000); 
     light.position.set( 0, 500, 0 ); 
     scene.add( light );
 
-    var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, Math.PI, 1);
+    var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, true);
+    slight.angle = Math.PI / 2;
     slight.target.position.set(0,0,0);
     slight.position.set(0, 200,0);
     slight.shadowCameraNear = 10;

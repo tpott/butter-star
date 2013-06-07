@@ -381,7 +381,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
     for (itemName in this.world.delItems) {
         var itemObj = {
-            name: itemName,
+            name : itemName,
+            player_id : this.world.delItems[itemName]
         };
         worldUpdate.delItems.push(itemObj);
     }

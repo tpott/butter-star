@@ -85,9 +85,9 @@ var models = {
 	food : [
 	],
     items : [
-        [null, 'battery', 'battery.obj', 'battery.mtl', 0.07],
-        [null, 'soap', 'soap.obj', 'soap.mtl', 0.07],
-        [null, 'butter', 'butter.obj', 'butter.mtl', 0.07]
+        [null, 'battery', 'battery.obj', 'battery.mtl', 0.1],
+        [null, 'soap', 'soap.obj', 'soap.mtl', 0.1],
+        [null, 'butter', 'butter.obj', 'butter.mtl', 0.1]
     ]
 };
 

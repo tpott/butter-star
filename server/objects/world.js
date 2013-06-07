@@ -152,13 +152,21 @@ World.prototype.spawnItem = function(name) {
             item = new Butter();
             break;
     }
-    item.position = randomPosition();
-    item.position.y = 1;
+    item.position.copy(randomPosition());
+    item.position.y = 0.5;
     item.mesh.matrixWorld.makeTranslation(item.position.x, 
                                           item.position.y,
                                           item.position.z);
     this.items[item.name] = item;
     this.newItems[item.name] = item;
+}
+
+World.prototype.removeItem = function(name, player_id) {
+    if (this.items[name] != null) {
+        this.delItems[name] = player_id;
+        delete this.items[name];
+        this.items[name] = null;
+    }
 }
 
 World.prototype.enviroContains = function(pos) {
@@ -233,16 +241,29 @@ World.prototype.applyStates = function() {
         
         // uses the player state to get closest vacuum intersectec obj
         // TODO: extend to also affect players/food?
-        var critters = this.players[id].doVacuum(this.critters);
+        var critters = this.players[id].doVacuum(this.critters, this.items);
         for (var cid in critters) {
-			critters[cid].hp--;
-            var new_scale = Math.max(0.01 * critters[cid].hp, 0.08);
-            critters[cid].mesh.scale.set(new_scale, new_scale, new_scale);
-			if(critters[cid].hp <= 0)
-			{
-            	this.removeCritter(critters[cid]);
-            	this.players[id].incVacKills();
-        	}
+            switch (cid) {
+                case "batter":
+                    this.removeItem(cid, id);
+                    break;
+                case "soap":
+                    this.removeItem(cid, id);
+                    break;
+                case "butter":
+                    this.removeItem(cid, id);
+                    break;
+                default: // by default intersect with critters
+                    critters[cid].hp--;
+                    var new_scale = Math.max(0.01 * critters[cid].hp, 0.08);
+                    critters[cid].mesh.scale.set(new_scale, new_scale, new_scale);
+                    if(critters[cid].hp <= 0)
+                    {
+                        this.removeCritter(critters[cid]);
+                        this.players[id].incVacKills();
+                    }
+                    break;
+            }
 		}
 	}
 	for (var id in this.critters) {

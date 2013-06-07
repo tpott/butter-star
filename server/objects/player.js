@@ -165,7 +165,7 @@ Player.prototype.didVacuumChargeChange = function() {
  * @param {Array.<Critter>} critters The possible critters to vacuum.
  * @param {Critter} The closest critter the vacuum intersected with.
  */
-Player.prototype.doVacuum = function(critters) {
+Player.prototype.doVacuum = function(critters, items) {
     // check to make sure player state is vacuuming
     if (!(this.state & VACUUMING)) {
         this.incVacuumCharge();
@@ -175,7 +175,7 @@ Player.prototype.doVacuum = function(critters) {
     this.decVacuumCharge();
 
     if (this.canVacuum() === true) {
-      return this.getVacIntersectionObjs(critters);
+      return this.getVacIntersectionObjs(critters, items);
     } else {
       return null;
     }
@@ -274,7 +274,7 @@ function generateCirclePoint(direction,center,radius,angle)
  * Checks for intersection with objects and returns the closest
  * intersected objects
  */
-Player.prototype.getVacIntersectionObjs = function(critters) {
+Player.prototype.getVacIntersectionObjs = function(critters, items) {
     var ret_objs = {}; // table of intersected objects to return
     var close_critters = {}; // table of critters within vacuum range
     for (key in critters) {
@@ -282,6 +282,14 @@ Player.prototype.getVacIntersectionObjs = function(critters) {
         if (Math.abs(this.position.x - critters[key].position.x) <= 10 &&
             Math.abs(this.position.z - critters[key].position.z) <= 10) {
             close_critters[key] = critters[key]; // add to table 
+        }
+    }
+    for (key in items) {
+        // check if in range
+        if (items[key] != null &&
+            Math.abs(this.position.x - items[key].position.x) <= 10 &&
+            Math.abs(this.position.z - items[key].position.z) <= 10) {
+            close_critters[key] = items[key]; // add to table 
         }
     }
     // if no critters within range, short circuit
@@ -323,31 +331,36 @@ Player.prototype.getVacIntersectionObjs = function(critters) {
         var intersects = raycaster0.intersectObject(close_critters[key].mesh);
         // check if any intersections
         if(intersects.length > 0) {
-            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            ret_objs[key] = close_critters[key]; // add intersected critter to list 
+            //console.log("intersect0");
             continue; // optimization: take out if we decide to add forces
         }
 
         intersects = raycaster1.intersectObject(close_critters[key].mesh);
         if(intersects.length > 0) {
-            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            ret_objs[key] = close_critters[key]; // add intersected critter to list 
+            //console.log("intersect1");
             continue; // optimization: take out if we decide to add forces
         }
 
         intersects = raycaster2.intersectObject(close_critters[key].mesh);
         if(intersects.length > 0) {
-            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            ret_objs[key] = close_critters[key]; // add intersected critter to list 
+            //console.log("intersect2");
             continue; // optimization: take out if we decide to add forces
         }
 
         intersects = raycaster3.intersectObject(close_critters[key].mesh);
         if(intersects.length > 0) {
-            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            ret_objs[key] = close_critters[key]; // add intersected critter to list 
+            //console.log("intersect3");
             continue; // optimization: take out if we decide to add forces
         }
 
         intersects = raycaster4.intersectObject(close_critters[key].mesh);
         if(intersects.length > 0) {
-            ret_objs[close_critters[key].id] = close_critters[key]; // add intersected critter to list 
+            ret_objs[key] = close_critters[key]; // add intersected critter to list 
+            //console.log("intersect4");
             continue; // optimization: take out if we decide to add forces
         }
     }
