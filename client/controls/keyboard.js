@@ -211,7 +211,6 @@ function keyDown(e) {
 		case 221:
 			// if the key is not already pressed
 			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
-				//console.log("'%s' down.", codemap[e.keyCode]);
 			keyPresses.push(codemap[e.keyCode]);
 			}
 
@@ -225,11 +224,6 @@ function keyDown(e) {
 }
 
 function keyUp(e) {
-	if (options_disableKeyPresses && e.keyCode != keymap['ESC']) {
-        return;
-    } else if (chatbox_disableKeyPresses) {
-        return;
-    }
 	// TODO is this right? no this was not faurking right before
 	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
         keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);

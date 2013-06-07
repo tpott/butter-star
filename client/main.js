@@ -111,7 +111,7 @@ function chatbox_receiveMessage(messages) {
         cbox.prepend(messages[i].player + ": " + messages[i].msg +"<br/>");
     }
     // this line of code does nothing at all. but it should. >_<
-    cbox.animate({ scrollTop: 100 }, "slow");
+    cbox.animate({ scrollTop: 999999999 }, "slow");
 }
 
 function setName() {
