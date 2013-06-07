@@ -115,6 +115,13 @@ World.prototype.addFood = function(food) {
   return food.id;
 };
 
+World.prototype.getCritterRandomPosition = function() {
+    return new THREE.Vector4(Math.random() * 150 - 75,
+                             1,
+                             Math.random() * 150 - 75,
+                             1);
+}
+
 /**
  * Spawns a given number of critters at random, unoccupied locations.
  * @param {int} numCritters The number of critters to spawn.
@@ -123,11 +130,11 @@ World.prototype.spawnCritters = function(numCritters) {
   for (var i = 0; i < numCritters; i++) {
     var critter = new Critter();
 
-	 var position = randomPosition();
+	 var position = this.getCritterRandomPosition();
 
 	 // while position is out of the environment or already occupied
 	 while (! this.enviroContains(position) || this.occupied(position)) {
-		 position = randomPosition();
+		 position = this.getCritterRandomPosition();
 	 }
 
 	 critter.position.copy(position);
