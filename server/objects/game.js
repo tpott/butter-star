@@ -46,7 +46,7 @@ function Game(server) {
 
 		self.gameTickBasedUpdate();
 		self.sendUpdatesToAllClients();
-
+        self.sendChatMessages();
 		setTimeout(serverTick, 1000 / self.ticks);
 	}
 	setTimeout(serverTick, 1000 / self.ticks);
@@ -73,13 +73,32 @@ function Game(server) {
 
 	this.handler.emit('newgame');
     this.start = Date.now();
+    this.chatmessages = [];
+}
+Game.prototype.newChatMessage = function(player, msg) {
+    var data = {};
+    data.player = player.name;
+    data.msg = msg;
+    this.chatmessages.push(data);  
 }
 
+Game.prototype.sendChatMessages = function () {
+    if (this.chatmessages.length>0) {
+        // SEND THE WORLD INFO
+        var data = {};
+        data.chatmessages = this.chatmessages;
+        for (var id in this.sockets) {
+            this.sockets[id].send(JSON.stringify(data));
+        }
+        this.chatmessages = [];
+    }
+}
 /**
  * Add a socket to this game.
  * @param {Socket} socket The new socket connecting to this game.
  * @return {string} The player ID.
  */
+
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player); // Also adds player ID to new collidables
@@ -227,6 +246,7 @@ Game.prototype.gameTickBasedUpdate = function() {
 	this.world.applyStates();
 	this.world.applyForces(); 
     this.handler.getUpdatedTime();
+    
 }
 
 /**
@@ -277,6 +297,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var id = setCollidables[i];
 	  	var colObj = {
 			id : id,
+            name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,

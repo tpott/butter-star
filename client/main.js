@@ -14,7 +14,12 @@ var renderer = new THREE.WebGLRenderer({
   antialias : true,
   preserveDrawingBuffer : true
 }); 
+var chatbox_messages = [];
+var hackysolution = false;
 
+var myName = "";
+var options_disableKeyPresses = false;
+var chatbox_disableKeyPresses = false;
 //sounds
 var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
@@ -32,16 +37,17 @@ var heheheAudio= new Audio('he_he_he.ogg');
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
-document.addEventListener( 'mousemove', mouseMove, false );
 //document.addEventListener('mousedown', rotateStart, false);
 
 // keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var chatBox = null;
 var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
@@ -92,6 +98,28 @@ for (var attr in obj) {
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
 
+function chatbox_sendMessage() {
+    var msg = $("#chatinput").val();
+    connection.sendChatMessage(msg);
+    chatBox.toggle();
+}
+
+function chatbox_receiveMessage(messages) {
+    this.chatbox_messages.concat(messages);
+    var cbox = $('#chatbox_messages');
+    for (var i = 0; i < messages.length; i++) {
+        cbox.append(messages[i].player + ": " + messages[i].msg +"<br/>");
+    }
+    // this line of code does nothing at all. but it should. >_<
+    cbox.animate({ scrollTop: 999999999 }, "slow");
+}
+
+function setName() {
+    myName = $("#nametagbox").val();
+    connection.sendName(myName);
+    optionMenu.toggle();
+}
+
 /*
 update the states of the game
 examples:
@@ -104,14 +132,12 @@ function update() {
 	if (myPlayer == null || myPlayer.id == null) return; 
 
 	// begin camera update
-	//   update camera position
+	// update camera position
 	camera.position = myPlayer.position.clone().sub(
-			myPlayer.orientation.clone().multiplyScalar(15))
-	//console.log("camera pos:" + JSON.stringify(camera.position));
-  camera.position.add(new THREE.Vector3(0, 5, 0));
-  //console.log(camera.position);
+	myPlayer.orientation.clone().multiplyScalar(15))
+    camera.position.add(new THREE.Vector3(0, 5, 0));
 	
-	//   update camera orientation
+	//update camera orientation
 	camera.lookAt( myPlayer.position.clone().add(new THREE.Vector3(0,5,0) ));
 }
 
@@ -274,6 +300,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+    chatBox = new ChatBox();
 	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
     statusBox = new StatusBox();

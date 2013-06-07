@@ -7,7 +7,7 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 30,
+var SCRIPTS_NEEDED = 31,
 	 MODELS_NEEDED = 14,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
@@ -53,6 +53,7 @@ var scripts = [
 	// gui
 	["minimap.js", "text/javascript", null], 
 	["timer.js", "text/javascript", null], 
+	["chatbox.js", "text/javascript", null], 
 	["options.js", "text/javascript", null], 
 	["scoreboard.js", "text/javascript", null], 
 	["notifications.js", "text/javascript", null], 
