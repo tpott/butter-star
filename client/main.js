@@ -106,9 +106,11 @@ function chatbox_sendMessage() {
 function chatbox_receiveMessage(messages) {
         console.log(messages[0].player + " " + messages[0].msg);
         this.chatbox_messages.concat(messages);
+        var cbox = $('#chatbox_messages');
         for (var i = 0; i < messages.length; i++) {
-            $("#chatbox_messages").append(messages[i].player + ": " + messages[i].msg +"<br/>");
+            cbox.append(messages[i].player + ": " + messages[i].msg +"<br/>");
         }
+    cbox.scrollTop = cbox.scrollHeight;
 }
 
 function setName() {
