@@ -177,6 +177,7 @@ function keyDown(e) {
             } else {
 			    optionMenu.toggle();
             }
+            e.preventDefault();
 			break;
 
         // ALL OF THE BELOW KEY PRESSES GET SENT TO SERVER
