@@ -24,6 +24,7 @@ function Minimap() {
 }
 
 Minimap.prototype.drawCircle = function() {
+/*
 	this.ctx.strokeStyle = '#000000';
 	this.ctx.lineWidth = 5;
 	this.ctx.lineCap = 'round';
@@ -32,6 +33,7 @@ Minimap.prototype.drawCircle = function() {
 	this.ctx.arc(50, 50, 45, 0, 2 * Math.PI);
 
 	this.ctx.stroke();
+*/
 }
 
 
