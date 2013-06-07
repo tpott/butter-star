@@ -192,6 +192,10 @@ Player.prototype.didVacuumChargeChange = function() {
   return false;
 };
 
+Player.prototype.isVacuuming = function() {
+    return this.state & VACUUMING;
+}
+
 /**
  * Use the vacuum. If not in use, charge the vacuum.
  * @param {Array.<Critter>} critters The possible critters to vacuum.
@@ -199,7 +203,7 @@ Player.prototype.didVacuumChargeChange = function() {
  */
 Player.prototype.doVacuum = function(critters, items) {
     // check to make sure player state is vacuuming
-    if (!(this.state & VACUUMING)) {
+    if (!this.isVacuuming()) {
         this.incVacuumCharge();
         return null;
     }
@@ -435,13 +439,6 @@ else if(projected.z <= 0)
 
   // should resolve to super_.addForce
   this.addForce(force);
-};
-
-Player.prototype.toggleVacuum = function() {
-	// XOR
-	this.state ^= VACUUMING;
-	console.log("Player %s %s vacuuming", this.id, 
-			this.state & VACUUMING ? "is" : "is not");
 };
 
 /**

@@ -26,6 +26,7 @@ var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
 var vacAudio = new Audio('vacuum_clip.ogg');
 var critterDeathAudio = new Audio('critter_death.ogg');
 var heheheAudio= new Audio('he_he_he.ogg');
+var levelCompleteAudio = new Audio('level_complete.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {

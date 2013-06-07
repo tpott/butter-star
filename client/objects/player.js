@@ -44,6 +44,8 @@ var Player = function(playerObj) {
 	this.vacuum = null;
 
 	this.animation = null;
+    this.animationTimer = 0;
+    this.animationOffset = 0;
 
 	this.killCount = 0;
 	this.charge = 100;

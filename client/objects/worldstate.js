@@ -206,6 +206,10 @@ WorldState.prototype.removeCritter = function(id) {
 	for(pId in this.players)
 		this.players[pId].plusOne[id] = this.critters[id].position;	
 	delete this.critters[id];
+    if (Object.keys(this.critters).length == 0 && !mute) {
+        levelCompleteAudio.load();
+        levelCompleteAudio.play();
+    }
 }
 
 WorldState.prototype.removeEnvironment = function(id) {
