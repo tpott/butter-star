@@ -274,13 +274,13 @@ function dynamic(server, request) {
 			// player stats
 			var pstats = game.players[id];
 			// show image file of what kind of player they were
-			stats += "\t\t<td><img src=\"" + playerChibis[pstats.model]+ 
-				"\" width=\"80\"></td>\n";
+			stats += "\t\t<td width=\"250\"><img src=\"" + playerChibis[pstats.model]+ 
+				"\" width=\"125\" align=\"right\"></td>\n";
 
 			// print out "(player) sucked (#) number of bunnies"
-			stats += "\t\t<td><center><h7>" + pstats.display_name +
+			stats += "\t\t<td width=\"400\"><center><h7>" + pstats.display_name +
 				"</h7><br>sucked up<br><h6>" + pstats.points +
-				"</h6>dustbunnies</center></td>\n";
+				"</h6>dust bunnies</center></td>\n";
 			stats += "\t</tr>\n";
 		}
 		stats += "</table>\n";
