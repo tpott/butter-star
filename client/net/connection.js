@@ -68,6 +68,13 @@ function Connection(ip, port, gameid, player, world) {
 	setInterval(clientTick, 1000/60);
 }
 
+Connection.prototype.sendConfig = function(config) {
+	var data = {
+		'config' : config
+	};
+	this.socket.send(JSON.stringify(data));
+};
+
 Connection.prototype.sendName = function(name) {
     var data = {};
     data.name = name;

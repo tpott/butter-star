@@ -54,6 +54,8 @@ OptionMenu.prototype.toggle = function() {
 		$('#statusBox').css('opacity', '0.4');
 		$('#scoreboard').css('opacity', '0.4');
 
+		this.menu.append(myConfig.render());
+
 		this.hidden = false;
         disableKeyPresses = true;
 	}
@@ -66,6 +68,8 @@ OptionMenu.prototype.toggle = function() {
 		$('#statusBox').css('opacity', '1.0');
 		$('#scoreboard').css('opacity', '1.0');
 
+		$('#config').remove();
+		myConfig.update();
 
 		this.hidden = true;
         disableKeyPresses = false;

@@ -48,6 +48,7 @@ var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
 var gameTimer = null; // TODO not being used
+var myConfig = null;
 
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -285,6 +286,7 @@ function main() {
 	notifyBar = new Notify();
     statusBox = new StatusBox();
     gameTimer = new Timer();
+	 myConfig = new Config();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up = new THREE.Vector3(0,1,0);

@@ -83,6 +83,7 @@ var files = [
 
 	// controls
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
+	['config.js', "", client + 'controls/config.js', 'text/javascript'],
 	['keyboard.js', "", client + 'controls/keyboard.js', 'text/javascript'],
 	['mouse.js', "", client + 'controls/mouse.js', 'text/javascript'],
 	['screen.js', "", client + 'controls/screen.js', 'text/javascript'],
