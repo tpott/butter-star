@@ -12,7 +12,7 @@ function ChatBox() {
 		.css({ 
 			'display': 'inline',
 			'position': 'absolute',
-			'bottom': '4%',
+			'bottom': '9%',
 			'left': '4%',
 		});
 
@@ -20,8 +20,8 @@ function ChatBox() {
 	this.title = $('<div id="chatbox_messages"/>')
         .addClass('gui')
         .css({
-            'height': '125',
-            'width':  '600',
+            'height': '110',
+            'width':  '280',
             'overflow' : 'auto',
             'font-family' : '"Dustismo Bold"',
         });
@@ -41,11 +41,12 @@ ChatBox.prototype.toggle = function() {
 		$('#chatinput').show();
         $('#chatinput').focus();
         $('#chatinput').val('');
-		$('.game').css('position', 'absolute');
-		$('.game').css('opacity', '0.4');
-		$('#gameTimer').css('opacity', '0.4');
-		$('#statusBox').css('opacity', '0.4');
-		$('#scoreboard').css('opacity', '0.4');
+		$('#chatbox').css('opacity', '1.0');
+	//	$('.game').css('position', 'absolute');
+	//	$('.game').css('opacity', '0.4');
+	//	$('#gameTimer').css('opacity', '0.4');
+	//	$('#statusBox').css('opacity', '0.4');
+	//	$('#scoreboard').css('opacity', '0.4');
         //TODO DisableTurningHere
 
         chatbox_disableKeyPresses = true;
@@ -55,11 +56,10 @@ ChatBox.prototype.toggle = function() {
 		console.log('Hiding options');
 		$('#chatinput').hide();
         $('#chatinput').blur();
-		$('.game').css('position', 'absolute');
-		$('.game').css('opacity', '1.0');
-		$('#gameTimer').css('opacity', '1.0');
-		$('#statusBox').css('opacity', '1.0');
-		$('#scoreboard').css('opacity', '1.0');
+	//	$('.game').css('position', 'absolute');
+	//	$('.game').css('opacity', '1.0');
+	//	$('#gameTimer').css('opacity', '1.0');
+	//	$('#statusBox').css('opacity', '1.0');
         //TODO EnableTurningHere
 
         chatbox_disableKeyPresses = false;
