@@ -62,6 +62,7 @@ Server.prototype._newSocket = function(socket) {
 
 	if (game == null) {
 		console.log('Game doesnt exist :(');
+		return;
 	}
 
   // Create a player and connect to socket

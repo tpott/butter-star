@@ -32,6 +32,7 @@ function Game(server) {
 
 	this.sockets = {};
 	this.world = new World();
+	this.gameoverflag = false;
 	
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
@@ -39,11 +40,16 @@ function Game(server) {
 
 	var self = this;
 	function serverTick() {
+		if (self.gameoverflag) {
+			return;
+		}
+
 		self.gameTickBasedUpdate();
 		self.sendUpdatesToAllClients();
         self.sendChatMessages();
+		setTimeout(serverTick, 1000 / self.ticks);
 	}
-	setInterval(serverTick, 1000 / self.ticks);
+	setTimeout(serverTick, 1000 / self.ticks);
 
 	this.handler.emit('newgame');
     this.start = Date.now();
@@ -157,6 +163,8 @@ Game.prototype.gameOver = function() {
 	// TODO bad idea? 
 	// force message sending
 	this.sendUpdatesToAllClients();
+
+	this.gameoverflag = true;
 };
 
 /**
