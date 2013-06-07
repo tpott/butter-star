@@ -49,7 +49,27 @@ function Game(server) {
         self.sendChatMessages();
 		setTimeout(serverTick, 1000 / self.ticks);
 	}
-	setTimeout(serverTick, 1000 / self.ticks);
+	setInterval(serverTick, 1000 / self.ticks);
+    
+    function randomItemDrop() {
+        setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+        //setTimeout(randomItemDrop, 20000);
+        var item_name;
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
+                item_name = "battery";
+                break;
+            case 1:
+                item_name = "soap";
+                break;
+            case 2: 
+                item_name = "butter";
+                break;
+        }
+        self.world.spawnItem(item_name);
+    }
+    setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+    //setTimeout(randomItemDrop, 10000);
 
 	this.handler.emit('newgame');
     this.start = Date.now();
@@ -240,9 +260,11 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		del : [],
         vac : [],
         kill : [],
-    bun : [],
+        bun : [],
 		misc : [],
-        timer : []
+        timer : [],
+        newItems: [],
+        delItems: []
 	};
 
 	var updates = Object.keys(worldUpdate).length;
@@ -257,8 +279,8 @@ Game.prototype.sendUpdatesToAllClients = function() {
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.new.push(colObj);
 	}
@@ -273,14 +295,14 @@ Game.prototype.sendUpdatesToAllClients = function() {
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
 		var id = setCollidables[i];
-		var colObj = {
+	  	var colObj = {
 			id : id,
             name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.set.push(colObj);
 
@@ -373,6 +395,32 @@ Game.prototype.sendUpdatesToAllClients = function() {
     delete worldUpdate.bun;
     updates--;
   }
+  
+    for (itemName in this.world.newItems) {
+        var itemObj = {
+            name: itemName,
+            position: this.world.items[itemName].position
+        };
+        worldUpdate.newItems.push(itemObj);
+    }
+    
+    if (worldUpdate.newItems.length == 0) {
+        delete worldUpdate.newItems;
+        updates--;
+    }
+
+    for (itemName in this.world.delItems) {
+        var itemObj = {
+            name : itemName,
+            player_id : this.world.delItems[itemName]
+        };
+        worldUpdate.delItems.push(itemObj);
+    }
+    
+    if (worldUpdate.delItems.length == 0) {
+        delete worldUpdate.delItems;
+        updates--;
+    }
 
 	worldUpdate.misc = this.world.miscellaneous; // list of broadcast messages
 	

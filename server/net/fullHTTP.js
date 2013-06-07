@@ -80,6 +80,9 @@ var files = [
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
 	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
+	['battery.js', "", client + 'objects/battery.js', 'text/javascript'],
+	['soap.js', "", client + 'objects/soap.js', 'text/javascript'],
+	['butter.js', "", client + 'objects/butter.js', 'text/javascript'],
 
 	// controls
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
@@ -150,10 +153,13 @@ var files = [
   // items
   ['battery.obj', "", client + 'models/battery.obj', 'text/plain'],
   ['battery.mtl', "", client + 'models/battery.mtl', 'text/text'],
+  ['battery_texture.png', "", client + 'models/battery_texture.png', 'image/png'],
   ['soap.obj', "", client + 'models/soap.obj', 'text/plain'],
   ['soap.mtl', "", client + 'models/soap.mtl', 'text/text'],
-  ['butter.obj', "", client + 'models/soap.obj', 'text/plain'],
-  ['butter.mtl', "", client + 'models/soap.mtl', 'text/text'],
+  ['soap_texture.png', "", client + 'models/soap_texture.png', 'image/png'],
+  ['butter.obj', "", client + 'models/butter.obj', 'text/plain'],
+  ['butter.mtl', "", client + 'models/butter.mtl', 'text/text'],
+  ['butter_texture.png', "", client + 'models/butter_texture.png', 'image/png'],
 
   // yixin
 	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],

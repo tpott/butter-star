@@ -1,12 +1,17 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 05.06.2013 14:35:41
+# File Created: 06.06.2013 02:35:53
 
-newmtl wire_214229166
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
+newmtl Material__33
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
 	illum 2
-	Ka 0.8392 0.8980 0.6510
-	Kd 0.8392 0.8980 0.6510
-	Ks 0.3500 0.3500 0.3500
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka soap_texture.png
+	map_Kd soap_texture.png
+	map_Ke soap_texture.png
