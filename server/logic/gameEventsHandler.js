@@ -25,7 +25,6 @@ function Handler(server, gameid, world) {
 	this.world = world;
     this.world.attachHandler(this);
  
-    this.timer = 30;   
     this.round = 0;
     // time in seconds of machine when game begins
 	this.timeSubtractor = Date.now()/1000;
@@ -72,7 +71,6 @@ function Handler(server, gameid, world) {
   });
 
   this.on('endround', function() {
-	  this.timer += TIMER_BONUS;
   });
 
   // TODO emit gameover
@@ -103,8 +101,6 @@ Handler.prototype.message = function(str) {
 }
 
 
-/* Updates game timer
- * */
 Handler.prototype.getUpdatedTime = function() {
     // gameover event already emitted. if # of gameover events emitted doesn't matter
     // then we can move the bottom if statement to here, and delete this one.
