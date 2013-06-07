@@ -67,7 +67,11 @@ var files = [
 	['four_left.png', "", client + 'imgs/four_left.png', 'image/png'],
 	['five_left.png', "", client + 'imgs/five_left.png', 'image/png'],
 
+	// images used for the instructions page
 	['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
+	['mini_battery.png', "", client + 'imgs/mini_battery.png', 'image/png'],
+	['mini_soap.png', "", client + 'imgs/mini_soap.png', 'image/png'],
+	['mini_butter.png', "", client + 'imgs/mini_butter.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
