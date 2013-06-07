@@ -180,6 +180,7 @@ function updateAnimations() {
 	    myPlayer.plusOneAnimation();
 		myPlayer.critterHealth(myWorldState.critters);
     }
+    myWorldState.updateItemsAnimation();
 }
 
 /*

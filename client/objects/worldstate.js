@@ -94,6 +94,15 @@ WorldState.prototype.deleteItem = function(name) {
     }
 }
 
+WorldState.prototype.updateItemsAnimation = function() {
+    for (key in this.items) {
+        var item = this.items[key];
+        if(item != null) {
+            item.mesh.rotation.y += 0.012;
+        }
+    }
+}
+
 WorldState.prototype.addPlayer = function(p) {
 	var player = new Player(p);
 	this.players[player.id] = player;
