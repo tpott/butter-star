@@ -29,7 +29,8 @@ function ChatBox() {
     this.chatbox.append(this.title);
     this.inputter = '<textarea rows="1" cols="50" id="chatinput" onkeydown="if (event.keyCode == 13) {chatbox_sendMessage(); return false;}"></textarea>'
     this.chatbox.append(this.inputter);
-	this.chatbox.hide();
+	this.chatbox.show();
+	$('#chatinput').hide();
 	this.hidden = true;
 }
 
@@ -37,7 +38,7 @@ ChatBox.prototype.toggle = function() {
 	if (this.hidden) {
 		console.log('Showing chatbox');
 
-		$('#chatbox').show();
+		$('#chatinput').show();
         $('#chatinput').focus();
         $('#chatinput').val('');
 		$('.game').css('position', 'absolute');
@@ -52,7 +53,7 @@ ChatBox.prototype.toggle = function() {
 	}
 	else {
 		console.log('Hiding options');
-		$('#chatbox').hide();
+		$('#chatinput').hide();
         $('#chatinput').blur();
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '1.0');
