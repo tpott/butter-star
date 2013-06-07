@@ -112,7 +112,11 @@ function muteAll() {
 
 function chatbox_sendMessage() {
     var msg = $("#chatinput").val();
-    connection.sendChatMessage(msg);
+    // disallow empty chat messages.
+    // newline always gets stuck on as first char for some reason
+    if (!(msg.length == 1 && msg.charCodeAt(0) == 10)) {
+        connection.sendChatMessage(msg);
+    }
     chatBox.toggle();
 }
 

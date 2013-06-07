@@ -11,11 +11,11 @@ var util = require('util'),
 
 var START_GAME_DELAY = 5 * 1000; // 5 seconds
 var END_GAME_DELAY = 25 * 1000; // 25 seconds
-var END_ROUND_DELAY = 5 * 1000; // 5 seconds
+var END_ROUND_DELAY = 4 * 1000; // 2 seconds
 
 var CRIT_MULT = 5;
 
-var TIMER_BONUS = 10 * 1000; // 10 seconds
+var TIMER_BONUS = 35; // 10 seconds
 
 function Handler(server, gameid, world) {
 	// these two are needed for closing a game
@@ -25,10 +25,9 @@ function Handler(server, gameid, world) {
 	this.world = world;
     this.world.attachHandler(this);
  
-    this.timer = 30;   
     this.round = 0;
     // time in seconds of machine when game begins
-	this.start = Date.now()/1000;
+	this.timeSubtractor = Date.now()/1000;
     this.roundLength = 100; // length of a round as 70 seconds
     this.remainingTime = this.roundLength;
     this.timeHasChanged = true;
@@ -57,7 +56,7 @@ function Handler(server, gameid, world) {
 
   this.on('delcritter', function() {
     if (self.world.ncritters == 0) {
-        this.start = Date.now()/1000;
+        this.timeSubtractor+=TIMER_BONUS;
         setTimeout(self.endRound(), END_ROUND_DELAY);
     }
   });
@@ -72,7 +71,6 @@ function Handler(server, gameid, world) {
   });
 
   this.on('endround', function() {
-	  this.timer += TIMER_BONUS;
   });
 
   // TODO emit gameover
@@ -103,11 +101,15 @@ Handler.prototype.message = function(str) {
 }
 
 
-/* Updates game timer
- * */
 Handler.prototype.getUpdatedTime = function() {
+    // gameover event already emitted. if # of gameover events emitted doesn't matter
+    // then we can move the bottom if statement to here, and delete this one.
+    if (this.remainingTime == 0) {
+        return;
+    }
+
     var temp = Date.now()/1000;
-    var val = temp - this.start;
+    var val = temp - this.timeSubtractor;
     val = Math.floor(this.roundLength - val);
 
     if ( val == this.remainingTime ) {
@@ -118,11 +120,11 @@ Handler.prototype.getUpdatedTime = function() {
     }
 
     this.remainingTime = val;
+
     // if time ever reaches 0, game is over.
     if (this.remainingTime == 0) {
         this.emit('gameover');
     }
-
 }
 
 /**
