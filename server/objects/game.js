@@ -246,6 +246,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var id = setCollidables[i];
 		var colObj = {
 			id : id,
+            name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,

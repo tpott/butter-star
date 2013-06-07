@@ -16,6 +16,8 @@ var renderer = new THREE.WebGLRenderer({
 }); 
 var chatbox_messages = [];
 
+var myName = "";
+var disableKeyPresses = false;
 //sounds
 var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
@@ -33,10 +35,10 @@ var heheheAudio= new Audio('he_he_he.ogg');
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
-document.addEventListener( 'mousemove', mouseMove, false );
 //document.addEventListener('mousedown', rotateStart, false);
 
 // keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
@@ -97,6 +99,11 @@ for (var attr in obj) {
 function sendMessage() {
     var msg = $("#chatinput").val();
     // connection.send a message
+}
+function setName() {
+    myName = $("#nametagbox").val();
+    connection.sendName(myName);
+    optionMenu.toggle();
 }
 
 /*

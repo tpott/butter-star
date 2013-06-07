@@ -37,8 +37,7 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
-	this.socket.onmessage = this._onmessage;
-
+    this.socket.onmessage = this._onmessage;
 	var socket = this.socket;
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
@@ -67,6 +66,12 @@ function Connection(ip, port, gameid, player, world) {
   }
 
 	setInterval(clientTick, 1000/60);
+}
+
+Connection.prototype.sendName = function(name) {
+    var data = {};
+    data.name = name;
+    this.socket.send(JSON.stringify(data));
 }
 
 Connection.prototype._onopen = function() {
