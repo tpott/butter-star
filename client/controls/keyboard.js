@@ -163,8 +163,8 @@ function keyDown(e) {
             }
 			break;
 		case keymap['m']:
-			 audio.pause();
-			 break;
+            muteAll();
+			break;
 		case keymap['TAB']:
 			scoreBoard.toggle();
 			break;

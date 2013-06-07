@@ -25,7 +25,6 @@ var myAudio = new Audio('Birds.ogg');
 var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
 var vacAudio = new Audio('vacuum_clip.ogg');
 var critterDeathAudio = new Audio('critter_death.ogg');
-var fastGiggleAudio= new Audio('fast_giggle.ogg');
 var heheheAudio= new Audio('he_he_he.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
@@ -79,6 +78,8 @@ var initWorldState = true;
 ///Octree Code, eventually will need to port over to the server
 
 var hasBeenSent = true; // prevents sending idle events
+
+var mute = false;
 //-------------------------------------------------------
 //HELPER FUNCTIONS AND SHIET
 //-------------------------------------------------------
@@ -97,6 +98,16 @@ for (var attr in obj) {
 //-------------------------------------------------------
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
+function muteAll() {
+    mute = !mute;
+    if (mute) {
+        myAudio.pause();
+        themeAudio.pause();
+    } else {
+        myAudio.play();
+        themeAudio.play();
+    }
+}
 
 function chatbox_sendMessage() {
     var msg = $("#chatinput").val();
@@ -142,8 +153,10 @@ function update() {
 }
 
 function startVacuumSound() {
-    vacAudio.load();
-    vacAudio.play();
+    if (!mute) {
+        vacAudio.load();
+        vacAudio.play();
+    }
 }
 
 function stopVacuumSound() {
@@ -318,8 +331,10 @@ function main() {
     var self = this;
 	function randomAudio() {
         setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
-		self.heheheAudio.load();
-		self.heheheAudio.play();
+        if (!self.mute) {
+		    self.heheheAudio.load();
+		    self.heheheAudio.play();
+        }
 	}
 	setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
 
