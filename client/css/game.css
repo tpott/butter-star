@@ -101,6 +101,16 @@ h6 {
     text-align: center;
 }
 
+/* CHAT TEXT */
+h7 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    margin: 0 auto;
+    text-align: left;
+    display: inline-block;
+}
+
+
 a {
     text-decoration: none;
 }
@@ -200,6 +210,25 @@ a {
  	-moz-border-radius: 10px;
  	-webkit-border-radius: 10px;
 	padding: 10px;
+}
+
+#chatbox {
+	position: absolute;
+	display: inline;
+  	bottom: 8%;
+ 	left: 4%;
+	width: 280px;
+	height: 110px;
+	border: 2px solid rgba(148, 223, 254, 0.5);
+ 	background: rgba(224, 246, 255, 0.5);
+ 	-moz-border-radius: 10px;
+ 	-webkit-border-radius: 10px;
+	padding: 10px;
+	opacity: 0.0;
+}
+
+#chatbox.gui {
+	bottom: 8%;
 }
 
 #notify {
