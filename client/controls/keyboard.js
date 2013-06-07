@@ -151,7 +151,15 @@ function keyDown(e) {
     }
     switch (e.keyCode) {
 		case 9:
-		case 13: 
+		case keymap['ENTER']:
+            if (!optionMenu.hidden) {
+                optionMenu.hidden = true;
+            } else if (!chatBox.hidden) { 
+                chatBox.hidden = true;
+            } else {
+			    chatBox.toggle();
+            }
+			break;
 		/*case 16: 
 		case 17: 
 		case 18: */
@@ -237,9 +245,6 @@ function keyUp(e) {
 			break;
 		case keymap['TAB']:
 			scoreBoard.toggle();
-			break;
-		case keymap['z']:
-			chatBox.toggle();
 			break;
 		case keymap['f']:
 			toggleFullScreen();

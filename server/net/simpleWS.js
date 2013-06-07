@@ -77,7 +77,6 @@ Server.prototype._newSocket = function(socket) {
 	socket.on('message', function(anything) {
 		var clientData = JSON.parse(anything);
 		//var clientData = game.parseInput(player, anything);
-		//console.log(clientData);
 		if (clientData instanceof Array) {
 			game.eventBasedUpdate(player, clientData);
 		} else if (clientData.name) {

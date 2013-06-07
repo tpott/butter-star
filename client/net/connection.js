@@ -46,7 +46,6 @@ function Connection(ip, port, gameid, player, world) {
       keyMove();
       if (array_equals(keyPresses, oldKeyPresses) && 
           mouseMovement[0] == 0 && mouseMovement[1] == 0) {
-        //console.log("Nothing new from the client");
       }
       else {
         // client side networking happens HERE. BOOM
@@ -98,7 +97,6 @@ Connection.prototype._onmessage = function(buf) {
 	var message = JSON.parse(buf.data);
     if (message.chatmessages) {
         chatbox_receiveMessage(message.chatmessages);
-        console.log(message.chatmessages[0].player + " " + message.chatmessages[0].msg);
         return;
     }
 	if (! this.initialized) {

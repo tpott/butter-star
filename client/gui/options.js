@@ -45,8 +45,6 @@ function OptionMenu() {
 
 OptionMenu.prototype.toggle = function() {
 	if (this.hidden) {
-		console.log('Showing options');
-
 		$('#options').show();
         $('#nametagbox').focus();
         $('#nametagbox').val('');
@@ -61,7 +59,6 @@ OptionMenu.prototype.toggle = function() {
         options_disableKeyPresses = true;
 	}
 	else {
-		console.log('Hiding options');
 		$('#options').hide();
         $('#nametagbox').blur();
 		$('.game').css('position', 'absolute');
@@ -71,7 +68,6 @@ OptionMenu.prototype.toggle = function() {
 		$('#scoreboard').css('opacity', '1.0');
 
         //TODO EnableTurningHere
-		this.hidden = true;
         options_disableKeyPresses = false;
 	}
 }

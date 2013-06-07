@@ -54,7 +54,6 @@ Game.prototype.newChatMessage = function(player, msg) {
     data.player = player.name;
     data.msg = msg;
     this.chatmessages.push(data);  
-    console.log("new chat message: " + msg);
 }
 
 Game.prototype.sendChatMessages = function () {
@@ -63,7 +62,6 @@ Game.prototype.sendChatMessages = function () {
         var data = {};
         data.chatmessages = this.chatmessages;
         for (var id in this.sockets) {
-            console.log("sending msg");
             this.sockets[id].send(JSON.stringify(data));
         }
         this.chatmessages = [];

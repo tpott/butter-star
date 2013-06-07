@@ -238,7 +238,6 @@ Player.prototype.updateNameLocation = function () {
     //console.log(this.nametagParticle.geometry.vertices);
     if (this.nametag.hasChanged) {
         scene.remove(this.nametag.particle);
-        console.log("Constructing new nametag with name " +this.nametag.name);
         this.nametag.context.clearRect(0,0,this.nametag.canvas.width, this.nametag.canvas.height);
         this.nametag.context.fillText(this.nametag.name, this.nametag.canvas.width/2, this.nametag.canvas.height/2);
         
@@ -257,7 +256,7 @@ Player.prototype.updateNameLocation = function () {
 
         scene.add(this.nametag.particle);
     } else {
-        this.nametag.particle.geometry.vertices[0].set(this.position.x, this.position.y+3, this.position.z);
+        this.nametag.particle.geometry.vertices[0].set(this.position.x, this.position.y+3.5, this.position.z);
         this.nametag.particle.geometry.verticesNeedUpdate = true;
     }
 }
@@ -267,17 +266,17 @@ Player.prototype.nameAnimation = function()
 			//console.log("creating plus one texture");
 			this.nametag.geometry = new THREE.Geometry();
 			this.nametag.geometry.vertices.push(
-                new THREE.Vector3(this.position.x,this.position.y+3,this.position.z));	
+                new THREE.Vector3(this.position.x,this.position.y+3.5,this.position.z));	
 		
             this.nametag.canvas = document.createElement('canvas');
-            this.nametag.canvas.width = 200;
+            this.nametag.canvas.width = 100;
             this.nametag.canvas.height = 100;
         
             this.nametag.context = this.nametag.canvas.getContext('2d');
             this.nametag.context.textAlign = "center";
             this.nametag.context.textBaseline = "middle";
             this.nametag.context.fillStyle = "black";
-            this.nametag.context.font = "18pt Arial";
+            this.nametag.context.font = "18pt Dustismo Bold";
             this.nametag.context.fillText(this.nametag.name, this.nametag.canvas.width/2, this.nametag.canvas.height/2);
 			
             this.nametag.texture = new THREE.Texture(this.nametag.canvas);
