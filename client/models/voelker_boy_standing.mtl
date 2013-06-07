@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 07.06.2013 12:53:56
+# File Created: 07.06.2013 12:56:48
 
 newmtl Material__33
 	Ns 10.0000
@@ -12,6 +12,6 @@ newmtl Material__33
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0588 0.0588 0.0588
-	map_Ka boy_texture_orange.png
-	map_Kd boy_texture_orange.png
-	map_Ke boy_texture_orange.png
+	map_Ka boy_texture_voelker.png
+	map_Kd boy_texture_voelker.png
+	map_Ke boy_texture_voelker.png

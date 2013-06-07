@@ -8,7 +8,7 @@
 
 var filesLoaded = 0; 
 var SCRIPTS_NEEDED = 31,
-	 MODELS_NEEDED = 14,
+	 MODELS_NEEDED = 15,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -67,11 +67,12 @@ var scripts = [
 var models = {
 	players : [
 		[null, 'Purple player', 'yellow_boy_standing.obj', 'purple_boy_standing.mtl', 0.06],
+		[null, 'Voelker', 'yellow_boy_standing.obj', 'voelker_boy_standing.mtl', 0.06],
+		[null, 'Red player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
 		[null, 'Blue player', 'yellow_boy_standing.obj', 'blue_boy_standing.mtl', 0.06],
 		[null, 'Green player', 'yellow_boy_standing.obj', 'green_boy_standing.mtl', 0.06],
 		[null, 'Yellow player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
 		[null, 'Orange player', 'yellow_boy_standing.obj', 'orange_boy_standing.mtl', 0.06],
-		[null, 'Red player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
 		[null, 'Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
 	critters : [
