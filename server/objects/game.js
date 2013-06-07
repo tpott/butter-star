@@ -49,7 +49,7 @@ function Game(server) {
         self.sendChatMessages();
 		setTimeout(serverTick, 1000 / self.ticks);
 	}
-	setInterval(serverTick, 1000 / self.ticks);
+	setTimeout(serverTick, 1000 / self.ticks);
     
     function randomItemDrop() {
         setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
