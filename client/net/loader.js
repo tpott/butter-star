@@ -7,9 +7,9 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 32,
-	 MODELS_NEEDED = 13,
-	 ANIMATIONS_NEEDED = 2,
+var SCRIPTS_NEEDED = 31,
+	 MODELS_NEEDED = 14,
+	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
 // TODO order!!
