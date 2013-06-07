@@ -77,7 +77,7 @@ var Player = function(playerObj) {
         texture: null,
         material: null
     };
-    this.nameAnimation();
+    //this.nameAnimation();
 };
 
 Player.prototype.setName = function(name) {

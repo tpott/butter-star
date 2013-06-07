@@ -232,7 +232,7 @@ WorldState.prototype.updateWorldState = function(newStates){
             if (this.players[id].nametag.name != update.name) { 
                 this.players[id].setName(update.name);
             }
-            this.players[id].updateNameLocation();
+            //this.players[id].updateNameLocation();
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
             this.players[id].mesh.position.setY(update.position.y - update.radius);
