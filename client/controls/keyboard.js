@@ -168,7 +168,6 @@ function keyDown(e) {
 			break;
 		case keymap['TAB']:
 			// stops TAB from being handled in the default fashion
-            console.log("DISABLING TAB");
 			e.preventDefault();
             break;
 		case keymap['`']:
