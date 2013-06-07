@@ -45,8 +45,8 @@ function Game(server) {
 	setInterval(serverTick, 1000 / self.ticks);
     
     function randomItemDrop() {
-        //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
-        setTimeout(randomItemDrop, 20000);
+        setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+        //setTimeout(randomItemDrop, 20000);
         var item_name;
         switch (Math.floor(Math.random() * 3)) {
             case 0:
@@ -61,8 +61,8 @@ function Game(server) {
         }
         self.world.spawnItem(item_name);
     }
-    //setTimeout(randomItemDrop, (Math.random() * 100 + 50) * 1000);
-    setTimeout(randomItemDrop, 10000);
+    setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+    //setTimeout(randomItemDrop, 10000);
 
 	this.handler.emit('newgame');
     this.start = Date.now();

@@ -78,8 +78,36 @@ function Player() {
   // Vacuum charge percentage
   this.vacuumCharge = 100; // counter for % vacuum battery remaining
   this.prevVacuumCharge = -1; // used to see if num vacuumed changed
+
+  // boolesn states for items
+  this.hasBatteryItem = false;
+  this.hasSoapItem = false;
+  this.hasButterItem = false;
 }
 util.inherits(Player, Movable);
+
+Player.prototype.obtainBattery = function() {
+    this.hasBatteryItem = true;
+    this.vacuumCharge = 100;
+}
+
+Player.prototype.obtainSoap = function() {
+    this.hasSoapItem = true;
+}
+
+Player.prototype.obtainButter = function() {
+    //this.hasButterItem = true;
+
+    //TODO: do something else? for now combine battery and soap
+    this.obtainBattery();
+    this.obtainSoap();
+}
+
+Player.prototype.resetItems = function() {
+    this.hasBatteryItem = false;
+    this.hasSoapItem = false;
+    this.hasButterItem = false;
+}
 
 Player.prototype.incVacKills = function() {
     this.numVacKills++;
@@ -110,7 +138,7 @@ Player.prototype.didKillsChange = function() {
  * Decrease the vacuum charge by 1%.
  */
 Player.prototype.decVacuumCharge = function() {
-  if (this.vacuumCharge > 0) {
+  if (this.vacuumCharge > 0 && !this.hasBatteryItem) {
     this.vacuumCharge--;
   }
 };

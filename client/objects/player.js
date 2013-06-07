@@ -292,7 +292,7 @@ Player.prototype.critterHealth = function(critters)
 			var material = new THREE.ParticleBasicMaterial(
 			{
 				size: 2,
-				map: this.numbers[13],
+				map: this.numbers[12],
 				transparent: true
 			});
 			var particle2 = new THREE.ParticleSystem(geometry,material);

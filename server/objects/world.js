@@ -51,6 +51,9 @@ function World() {
 
   // Make world environment
   this.createRoom_();
+  this.currentBattery;
+  this.currentSoap;
+  this.currentButter;
 }
 
 /* ENVIRONMENT CREATION FUNCTIONS */
@@ -234,7 +237,39 @@ World.prototype.attachHandler = function(handler) {
   this.handler = handler;
 }
 
+World.prototype.obtainBattery = function(player) {
+    this.currentBattery = player;
+}
+
+World.prototype.resetBattery = function() {
+    if (this.currentBattery != null) {
+        this.currentBattery.resetItems();
+        this.currentBattery = null;
+    }
+}
+World.prototype.obtainSoap= function(player) {
+    this.currentSoap = player;
+}
+
+World.prototype.resetSoap = function() {
+    if (this.currentSoap != null) {
+        this.currentSoap.resetItems();
+        this.currentSoap = null;
+    }
+}
+World.prototype.obtainButter = function(player) {
+    this.currentButter = player;
+}
+
+World.prototype.resetButter = function() {
+    if (this.currentButter != null) {
+        this.currentButter.resetItems();
+        this.currentButter = null;
+    }
+}
+
 World.prototype.applyStates = function() {
+    var self = this;
 	for (var id in this.players) {
 		// uses the player state to create the force
 		this.players[id].move();
@@ -245,19 +280,37 @@ World.prototype.applyStates = function() {
         for (var cid in critters) {
             switch (cid) {
                 case "battery":
+                    this.players[id].obtainBattery();
+                    this.obtainBattery(this.players[id]);
+                    function batteryItemFinish() {
+                        self.resetBattery(); 
+                    }
+                    setTimeout(batteryItemFinish, 12000);
                     this.removeItem(cid, id);
                     break;
                 case "soap":
+                    this.players[id].obtainSoap();
+                    this.obtainSoap(this.players[id]);
+                    function soapItemFinish() {
+                        self.resetSoap(); 
+                    }
+                    setTimeout(soapItemFinish, 8000);
                     this.removeItem(cid, id);
                     break;
                 case "butter":
+                    this.players[id].obtainButter();
+                    this.obtainButter(this.players[id]);
+                    function butterItemFinish() {
+                        self.resetButter(); 
+                    }
+                    setTimeout(butterItemFinish, 6000);
                     this.removeItem(cid, id);
                     break;
                 default: // by default intersect with critters
                     critters[cid].hp--;
                     var new_scale = Math.max(0.01 * critters[cid].hp, 0.08);
                     critters[cid].mesh.scale.set(new_scale, new_scale, new_scale);
-                    if(critters[cid].hp <= 0)
+                    if(critters[cid].hp <= 0 || this.players[id].hasSoapItem)
                     {
                         this.removeCritter(critters[cid]);
                         this.players[id].incVacKills();
