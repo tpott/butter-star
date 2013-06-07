@@ -55,7 +55,8 @@ OptionMenu.prototype.toggle = function() {
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
 		$('#scoreboard').css('opacity', '0.4');
-
+        
+        //TODO DisableTurningHere
 		this.hidden = false;
         options_disableKeyPresses = true;
 	}
@@ -69,7 +70,7 @@ OptionMenu.prototype.toggle = function() {
 		$('#statusBox').css('opacity', '1.0');
 		$('#scoreboard').css('opacity', '1.0');
 
-
+        //TODO EnableTurningHere
 		this.hidden = true;
         options_disableKeyPresses = false;
 	}
