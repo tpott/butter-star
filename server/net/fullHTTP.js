@@ -478,14 +478,31 @@ Server.prototype.newGame = function() {
 
 	var child = fork('newgame.js', [gameid, port]);
 
+	this.games[gameid] = child;
+	this.games[gameid].port = port;
+	this.games[gameid].nplayers = 0;
+	this.games[gameid].status = "Not yet started";
+	this.ngames++;
+
 	var self = this;
 
 	// TODO will port be preserved? 
-	child.on('message', function(gid) {
-		console.log("New game \"%s\"", gid);
-		self.games[gid] = child;
-		self.games[gid].port = port;
-		self.ngames++;
+	child.on('message', function(msg) {
+		switch (msg.message) {
+			case 'gameid':
+				break;
+			case 'addplayer':
+				self.games[msg.gameid].nplayers++;
+				break;
+			case 'delplayer':
+				self.games[msg.gameid].nplayers--;
+				break;
+			case 'statusChange':
+				self.games[msg.gameid].status = msg.status;
+				break;
+			case 'endGame':
+				break;
+		}
 	});
 
 	return gameid;

@@ -21,9 +21,9 @@ var Keyboard = require('../controls/handler.js');
  * Construct a game instance.
  * @constructor
  */
-function Game(server) {
+function Game(httpNotify) {
 	// only needed for removing a game
-	this.server = server;
+	this.httpNotify = httpNotify;
 
 	// generate a random url
 	this.id = randomID(4);
@@ -36,7 +36,7 @@ function Game(server) {
 	
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
-	this.handler = new Handler(this.server, this.id, this.world);
+	this.handler = new Handler(this.httpNotify, this.id, this.world);
 
 	var self = this;
 	function serverTick() {

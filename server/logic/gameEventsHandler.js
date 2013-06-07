@@ -17,9 +17,9 @@ var CRIT_MULT = 5;
 
 var TIMER_BONUS = 10 * 1000; // 10 seconds
 
-function Handler(server, gameid, world) {
+function Handler(httpNotify, gameid, world) {
 	// these two are needed for closing a game
-	this.server = server;
+	this.httpNotify = httpNotify;
 	this.gameid = gameid;
 
 	this.world = world;
@@ -45,10 +45,18 @@ function Handler(server, gameid, world) {
 
 	this.on('newplayer', function() {
 		self.message("Player joined");
+		self.httpNotify({
+		  'gameid': self.gameid,
+			'message': 'addplayer'
+		});
 	});
 
 	this.on('delplayer', function() {
 		self.message("Player left");
+		self.httpNotify({
+		  'gameid': self.gameid,
+			'message': 'delplayer'
+		});
 	});
 
   this.on('delcritter', function() {
@@ -65,6 +73,12 @@ function Handler(server, gameid, world) {
 
 		self.status = "Round " + self.round;
 		self.world.spawnCritters( CRIT_MULT * self.round );
+
+		self.httpNotify({
+			'gameid' : self.gameid,
+			'message' : 'statusChange',
+			'status' : self.status
+		});
   });
 
   this.on('endround', function() {
@@ -73,7 +87,11 @@ function Handler(server, gameid, world) {
 
   // TODO emit gameover
   this.on('gameover', function() {
-	  self.server.endGame(self.gameid);
+	  var endGame = {
+		  'gameid': self.gameid,
+	  	  'message': 'endGame'
+	  };
+	  self.httpNotify(endGame);
   });
 }
 
@@ -124,13 +142,14 @@ Handler.prototype.getUpdatedTime = function() {
 /**
  * Returns a function that will end the game
  */
+// TODO remove
 Handler.prototype.timedEndGame = function() {
 	var self = this;
 	return function() {
 		// this check if the number of players is STILL zero, so
 		//   if no one has rejoined...
 		if (self.world.nplayers == 0) {
-			self.server.endGame(self.gameid);
+			self.httpNotify.endGame(self.gameid);
 		}
 	};
 }
