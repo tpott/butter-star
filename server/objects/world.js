@@ -75,7 +75,7 @@ World.prototype.createRoom_ = function() {
  */
 World.prototype.addPlayer = function(player) {
   // Determine which model to assign to player
-  player.model = this.nplayers % 6; // magic # for # of boy textures
+  player.model = this.nplayers % 7; // magic # for # of boy textures
 
     this.collidables[player.id] = player;
 	this.players[player.id] = player;

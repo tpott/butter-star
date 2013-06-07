@@ -130,6 +130,8 @@ var files = [
   ['yellow_boy_standing.obj', "", client + 'models/yellow_boy_standing.obj', 'text/plain'],
   ['yellow_boy_standing.mtl', "", client + 'models/yellow_boy_standing.mtl', 'text/text'],
   ['boy_texture_yellow.png', "", client + 'models/boy_texture_yellow.png', 'image/png'],
+  ['voelker_boy_standing.mtl', "", client + 'models/voelker_boy_standing.mtl', 'text/text'],
+  ['boy_texture_voelker.png', "", client + 'models/boy_texture_voelker.png', 'image/png'],
   ['blue_boy_standing.mtl', "", client + 'models/blue_boy_standing.mtl', 'text/text'],
   ['boy_texture_blue.png', "", client + 'models/boy_texture_blue.png', 'image/png'],
   ['green_boy_standing.mtl', "", client + 'models/green_boy_standing.mtl', 'text/text'],
@@ -208,8 +210,8 @@ var staticGamePage = "",
 
 // TODO use obj for dynamic pages
 
-var playerChibis = ['chibi_i.png', 'chibi_b.png', 'chibi_g.png',
-		'chibi_y.png', 'chibi_o.png', 'chibi_r.png'];
+var playerChibis = ['chibi_i.png', 'chibi_v.png', 'chibi_r.png', 'chibi_b.png',
+		'chibi_g.png', 'chibi_y.png', 'chibi_o.png'];
 function dynamic(server, request) {
 	var response = {
 		head : {
@@ -274,13 +276,13 @@ function dynamic(server, request) {
 			// player stats
 			var pstats = game.players[id];
 			// show image file of what kind of player they were
-			stats += "\t\t<td><img src=\"" + playerChibis[pstats.model]+ 
-				"\" width=\"80\"></td>\n";
+			stats += "\t\t<td width=\"250\"><img src=\"" + playerChibis[pstats.model]+ 
+				"\" width=\"125\" align=\"right\"></td>\n";
 
 			// print out "(player) sucked (#) number of bunnies"
-			stats += "\t\t<td><center><h7>" + pstats.display_name +
+			stats += "\t\t<td width=\"400\"><center><h7>" + pstats.display_name +
 				"</h7><br>sucked up<br><h6>" + pstats.points +
-				"</h6>dustbunnies</center></td>\n";
+				"</h6>dust bunnies</center></td>\n";
 			stats += "\t</tr>\n";
 		}
 		stats += "</table>\n";
