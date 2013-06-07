@@ -108,7 +108,7 @@ function chatbox_receiveMessage(messages) {
     this.chatbox_messages.concat(messages);
     var cbox = $('#chatbox_messages');
     for (var i = 0; i < messages.length; i++) {
-        cbox.prepend(messages[i].player + ": " + messages[i].msg +"<br/>");
+        cbox.append(messages[i].player + ": " + messages[i].msg +"<br/>");
     }
     // this line of code does nothing at all. but it should. >_<
     cbox.animate({ scrollTop: 999999999 }, "slow");
