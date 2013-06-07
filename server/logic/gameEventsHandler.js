@@ -10,7 +10,7 @@ var util = require('util'),
 	 events = require('events');
 
 var START_GAME_DELAY = 5 * 1000; // 5 seconds
-var END_GAME_DELAY = 5 * 1000; // 5 seconds
+var END_GAME_DELAY = 25 * 1000; // 25 seconds
 var END_ROUND_DELAY = 5 * 1000; // 5 seconds
 
 var CRIT_MULT = 5;

@@ -7,9 +7,9 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 30,
-	 MODELS_NEEDED = 14,
-	 ANIMATIONS_NEEDED = 1,
+var SCRIPTS_NEEDED = 32,
+	 MODELS_NEEDED = 13,
+	 ANIMATIONS_NEEDED = 2,
 	 SHADERS_NEEDED = 2;
 
 // TODO order!!
@@ -53,6 +53,7 @@ var scripts = [
 	// gui
 	["minimap.js", "text/javascript", null], 
 	["timer.js", "text/javascript", null], 
+	["chatbox.js", "text/javascript", null], 
 	["options.js", "text/javascript", null], 
 	["scoreboard.js", "text/javascript", null], 
 	["notifications.js", "text/javascript", null], 
@@ -65,12 +66,12 @@ var scripts = [
 // entries are structured: [model, model name, obj file, mtl file, scale]
 var models = {
 	players : [
-		[null, 'Default player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
-		[null, 'Default player', 'yellow_boy_standing.obj', 'orange_boy_standing.mtl', 0.06],
-		[null, 'Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
-		[null, 'Default player', 'yellow_boy_standing.obj', 'green_boy_standing.mtl', 0.06],
-		[null, 'Default player', 'yellow_boy_standing.obj', 'blue_boy_standing.mtl', 0.06],
-		[null, 'Default player', 'yellow_boy_standing.obj', 'purple_boy_standing.mtl', 0.06],
+		[null, 'Purple player', 'yellow_boy_standing.obj', 'purple_boy_standing.mtl', 0.06],
+		[null, 'Blue player', 'yellow_boy_standing.obj', 'blue_boy_standing.mtl', 0.06],
+		[null, 'Green player', 'yellow_boy_standing.obj', 'green_boy_standing.mtl', 0.06],
+		[null, 'Yellow player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
+		[null, 'Orange player', 'yellow_boy_standing.obj', 'orange_boy_standing.mtl', 0.06],
+		[null, 'Red player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
 		[null, 'Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
 	critters : [

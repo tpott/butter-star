@@ -32,6 +32,7 @@ function Game(server) {
 
 	this.sockets = {};
 	this.world = new World();
+	this.gameoverflag = false;
 	
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
@@ -39,8 +40,14 @@ function Game(server) {
 
 	var self = this;
 	function serverTick() {
+		if (self.gameoverflag) {
+			return;
+		}
+
 		self.gameTickBasedUpdate();
 		self.sendUpdatesToAllClients();
+        self.sendChatMessages();
+		setTimeout(serverTick, 1000 / self.ticks);
 	}
 	setInterval(serverTick, 1000 / self.ticks);
     
@@ -66,13 +73,32 @@ function Game(server) {
 
 	this.handler.emit('newgame');
     this.start = Date.now();
+    this.chatmessages = [];
+}
+Game.prototype.newChatMessage = function(player, msg) {
+    var data = {};
+    data.player = player.name;
+    data.msg = msg;
+    this.chatmessages.push(data);  
 }
 
+Game.prototype.sendChatMessages = function () {
+    if (this.chatmessages.length>0) {
+        // SEND THE WORLD INFO
+        var data = {};
+        data.chatmessages = this.chatmessages;
+        for (var id in this.sockets) {
+            this.sockets[id].send(JSON.stringify(data));
+        }
+        this.chatmessages = [];
+    }
+}
 /**
  * Add a socket to this game.
  * @param {Socket} socket The new socket connecting to this game.
  * @return {string} The player ID.
  */
+
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player); // Also adds player ID to new collidables
@@ -157,6 +183,8 @@ Game.prototype.gameOver = function() {
 	// TODO bad idea? 
 	// force message sending
 	this.sendUpdatesToAllClients();
+
+	this.gameoverflag = true;
 };
 
 /**
@@ -218,6 +246,7 @@ Game.prototype.gameTickBasedUpdate = function() {
 	this.world.applyStates();
 	this.world.applyForces(); 
     this.handler.getUpdatedTime();
+    
 }
 
 /**
@@ -268,6 +297,7 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		var id = setCollidables[i];
 	  	var colObj = {
 			id : id,
+            name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
@@ -420,14 +450,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
 	// reset since this is the end of a tick
   this.world.resetUpdateStateLists();
-}
-
-// TODO comment and clean this shit
-gameTick = function(game) {
-	return function() {
-        game.gameTickBasedUpdate();
-		game.sendUpdatesToAllClients();
-	}
 }
 
 module.exports = Game;
