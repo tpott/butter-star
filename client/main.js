@@ -110,6 +110,7 @@ function chatbox_receiveMessage(messages) {
     for (var i = 0; i < messages.length; i++) {
         cbox.prepend(messages[i].player + ": " + messages[i].msg +"<br/>");
     }
+    // this line of code does nothing at all. but it should. >_<
     cbox.animate({ scrollTop: 100 }, "slow");
 }
 
@@ -136,7 +137,7 @@ function update() {
 	myPlayer.orientation.clone().multiplyScalar(15))
     camera.position.add(new THREE.Vector3(0, 5, 0));
 	
-	// update camera orientation
+	//update camera orientation
 	camera.lookAt( myPlayer.position.clone().add(new THREE.Vector3(0,5,0) ));
 }
 
