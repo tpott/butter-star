@@ -6,6 +6,7 @@
  * @author Trevor
  */
 
+
 function Minimap() {
 	this.map = $('<canvas id="minimap" width="100" height="100" />')
 		.addClass('gui');
@@ -18,6 +19,7 @@ function Minimap() {
 	this.map.css('position', 'absolute');
 	this.map.css('bottom', '0');
 	this.map.css('left', '0');
+	this.map.css('opacity', '0'); // this hides the mini map for now hehe
 	//this.map.hide();
 }
 
@@ -28,5 +30,8 @@ Minimap.prototype.drawCircle = function() {
 
 	// x center, y center, radius, start angle, end angle
 	this.ctx.arc(50, 50, 45, 0, 2 * Math.PI);
+
 	this.ctx.stroke();
 }
+
+
