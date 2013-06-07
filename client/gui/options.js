@@ -45,29 +45,29 @@ function OptionMenu() {
 
 OptionMenu.prototype.toggle = function() {
 	if (this.hidden) {
-		console.log('Showing options');
-
 		$('#options').show();
+        $('#nametagbox').focus();
+        $('#nametagbox').val('');
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '0.4');
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
 		$('#scoreboard').css('opacity', '0.4');
-
+        
+        //TODO DisableTurningHere
 		this.hidden = false;
-        disableKeyPresses = true;
+        options_disableKeyPresses = true;
 	}
 	else {
-		console.log('Hiding options');
 		$('#options').hide();
+        $('#nametagbox').blur();
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '1.0');
 		$('#gameTimer').css('opacity', '1.0');
 		$('#statusBox').css('opacity', '1.0');
 		$('#scoreboard').css('opacity', '1.0');
 
-
-		this.hidden = true;
-        disableKeyPresses = false;
+        //TODO EnableTurningHere
+        options_disableKeyPresses = false;
 	}
 }

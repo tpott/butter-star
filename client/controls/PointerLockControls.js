@@ -26,7 +26,7 @@ THREE.PointerLockControls = function ( camera ) {
 	var PI_2 = Math.PI / 2;
 
 	var onMouseMove = function ( event ) {
-        if (disableKeyPresses) {
+        if (options_disableKeyPresses || chatbox_disableKeyPresses) {
             return;
         }
 		if ( scope.enabled === false ) return;
@@ -42,7 +42,7 @@ THREE.PointerLockControls = function ( camera ) {
 	};
 
 	var onKeyDown = function ( event ) {
-        if (disableKeyPresses) {
+        if (options_disableKeyPresses || chatbox_disableKeyPresses) {
             return;
         }
 
@@ -77,7 +77,7 @@ THREE.PointerLockControls = function ( camera ) {
 	};
 
 	var onKeyUp = function ( event ) {
-        if (disableKeyPresses) {
+        if (options_disableKeyPresses || chatbox_disableKeyPresses) {
             return;
         }
 
