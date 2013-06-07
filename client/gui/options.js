@@ -25,16 +25,18 @@ function OptionMenu() {
 
 	this.title = $('<div id="optionsStuff" />')
 		.append($( '<center><h6>MENU</h6></center>' +
-'<h1>(To go back to the game, just hit ESC again)</h1><br>' +
-'<a href="gamelist"><div class="menuOpt"><h5>Return to the game list</h5></div></a>' +
-'<div class="menuOpt"><h5>Invite your friends to this game by sharing the link below!</h5><br>' +
-'<center><textarea onclick=\"this.focus();this.select()\" readonly=\"readonly\">' + currURL + '</textarea></center></div><br>'));
-    this.controllersStuff = '<center><img src="controllers.png" width="450px"></center><br>' +
-'<h1>Psst! You can also press TAB to view other players\' scores!</h1>'
+'<a href="gamelist"><div class="menuOpt"><h5>Return to the game list</h5></div></a>' )); 
+
+    	this.nickname = $('<div class="menuOpt"><h5>Change your nickname here and hit ENTER!</h5><form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" placeholder="nickname" maxlength="15"></textarea><center></form></div>');
+
+	this.controllersStuff = ($('<div class="menuOpt"><h5>Invite your friends to this game by sharing the link below!</h5><br>' +
+'<center><textarea onclick=\"this.focus();this.select()\" readonly=\"readonly\">' + currURL + '</textarea></center></div><br>' +
+'<center><img src="controllers.png" width="400px"></center>'));
+
     this.menu.append(this.title);    
-    this.nickname = $('<form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" cols="10" rows="1">nickname</textarea><center></form>');
     this.menu.append(this.nickname);
     this.menu.append(this.controllersStuff);
+
 	this.menu.append(this.list);
 
 	$('body').append(this.menu);
@@ -53,6 +55,7 @@ OptionMenu.prototype.toggle = function() {
 		$('#gameTimer').css('opacity', '0.4');
 		$('#statusBox').css('opacity', '0.4');
 		$('#scoreboard').css('opacity', '0.4');
+		$('#stats').css('opacity', '1.0');
         
         //TODO DisableTurningHere
 		this.hidden = false;
@@ -66,6 +69,7 @@ OptionMenu.prototype.toggle = function() {
 		$('#gameTimer').css('opacity', '1.0');
 		$('#statusBox').css('opacity', '1.0');
 		$('#scoreboard').css('opacity', '1.0');
+		$('#stats').css('opacity', '0.0');
 
         //TODO EnableTurningHere
         options_disableKeyPresses = false;
