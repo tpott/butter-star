@@ -116,6 +116,7 @@ function chatbox_receiveMessage(messages) {
 function setName() {
     myName = $("#nametagbox").val();
     connection.sendName(myName);
+    console.log("setName was called");
     optionMenu.toggle();
 }
 

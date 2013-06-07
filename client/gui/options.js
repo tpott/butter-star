@@ -32,7 +32,7 @@ function OptionMenu() {
     this.controllersStuff = '<center><img src="controllers.png" width="450px"></center><br>' +
 '<h1>Psst! You can also press TAB to view other players\' scores!</h1>'
     this.menu.append(this.title);    
-    this.nickname = $('<form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" autofocus cols="10" rows="1">nickname</textarea><center></form>');
+    this.nickname = $('<form><center><textarea onkeydown="if (event.keyCode == 13) {setName(); return false; }" id="nametagbox" name="nickname" cols="10" rows="1">nickname</textarea><center></form>');
     this.menu.append(this.nickname);
     this.menu.append(this.controllersStuff);
 	this.menu.append(this.list);
@@ -62,6 +62,7 @@ OptionMenu.prototype.toggle = function() {
 	else {
 		console.log('Hiding options');
 		$('#options').hide();
+        $('#nametagbox').blur();
 		$('.game').css('position', 'absolute');
 		$('.game').css('opacity', '1.0');
 		$('#gameTimer').css('opacity', '1.0');
