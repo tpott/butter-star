@@ -46,7 +46,6 @@ function Connection(ip, port, gameid, player, world) {
       keyMove();
       if (array_equals(keyPresses, oldKeyPresses) && 
           mouseMovement[0] == 0 && mouseMovement[1] == 0) {
-        //console.log("Nothing new from the client");
       }
       else {
         // client side networking happens HERE. BOOM
@@ -68,6 +67,11 @@ function Connection(ip, port, gameid, player, world) {
 	setInterval(clientTick, 1000/60);
 }
 
+Connection.prototype.sendChatMessage = function (msg) {
+    var data = {};
+    data.chatmessage = msg;
+    this.socket.send(JSON.stringify(data));
+}
 Connection.prototype.sendName = function(name) {
     var data = {};
     data.name = name;
@@ -91,6 +95,10 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    if (message.chatmessages) {
+        chatbox_receiveMessage(message.chatmessages);
+        return;
+    }
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);

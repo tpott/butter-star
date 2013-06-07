@@ -48,7 +48,7 @@ function rotateCamera() {
 }
 
 function mouseMove(evt) {
-    if (disableKeyPresses) {
+    if (options_disableKeyPresses || chatbox_disableKeyPresses) {
         return;
     }
 	var movementX = evt.movementX || evt.mozMovementX || evt.webkitMovementX || 0;
