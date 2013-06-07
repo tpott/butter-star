@@ -147,12 +147,18 @@ h5 {
 
 /* FOR END GAME TEXT */
 h6 {
-    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
-    font-size: 24px;
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 26px;
     font-weight: bold;
-    margin: 0 auto;
-    text-align: center;
     color: #0b82b4;
+}
+
+/* FOR NAME OF PLAYER AT THE END */
+h7 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fecb5f;
 }
 
 p {

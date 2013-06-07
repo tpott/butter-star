@@ -45,7 +45,15 @@ var files = [
 	['plusone.png', "", client + 'imgs/plusone.png', 'image/png'],
     ['minusone.png',"", client + 'imgs/minusone.png', 'image/png'],
 	['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
-		
+	
+	// chibi png files
+	['chibi_r.png', "", client + 'imgs/chibi_r.png', 'image/png'],
+	['chibi_o.png', "", client + 'imgs/chibi_o.png', 'image/png'],
+	['chibi_y.png', "", client + 'imgs/chibi_y.png', 'image/png'],
+	['chibi_g.png', "", client + 'imgs/chibi_g.png', 'image/png'],
+	['chibi_b.png', "", client + 'imgs/chibi_b.png', 'image/png'],
+	['chibi_i.png', "", client + 'imgs/chibi_i.png', 'image/png'],
+	['chibi_v.png', "", client + 'imgs/chibi_v.png', 'image/png'],
 
 	['zero.png', "", client + 'imgs/zero.png', 'image/png'],
 	['one.png', "", client + 'imgs/one.png', 'image/png'],
@@ -194,6 +202,8 @@ var staticGamePage = "",
 
 // TODO use obj for dynamic pages
 
+var playerChibis = ['chibi_i.png', 'chibi_b.png', 'chibi_g.png',
+		'chibi_y.png', 'chibi_o.png', 'chibi_r.png'];
 function dynamic(server, request) {
 	var response = {
 		head : {
@@ -244,11 +254,12 @@ function dynamic(server, request) {
 		response.found = true;
 		return response;
 	}
+	/* END GAME PAGE */
 	else if (url in server.game_history) {
 		var stats = "<table>\n";
 		stats += "\t<tr>\n";
-		stats += "\t\t<th>Player</th>\n";
-		stats += "\t\t<th>Kills</th>\n";
+		//stats += "\t\t<th>Player</th>\n";
+		//stats += "\t\t<th>Kills</th>\n";
 		stats += "\t</tr>\n";
 
 		var game = server.game_history[url];
@@ -256,8 +267,14 @@ function dynamic(server, request) {
 			stats += "\t<tr>\n";
 			// player stats
 			var pstats = game.players[id];
-			stats += "\t\t<td>" + pstats.display_name + "</td>\n";
-			stats += "\t\t<td>" + pstats.points + "</td>\n";
+			// show image file of what kind of player they were
+			stats += "\t\t<td><img src=\"" + playerChibis[pstats.model]+ 
+				"\" width=\"80\"></td>\n";
+
+			// print out "(player) sucked (#) number of bunnies"
+			stats += "\t\t<td><center><h7>" + pstats.display_name +
+				"</h7><br>sucked up<br><h6>" + pstats.points +
+				"</h6>dustbunnies</center></td>\n";
 			stats += "\t</tr>\n";
 		}
 		stats += "</table>\n";
