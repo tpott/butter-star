@@ -166,7 +166,7 @@ Connection.prototype._onmessage = function(buf) {
     }
     if ('delItems' in world) {
         for (var i = 0; i < world.delItems.length; i++) {
-            notifyBar.addMessage(world.delItems[i].player_id + " acquired " + world.delItems[i].name + "!");
+            notifyBar.addMessage(world.delItems[i].player_name + " acquired " + world.delItems[i].name + "!");
             myWorldState.deleteItem(world.delItems[i].name);
         }
     }
