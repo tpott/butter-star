@@ -58,7 +58,8 @@ var fullScreenMode = 0;
 var myPlayer = null;
 
 var ipAddr = "butterServerIp"; // replaced in server/net/fullHTTP.js
-var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
+// moved to client/game.html
+//var port = "butterServerPort"; // replaced in server/net/fullHTTP.js
 var gameid = document.URL.replace(/.*\//,'');
 
 // dont iniailize until main()

@@ -8,10 +8,13 @@
 var http = require('http'),
 	 fs = require('fs'),
 	 util = require('util'),
-	 events = require('events');
+	 events = require('events'),
+	 fork = require('child_process').fork;
 
 var Game = require('./../objects/game.js');
 var EndedGame = require('./../objects/endedgame.js');
+var randomID = require('./../objects/random.js');
+
 var thinhGame = "../client/game/";
 var client = "../client/";
 
@@ -185,6 +188,7 @@ var files = [
 var staticGamePage = "",
 	 indexPos = 0,
 	 gamePos = 0,
+	 mainPos = 0,
 	 instrPos = 0,
 	 endGamePos = 0;
 
@@ -201,6 +205,7 @@ function dynamic(server, request) {
 	};
 
 	if (request.url == '/') {
+		console.log("index file \"%s\"", files[indexPos][1]);
 		response.body = files[indexPos][1];
 		response.found = true;
 		return response;
@@ -212,8 +217,8 @@ function dynamic(server, request) {
 			htmlGameList += "<a href=\"" + id + "\">\n";
 			htmlGameList += "\t<div class=\"activeGames\">\n";
 			// game stats
-			htmlGameList += "\t\t<h4>" + game.handler.status + "</h4>\n";
-			htmlGameList += "\t\t<h3>" + game.world.nplayers + " players</h3>\n";
+			htmlGameList += "\t\t<h4>" + game.status + "</h4>\n";
+			htmlGameList += "\t\t<h3>" + game.nplayers + " players</h3>\n";
 			htmlGameList += "\t\t<h5>Join game!</h5>\n";
 			htmlGameList += "\t</div>\n</a>\n\n";
 		}
@@ -231,12 +236,22 @@ function dynamic(server, request) {
 		response.found = true;
 		return response;
 	}
+	/*else if (request.url == '/main.js') {
+		console.log("replacing main port");
+		response.body = files[mainPos][1]
+				.replace(/butterServerPort/g, server.games.port); 
+		response.found = true;
+		return response;
+
+	}*/
 
 	// eleminate '/'
 	var url = request.url.slice(1);
 
 	if (url in server.games) {
-		response.body = files[gamePos][1]; // file contents ;-)
+		response.body = files[gamePos][1]
+				.replace(/butterServerPort/g, server.games[url].port); 
+
 		response.found = true;
 		return response;
 	}
@@ -316,7 +331,9 @@ function sendResponse(responseObj, response) {
 		response.end();
 		return;
 	}
+
 	response.writeHead(200, responseObj.head);
+
 	try {
 		response.write(responseObj.body);
 	}
@@ -324,6 +341,7 @@ function sendResponse(responseObj, response) {
 		console.log(e);
 		//console.log(responseObj.body);
 	}
+
 	if (responseObj.end !== '') {
 		response.end(responseObj.end);
 	}
@@ -354,6 +372,13 @@ var Server = function(config) {
 
 	this.game_history = [];
 	this.ngame_history = 0;
+
+	this.minport = 31000;
+	this.maxport = 32000;
+	this.available_ports = [];
+	for (var i = this.minport; i < this.maxport; i++) {
+		this.available_ports[i] = true;
+	}
 
 	this.start = Date.now();
 
@@ -402,8 +427,7 @@ Server.prototype.initFiles = function(config) {
 				}
 				else {
 					file[1] = data
-						.replace(/butterServerIp/g, config.server) // set in main.js
-						.replace(/butterServerPort/g, config.wsPort); // ^ ditto
+						.replace(/butterServerIp/g, config.server); // set in main.js
 				}
 			};
 		};
@@ -430,6 +454,9 @@ Server.prototype.initFiles = function(config) {
 		else if (files[i][0] == 'endgame.html') {
 			endGamePos = i;
 		}
+		/*else if (files[i][0] == 'main.js') {
+			mainPos = i;
+		}*/
 	}
 
 	fs.readFile(client + 'gamelist.html', 'utf8', function(err, data) {
@@ -439,10 +466,29 @@ Server.prototype.initFiles = function(config) {
 }
 
 Server.prototype.newGame = function() {
-	var g = new Game(this);
-	this.games[g.id] = g;
-	this.ngames++;
-	return g.id;
+	var gameid = randomID(4);
+	var port = this.minport;
+
+	while (!this.available_ports[port]) {
+		port++;
+	}
+
+	// make that port no longer available
+	this.available_ports[port] = false;
+
+	var child = fork('newgame.js', [gameid, port]);
+
+	var self = this;
+
+	// TODO will port be preserved? 
+	child.on('message', function(gid) {
+		console.log("New game \"%s\"", gid);
+		self.games[gid] = child;
+		self.games[gid].port = port;
+		self.ngames++;
+	});
+
+	return gameid;
 }
 
 Server.prototype.removeGame = function(id) {
@@ -459,11 +505,11 @@ Server.prototype.endGame = function(id) {
 	if (id in this.games) {
 		// then the game hasn't ended yet
 		
-		var game = this.games[id];
-		game.gameOver();
+		var gameProcess = this.games[id];
+		gameProcess.send('end_game_process');
 
-		this.game_history[id] = new EndedGame(game);
-		this.ngame_history++;
+		/*this.game_history[id] = new EndedGame(game);
+		this.ngame_history++;*/
 
 		this.removeGame(id);
 	}

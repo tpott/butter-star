@@ -49,10 +49,6 @@ function Handler(server, gameid, world) {
 
 	this.on('delplayer', function() {
 		self.message("Player left");
-
-		if (self.world.nplayers == 0) {
-			setTimeout(self.timedEndGame(), END_GAME_DELAY);
-		}
 	});
 
   this.on('delcritter', function() {
