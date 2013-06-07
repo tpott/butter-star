@@ -223,6 +223,9 @@ function keyUp(e) {
 		case keymap['m']:
 			 audio.pause();
 			 break;
+		case keymap['ENTER']:
+			chatBox.toggle();
+			break;
 		case keymap['ESC']:
 			optionMenu.toggle();
 			break;

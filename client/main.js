@@ -14,6 +14,7 @@ var renderer = new THREE.WebGLRenderer({
   antialias : true,
   preserveDrawingBuffer : true
 }); 
+var chatbox_messages = [];
 
 //sounds
 var myAudio = new Audio('Birds.ogg');
@@ -42,6 +43,7 @@ document.addEventListener( 'keyup', keyUp, false );
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var chatBox = null;
 var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
@@ -91,6 +93,11 @@ for (var attr in obj) {
 //-------------------------------------------------------
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
+
+function sendMessage() {
+    var msg = $("#chatinput").val();
+    // connection.send a message
+}
 
 /*
 update the states of the game
@@ -273,6 +280,7 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+    chatBox = new ChatBox();
 	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
     statusBox = new StatusBox();
