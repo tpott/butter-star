@@ -27,9 +27,10 @@ var keymap = {
 	'm' : 77, 'n' : 78, 'o' : 79, 'p' : 80,
 	'q' : 81, 'r' : 82, 's' : 83, 't' : 84,
 	'u' : 85, 'v' : 86, 'w' : 87, 'x' : 88,
-	'y' : 89, 'z' : 90,
+	'y' : 89, 'z' : 90, 
 	'=' : 187,
     '-' : 189,
+    '`' : 192,
 	'[' : 219,
 	']' : 221,
 };
@@ -52,9 +53,10 @@ var codemap = {
 	77 : 'm', 78 : 'n', 79 : 'o', 80 : 'p',
 	81 : 'q', 82 : 'r', 83 : 's', 84 : 't',
 	85 : 'u', 86 : 'v', 87 : 'w', 88 : 'x',
-	89 : 'y', 90 : 'z',
+	89 : 'y', 90 : 'z', 
 	187 : '=',
     189 : '-',
+    192 : '`',
     219 : '[',
 	221 : ']',
 };
@@ -144,7 +146,7 @@ function keyMoveReset() {
  */
 function keyDown(e) {
 	// TODO is this a bad idea?
-	if (options_disableKeyPresses && e.keyCode != keymap['ESC']) {
+	if (options_disableKeyPresses && e.keyCode != keymap['`']) {
         return;
     } else if (chatbox_disableKeyPresses) {
         return;
@@ -160,12 +162,22 @@ function keyDown(e) {
 			    chatBox.toggle();
             }
 			break;
-		/*case 16: 
-		case 17: 
-		case 18: */
-		case 27: 
+		case keymap['m']:
+			 audio.pause();
+			 break;
+		case keymap['TAB']:
+			scoreBoard.toggle();
+			break;
+		case keymap['`']:
+            if (!optionMenu.hidden) {
+			    optionMenu.toggle();
+                optionMenu.hidden = true;
+            } else {
+			    optionMenu.toggle();
+            }
+			break;
 		case 32:
-    case 37:
+        case 37:
 		case 38:
 		case 39:
 		case 40:
@@ -187,7 +199,7 @@ function keyDown(e) {
 		case 70:
 		case 71:
 		case 72:
-    case 73:
+        case 73:
 		case 74:
 		case 75:
 		case 76:
@@ -231,18 +243,6 @@ function keyUp(e) {
 
 	switch(e.keyCode) {
 		// client loop back functionality
-		case keymap['m']:
-			 audio.pause();
-			 break;
-		case keymap['ESC']:
-			optionMenu.toggle();
-			break;
-		case keymap['TAB']:
-			scoreBoard.toggle();
-			break;
-		case keymap['f']:
-			toggleFullScreen();
-			break;
         case 37:
         case 38:
         case 39:
