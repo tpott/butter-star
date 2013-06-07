@@ -271,6 +271,7 @@ function initStats() {
 	stats.domElement.style.bottom = '0px';
 	stats.domElement.style.right = '0px';
 	stats.domElement.style.zIndex = 100;
+	stats.domElement.style.opacity = 0;
 }
 
 function initZero() {

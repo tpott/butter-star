@@ -15,13 +15,15 @@ function ScoreBoard() {
 		.css({ 
 			'display': 'inline',
 			'position': 'absolute',
-			'top': '140px',
-			'left': '10px',
+			'top': '215px',
+			'right': '10px',
 			'border': '2px solid rgba(255, 255, 255, 0.2)',
 			'background': 'rgba(100, 100, 100, 0.2)',
 			'-moz-border-radius': '10px',
 			'-webkit-border-radius': '10px',
-			'padding': '10px'
+			'padding': '10px',
+			'max-height': '350px',
+			'overflow': 'auto'
 		});
 
 	this.title = $('<div id="scoreTitle" />')

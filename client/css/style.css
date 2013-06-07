@@ -7,6 +7,7 @@
  */
 
 /*
+ * LIGHTEST BLUE: #e0f6ff
  * LIGHT BLUE: #94dffe;
  * MEDIUM BLUE: #5fcffe;
  * DARK BLUE: #29bffe;
@@ -23,7 +24,7 @@
 
 
 
-html, table, div {
+table, div {
     border:0;
     font-size:100%;
     font:inherit;
@@ -33,13 +34,31 @@ html, table, div {
     height: 100%;
 }
 
+html {
+    border:0;
+    font-size:100%;
+    font:inherit;
+    margin:0;
+    padding:0;
+    width: 100%;
+    height: 100%;
+    overflow-y:auto;
+}
+
+
 body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     background-color:#dbf5ff;
     background: -webkit-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
     background: -linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
     background: -moz-linear-gradient(top, #94dffe 0%, #dbf5ff 100%);
     margin: 0;
-    overflow: hidden;
     font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
 }
 
@@ -128,12 +147,18 @@ h5 {
 
 /* FOR END GAME TEXT */
 h6 {
-    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
-    font-size: 24px;
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 26px;
     font-weight: bold;
-    margin: 0 auto;
-    text-align: center;
     color: #0b82b4;
+}
+
+/* FOR NAME OF PLAYER AT THE END */
+h7 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fecb5f;
 }
 
 p {
@@ -185,7 +210,7 @@ a:hover {
     margin-right: 25px;
     height: 275px;
     overflow: auto;
-
+    padding: 2px;
 }
 
 .activeGames {
@@ -233,6 +258,28 @@ div.option:hover {
     -ms-transition: all 0.1s ease-out; /* IE10+ */
     -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
     transition: all 0.1s ease-out;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+    display: block;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece  { /* track background */
+    background-color: transparent;
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical { /* track thing */
+    background-color: rgba(224, 246, 255, 0.5);
+    border: 2px solid rgba(225, 225, 225, 0.5);
+    -webkit-border-radius: 6px;
 }
 
 /* HIGHLIGHT */

@@ -15,6 +15,7 @@ function Player(player) {
 
 	// TODO 
 	this.display_name = player.name;
+	this.model = player.model;
 }
 
 /**
