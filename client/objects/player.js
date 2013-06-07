@@ -72,7 +72,7 @@ var Player = function(playerObj) {
     // for nametag
     this.nametag = {
         hasChanged: false,
-        name: "nickname",
+        name: "",
         particle: null,
         context: null,
         canvas: null,

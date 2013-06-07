@@ -24,6 +24,81 @@ var STANDING_STILL = 0,
 	 MOVING_RIGHT = 8,
 	 VACUUMING = 16,
 	 JUMPING = 32;
+var names = [
+'Apple',
+'Apricot',
+'Avocado',
+'Banana',
+'Breadfruit',
+'Bilberry',
+'Blackberry',
+'Blackcurrant',
+'Blueberry',
+'Boysenberry',
+'Currant',
+'Cherry',
+'Cherimoya',
+'Chili',
+'Cloudberry',
+'Coconut',
+'Damson',
+'Date',
+'Dragonfruit',
+'Durian',
+'Elderberry',
+'Feijoa',
+'Fig',
+'Gooseberry',
+'Grape',
+'Grapefruit',
+'Guava',
+'Huckleberry',
+'Honeydew',
+'Jackfruit',
+'Jettamelon',
+'Jambul',
+'Jujube',
+'Kiwi fruit',
+'Kumquat',
+'Legume',
+'Lemon',
+'Lime',
+'Loquat',
+'Lychee',
+'Mango',
+'Melon',
+'Canary melon',
+'Cantaloupe',
+'Honeydew',
+'Watermelon',
+'Rock melon',
+'Nectarine',
+'Nut',
+'Orange',
+'Clementine',
+'Mandarine',
+'Tangerine',
+'Papaya',
+'Peach',
+'Pepper',
+'Pear',
+'Persimmon',
+'Physalis',
+'Plum',
+'Pineapple',
+'Pomegranate',
+'Pomelo',
+'Purple Mangosteen',
+'Quince',
+'Raspberry',
+'Rambutan',
+'Redcurrant',
+'Salal berry',
+'Satsuma',
+'Star fruit',
+'Strawberry',
+'Tamarillo'
+]
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
@@ -32,7 +107,7 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-  this.name = "nickname"; 
+  this.name; 
   this.scale = 0.06;
 
   // 3D object this represents
@@ -83,8 +158,14 @@ function Player() {
   this.hasBatteryItem = false;
   this.hasSoapItem = false;
   this.hasButterItem = false;
+
+  this.initName();
 }
 util.inherits(Player, Movable);
+
+Player.prototype.initName= function() {
+    this.name = names[Math.floor(Math.random() * 75)]; 
+}
 
 Player.prototype.obtainBattery = function() {
     this.hasBatteryItem = true;
