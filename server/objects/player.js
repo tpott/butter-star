@@ -188,87 +188,40 @@ function isNegative(number)
 	return false;
 }
 
-function createOrthoVector(positive,negative)
-{
-	var vector = [1,2,3];
-
-	if(negative.length % 2 != 0)
-	{
-		if(negative.length == 1) //negative length is 1
-		{
-			vector[negative[0].type] = -1/negative[0].value;
-			vector[positive[0].type] = 1/positive[0].value;
-			vector[positive[1].type] = 0.0;
-		}
-		else // negative length is 3
-		{
-			vector[negative[0].type] = 0.0;
-			vector[negative[1].type] = -1/negative[0].value;
-			vector[negative[2].type] = 1/negative[0].value;
-		}
-	}
-	else
-	{
-		if(negative.length == 2) // negative length is 2
-		{
-			vector[positive[0].type] = 1/positive[0].value;
-			vector[negative[0].type] = -1/negative[0].value;
-			vector[negative[1].type] = 0.0;
-		}
-		else // negative length is 0
-		{
-			vector[positive[0].type] = -1/positive[0].value;
-			vector[positive[1].type] = 1/positive[1].value;
-			vector[positive[2].type] = 0.0;
-		}
-	}
-	return new THREE.Vector3(vector[0],vector[1],vector[2]);
+Player.prototype.getOffsetPosition = function() {
+	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var position = this.position.clone();
+	var a = new THREE.Vector3(this.orientation.x,0,this.orientation.z);
+	var b = new THREE.Vector3(0,1,0);
+	var direction = a.cross(b);
+	direction.normalize();
+	direction = direction.multiplyScalar(1.05);
+	var zProjection = this.orientation.clone();
+	zProjection.multiplyScalar(1.5);
+	var offset = zProjection.addVectors(zProjection,direction);
+	offset.y += 0.5
+	position = position.addVectors(position,offset);
+    position.w = 1;
+    return position;
 }
 
-function findOrthoVector(vector)
-{
-	var x,y,z,rand;
-	rand = Math.random();
-	var magnitude = Math.sqrt((vX*vX) + (vY*vY) + (vZ*vZ));
-	var vX = vector.x;var vY = vector.y;var vZ = vector.z;
+Player.prototype.checkHit = function(collidable, mindistance, minangle) {
+    var position = this.getOffsetPosition();
+    var diffVec = collidable.position.clone().sub(position);
+    var distance = diffVec.length();
 
-	var positive = [];
-	var negative = [];
-	var objX = {type: 0, value: vX};
-	var objY = {type: 1, value: vY};
-	var objZ = {type: 2, value: vZ};
+    if (distance > mindistance) {
+        return null;
+    }
 
-	isNegative(vX) ? negative.push(objX) : positive.push(objX);
-	isNegative(vY) ? negative.push(objY) : positive.push(objY);
-	isNegative(vZ) ? negative.push(objZ) : positive.push(objZ);
+    var cosAngle = diffVec.dot(this.orientation) / distance;
 
-	//if all three values are non zero
-	if(vX != 0.0 && vY != 0.0 && vZ != 0.0)
- 	{
- 		return createOrthoVector(positive,negative);
-	}
+    var angle = Math.acos(cosAngle) * (180.0 / Math.PI);
 
-	vector.x == 0 ? x = rand: x = 0.0;
-	vector.y == 0 ? y = rand: y = 0.0;
-	vector.z == 0 ? z = rand: z = 0.0;
-	return new THREE.Vector3(x,y,z).normalize();
-}
-
-function generateCirclePoint(direction,center,radius,angle)
-{
-	var vectorV = direction;
-	var vectorA = findOrthoVector(direction);
-	var vectorCross = vectorV.clone();
-	var vectorB = vectorCross.cross(vectorA);
-    
-    vectorA.normalize();
-    vectorB.normalize();
-
-	var x = center.x + radius*Math.cos(angle)*vectorA.x + radius*Math.sin(angle)*vectorB.x;
-   	var y = center.y + radius*Math.cos(angle)*vectorA.y + radius*Math.sin(angle)*vectorB.y;
-   	var z = center.z + radius*Math.cos(angle)*vectorA.z + radius*Math.sin(angle)*vectorB.z;
-   				
-	return new THREE.Vector3(x,y,z);
+    if (angle <= minangle) {
+        return collidable;
+    }
+    return null;
 }
 /*
  * Checks for intersection with objects and returns the closest
@@ -276,95 +229,36 @@ function generateCirclePoint(direction,center,radius,angle)
  */
 Player.prototype.getVacIntersectionObjs = function(critters, items) {
     var ret_objs = {}; // table of intersected objects to return
-    var close_critters = {}; // table of critters within vacuum range
-    for (key in critters) {
-        // check if in range
-        if (Math.abs(this.position.x - critters[key].position.x) <= 10 &&
-            Math.abs(this.position.z - critters[key].position.z) <= 10) {
-            close_critters[key] = critters[key]; // add to table 
-        }
-    }
-    for (key in items) {
-        // check if in range
-        if (items[key] != null &&
-            Math.abs(this.position.x - items[key].position.x) <= 10 &&
-            Math.abs(this.position.z - items[key].position.z) <= 10) {
-            close_critters[key] = items[key]; // add to table 
-        }
-    }
-    // if no critters within range, short circuit
+    var close_objs= {}; // table of critters within vacuum range
+    
+    // short circuit
     if (Object.keys(critters).length == 0) {
         return ret_objs;
     }
 
-    var origin = new THREE.Vector3().copy(this.position);
-    var vector = new THREE.Vector3().copy(this.orientation);
-    var raycaster0 = new THREE.Raycaster(origin, vector);
-
-    var projected_center = new THREE.Vector3();
-    var scalar = new THREE.Vector3().copy(vector);
-    scalar.multiplyScalar(10);
-    projected_center.addVectors(origin, scalar);
-
-    //radians..
-    var p1 = generateCirclePoint(vector, projected_center, 0.5, 0.0);
-    var p2 = generateCirclePoint(vector, projected_center, 0.5, 90.0 * Math.PI / 180.0);
-    var p3 = generateCirclePoint(vector, projected_center, 0.5, 180.0 * Math.PI / 180.0);
-    var p4 = generateCirclePoint(vector, projected_center, 0.5, 270.0 * Math.PI / 180.0);
-    
-    p1.sub(origin);
-    p1.normalize();
-    p2.sub(origin);
-    p2.normalize();
-    p3.sub(origin);
-    p3.normalize();
-    p4.sub(origin);
-    p4.normalize();
-
-    var raycaster1 = new THREE.Raycaster(origin, p1);
-    var raycaster2 = new THREE.Raycaster(origin, p2);
-    var raycaster3 = new THREE.Raycaster(origin, p3);
-    var raycaster4 = new THREE.Raycaster(origin, p4);
-
-    // check itersection with nearby critters
-    for (key in close_critters) {
-        var intersects = raycaster0.intersectObject(close_critters[key].mesh);
-        // check if any intersections
-        if(intersects.length > 0) {
-            ret_objs[key] = close_critters[key]; // add intersected critter to list 
-            //console.log("intersect0");
-            continue; // optimization: take out if we decide to add forces
-        }
-
-        intersects = raycaster1.intersectObject(close_critters[key].mesh);
-        if(intersects.length > 0) {
-            ret_objs[key] = close_critters[key]; // add intersected critter to list 
-            //console.log("intersect1");
-            continue; // optimization: take out if we decide to add forces
-        }
-
-        intersects = raycaster2.intersectObject(close_critters[key].mesh);
-        if(intersects.length > 0) {
-            ret_objs[key] = close_critters[key]; // add intersected critter to list 
-            //console.log("intersect2");
-            continue; // optimization: take out if we decide to add forces
-        }
-
-        intersects = raycaster3.intersectObject(close_critters[key].mesh);
-        if(intersects.length > 0) {
-            ret_objs[key] = close_critters[key]; // add intersected critter to list 
-            //console.log("intersect3");
-            continue; // optimization: take out if we decide to add forces
-        }
-
-        intersects = raycaster4.intersectObject(close_critters[key].mesh);
-        if(intersects.length > 0) {
-            ret_objs[key] = close_critters[key]; // add intersected critter to list 
-            //console.log("intersect4");
-            continue; // optimization: take out if we decide to add forces
+    //optimizations
+    for (key in critters) {
+        if (Math.abs(this.position.x - critters[key].position.x) <= 10 &&
+            Math.abs(this.position.z - critters[key].position.z) <= 10) {
+            close_objs[key] = critters[key];  
         }
     }
-    return ret_objs; // return table
+    for (key in items) {
+        if (items[key] != null &&
+            Math.abs(this.position.x - items[key].position.x) <= 10 &&
+            Math.abs(this.position.z - items[key].position.z) <= 10) {
+            close_objs[key] = items[key];  
+        }
+    }
+
+    for (key in close_objs) {
+        var obj = this.checkHit(close_objs[key], 10, 45);
+        if (obj != null) {
+            ret_objs[key] = obj;
+        }
+    }
+
+    return ret_objs;
 }
 
 Player.prototype.setDefaultState = function() {

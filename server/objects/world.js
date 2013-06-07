@@ -244,7 +244,7 @@ World.prototype.applyStates = function() {
         var critters = this.players[id].doVacuum(this.critters, this.items);
         for (var cid in critters) {
             switch (cid) {
-                case "batter":
+                case "battery":
                     this.removeItem(cid, id);
                     break;
                 case "soap":
