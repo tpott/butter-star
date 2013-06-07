@@ -68,7 +68,7 @@ ScoreBoard.prototype.update = function() {
 	// myWorldState is a global from main.js
 	for (var id in myWorldState.players) {
 		var row = $('<tr />');
-		row.append( $('<td id="scoreText"/>').text(id) );
+		row.append( $('<td id="scoreText"/>').text(myWorldState.players[id].nametag.name) );
 		row.append( $('<td id="scoreNumb"/>').text(myWorldState.players[id].killCount) );
 
 		table.append(row);

@@ -15,7 +15,7 @@ var randomID = require('./../objects/random.js');
  */
 function Collidable() {
   this.id = randomID(16);
-
+  this.name = null;
   // Client-side object this represents Will be set by subclasses.
   this.mesh = null;
 
@@ -38,6 +38,10 @@ Collidable.types = {
 	ENVIRONMENT : 4,
 	FOOD : 5
 };
+
+Collidable.prototype.setName = function(name) {
+    this.name = name;
+}
 
 /**
  * Wrap the Collidable as an object.
