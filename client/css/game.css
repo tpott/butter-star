@@ -1,13 +1,144 @@
-html, body {
+/*
+ * CSS for the game
+ * @author Prita Priscilla Hasjim
+ */
+
+body {
 	width: 100%;
 	height: 100%;
 }
 
+html {
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	background-color: transparent;
+}
+
 body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 10px;
 	background-color: #ffffff;
 	margin: 0;
 	overflow: hidden;
 	font-family: arial;
+}
+
+/* GUI TEXT */
+h1 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #3b3b3b,
+	0px 1px 1px #3b3b3b,
+	1px 0px 1px #3b3b3b,
+	0px -1px 1px #3b3b3b;
+}
+
+/* TIMER NUMBER TEXT */
+h2 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #fff;
+    font-size: 45px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #94dffe,
+	0px 1px 1px #94dffe,
+	1px 0px 1px #94dffe,
+	0px -1px 1px #94dffe;
+}
+
+/* BUNNY KILL TEXT */
+h3 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 50px;
+    background: -webkit-linear-gradient(top, #29bffe 0%, #d4f2ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 5px white;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* NOTIFICATIONS TEXT */
+h4 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    background: -webkit-linear-gradient(top, #feba29 0%, #ffedc8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px white;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* FOR OPTIONS TEXT */
+h5 {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+}
+
+/* MENU TITLE TEXT */
+h6 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 80px;
+    background: -webkit-linear-gradient(top, #feba29 0%, #ffedc8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px #feba29;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* CHAT TEXT */
+h7 {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    margin: 0 auto;
+    text-align: left;
+    display: inline-block;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+#scoreText {
+    font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    color: #e0f6ff;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #0b82b4,
+	0px 1px 1px #0b82b4,
+	1px 0px 1px #0b82b4,
+	0px -1px 1px #0b82b4;
+}
+
+#scoreNumb {
+    font-family: "Adventuring", Helvetica, Arial, sans-serif;
+    color: #e0f6ff;
+    font-size: 20px;
+    margin: 0 auto;
+    text-align: center;
+    text-shadow:
+	-1px 0px 1px #0b82b4,
+	0px 1px 1px #0b82b4,
+	1px 0px 1px #0b82b4,
+	0px -1px 1px #0b82b4;
 }
 
 #blocker {
@@ -56,4 +187,135 @@ body {
 #loading {
 	display: block;
 	margin: auto;
+}
+
+#vacuumChargeBar {
+	background: -webkit-linear-gradient(top, #e7d9bb 0%, #faf3e5 100%);
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border: 5px solid #fff;
+}
+
+#statusBox {
+	position: absolute;
+	text-align: center;
+	display: inline;
+  	right: 10px;
+ 	top: 10px;
+	width: 200px;
+	height: 170px;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+ 	background: rgba(100, 100, 100, 0.2);
+ 	-moz-border-radius: 10px;
+ 	-webkit-border-radius: 10px;
+	padding: 10px;
+}
+
+#chatbox {
+	position: absolute;
+	display: inline;
+  	bottom: 8%;
+ 	left: 4%;
+	width: 280px;
+	height: 110px;
+	border: 2px solid rgba(148, 223, 254, 0.5);
+ 	background: rgba(224, 246, 255, 0.5);
+ 	-moz-border-radius: 10px;
+ 	-webkit-border-radius: 10px;
+	padding: 10px;
+	opacity: 0.0;
+}
+
+#chatbox.gui {
+	bottom: 8%;
+}
+
+#notify {
+	position: absolute;
+	text-align: center;
+	display: inline;
+	top: 10px;
+  	left: 50%;
+	margin-left: -450px;
+	width: 900px;
+ 	background: transparent;
+	padding: 10px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+    display: block;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece  { /* track background */
+    background-color: transparent;
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical { /* track thing */
+    background-color: rgba(224, 246, 255, 0.5);
+    border: 2px solid rgba(225, 225, 225, 0.5);
+    -webkit-border-radius: 6px;
+}
+
+/* TEXTAREA */
+textarea {
+	background-color: #fff;
+	font-family: "Dustismo Bold", Helvetica, Arial, sans-serif;
+    	font-size: 15px;
+	text-align: center;
+	color: #3b3b3b;
+    	border: 2px solid #9f9f9f;
+    	border-radius: 10px; 
+    	-moz-border-radius: 10px; 
+    	-webkit-border-radius: 10px;
+	width: 280px;
+	height: 30px;
+	padding: 5px;
+}
+
+#optionsStuff {
+	width: 500px;
+	left: 50%;
+	top: 20px;
+}
+
+/* HIGHLIGHT STUFF */
+::selection {
+    background: #dbf5ff; /* Safari */
+}
+::-moz-selection {
+    background: #dbf5ff; /* Firefox */
+}
+
+.ui-progressbar-value {
+	background: -webkit-linear-gradient(top, #29bffe 0%, #d4f2ff 100%);
+}
+
+.menuOpt {
+    background-color: #0b82b4;
+    border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    padding: 5px;
+    width: 300px;
+    height: auto;
+    margin-left: 90px;
+    margin-bottom: 5px;
+}
+
+div.menuOpt:hover {
+    background-color: #29bffe;
+    -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
+    -moz-transition: all 0.1s ease-out; /* Firefox 4+ */
+    -ms-transition: all 0.1s ease-out; /* IE10+ */
+    -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
+    transition: all 0.1s ease-out;
 }

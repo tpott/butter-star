@@ -27,9 +27,10 @@ var keymap = {
 	'm' : 77, 'n' : 78, 'o' : 79, 'p' : 80,
 	'q' : 81, 'r' : 82, 's' : 83, 't' : 84,
 	'u' : 85, 'v' : 86, 'w' : 87, 'x' : 88,
-	'y' : 89, 'z' : 90,
+	'y' : 89, 'z' : 90, 
 	'=' : 187,
-	'-' : 189,
+    '-' : 189,
+    '`' : 192,
 	'[' : 219,
 	']' : 221,
 };
@@ -52,27 +53,136 @@ var codemap = {
 	77 : 'm', 78 : 'n', 79 : 'o', 80 : 'p',
 	81 : 'q', 82 : 'r', 83 : 's', 84 : 't',
 	85 : 'u', 86 : 'v', 87 : 'w', 88 : 'x',
-	89 : 'y', 90 : 'z',
+	89 : 'y', 90 : 'z', 
 	187 : '=',
-	189 : '-',
-	219 : '[',
+    189 : '-',
+    192 : '`',
+    219 : '[',
 	221 : ']',
 };
+
+/**
+ * Check if arrow key pressed and adds that to the mouse movement.
+ */
+var keyMoveXNeg = 0;
+var keyMoveXPos = 0;
+var keyMoveYNeg = 0;
+var keyMoveYPos = 0;
+var keyMoveRate = 0.10;
+var keyMoveInitial = 2;
+function keyMove() {
+  if (keyPresses.indexOf('LARRW') != -1 || keyPresses.indexOf('j') != -1) {
+    if (keyMoveXNeg == 0) { // initially move faster
+      keyMoveXNeg -= keyMoveInitial;
+    } else {
+      keyMoveXNeg -= keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('UARRW') != -1 || keyPresses.indexOf('i') != -1) {
+    if (keyMoveYPos == 0) { // initially move faster
+      keyMoveYPos -= keyMoveInitial;
+    } else {
+      keyMoveYPos -= keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('RARRW') != -1 || keyPresses.indexOf('l') != -1) {
+    if (keyMoveXPos == 0) { // initially move faster
+      keyMoveXPos += keyMoveInitial;
+    } else {
+      keyMoveXPos += keyMoveRate;
+    }
+  }
+  
+  if (keyPresses.indexOf('DARRW') != -1 || keyPresses.indexOf('k') != -1) {
+    if (keyMoveYNeg == 0) { // initially move faster
+      keyMoveYNeg += keyMoveInitial;
+    } else {
+      keyMoveYNeg += keyMoveRate;
+    }
+  }
+
+  // if opposing keys pressed, no camera movement
+  if ((keyPresses.indexOf('LARRW') != -1 || keyPresses.indexOf('j') != -1) &&
+      (keyPresses.indexOf('RARRW') != -1 || keyPresses.indexOf('l') != -1)) {
+    keyMoveXNeg = 0;
+    keyMoveXPos = 0;
+  }
+
+  if ((keyPresses.indexOf('UARRW') != -1 || keyPresses.indexOf('i') != -1) &&
+      (keyPresses.indexOf('DARRW') != -1 || keyPresses.indexOf('k') != -1)) {
+    keyMoveYNeg = 0;
+    keyMoveYPos = 0;
+  }
+
+  mouseMovement[0] += keyMoveXNeg + keyMoveXPos;
+  mouseMovement[1] += keyMoveYNeg + keyMoveYPos;
+}
+
+/**
+ * Handles mouse camera movement on key up.
+ */
+function keyMoveReset() {
+  if (keyPresses.indexOf('LARRW') == -1 && keyPresses.indexOf('j') == -1) {
+    keyMoveXNeg = 0;
+  }
+  
+  if (keyPresses.indexOf('UARRW') == -1 && keyPresses.indexOf('i') == -1) {
+    keyMoveYPos = 0;
+  }
+  
+  if (keyPresses.indexOf('RARRW') == -1 && keyPresses.indexOf('l') == -1) {
+    keyMoveXPos = 0;
+  } 
+  
+  if (keyPresses.indexOf('DARRW') == -1 && keyPresses.indexOf('k') == -1) {
+    keyMoveYNeg = 0;
+  }
+}
 
 /*
  * check for key pressed from the player
  */
 function keyDown(e) {
 	// TODO is this a bad idea?
-	switch (e.keyCode) {
-		case 9:
-		case 13: 
-		/*case 16: 
-		case 17: 
-		case 18: */
-		case 27: 
+    
+    // THESE KEYPRESSES DISABLE SENDING SHIT TO SERVER AND INSTEAD DO STUFF ON CLIENT
+	if (options_disableKeyPresses && e.keyCode != keymap['`']) {
+        return;
+    } else if (chatbox_disableKeyPresses) {
+        return;
+    }
+    switch (e.keyCode) {
+		case keymap['ENTER']:
+            if (!optionMenu.hidden) {
+                optionMenu.hidden = true;
+            } else if (!chatBox.hidden) { 
+                chatBox.hidden = true;
+            } else {
+			    chatBox.toggle();
+            }
+			break;
+		case keymap['m']:
+            muteAll();
+			break;
+		case keymap['TAB']:
+			// stops TAB from being handled in the default fashion
+			e.preventDefault();
+            break;
+		case keymap['`']:
+            if (!optionMenu.hidden) {
+			    optionMenu.toggle();
+                optionMenu.hidden = true;
+            } else {
+			    optionMenu.toggle();
+            }
+            e.preventDefault();
+			break;
+
+        // ALL OF THE BELOW KEY PRESSES GET SENT TO SERVER
 		case 32:
-		case 37:
+        case 37:
 		case 38:
 		case 39:
 		case 40:
@@ -94,7 +204,7 @@ function keyDown(e) {
 		case 70:
 		case 71:
 		case 72:
-		case 73:
+        case 73:
 		case 74:
 		case 75:
 		case 76:
@@ -113,17 +223,14 @@ function keyDown(e) {
 		case 89:
 		case 90:
 		case 187:
-		case 189:
+        case 189:
 		case 219:
 		case 221:
 			// if the key is not already pressed
 			if (keyPresses.indexOf(codemap[e.keyCode]) == -1) {
-				//console.log("'%s' down.", codemap[e.keyCode]);
-				keyPresses.push(codemap[e.keyCode]);
+			    keyPresses.push(codemap[e.keyCode]);
 			}
 
-			// stops TAB from being handled in the default fashion
-			e.preventDefault();
 			break;
 		default:
 			console.log("Key code '%d' not recognized", e.keyCode);
@@ -132,33 +239,22 @@ function keyDown(e) {
 }
 
 function keyUp(e) {
-	//console.log("'%s' up.", codemap[e.keyCode]);
-	// TODO is this right?
-	while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
-		keyPresses.pop(codemap[e.keyCode]);
+	// TODO is this right? no this was not faurking right before
+    while(keyPresses.indexOf(codemap[e.keyCode]) != -1) {
+        keyPresses.splice(keyPresses.indexOf(codemap[e.keyCode]), 1);
 	}
 
 	switch(e.keyCode) {
 		// client loop back functionality
-		case keymap['m']:
-			 audio.pause();
-			 break;
-		case keymap['ESC']:
-			optionMenu.toggle();
-			break;
-		case keymap['TAB']:
-			scoreBoard.toggle();
-			break;
-		case keymap['f']:
-			toggleFullScreen();
-			break;
-		// client send only once
-		/*case keymap['c']:
-			keyPresses.push(codemap[e.keyCode]);*/
-			/*myPlayer.vacuum.removeFromScene(scene);
-			myPlayer.vacuum = null;
-			controlsEvent.set("isVacuum", false);*/
-		//default:
-			//console.log(e.keyCode);
-	}
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+        case 73:
+        case 74:
+        case 75:
+        case 76:
+              keyMoveReset();
+              break;
+        }
 }

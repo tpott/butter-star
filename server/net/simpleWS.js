@@ -62,6 +62,7 @@ Server.prototype._newSocket = function(socket) {
 
 	if (game == null) {
 		console.log('Game doesnt exist :(');
+		return;
 	}
 
   // Create a player and connect to socket
@@ -77,11 +78,15 @@ Server.prototype._newSocket = function(socket) {
 	socket.on('message', function(anything) {
 		var clientData = JSON.parse(anything);
 		//var clientData = game.parseInput(player, anything);
-		//console.log(clientData);
-
 		if (clientData instanceof Array) {
 			game.eventBasedUpdate(player, clientData);
-		}
+		} else if (clientData.name) {
+            // set name
+            player.setName(clientData.name);
+        } else if (clientData.chatmessage) {
+            //TODO is this.player the correct var to be using
+            game.newChatMessage(this.player, clientData.chatmessage);
+        }
 		else {
 			console.log("Bad data from client");
 		}

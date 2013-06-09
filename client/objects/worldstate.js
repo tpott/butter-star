@@ -27,6 +27,7 @@ var WorldState = function() {
   this.critters = {};
   this.environments = {};
   this.foods = {};
+  this.items = {};
 }
 
 /**
@@ -61,11 +62,69 @@ WorldState.prototype.add = function(object) {
 	}
 }
 
+WorldState.prototype.handleUpdatedTime = function(time) {
+    gameTimer.update(time);
+}
+
+WorldState.prototype.spawnItem = function(name, position) {
+    // make sure only one of each item
+    this.deleteItem(name);
+
+    if (name == "battery") {
+        var battery = new Battery(position);
+        this.items[name] = battery; 
+        scene.add(battery.mesh);
+    } else if (name == "soap") {
+        var soap = new Soap(position);
+        this.items[name] = soap;
+        scene.add(soap.mesh);
+    } else if (name == "butter") {
+        var butter = new Butter(position);
+        this.items[name] = butter;
+        scene.add(butter.mesh);
+    } else {
+        console.log("ERROR: unknown item name recieved from server");
+    }
+}
+
+WorldState.prototype.deleteItem = function(name) {
+    if (this.items[name] != null) {
+        scene.remove(this.items[name].mesh);
+        this.items[name] = null;
+    }
+}
+
+WorldState.prototype.updateItemsAnimation = function() {
+    for (key in this.items) {
+        var item = this.items[key];
+        if(item != null) {
+            item.mesh.rotation.y += 0.012;
+        }
+    }
+}
+
 WorldState.prototype.addPlayer = function(p) {
 	var player = new Player(p);
 	this.players[player.id] = player;
 
 	scene.add(player.mesh);
+
+  player.mesh.receieveShadow = false;
+  player.mesh.castShadow = true;
+  player.mesh.name = "player : " + player.id;
+  /*
+  player.mesh.traverse(function(child) {
+    if(child instanceof THREE.Mesh) {
+      child.castShadow = true;
+    }
+  });
+  */
+  
+  for(var i = 0; i < player.mesh.children.length; i++)
+  {
+    player.mesh.children[i].castShadow = true;
+    player.mesh.children[i].receieveShadow = true;
+  }
 }
 
 WorldState.prototype.addCritter = function(critter) {
@@ -73,12 +132,40 @@ WorldState.prototype.addCritter = function(critter) {
   this.critters[crit.id] = crit;
 
   scene.add(crit.mesh);
+
+  crit.mesh.receieveShadow = false;
+  crit.mesh.castShadow = true;
+  crit.mesh.name = "Critter : " + crit.id;
+  /*
+  crit.mesh.traverse(function(child) {
+    if(child instanceof THREE.Mesh) {
+      child.castShadow = true;
+    }
+  });
+  */
+
+
+  for(var i = 0; i < crit.mesh.children.length; i++)
+  {
+    crit.mesh.children[i].castShadow = true;
+    crit.mesh.children[i].receieveShadow = true;
+  }
 }
 
 WorldState.prototype.addEnvironment = function(env) {
 	var enviro = new Environment(env);
 	this.environments[env.id] = enviro;
 	scene.add(enviro.mesh);
+
+  enviro.mesh.receiveShadow = true;
+  enviro.mesh.castShadow = false;
+  enviro.mesh.name = "room environment";
+  enviro.mesh.traverse(function(child) {
+    if(child instanceof THREE.Mesh) {
+      child.receiveShadow = true;
+    }
+  });
+
 }
 
 WorldState.prototype.addFood = function(f) {
@@ -116,7 +203,13 @@ WorldState.prototype.removePlayer = function(id) {
 
 WorldState.prototype.removeCritter = function(id) {
 	scene.remove(this.critters[id].mesh);
+	for(pId in this.players)
+		this.players[pId].plusOne[id] = this.critters[id].position;	
 	delete this.critters[id];
+    if (Object.keys(this.critters).length == 0 && !mute) {
+        levelCompleteAudio.load();
+        levelCompleteAudio.play();
+    }
 }
 
 WorldState.prototype.removeEnvironment = function(id) {
@@ -149,13 +242,16 @@ WorldState.prototype.updateWorldState = function(newStates){
 			this.players[id].orientation.copy(update.orientation);
 			this.players[id].state = update.state;
             this.players[id].radius = update.radius;
-
+            if (this.players[id].nametag.name != update.name) { 
+                this.players[id].setName(update.name);
+            }
+            //this.players[id].updateNameLocation();
 			// necessary for graphics
 			this.players[id].mesh.position.copy(update.position);
             this.players[id].mesh.position.setY(update.position.y - update.radius);
-		 
+			 
             this.players[id].mesh.lookAt( forwards(this.players[id].mesh.position, this.players[id].orientation) );
-
+			/*
             if(this.players[id].mesh.position.z < 0)
             {
             this.players[id].mesh.rotation.y -= 45 * Math.PI/2;  
@@ -164,6 +260,7 @@ WorldState.prototype.updateWorldState = function(newStates){
             {
             this.players[id].mesh.rotation.y += 45 * Math.PI/2;
             }
+			*/
             //this.players[id].mesh.lookAt( forwards(this.players[id].position, this.players[id].orientation) );
 		}
 		else if (update.id in this.critters) {

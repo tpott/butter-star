@@ -37,33 +37,45 @@ function Connection(ip, port, gameid, player, world) {
 	this.socket.onopen = this._onopen;
 	this.socket.onerror = this._onerror;
 	this.socket.onclose = this._onclose;
-	this.socket.onmessage = this._onmessage;
-
+    this.socket.onmessage = this._onmessage;
 	var socket = this.socket;
 	function clientTick() {
 		if (socket.readyState != socket.OPEN) {
 			console.log("Connection is not ready yet!");
-		} 
-		else if (array_equals(keyPresses, oldKeyPresses) && 
-				mouseMovement[0] == 0 && mouseMovement[1] == 0) {
-			//console.log("Nothing new from the client");
-		}
-		else {
-			// client side networking happens HERE. BOOM
-			var allData = keyPresses.slice(0); // aka clone
-			if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
-				allData.push(mouseMovement);
-			}
-			socket.send(JSON.stringify(allData));
-			mouseMovement[0] = 0;
-			mouseMovement[1] = 0;
+		} else {
+      keyMove();
+      if (array_equals(keyPresses, oldKeyPresses) && 
+          mouseMovement[0] == 0 && mouseMovement[1] == 0) {
+      }
+      else {
+        // client side networking happens HERE. BOOM
+        var allData = keyPresses.slice(0); // aka clone
+        if (mouseMovement[0] != 0 || mouseMovement[1] != 0) {
+          allData.push(mouseMovement);
+        }
 
-			// copy!!! cause javascript sucks
-			oldKeyPresses = keyPresses.slice(0);
-		}
-	}
+        socket.send(JSON.stringify(allData));
+        mouseMovement[0] = 0;
+        mouseMovement[1] = 0;
+
+        // copy!!! cause javascript sucks
+        oldKeyPresses = keyPresses.slice(0);
+      }
+    }
+  }
 
 	setInterval(clientTick, 1000/60);
+}
+
+Connection.prototype.sendChatMessage = function (msg) {
+    var data = {};
+    data.chatmessage = msg;
+    this.socket.send(JSON.stringify(data));
+}
+Connection.prototype.sendName = function(name) {
+    var data = {};
+    data.name = name;
+    this.socket.send(JSON.stringify(data));
 }
 
 Connection.prototype._onopen = function() {
@@ -83,6 +95,10 @@ Connection.prototype._onmessage = function(buf) {
 	//this.messages.push(buf.data);
 
 	var message = JSON.parse(buf.data);
+    if (message.chatmessages) {
+        chatbox_receiveMessage(message.chatmessages);
+        return;
+    }
 	if (! this.initialized) {
 		// this does the same thing as adding new objects
 		myWorldState.addObjects(message.new);
@@ -95,6 +111,10 @@ Connection.prototype._onmessage = function(buf) {
 			myWorldState.players[message.kill[i].id]
 				 .updateKillCounter(message.kill[i].count);
 		}
+
+    for (var i = 0; i < message.bun.length; i++) {
+      myWorldState.critters[message.bun[i].id].updateHP(message.bun[i].hp);
+    }
 
 		console.log("Client recieved id: " + message.id);
 
@@ -109,6 +129,10 @@ Connection.prototype._onmessage = function(buf) {
 			myWorldState.remove(deleteIds[i].id);
 		}
 	}
+    if ('timer' in world) {
+        myWorldState.handleUpdatedTime(world.timer);
+    }
+
 	if ('new' in world) {
 		// world.new should be the same as what is received in the initial
 		//  message.world
@@ -129,6 +153,23 @@ Connection.prototype._onmessage = function(buf) {
 			 .updateKillCounter(world.kill[i].count);
 	 }
   }
+  if ('bun' in world) {
+    for (var i = 0; i < world.bun.length; i++) {
+      myWorldState.critters[world.bun[i].id].updateHP(world.bun[i].hp);
+    }
+  }
+    if ('newItems' in world) {
+        for (var i = 0; i < world.newItems.length; i++) {
+            notifyBar.addMessage(world.newItems[i].name + " spawned!");
+            myWorldState.spawnItem(world.newItems[i].name, world.newItems[i].position);
+        }
+    }
+    if ('delItems' in world) {
+        for (var i = 0; i < world.delItems.length; i++) {
+            notifyBar.addMessage(world.delItems[i].player_name + " acquired " + world.delItems[i].name + "!");
+            myWorldState.deleteItem(world.delItems[i].name);
+        }
+    }
 	if ('misc' in world) {
 		// TODO
 		for (var i = 0; i < world.misc.length; i++) {

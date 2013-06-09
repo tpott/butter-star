@@ -1,26 +1,39 @@
-Butter\*
-=======
+# DUST BUSTERS
+## A Butter\* Production
 
-An HTML5, 3D, multiplayer, networked video game production.
+An HTML5, 3D, multiplayer, networked video game, written entirely in
+JavaScript.
 
-Controls
---------
+This was our project for UCSD's CSE 125 class. Our group's 
+[page](http://cse125.ucsd.edu/cse125/2013/cse125g3/) is hosted on campus,
+and serves as a journal to our ten weeks spent working on our project.
+The class's [page](http://cse125.ucsd.edu/cse125/2013/) has links to the 
+other teams from our quarter. We were apart of Professor 
+[Voelker](http://cseweb.ucsd.edu/~voelker/)'s (lucky) thirteenth class.
+You can also checkout other [years](http://cse125.ucsd.edu/cse125/)' projects.
 
-Movement			WASD
-Sprint			Shift
-Rotate camera	Left mouse
-Mute music		M
+# Installing
 
-Repository
-----------
+For the server, you will need to install nodejs and a couple packages.
+We tested it on several different versions of nodejs, from v0.6.12 to 
+v0.10.9. After installing nodejs you will need to install the 
+[ws](http://einaros.github.io/ws/) and 
+[three](https://npmjs.org/package/three).
 
-None of the static assets will be included with this repository,
-due to git's way of handling blob files.
+# Running
 
-For our group's home page, check out [pisa](http://cse125.ucsd.edu/cse125/2013/cse125g3/)!
+After completing the above install instructions, you will should create
+your own server config. Copy server/defaultPConfig.json and save it as
+server/personalConfig.json. Then you need to modify your personalConfig.json
+file so that the IP address is the IP or domain name that you want to run
+the server at. Next, change the httpPort to 80 so browsers can use their
+defaults. Then run server/main.js inside the server/ directory!
 
-Realistically, we should make a butter\* user that has a *DustBusters* repository.
+The gameplay instructions will be hosted on the server that you now have
+running, so you can find them there.
 
+# Contributing
 
-
-If you're looking for our group's todo work, checkout [TODO.md](https://github.com/tpott/butter-star/blob/master/TODO.md)
+If you are interested in contributing to the game, we ask that you fork
+this repository and make a pull request. Be warned though, we may not 
+respond in a timely manner!

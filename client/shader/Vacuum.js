@@ -19,7 +19,7 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.angle = 0.0;
 	this.vCenterCircle = new THREE.Vector3();
 	this.length = 10;
-	this.radius = 2;
+	this.radius = 3;
 
 	//shader attributes and uniforms
 	this.uniforms = {};
@@ -41,7 +41,8 @@ function Vacuum(base,direction,numParticles,vertexShader, fragmentShader)
 	this.offsetRotationY.identity();
     this.offsetRotationX = new THREE.Matrix4();
     this.offsetRotationX.identity();
-	
+	this.vacTranslation = new THREE.Matrix4();
+	this.vacTranslation.identity();	
 	//uniform values
 	this.weight = 0.0;;
 
@@ -292,7 +293,8 @@ Vacuum.prototype.init = function()
 		negativeTranslation: {type: 'm4', value: this.negativeTranslationMatrix},
 		offset: {type: 'm4', value: this.offsetMatrix},
 		offsetRotationY: {type: 'm4', value: this.offsetRotationY},
-        offsetRotationX: {type: 'm4', value: this.offsetRotationX}
+        offsetRotationX: {type: 'm4', value: this.offsetRotationX},
+		vacTranslation:  {type: 'm4', value: this.vacTranslation}
 	};
 
 	this.attributes = {
@@ -321,7 +323,7 @@ Vacuum.prototype.init = function()
 /**
 *@this {Vacuum}
 **/
-Vacuum.prototype.update = function(translation,vAngle,vAngleX)
+Vacuum.prototype.update = function(translation,preTranslation,vAngle,vAngleX)
 {
 	var angle = vAngle * Math.PI/180.0;
     var angleX = vAngleX * Math.PI/180.0;
@@ -329,6 +331,7 @@ Vacuum.prototype.update = function(translation,vAngle,vAngleX)
 	this.uniforms.offset.value.makeTranslation(translation.x,translation.y,translation.z);
 	this.uniforms.offsetRotationY.value.makeRotationY(angle);
     this.uniforms.offsetRotationX.value.makeRotationZ(-angleX);
+	this.uniforms.vacTranslation.value.makeTranslation(preTranslation.x, preTranslation.y, preTranslation.z);
 	if(this.uniforms.weight.value >= 1.0)
 		this.uniforms.weight.value = 0.0;
 

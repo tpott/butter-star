@@ -17,8 +17,9 @@ var Loader = require('./OBJLoader.js');
  */
 function Critter(){
     Critter.super_.call(this);
-
-    this.scale = 0.12;
+	this.hp = 20;
+  this.prevHP = -1;
+    this.scale = 0.01 * this.hp;
 
     this.type = Collidable.types.CRITTER;
 
@@ -39,22 +40,56 @@ function Critter(){
 
     this.speed = 0.01; // speed of critter rotation 
     this.rotation; // determines if rotating clockwise or counterclockwise 
+    this.rotation_point; // determines the point in which critter rotates around
 }
 util.inherits(Critter, Movable);
 
+Critter.prototype.didHPChange = function() {
+  if (this.prevHP != this.hp) {
+    this.prevHP = this.hp;
+    return true;
+  }
+  return false;
+};
+
 Critter.prototype.move = function() {
+    //start at origin
+    var originPos = new THREE.Vector3(0,0,0);
+    
+    //calculate translation between this.position and this.rotation_point
+    var transVector = new THREE.Vector3();
+    transVector.subVectors(this.position, this.rotation_point);
+    var transMatrix = new THREE.Matrix4();
+    transMatrix.makeTranslation(transVector.x, transVector.y, transVector.z);
+    
+    //calculate translation between origin and this.rotation_point
+    var translateMatrix = new THREE.Matrix4();
+    translateMatrix.makeTranslation(this.rotation_point.x, 
+                                    this.rotation_point.y, 
+                                    this.rotation_point.z);
+
+    //calculate rotation matrix
     var rotateMatrix = new THREE.Matrix4();
     if (this.rotation == 0) {
         rotateMatrix.makeRotationY(this.speed);
     } else {
         rotateMatrix.makeRotationY(-this.speed);
     }
-    //this.mesh.matrixWorld.multiply(rotateMatrix);
-    this.position.applyMatrix4(rotateMatrix);
-    /*this.position.set(this.mesh.matrixWorld.elements[12],
-                      this.mesh.matrixWorld.elements[13],
-                      this.mesh.matrixWorld.elements[14],
-                      1);*/
+
+    //save old position
+    var old_position = new THREE.Vector4().copy(this.position);
+    
+    // translate from rotation point to position
+    originPos.applyMatrix4(transMatrix);
+    // rotate
+    originPos.applyMatrix4(rotateMatrix);
+    // move whole rotation to the new center which is rotation point
+    originPos.applyMatrix4(translateMatrix);
+    this.position.copy(originPos);
+
+    //determine orientation from change in position
+    this.orientation.subVectors(this.position, old_position);
+    this.orientation.normalize();
 }
 
 module.exports = Critter;

@@ -4,6 +4,7 @@
  * @fileoverview Displays all player scores
  * @dependencies jQuery
  * @author Trevor
+ * @author Prita Priscilla
  */
 
 function ScoreBoard() {
@@ -14,21 +15,28 @@ function ScoreBoard() {
 		.css({ 
 			'display': 'inline',
 			'position': 'absolute',
-			'top': '50%',
-			'left': '50%'
+			'top': '215px',
+			'right': '10px',
+			'border': '2px solid rgba(255, 255, 255, 0.2)',
+			'background': 'rgba(100, 100, 100, 0.2)',
+			'-moz-border-radius': '10px',
+			'-webkit-border-radius': '10px',
+			'padding': '10px',
+			'max-height': '350px',
+			'overflow': 'auto'
 		});
 
 	this.title = $('<div id="scoreTitle" />')
-		.append($('<strong>Score</strong>'));
+		.append($('<h1>scoreboard</h1>'));
 	this.table = $('<table />');
 
 	this.board.append(this.title);
 	this.board.append(this.table);
 
 	$('body').append(this.board);
-	this.board.hide();
+	this.board.show();
 
-	this.hidden = true;
+	this.hidden = false;
 }
 
 ScoreBoard.prototype.toggle = function() {
@@ -42,9 +50,6 @@ ScoreBoard.prototype.toggle = function() {
 
 		$('#scoreboard').show();
 		this.update();
-
-		// hide background
-		//$('.game').css('opacity', '0.4');
 
 		this.hidden = false;
 	}
@@ -65,8 +70,8 @@ ScoreBoard.prototype.update = function() {
 	// myWorldState is a global from main.js
 	for (var id in myWorldState.players) {
 		var row = $('<tr />');
-		row.append( $('<td />').text(id) );
-		row.append( $('<td />').text(myWorldState.players[id].killCount) );
+		row.append( $('<td id="scoreText"/>').text(myWorldState.players[id].nametag.name) );
+		row.append( $('<td id="scoreNumb"/>').text(myWorldState.players[id].killCount) );
 
 		table.append(row);
 	}

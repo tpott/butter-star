@@ -38,6 +38,7 @@ module.exports.wsServer = wsServer;
 
 // needed for the shell
 global.games = httpServer.games;
+global.history = httpServer.game_history;
 var startShell = require('./shell.js');
 
 if (config.spawnShell) {

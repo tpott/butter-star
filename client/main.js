@@ -5,13 +5,28 @@
  */
 
 //GLOBALS AND SHIT
-var timer; // TODO not being used
 var loader = new THREE.OBJMTLLoader();
 var scene = new THREE.Scene(); 
 var stats = new Stats();
 var audio = document.createElement('audio');
 var source = document.createElement('source');
-var renderer = new THREE.WebGLRenderer(); 
+var renderer = new THREE.WebGLRenderer({
+  antialias : true,
+  preserveDrawingBuffer : true
+}); 
+var chatbox_messages = [];
+var hackysolution = false;
+
+var myName = "";
+var options_disableKeyPresses = false;
+var chatbox_disableKeyPresses = false;
+//sounds
+var myAudio = new Audio('Birds.ogg');
+var themeAudio = new Audio('AnotherOneBitesTheDust.ogg');
+var vacAudio = new Audio('vacuum_clip.ogg');
+var critterDeathAudio = new Audio('critter_death.ogg');
+var heheheAudio= new Audio('he_he_he.ogg');
+var levelCompleteAudio = new Audio('level_complete.ogg');
 
 // needed in client/net/loader.js, so before this file is loaded
 /*var models = {
@@ -22,19 +37,21 @@ var renderer = new THREE.WebGLRenderer();
 };*/
 
 // mouseMoved and rotateStart from client/controls/mouse.js
-document.addEventListener( 'mousemove', mouseMove, false );
 //document.addEventListener('mousedown', rotateStart, false);
 
 // keyDown and keyUp from client/controls/keyboard.js
+document.addEventListener( 'mousemove', mouseMove, false );
 document.addEventListener( 'keydown', keyDown, false );
 document.addEventListener( 'keyup', keyUp, false );
 
 // GUI stuff
 var minimap = null;
 var optionMenu = null;
+var chatBox = null;
 var scoreBoard = null;
 var notifyBar = null;
 var statusBox = null;
+var gameTimer = null; // TODO not being used
 
 var PI_2 = Math.PI / 2;
 var fullScreenMode = 0;
@@ -46,7 +63,7 @@ var gameid = document.URL.replace(/.*\//,'');
 
 // dont iniailize until main()
 var myWorldState = null,
-	 camera = null;
+	 camera = null,
 	 connection = null;
 
 // each key press will append something here,
@@ -62,6 +79,8 @@ var initWorldState = true;
 ///Octree Code, eventually will need to port over to the server
 
 var hasBeenSent = true; // prevents sending idle events
+
+var mute = false;
 //-------------------------------------------------------
 //HELPER FUNCTIONS AND SHIET
 //-------------------------------------------------------
@@ -80,6 +99,43 @@ for (var attr in obj) {
 //-------------------------------------------------------
 //FUNCTIONS AND SHIET
 //-------------------------------------------------------
+function muteAll() {
+    mute = !mute;
+    if (mute) {
+        myAudio.pause();
+        themeAudio.pause();
+    } else {
+        myAudio.play();
+        themeAudio.play();
+    }
+}
+
+function chatbox_sendMessage() {
+    var msg = $("#chatinput").val();
+    // disallow empty chat messages.
+    // newline always gets stuck on as first char for some reason
+    if (!(msg.length == 1 && msg.charCodeAt(0) == 10)) {
+        connection.sendChatMessage(msg);
+    }
+    chatBox.toggle();
+}
+
+function chatbox_receiveMessage(messages) {
+    this.chatbox_messages.concat(messages);
+    var cbox = $('#chatbox_messages');
+    for (var i = 0; i < messages.length; i++) {
+        cbox.append("<h7>" + messages[i].player + ": </h7>" + messages[i].msg +"<br/>");
+    }
+    // this line of code does nothing at all. but it should. >_<
+    cbox.animate({ scrollTop: 999999999 }, "slow");
+}
+
+function setName() {
+    myName = $("#nametagbox").val();
+    connection.sendName(myName);
+    optionMenu.toggle();
+    myPlayer.setName(myName);
+}
 
 /*
 update the states of the game
@@ -93,13 +149,24 @@ function update() {
 	if (myPlayer == null || myPlayer.id == null) return; 
 
 	// begin camera update
-	//   update camera position
+	// update camera position
 	camera.position = myPlayer.position.clone().sub(
-			myPlayer.orientation.clone().multiplyScalar(8))
-	//camera.position.add(new THREE.Vector4(7, 3, 0, 0));
+	myPlayer.orientation.clone().multiplyScalar(15))
+    camera.position.add(new THREE.Vector3(0, 5, 0));
 	
-	//   update camera orientation
-	camera.lookAt( myPlayer.position );
+	//update camera orientation
+	camera.lookAt( myPlayer.position.clone().add(new THREE.Vector3(0,5,0) ));
+}
+
+function startVacuumSound() {
+    if (!mute) {
+        vacAudio.load();
+        vacAudio.play();
+    }
+}
+
+function stopVacuumSound() {
+    vacAudio.pause();
 }
 
 //render all other player animations
@@ -108,20 +175,31 @@ function updateAnimations() {
 	for (var id in myWorldState.players) {
 		var player = myWorldState.players[id];
 
-		if (player.isVacuuming() && player.vacuum == null) {
+		if (player.isVacuuming() && player.vacuum == null && player.charge > 0) {
 			player.startVacuuming();
+            if (id == myPlayer.id) {
+                startVacuumSound();
+            }
 		}
-		else if (player.isVacuuming()) {
+		else if (player.isVacuuming() && player.charge > 0) {
 			player.updateVacuum();
 		}
-		else if (! player.isVacuuming() && player.vacuum != null) {
+		else if (! player.isVacuuming() || player.charge <= 0) {
 			player.stopVacuuming();
+            if (id == myPlayer.id) {
+                stopVacuumSound();
+            }
 		}
 
 		if (player.animation != null) {
 			player.animation.update();
 		}
 	}
+    if (myPlayer != null) {
+	    myPlayer.plusOneAnimation();
+		myPlayer.critterHealth(myWorldState.critters);
+    }
+    myWorldState.updateItemsAnimation();
 }
 
 /*
@@ -139,14 +217,37 @@ function render() {
 
 //place to initialize lights (temporary, may not need)
 function initLights() {
-		var light = new THREE.PointLight( 0xffffff, 1, 1000); 
-		light.position.set( 0, 20, 0 ); 
-		scene.add( light );
+    var ambient = new THREE.AmbientLight(0x666666);
+    scene.add(ambient);
+
+    var light = new THREE.PointLight( 0xffffff, 1, 2000); 
+    light.position.set( 0, 500, 0 ); 
+    scene.add( light );
+
+    var slight = new THREE.SpotLight(0xFFFFFF, 1, 0, true);
+    slight.angle = Math.PI / 2;
+    slight.target.position.set(0,0,0);
+    slight.position.set(0, 200,0);
+    slight.shadowCameraNear = 10;
+    slight.shadowCameraFar = 300;
+    slight.castShadow = true;
+    slight.shadowBias = .0001;
+    slight.shadowDarkness = .5;
+    //slight.shadowCameraVisible = true;
+
+    slight.shadowMapHeight = 2048;
+    slight.shadowMapWidth = 2048;
+
+    //slight.shadowCameraRight = 20;
+    //slight.shadowCameraLeft = -20;
+    //slight.shadowCameraTop = 20;
+    //slight.shadowCameraBottem = -20;
+
+    scene.add(slight);
 }
 
 //load sound clips here
 
-var myAudio = new Audio('Birds.ogg');
 function initSounds()
 {
   myAudio.play();
@@ -154,13 +255,24 @@ function initSounds()
       myAudio.load();
       myAudio.play();
     }, false); 
+  themeAudio.play();
+  themeAudio.addEventListener('ended', function() { 
+      themeAudio.load();
+      themeAudio.play();
+    }, false); 
+  vacAudio.addEventListener('ended', function() {
+    vacAudio.load();
+    vacAudio.play();
+    }, false);
 }
 
 //initialize the fps counter
 function initStats() {
 	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0px';
+	stats.domElement.style.bottom = '0px';
+	stats.domElement.style.right = '0px';
 	stats.domElement.style.zIndex = 100;
+	stats.domElement.style.opacity = 0;
 }
 
 function initZero() {
@@ -178,6 +290,7 @@ function initSkyBox()
 		var skybox = event.content;
 		skybox.position.y -= 4.93; // magic number from server/objects/environment.js
 		scene.add(skybox);
+    
 	});
 	loader.load('skybox.obj', 'skybox.mtl');
 }
@@ -185,7 +298,10 @@ function initSkyBox()
 
 
 function main() {
-	initStats();
+	renderer.shadowMapEnabled = true;
+  renderer.shadowMapSoft = true;
+  renderer.setClearColorHex(0x0000ff, 1);
+  initStats();
 	initLights();
     //initModels();
 	// initTextures();
@@ -205,17 +321,29 @@ function main() {
 	minimap = new Minimap();
 	minimap.drawCircle();
 	optionMenu = new OptionMenu();
+    chatBox = new ChatBox();
 	scoreBoard = new ScoreBoard();
 	notifyBar = new Notify();
-  statusBox = new StatusBox();
+    statusBox = new StatusBox();
+    gameTimer = new Timer();
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up = new THREE.Vector3(0,1,0);
 
 	renderer.setSize(window.innerWidth, window.innerHeight); 
 	document.body.appendChild(renderer.domElement); 
 	document.body.appendChild( stats.domElement );
 	window.addEventListener( 'resize', onWindowResize, false );
+	
+    var self = this;
+	function randomAudio() {
+        setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
+        if (!self.mute) {
+		    self.heheheAudio.load();
+		    self.heheheAudio.play();
+        }
+	}
+	setTimeout(randomAudio, (Math.random() * (25 - 8) + 8) * 1000);
 
 	$('canvas').addClass('game');
 	render(); 

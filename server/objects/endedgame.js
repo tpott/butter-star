@@ -14,7 +14,8 @@ function Player(player) {
 	this.points = player.getVacKills();
 
 	// TODO 
-	this.display_name = player.id;
+	this.display_name = player.name;
+	this.model = player.model;
 }
 
 /**

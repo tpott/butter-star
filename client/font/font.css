@@ -18,3 +18,9 @@
     font-family: "Dustismo Italic";
     src: url("http://ff.static.1001fonts.net/d/u/dustismo.bold-italic.ttf")  format("truetype");
 }
+
+/* Adventuring webfont */
+@font-face {
+    font-family: "Adventuring";
+    src: url("http://ff.static.1001fonts.net/a/d/adventuring.regular.ttf");
+}

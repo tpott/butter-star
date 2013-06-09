@@ -5,18 +5,14 @@
  * This file has a dependency: jQuery.
  *
  * @author Trevor Pottinger
+ * @author Prita Priscilla Hasjim
  */
 
 var NOTIFY_DELAY = 9 * 1000; // 9 seconds
 
 function Notify() {
-	// TODO positioning
 	this.bar = $('<div id="notify" align="center" />')
-		.addClass('gui')
-		.css('background-color', 'transparent')
-		.css('display', 'inline')
-		.css('position', 'absolute')
-		.css('left', '30%');
+		.addClass('gui');
 
 	$('body').append(this.bar);
 }
@@ -25,9 +21,8 @@ function Notify() {
  * Create a new message using the string input: str
  */
 Notify.prototype.addMessage = function(str) {
-	var message = $('<h3 />')
+	var message = $('<h4 />')
 		.text(str);
-//		.css('background-color', 'transparent');
 	this.bar.append(message);
 
 	setTimeout(this.popMessage(message), NOTIFY_DELAY);

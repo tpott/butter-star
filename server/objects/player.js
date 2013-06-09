@@ -24,6 +24,81 @@ var STANDING_STILL = 0,
 	 MOVING_RIGHT = 8,
 	 VACUUMING = 16,
 	 JUMPING = 32;
+var names = [
+'Apple',
+'Apricot',
+'Avocado',
+'Banana',
+'Breadfruit',
+'Bilberry',
+'Blackberry',
+'Blackcurrant',
+'Blueberry',
+'Boysenberry',
+'Currant',
+'Cherry',
+'Cherimoya',
+'Chili',
+'Cloudberry',
+'Coconut',
+'Damson',
+'Date',
+'Dragonfruit',
+'Durian',
+'Elderberry',
+'Feijoa',
+'Fig',
+'Gooseberry',
+'Grape',
+'Grapefruit',
+'Guava',
+'Huckleberry',
+'Honeydew',
+'Jackfruit',
+'Jettamelon',
+'Jambul',
+'Jujube',
+'Kiwi fruit',
+'Kumquat',
+'Legume',
+'Lemon',
+'Lime',
+'Loquat',
+'Lychee',
+'Mango',
+'Melon',
+'Canary melon',
+'Cantaloupe',
+'Honeydew',
+'Watermelon',
+'Rock melon',
+'Nectarine',
+'Nut',
+'Orange',
+'Clementine',
+'Mandarine',
+'Tangerine',
+'Papaya',
+'Peach',
+'Pepper',
+'Pear',
+'Persimmon',
+'Physalis',
+'Plum',
+'Pineapple',
+'Pomegranate',
+'Pomelo',
+'Purple Mangosteen',
+'Quince',
+'Raspberry',
+'Rambutan',
+'Redcurrant',
+'Salal berry',
+'Satsuma',
+'Star fruit',
+'Strawberry',
+'Tamarillo'
+]
 
 /**
  * Constructor for a player. Makes a mesh that is the same as the
@@ -32,7 +107,7 @@ var STANDING_STILL = 0,
  */
 function Player() {
   Player.super_.call(this);
-  
+  this.name; 
   this.scale = 0.06;
 
   // 3D object this represents
@@ -78,8 +153,46 @@ function Player() {
   // Vacuum charge percentage
   this.vacuumCharge = 100; // counter for % vacuum battery remaining
   this.prevVacuumCharge = -1; // used to see if num vacuumed changed
+
+  // boolesn states for items
+  this.hasBatteryItem = false;
+  this.hasSoapItem = false;
+  this.hasButterItem = false;
+
+  this.initName();
 }
 util.inherits(Player, Movable);
+
+Player.prototype.initName= function() {
+    this.name = names[Math.floor(Math.random() * 75)]; 
+}
+
+Player.prototype.obtainBattery = function() {
+    this.hasBatteryItem = true;
+    this.vacuumCharge = 100;
+}
+
+Player.prototype.obtainSoap = function() {
+    this.hasSoapItem = true;
+}
+
+Player.prototype.obtainButter = function() {
+    //this.hasButterItem = true;
+
+    //TODO: do something else? for now combine battery and soap
+    this.obtainBattery();
+    this.obtainSoap();
+}
+
+Player.prototype.resetItems = function() {
+    this.hasBatteryItem = false;
+    this.hasSoapItem = false;
+    this.hasButterItem = false;
+}
+
+Player.prototype.setName = function(name) {
+    this.name = name;
+}
 
 Player.prototype.incVacKills = function() {
     this.numVacKills++;
@@ -110,7 +223,7 @@ Player.prototype.didKillsChange = function() {
  * Decrease the vacuum charge by 1%.
  */
 Player.prototype.decVacuumCharge = function() {
-  if (this.vacuumCharge > 0) {
+  if (this.vacuumCharge > 0 && !this.hasBatteryItem) {
     this.vacuumCharge--;
   }
 };
@@ -160,14 +273,18 @@ Player.prototype.didVacuumChargeChange = function() {
   return false;
 };
 
+Player.prototype.isVacuuming = function() {
+    return this.state & VACUUMING;
+}
+
 /**
  * Use the vacuum. If not in use, charge the vacuum.
  * @param {Array.<Critter>} critters The possible critters to vacuum.
  * @param {Critter} The closest critter the vacuum intersected with.
  */
-Player.prototype.doVacuum = function(critters) {
+Player.prototype.doVacuum = function(critters, items) {
     // check to make sure player state is vacuuming
-    if (!(this.state & VACUUMING)) {
+    if (!this.isVacuuming()) {
         this.incVacuumCharge();
         return null;
     }
@@ -175,7 +292,7 @@ Player.prototype.doVacuum = function(critters) {
     this.decVacuumCharge();
 
     if (this.canVacuum() === true) {
-      return this.getVacIntersectionObjs(critters);
+      return this.getVacIntersectionObjs(critters, items);
     } else {
       return null;
     }
@@ -188,160 +305,77 @@ function isNegative(number)
 	return false;
 }
 
-function createOrthoVector(positive,negative)
-{
-	var vector = [1,2,3];
-
-	if(negative.length % 2 != 0)
-	{
-		if(negative.length == 1) //negative length is 1
-		{
-			vector[negative[0].type] = -1/negative[0].value;
-			vector[positive[0].type] = 1/positive[0].value;
-			vector[positive[1].type] = 0.0;
-		}
-		else // negative length is 3
-		{
-			vector[negative[0].type] = 0.0;
-			vector[negative[1].type] = -1/negative[0].value;
-			vector[negative[2].type] = 1/negative[0].value;
-		}
-	}
-	else
-	{
-		if(negative.length == 2) // negative length is 2
-		{
-			vector[positive[0].type] = 1/positive[0].value;
-			vector[negative[0].type] = -1/negative[0].value;
-			vector[negative[1].type] = 0.0;
-		}
-		else // negative length is 0
-		{
-			vector[positive[0].type] = -1/positive[0].value;
-			vector[positive[1].type] = 1/positive[1].value;
-			vector[positive[2].type] = 0.0;
-		}
-	}
-	return new THREE.Vector3(vector[0],vector[1],vector[2]);
+Player.prototype.getOffsetPosition = function() {
+	var orientation3 = new THREE.Vector3().copy(this.orientation);
+	var position = this.position.clone();
+	var a = new THREE.Vector3(this.orientation.x,0,this.orientation.z);
+	var b = new THREE.Vector3(0,1,0);
+	var direction = a.cross(b);
+	direction.normalize();
+	direction = direction.multiplyScalar(1.05);
+	var zProjection = this.orientation.clone();
+	zProjection.multiplyScalar(1.5);
+	var offset = zProjection.addVectors(zProjection,direction);
+	offset.y += 0.5
+	position = position.addVectors(position,offset);
+    position.w = 1;
+    return position;
 }
 
-function findOrthoVector(vector)
-{
-	var x,y,z,rand;
-	rand = Math.random();
-	var magnitude = Math.sqrt((vX*vX) + (vY*vY) + (vZ*vZ));
-	var vX = vector.x;var vY = vector.y;var vZ = vector.z;
+Player.prototype.checkHit = function(collidable, mindistance, minangle) {
+    var position = this.getOffsetPosition();
+    var diffVec = collidable.position.clone().sub(position);
+    var distance = diffVec.length();
 
-	var positive = [];
-	var negative = [];
-	var objX = {type: 0, value: vX};
-	var objY = {type: 1, value: vY};
-	var objZ = {type: 2, value: vZ};
+    if (distance > mindistance) {
+        return null;
+    }
 
-	isNegative(vX) ? negative.push(objX) : positive.push(objX);
-	isNegative(vY) ? negative.push(objY) : positive.push(objY);
-	isNegative(vZ) ? negative.push(objZ) : positive.push(objZ);
+    var cosAngle = diffVec.dot(this.orientation) / distance;
 
-	//if all three values are non zero
-	if(vX != 0.0 && vY != 0.0 && vZ != 0.0)
- 	{
- 		return createOrthoVector(positive,negative);
-	}
+    var angle = Math.acos(cosAngle) * (180.0 / Math.PI);
 
-	vector.x == 0 ? x = rand: x = 0.0;
-	vector.y == 0 ? y = rand: y = 0.0;
-	vector.z == 0 ? z = rand: z = 0.0;
-	return new THREE.Vector3(x,y,z).normalize();
-}
-
-function generateCirclePoint(direction,center,radius,angle)
-{
-	var vectorV = direction;
-	var vectorA = findOrthoVector(direction);
-	var vectorCross = vectorV.clone();
-	var vectorB = vectorCross.crossVectors(vectorV, vectorA);
-    
-    vectorA.normalize();
-    vectorB.normalize();
-
-	var x = center.x + radius*Math.cos(angle)*vectorA.x + radius*Math.sin(angle)*vectorB.x;
-   	var y = center.y + radius*Math.cos(angle)*vectorA.y + radius*Math.sin(angle)*vectorB.y;
-   	var z = center.z + radius*Math.cos(angle)*vectorA.z + radius*Math.sin(angle)*vectorB.z;
-   				
-	return new THREE.Vector3(x,y,z);
+    if (angle <= minangle) {
+        return collidable;
+    }
+    return null;
 }
 /*
  * Checks for intersection with objects and returns the closest
  * intersected objects
  */
-Player.prototype.getVacIntersectionObjs = function(critters) {
-    var origin = new THREE.Vector3().copy(this.position);
-    var vector = new THREE.Vector3().copy(this.orientation);
-    var raycaster0 = new THREE.Raycaster(origin, vector);
-
-    var projected_center = new THREE.Vector3();
-    var scalar = new THREE.Vector3().copy(vector);
-    scalar.multiplyScalar(10);
-    projected_center.addVectors(origin, scalar);
-    //projected_center.y = 0;
-
-    var p1 = generateCirclePoint(vector, projected_center, 1.5, 45.0  /*Math.PI / 180.0*/);
-    var p2 = generateCirclePoint(vector, projected_center, 1.5, 135.0 /* Math.PI / 180.0*/);
-    var p3 = generateCirclePoint(vector, projected_center, 1.5, 225.0 /* Math.PI / 180.0*/);
-    var p4 = generateCirclePoint(vector, projected_center, 1.5, 315.0 /* Math.PI / 180.0*/);
-
-    /*console.log("center:");
-    console.log(projected_center);
-    console.log(p1);
-    console.log(p2);
-    console.log(p3);
-    console.log(p4);*/
-    
-    p1.sub(origin);
-    p1.normalize();
-    p2.sub(origin);
-    p2.normalize();
-    p3.sub(origin);
-    p3.normalize();
-    p4.sub(origin);
-    p4.normalize();
-
-    var raycaster1 = new THREE.Raycaster(origin, p1);
-    var raycaster2 = new THREE.Raycaster(origin, p2);
-    var raycaster3 = new THREE.Raycaster(origin, p3);
-    var raycaster4 = new THREE.Raycaster(origin, p4);
-
+Player.prototype.getVacIntersectionObjs = function(critters, items) {
     var ret_objs = {}; // table of intersected objects to return
+    var close_objs= {}; // table of critters within vacuum range
+    
+    // short circuit
+    if (Object.keys(critters).length == 0) {
+        return ret_objs;
+    }
+
+    //optimizations
     for (key in critters) {
-        var intersects = raycaster0.intersectObject(critters[key].mesh);
-        // check if any intersections within vacuum distance
-        // TODO: don't hardcode vacuum distance
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray0");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
-        }
-        intersects = raycaster1.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray1");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
-        }
-        intersects = raycaster2.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray2");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
-        }
-        intersects = raycaster3.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray3");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
-        }
-        intersects = raycaster4.intersectObject(critters[key].mesh);
-        if(intersects.length > 0 && intersects[0].distance < 10) {
-            //console.log("intersected with ray4");
-            ret_objs[critters[key].id] = critters[key]; // add intersected critter to list 
+        if (Math.abs(this.position.x - critters[key].position.x) <= 10 &&
+            Math.abs(this.position.z - critters[key].position.z) <= 10) {
+            close_objs[key] = critters[key];  
         }
     }
-    return ret_objs; // return table
+    for (key in items) {
+        if (items[key] != null &&
+            Math.abs(this.position.x - items[key].position.x) <= 10 &&
+            Math.abs(this.position.z - items[key].position.z) <= 10) {
+            close_objs[key] = items[key];  
+        }
+    }
+
+    for (key in close_objs) {
+        var obj = this.checkHit(close_objs[key], 10, 45);
+        if (obj != null) {
+            ret_objs[key] = obj;
+        }
+    }
+
+    return ret_objs;
 }
 
 Player.prototype.setDefaultState = function() {
@@ -384,9 +418,19 @@ Player.prototype.isMoving = function() {
  * @param {Event} evt The player movement event (string).
  */
 Player.prototype.move = function() {
+  //console.log(this.isMoving());
 	if (! this.isMoving() ) {
+    //console.log("this isnt moving");
 		return;
 	}
+
+  //dont let the player move if they press both left + right or up + down at the same time
+  if(this.state == 12 || this.state == 3 || this.state == 28 || this.state == 19)
+  {
+    return;
+  }
+
+  //console.log(this.state);
 
 	// MAGIC NUMBER
 	var speed = 0.125;
@@ -406,7 +450,7 @@ Player.prototype.move = function() {
   //console.log(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() );
   var direction = 180.0 * Math.acos(projected.dot(new THREE.Vector4(1,0,0,0)) / projected.length() ) / Math.PI;	
 
-  
+ /* 
   if (this.state & MOVING_FORWARD) {
 	}
 	else if (this.state & MOVING_BACKWARD) {
@@ -438,6 +482,35 @@ Player.prototype.move = function() {
     direction = -direction;
   }
 
+  */
+
+if(projected.z > 0)
+   {
+     if(this.state == 1 || this.state == 17){direction +=   0}
+     if(this.state == 5 || this.state == 21){direction += 315}
+     if(this.state == 4 || this.state == 20){direction += 270}
+     if(this.state == 6 || this.state == 22){direction += 225}
+     if(this.state == 2 || this.state == 18){direction += 180}
+     if(this.state == 10 || this.state == 26){direction += 135}
+     if(this.state == 8 || this.state == 24){direction += 90}
+     if(this.state == 9 || this.state == 25){direction += 45} 
+   }
+else if(projected.z <= 0)
+   {
+     if(this.state == 1 || this.state == 17){direction +=   0}
+     if(this.state == 5 || this.state == 21){direction +=  45}
+     if(this.state == 4 || this.state == 20){direction +=  90}
+     if(this.state == 6 || this.state == 22){direction += 135}
+     if(this.state == 2 || this.state == 18){direction += 180}
+     if(this.state == 10 || this.state == 26){direction += 225}
+     if(this.state == 8 || this.state == 24){direction += 270}
+     if(this.state == 9 || this.state == 25){direction += 315} 
+   }
+
+ if(projected.z > 0)
+  {
+    direction = -direction;
+  }
 	var dx = 1 * (Math.cos(direction * Math.PI / 180) * speed);
   var dy = 0;
 	var dz = -1 * (Math.sin(direction * Math.PI / 180) * speed);
@@ -447,13 +520,6 @@ Player.prototype.move = function() {
 
   // should resolve to super_.addForce
   this.addForce(force);
-};
-
-Player.prototype.toggleVacuum = function() {
-	// XOR
-	this.state ^= VACUUMING;
-	console.log("Player %s %s vacuuming", this.id, 
-			this.state & VACUUMING ? "is" : "is not");
 };
 
 /**
@@ -468,6 +534,8 @@ Player.prototype.rotate = function(mouse) {
 	// variables needed for vertical rotation
 	var orientation3 = new THREE.Vector3().copy(this.orientation);
 	var yaxis = new THREE.Vector3(0, 1, 0);
+  
+  //console.log(orientation3);
 
 	// vertical rotation math
 	var yRotateAxis = new THREE.Vector3().crossVectors(
@@ -485,10 +553,27 @@ Player.prototype.rotate = function(mouse) {
 	var rot = xRotationMat.multiply(yRotationMat);
 
 	//this.orientation = rot.multiply(this.orientation);
-	this.orientation.applyMatrix4(rot);
+	var newOrientation = new THREE.Vector4().copy(this.orientation);
+  newOrientation.applyMatrix4(rot);
+ 
+  this.moved = true;
+
+  //this.orientation.applyMatrix4(rot);
+  if(newOrientation.y >= .1)
+  {
+      //console.log("stop moving down");
+      return;
+  }
+  if(newOrientation.y <= -.5)
+  {
+      //console.log("stop moving up");
+      return;
+  }
+  
+  this.orientation = newOrientation;
 
 	// necessary for graphics to be updated
-	this.moved = true;
+	//this.moved = true;
 };
 
 /**

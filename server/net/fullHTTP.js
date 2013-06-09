@@ -42,6 +42,44 @@ var files = [
 	['home.png', "", client + 'imgs/home.png', 'image/png'],
 	['instructions.png', "", client + 'imgs/instructions.png', 'image/png'],
 	['loading.gif', "", client + 'loading.gif', 'image/gif'],
+	['plusone.png', "", client + 'imgs/plusone.png', 'image/png'],
+    ['minusone.png',"", client + 'imgs/minusone.png', 'image/png'],
+	['favicon.png', "", client + 'imgs/favicon.png', 'image/png'],
+	
+	// chibi png files
+	['chibi_r.png', "", client + 'imgs/chibi_r.png', 'image/png'],
+	['chibi_o.png', "", client + 'imgs/chibi_o.png', 'image/png'],
+	['chibi_y.png', "", client + 'imgs/chibi_y.png', 'image/png'],
+	['chibi_g.png', "", client + 'imgs/chibi_g.png', 'image/png'],
+	['chibi_b.png', "", client + 'imgs/chibi_b.png', 'image/png'],
+	['chibi_i.png', "", client + 'imgs/chibi_i.png', 'image/png'],
+	['chibi_v.png', "", client + 'imgs/chibi_v.png', 'image/png'],
+
+	['zero.png', "", client + 'imgs/zero.png', 'image/png'],
+	['one.png', "", client + 'imgs/one.png', 'image/png'],
+	['two.png', "", client + 'imgs/two.png', 'image/png'],
+	['three.png', "", client + 'imgs/three.png', 'image/png'],
+	['four.png', "", client + 'imgs/four.png', 'image/png'],
+	['five.png', "", client + 'imgs/five.png', 'image/png'],
+	['six.png', "", client + 'imgs/six.png', 'image/png'],
+	['seven.png', "", client + 'imgs/seven.png', 'image/png'],
+	['eight.png', "", client + 'imgs/eight.png', 'image/png'],
+	['nine.png', "", client + 'imgs/nine.png', 'image/png'],
+        
+	
+	['one_left.png', "", client + 'imgs/one_left.png', 'image/png'],
+
+	['zero_left.png', "", client + 'imgs/zero_left.png', 'image/png'],
+	['two_left.png', "", client + 'imgs/two_left.png', 'image/png'],
+	['three_left.png', "", client + 'imgs/three_left.png', 'image/png'],
+	['four_left.png', "", client + 'imgs/four_left.png', 'image/png'],
+	['five_left.png', "", client + 'imgs/five_left.png', 'image/png'],
+
+	// images used for the instructions page
+	['controllers.png', "", client + 'imgs/controllers.png', 'image/png'],
+	['mini_battery.png', "", client + 'imgs/mini_battery.png', 'image/png'],
+	['mini_soap.png', "", client + 'imgs/mini_soap.png', 'image/png'],
+	['mini_butter.png', "", client + 'imgs/mini_butter.png', 'image/png'],
 
 	// networking
 	['loader.js', "", client + 'net/loader.js', 'text/javascript'],
@@ -54,6 +92,9 @@ var files = [
 	['worldstate.js', "", client + 'objects/worldstate.js', 'text/javascript'],
 	['critter.js', "", client + 'objects/critter.js', 'text/javascript'],
 	['environment.js', "", client + 'objects/environment.js', 'text/javascript'],
+	['battery.js', "", client + 'objects/battery.js', 'text/javascript'],
+	['soap.js', "", client + 'objects/soap.js', 'text/javascript'],
+	['butter.js', "", client + 'objects/butter.js', 'text/javascript'],
 
 	// controls
 	['controls.js', "", client + 'controls/controls.js', 'text/javascript'],
@@ -71,6 +112,8 @@ var files = [
 
 	// gui
 	['minimap.js', "", client + 'gui/minimap.js', 'text/javascript'],
+	['timer.js', "", client + 'gui/timer.js', 'text/javascript'],
+	['chatbox.js', "", client + 'gui/chatbox.js', 'text/javascript'],
 	['options.js', "", client + 'gui/options.js', 'text/javascript'],
 	['scoreboard.js', "", client + 'gui/scoreboard.js', 'text/javascript'],
 	['notifications.js', "", client + 'gui/notifications.js', 'text/javascript'],
@@ -87,6 +130,18 @@ var files = [
   ['yellow_boy_standing.obj', "", client + 'models/yellow_boy_standing.obj', 'text/plain'],
   ['yellow_boy_standing.mtl', "", client + 'models/yellow_boy_standing.mtl', 'text/text'],
   ['boy_texture_yellow.png', "", client + 'models/boy_texture_yellow.png', 'image/png'],
+  ['voelker_boy_standing.mtl', "", client + 'models/voelker_boy_standing.mtl', 'text/text'],
+  ['boy_texture_voelker.png', "", client + 'models/boy_texture_voelker.png', 'image/png'],
+  ['blue_boy_standing.mtl', "", client + 'models/blue_boy_standing.mtl', 'text/text'],
+  ['boy_texture_blue.png', "", client + 'models/boy_texture_blue.png', 'image/png'],
+  ['green_boy_standing.mtl', "", client + 'models/green_boy_standing.mtl', 'text/text'],
+  ['boy_texture_green.png', "", client + 'models/boy_texture_green.png', 'image/png'],
+  ['orange_boy_standing.mtl', "", client + 'models/orange_boy_standing.mtl', 'text/text'],
+  ['boy_texture_orange.png', "", client + 'models/boy_texture_orange.png', 'image/png'],
+  ['purple_boy_standing.mtl', "", client + 'models/purple_boy_standing.mtl', 'text/text'],
+  ['boy_texture_purple.png', "", client + 'models/boy_texture_purple.png', 'image/png'],
+  ['red_boy_standing.mtl', "", client + 'models/red_boy_standing.mtl', 'text/text'],
+  ['boy_texture_red.png', "", client + 'models/boy_texture_red.png', 'image/png'],
 
   // rooms
   ['blankRoom.obj', "", client + 'models/blankRoom.obj', 'text/plain'],
@@ -96,6 +151,7 @@ var files = [
   ['room1.obj', "", client + 'models/room1.obj', 'text/plain'],
   ['room1.mtl', "", client + 'models/room1.mtl', 'text/text'],
   ['room1_texture.png', "", client + 'models/room1_texture.png', 'image/png'],
+  ['emptyRoom.obj', "", client + 'models/emptyRoom.obj', 'text/plain'],
   
   //skybox
   ['skybox.obj', "", client + 'models/skybox.obj', 'text/plain'],
@@ -107,6 +163,17 @@ var files = [
   ['bunny.mtl', "", client + 'models/bunny.mtl', 'text/text'],
   ['bunny_texture.png', "", client + 'models/bunny_texture.png', 'image/png'],
   ['bunny_spin.dae', "", client + 'objects/bunny/bunny_spin.dae', 'text/plain'],
+
+  // items
+  ['battery.obj', "", client + 'models/battery.obj', 'text/plain'],
+  ['battery.mtl', "", client + 'models/battery.mtl', 'text/text'],
+  ['battery_texture.png', "", client + 'models/battery_texture.png', 'image/png'],
+  ['soap.obj', "", client + 'models/soap.obj', 'text/plain'],
+  ['soap.mtl', "", client + 'models/soap.mtl', 'text/text'],
+  ['soap_texture.png', "", client + 'models/soap_texture.png', 'image/png'],
+  ['butter.obj', "", client + 'models/butter.obj', 'text/plain'],
+  ['butter.mtl', "", client + 'models/butter.mtl', 'text/text'],
+  ['butter_texture.png', "", client + 'models/butter_texture.png', 'image/png'],
 
   // yixin
 	['yixin.png', "", client + 'objects/yixin/yixin.png', 'image/png'],
@@ -124,6 +191,11 @@ var files = [
   ['AnotherOneBitesTheDust.ogg', "", client + 'sound/AnotherOneBitesTheDust.ogg', 'application/ogg'],
 
   ['Birds.ogg', "", client + '/game/data/sounds/Birds.ogg', 'application/ogg'],
+  ['vacuum_clip.ogg', "", client + 'sound/vacuum_clip.ogg', 'application/ogg'],
+  ['level_complete.ogg', "", client + 'sound/level_complete.ogg', 'application/ogg'],
+  ['critter_death.ogg', "", client + 'sound/critter_death.ogg', 'application/ogg'],
+  ['fast_giggle.ogg', "", client + 'sound/fast_giggle.ogg', 'application/ogg'],
+  ['he_he_he.ogg', "", client + 'sound/he_he_he.ogg', 'application/ogg'],
 	// temp data files, not ours
   ['monster.dae', "", client + 'objects/monster/monster.dae', 'text/plain'],
   ['monster.jpg', "", client + 'objects/monster/monster.jpg', 'image/jpg']
@@ -133,10 +205,13 @@ var files = [
 var staticGamePage = "",
 	 indexPos = 0,
 	 gamePos = 0,
+	 instrPos = 0,
 	 endGamePos = 0;
 
 // TODO use obj for dynamic pages
 
+var playerChibis = ['chibi_i.png', 'chibi_v.png', 'chibi_r.png', 'chibi_b.png',
+		'chibi_g.png', 'chibi_y.png', 'chibi_o.png'];
 function dynamic(server, request) {
 	var response = {
 		head : {
@@ -169,7 +244,7 @@ function dynamic(server, request) {
 		return response;
 	}
 	else if (request.url == '/instructions') {
-		response.body = files[10][1];
+		response.body = files[instrPos][1];
 		response.found = true;
 		return response;
 	}
@@ -187,11 +262,12 @@ function dynamic(server, request) {
 		response.found = true;
 		return response;
 	}
+	/* END GAME PAGE */
 	else if (url in server.game_history) {
 		var stats = "<table>\n";
 		stats += "\t<tr>\n";
-		stats += "\t\t<th>Player</th>\n";
-		stats += "\t\t<th>Kills</th>\n";
+		//stats += "\t\t<th>Player</th>\n";
+		//stats += "\t\t<th>Kills</th>\n";
 		stats += "\t</tr>\n";
 
 		var game = server.game_history[url];
@@ -199,8 +275,14 @@ function dynamic(server, request) {
 			stats += "\t<tr>\n";
 			// player stats
 			var pstats = game.players[id];
-			stats += "\t\t<td>" + pstats.display_name + "</td>\n";
-			stats += "\t\t<td>" + pstats.points + "</td>\n";
+			// show image file of what kind of player they were
+			stats += "\t\t<td width=\"250\"><img src=\"" + playerChibis[pstats.model]+ 
+				"\" width=\"125\" align=\"right\"></td>\n";
+
+			// print out "(player) sucked (#) number of bunnies"
+			stats += "\t\t<td width=\"400\"><center><h7>" + pstats.display_name +
+				"</h7><br>sucked up<br><h6>" + pstats.points +
+				"</h6>dust bunnies</center></td>\n";
 			stats += "\t</tr>\n";
 		}
 		stats += "</table>\n";
@@ -225,7 +307,9 @@ function dynamic(server, request) {
  */
 function staticFile(server, files, request) {
 	var response = {
-		head : {},
+		head : {
+			'Last-Modified' : server.start
+		},
 		found : false,
 		body : '',
 		end : ''
@@ -252,6 +336,8 @@ function staticFile(server, files, request) {
 /**
  * Send the response-like object if it was filled out and return true, 
  * otherwise return false and do nothing
+ * If its a static response, the responseObj.head should have the
+ * Last-Modified field set
  */
 function sendResponse(responseObj, response) {
 	if ('Location' in responseObj.head) {
@@ -276,6 +362,12 @@ function sendResponse(responseObj, response) {
 	}
 }
 
+function notModified(response) {
+	response.writeHead(304, {});
+	response.end();
+	return;
+}
+
 /**
  * Creates an instance of a Server. Does not start up a server, only
  * initializes default member values.
@@ -292,21 +384,29 @@ var Server = function(config) {
 	this.game_history = [];
 	this.ngame_history = 0;
 
+	this.start = Date.now();
+
 	this.initFiles(config);
 }
 
-Server.prototype.requestHandler = function(server) {
+Server.prototype.requestHandler = function() {
+	var self = this;
 	return function (request, response) {
 
-		var potentialResponse = dynamic(server, request);
+		var potentialResponse = dynamic(self, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			sendResponse(potentialResponse, response, false);
 			return;
 		}
 
-		potentialResponse = staticFile(server, files, request);
+		potentialResponse = staticFile(self, files, request);
 		if (potentialResponse.found) {
-			sendResponse(potentialResponse, response);
+			var lastModified = parseInt(request.headers['if-modified-since']);
+			if (lastModified >= self.start) {
+				notModified(response);
+				return;
+			}
+			sendResponse(potentialResponse, response, true);
 			return;
 		}
 
@@ -353,6 +453,9 @@ Server.prototype.initFiles = function(config) {
 		else if (files[i][0] == 'game.html') {
 			gamePos = i;
 		}
+    else if (files[i][0] == 'instructions.html') {
+      instrPos = i;
+    }
 		else if (files[i][0] == 'endgame.html') {
 			endGamePos = i;
 		}

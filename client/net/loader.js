@@ -7,8 +7,8 @@
  */
 
 var filesLoaded = 0; 
-var SCRIPTS_NEEDED = 26,
-	 MODELS_NEEDED = 6,
+var SCRIPTS_NEEDED = 31,
+	 MODELS_NEEDED = 15,
 	 ANIMATIONS_NEEDED = 1,
 	 SHADERS_NEEDED = 2;
 
@@ -27,6 +27,9 @@ var scripts = [
 	["worldstate.js", "text/javascript", null], 
 	["critter.js", "text/javascript", null], 
 	["environment.js", "text/javascript", null], 
+	["battery.js", "text/javascript", null], 
+	["soap.js", "text/javascript", null], 
+	["butter.js", "text/javascript", null], 
 	
 	// TODO IDK what this is for...
 	//"ThreeOctree.js",
@@ -49,6 +52,8 @@ var scripts = [
 
 	// gui
 	["minimap.js", "text/javascript", null], 
+	["timer.js", "text/javascript", null], 
+	["chatbox.js", "text/javascript", null], 
 	["options.js", "text/javascript", null], 
 	["scoreboard.js", "text/javascript", null], 
 	["notifications.js", "text/javascript", null], 
@@ -61,7 +66,13 @@ var scripts = [
 // entries are structured: [model, model name, obj file, mtl file, scale]
 var models = {
 	players : [
-		[null, 'Default player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
+		[null, 'Purple player', 'yellow_boy_standing.obj', 'purple_boy_standing.mtl', 0.06],
+		[null, 'Voelker', 'yellow_boy_standing.obj', 'voelker_boy_standing.mtl', 0.06],
+		[null, 'Red player', 'yellow_boy_standing.obj', 'red_boy_standing.mtl', 0.06],
+		[null, 'Blue player', 'yellow_boy_standing.obj', 'blue_boy_standing.mtl', 0.06],
+		[null, 'Green player', 'yellow_boy_standing.obj', 'green_boy_standing.mtl', 0.06],
+		[null, 'Yellow player', 'yellow_boy_standing.obj', 'yellow_boy_standing.mtl', 0.06],
+		[null, 'Orange player', 'yellow_boy_standing.obj', 'orange_boy_standing.mtl', 0.06],
 		[null, 'Yixin Cube', 'yixin_cube.obj', 'yixin_cube.mtl', 0.1]
 	],
 	critters : [
@@ -74,7 +85,12 @@ var models = {
 		//[null, 'Blank room', 'blankRoom.obj', 'blankRoom.mtl', 1.]
 	],
 	food : [
-	]
+	],
+    items : [
+        [null, 'battery', 'battery.obj', 'battery.mtl', 0.1],
+        [null, 'soap', 'soap.obj', 'soap.mtl', 0.1],
+        [null, 'butter', 'butter.obj', 'butter.mtl', 0.1]
+    ]
 };
 
 var animations = {

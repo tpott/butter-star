@@ -14,8 +14,7 @@ uniform mat4 offset;
 uniform mat4 offsetNegative;
 uniform mat4 offsetRotationY;
   uniform mat4 offsetRotationX;
-attribute float alpha;
-varying float vAlpha;
+uniform mat4 vacTranslation;
 varying vec3 vNormal;
 
 //linear interpolation
@@ -36,9 +35,8 @@ vec3 calcFinalPos()
 //set gl_Position to newly calculated position
 void main()
 {
-	vAlpha = alpha;
 	gl_PointSize = 1.0;
-	vec4 newPosition = offset * translation * offsetRotationY
-		 * offsetRotationX * rotation * negativeTranslation * vec4(calcFinalPos() ,1.);
+	vec4 newPosition = vacTranslation * offset * translation *  offsetRotationY
+		 * offsetRotationX * rotation *negativeTranslation * vec4(calcFinalPos() ,1.);
 	gl_Position = projectionMatrix * modelViewMatrix * newPosition;
 }

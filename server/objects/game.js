@@ -28,10 +28,11 @@ function Game(server) {
 	// generate a random url
 	this.id = randomID(4);
 
-	this.ticks = 60; // 60 "ticks" per second!
+	this.ticks = 30; // 60 "ticks" per second!
 
 	this.sockets = {};
 	this.world = new World();
+	this.gameoverflag = false;
 	
 	// handler is for gamelogic
 	this.keyboardHandler = new Keyboard.Handler();
@@ -39,23 +40,65 @@ function Game(server) {
 
 	var self = this;
 	function serverTick() {
-		setTimeout(serverTick, 1000 / self.ticks);
+		if (self.gameoverflag) {
+			return;
+		}
+
 		self.gameTickBasedUpdate();
 		self.sendUpdatesToAllClients();
+        self.sendChatMessages();
+		setTimeout(serverTick, 1000 / self.ticks);
 	}
 	setTimeout(serverTick, 1000 / self.ticks);
+    
+    function randomItemDrop() {
+        setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+        //setTimeout(randomItemDrop, 20000);
+        var item_name;
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
+                item_name = "battery";
+                break;
+            case 1:
+                item_name = "soap";
+                break;
+            case 2: 
+                item_name = "butter";
+                break;
+        }
+        self.world.spawnItem(item_name);
+    }
+    setTimeout(randomItemDrop, (Math.random() * 50 + 25) * 1000);
+    //setTimeout(randomItemDrop, 10000);
 
 	this.handler.emit('newgame');
-
-	// used to track elapsed time once game is over
-	this.start = Date.now();
+    this.start = Date.now();
+    this.chatmessages = [];
+}
+Game.prototype.newChatMessage = function(player, msg) {
+    var data = {};
+    data.player = player.name;
+    data.msg = msg;
+    this.chatmessages.push(data);  
 }
 
+Game.prototype.sendChatMessages = function () {
+    if (this.chatmessages.length>0) {
+        // SEND THE WORLD INFO
+        var data = {};
+        data.chatmessages = this.chatmessages;
+        for (var id in this.sockets) {
+            this.sockets[id].send(JSON.stringify(data));
+        }
+        this.chatmessages = [];
+    }
+}
 /**
  * Add a socket to this game.
  * @param {Socket} socket The new socket connecting to this game.
  * @return {string} The player ID.
  */
+
 Game.prototype.addSocket = function(socket) {
   this.sockets[socket.id] = socket;
   this.world.addPlayer(socket.player); // Also adds player ID to new collidables
@@ -66,7 +109,8 @@ Game.prototype.addSocket = function(socket) {
 	  id : socket.id,
 	  new : [],
 		vac : [],
-		kill : []
+		kill : [],
+    bun : []
   };
 
 	for (var id in this.world.collidables) {
@@ -96,6 +140,14 @@ Game.prototype.addSocket = function(socket) {
       };
       initObj.kill.push(killCounterObj);
 	}
+
+  for (var id in this.world.critters) {
+    var critterHPObj = {
+      id: id,
+      hp: this.world.critters[id].hp
+    };
+    initObj.bun.push(critterHPObj);
+  }
 
 	// the client receives this and inits stuff in client/object/worldstate.js
 
@@ -131,6 +183,8 @@ Game.prototype.gameOver = function() {
 	// TODO bad idea? 
 	// force message sending
 	this.sendUpdatesToAllClients();
+
+	this.gameoverflag = true;
 };
 
 /**
@@ -191,8 +245,8 @@ Game.prototype.gameTickBasedUpdate = function() {
 	// check movable states and generate forces
 	this.world.applyStates();
 	this.world.applyForces(); 
-
-	//this.handler.timer -= (1.0 / this.ticks);
+    this.handler.getUpdatedTime();
+    
 }
 
 /**
@@ -204,24 +258,29 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		new : [],
 		set : [],
 		del : [],
-    vac : [],
-    kill : [],
-		misc : []
+        vac : [],
+        kill : [],
+        bun : [],
+		misc : [],
+        timer : [],
+        newItems: [],
+        delItems: []
 	};
+
 	var updates = Object.keys(worldUpdate).length;
 
-  var newCollidables = this.world.newCollidables;
+    var newCollidables = this.world.newCollidables;
 	for (var i = 0; i < newCollidables.length; i++) {
 		var id = newCollidables[i];
 		var colObj = {
 			id : id,
 			type : this.world.collidables[id].type, 
-			model : 0, // TODO which model index to load (yellow boy, blue boy, etc)
+			model : this.world.collidables[id].model,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.new.push(colObj);
 	}
@@ -231,18 +290,19 @@ Game.prototype.sendUpdatesToAllClients = function() {
 		delete worldUpdate.new;
 		updates--;
 	}
-
+    
 	// things that have been moved
   var setCollidables = this.world.setCollidables;
 	for (var i = 0; i < setCollidables.length; i++) {
 		var id = setCollidables[i];
-		var colObj = {
+	  	var colObj = {
 			id : id,
+            name : this.world.collidables[id].name,
 			position : this.world.collidables[id].position,
 			orientation : this.world.collidables[id].orientation,
 			state : this.world.collidables[id].state,
-      radius : this.world.collidables[id].radius,
-      scale : this.world.collidables[id].scale
+            radius : this.world.collidables[id].radius,
+            scale : this.world.collidables[id].scale
 		};
 		worldUpdate.set.push(colObj);
 
@@ -303,12 +363,65 @@ Game.prototype.sendUpdatesToAllClients = function() {
       worldUpdate.kill.push(killCounterObj);
     }
   }
+    // if flag was set for time update, put it in obj to be sent
+    if (this.handler.hasTimeChanged()) {
+        worldUpdate.timer.push(this.handler.getRemainingTime());
+    } else {
+        delete worldUpdate.timer;
+        updates--;
+    }
+
 
   // no kill counter changes, so don't send anything for this
   if (worldUpdate.kill.length == 0) {
     delete worldUpdate.kill;
     updates--;
   }
+
+  // check for critter HP updates
+  for (var id in this.world.critters) {
+    var critter = this.world.critters[id];
+
+    if (critter.didHPChange() === true) {
+      var critterHPObj = {
+        id: critter.id,
+        hp: critter.hp
+      };
+      worldUpdate.bun.push(critterHPObj);
+    }
+  }
+
+  if (worldUpdate.bun.length == 0) {
+    delete worldUpdate.bun;
+    updates--;
+  }
+  
+    for (itemName in this.world.newItems) {
+        var itemObj = {
+            name: itemName,
+            position: this.world.items[itemName].position
+        };
+        worldUpdate.newItems.push(itemObj);
+    }
+    
+    if (worldUpdate.newItems.length == 0) {
+        delete worldUpdate.newItems;
+        updates--;
+    }
+
+    for (itemName in this.world.delItems) {
+        var itemObj = {
+            name : itemName,
+            player_id : this.world.delItems[itemName],
+            player_name: this.world.players[this.world.delItems[itemName]].name
+        };
+        worldUpdate.delItems.push(itemObj);
+    }
+    
+    if (worldUpdate.delItems.length == 0) {
+        delete worldUpdate.delItems;
+        updates--;
+    }
 
 	worldUpdate.misc = this.world.miscellaneous; // list of broadcast messages
 	
@@ -338,14 +451,6 @@ Game.prototype.sendUpdatesToAllClients = function() {
 
 	// reset since this is the end of a tick
   this.world.resetUpdateStateLists();
-}
-
-// TODO comment and clean this shit
-gameTick = function(game) {
-	return function() {
-        game.gameTickBasedUpdate();
-		game.sendUpdatesToAllClients();
-	}
 }
 
 module.exports = Game;
