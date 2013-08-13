@@ -4,6 +4,8 @@
 An HTML5, 3D, multiplayer, networked video game, written entirely in
 JavaScript.
 
+Production release: http://pisa.ucsd.edu:8080/
+
 This was our project for UCSD's CSE 125 class. Our group's 
 [page](http://cse125.ucsd.edu/cse125/2013/cse125g3/) is hosted on campus,
 and serves as a journal to our ten weeks spent working on our project.
